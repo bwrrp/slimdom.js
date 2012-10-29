@@ -1,4 +1,4 @@
-define(function() {
+define(['../util'], function(util) {
 	function Range(document) {
 		// Uninitialized ranges point at the document in which they were created
 		this.commonAncestorContainer = this.startContainer = this.endContainer = document;
@@ -6,50 +6,9 @@ define(function() {
 		this.collapsed = true;
 	}
 
-	// Get all parents of the given node
-	function parents(node) {
-		var nodes = [];
-		while (node) {
-			nodes.unshift(node);
-			node = node.parentNode;
-		}
-		return nodes;
-	}
-
-	// Find the common ancestor of the two nodes
-	function commonAncestor(node1, node2) {
-		var parents1 = parents(node1),
-			parents2 = parents(node2);
-		if (parents1[0] != parents2[0]) return null;
-		for (var i = 1, l = parents1.length; i < l; ++i) {
-			if (parents1[i] != parents2[i]) return parents1[i - 1];
-		}
-		return parents1[0];
-	}
-
-	// Compare two positions within the document
-	function comparePoints(node1, offset1, node2, offset2) {
-		if (node1 == node2) {
-			return offset2 - offset1;
-		} else {
-			var parents1 = parents(node1),
-				parents2 = parents(node2);
-			// This should not be called on nodes from different trees
-			if (parents1[0] != parents2[0]) return undefined;
-			// Skip common parents
-			var commonParent = parents1[0];
-			while (parents1[0] == parents2[0]) {
-				commonParent = parents1.shift();
-				parents2.shift();
-			}
-			return _.indexOf(commonParent.childNodes, parents2[0]) -
-				_.indexOf(commonParent.childNodes, parents1[0]);
-		}
-	}
-
 	// Helper used to update the range when start and/or end has changed
 	function pointsChanged() {
-		this.commonAncestorContainer = commonAncestor(this.startContainer, this.endContainer);
+		this.commonAncestorContainer = util.commonAncestor(this.startContainer, this.endContainer);
 		this.collapsed = (this.startContainer == this.endContainer && this.startOffset == this.endOffset);
 	}
 
@@ -59,7 +18,7 @@ define(function() {
 		this.startOffset = startOffset;
 
 		// If start is after end, move end to start
-		if (comparePoints(this.startContainer, this.startOffset, this.endContainer, this.endOffset) > 0) {
+		if (util.comparePoints(this.startContainer, this.startOffset, this.endContainer, this.endOffset) > 0) {
 			this.setEnd(startNode, startOffset);
 		}
 
@@ -72,8 +31,8 @@ define(function() {
 		this.endOffset = endOffset;
 
 		// If end is before start, move start to end
-		if (comparePoints(this.startContainer, this.startOffset, this.endContainer, this.endOffset) > 0) {
-			this.setStart(startNode, startOffset);
+		if (util.comparePoints(this.startContainer, this.startOffset, this.endContainer, this.endOffset) < 0) {
+			this.setStart(endNode, endOffset);
 		}
 
 		pointsChanged.call(this);
