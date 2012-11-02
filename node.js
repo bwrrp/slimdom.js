@@ -13,6 +13,9 @@ define(['lodash', './util'], function(_, util) {
 		// Child nodes
 		this.childNodes = [];
 		this.firstChild = this.lastChild = null;
+
+		// User data
+		this.userData = {};
 	}
 
 	// Internal helper used to update the firstChild and lastChild references.
@@ -146,6 +149,18 @@ define(['lodash', './util'], function(_, util) {
 
 		return oldChild;
 	};
+
+	// Retrieves the object associated to a key on a this node.
+	Node.prototype.getUserData = function(key) {
+		return key in this.userData ? this.userData[key] : null;
+	}
+
+	// Associate an object to a key on this node.
+	Node.prototype.setUserData = function(key, data) {
+		var oldData = this.getUserData(key);
+		this.userData[key] = data;
+		return oldData;
+	}
 
 	return Node;
 });
