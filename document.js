@@ -1,12 +1,12 @@
 define(['./node', './element', './text', './selection/range'], function(Node, Element, Text, Range) {
 	// Document base
 	function Document() {
-		Node.call(this, 'document');
+		Node.call(this, Node.DOCUMENT_NODE);
 
-		this.appendChild(new Node('root'));
+		this.appendChild(new Element('root'));
 		this.documentElement = this.firstChild;
 	}
-	Document.prototype = new Node('document');
+	Document.prototype = new Node(Node.DOCUMENT_NODE);
 	Document.prototype.constructor = Document;
 
 	// Override replaceChild to update the documentElement reference

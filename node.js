@@ -18,6 +18,11 @@ define(['lodash', './util'], function(_, util) {
 		this.userData = {};
 	}
 
+	// Node type constants - not all DOM standard node types are supported
+	Node.prototype.ELEMENT_NODE  = Node.ELEMENT_NODE  = 1;
+	Node.prototype.TEXT_NODE     = Node.TEXT_NODE     = 3;
+	Node.prototype.DOCUMENT_NODE = Node.DOCUMENT_NODE = 9;
+
 	// Internal helper used to update the firstChild and lastChild references.
 	function updateFirstLast() {
 		this.firstChild = _.first(this.childNodes) || null;
@@ -91,8 +96,8 @@ define(['lodash', './util'], function(_, util) {
 	Node.prototype.normalize = function() {
 		while (node) {
 			var nextNode = node.nextSibling;
-			if (node.nodeType == 'text') {
-				while (node.nextSibling && node.nextSibling.nodeType == 'text') {
+			if (node.nodeType == Node.TEXT_NODE) {
+				while (node.nextSibling && node.nextSibling.nodeType == Node.TEXT_NODE) {
 					// Combine node with next sibling and remove the latter
 					node.nodeValue += node.nextSibling.nodeValue;
 					parentNode.removeChild(node.nextSibling);

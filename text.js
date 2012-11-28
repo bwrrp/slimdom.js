@@ -1,10 +1,10 @@
 define(['./node'], function(Node) {
 	// Text node
 	function Text(content) {
-		Node.call(this, 'text');
+		Node.call(this, Node.TEXT_NODE);
 		this.nodeValue = content;
 	}
-	Text.prototype = new Node('text');
+	Text.prototype = new Node(Node.TEXT_NODE);
 	Text.prototype.constructor = Text;
 
 	// Breaks the Text node into two nodes at the specified offset, keeping both nodes in the tree as siblings.
