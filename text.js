@@ -15,7 +15,7 @@ define(['./node'], function(Node) {
 
 		// If the current node is part of a tree, insert the new node
 		if (this.parentNode) {
-			this.parentNode.insertBefore(this.nextSibling, newNode);
+			this.parentNode.insertBefore(newNode, this.nextSibling);
 		}
 
 		return newNode;
