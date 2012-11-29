@@ -158,14 +158,14 @@ define(['lodash', './util'], function(_, util) {
 	// Retrieves the object associated to a key on a this node.
 	Node.prototype.getUserData = function(key) {
 		return key in this.userData ? this.userData[key] : null;
-	}
+	};
 
 	// Associate an object to a key on this node.
 	Node.prototype.setUserData = function(key, data) {
 		var oldData = this.getUserData(key);
 		this.userData[key] = data;
 		return oldData;
-	}
+	};
 
 	return Node;
 });
