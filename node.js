@@ -94,19 +94,20 @@ define(['lodash', './util'], function(_, util) {
 	// Puts the specified node and all of its subtree into a "normalized" form.
 	// In a normalized subtree, no text nodes in the subtree are empty and there are no adjacent text nodes.
 	Node.prototype.normalize = function() {
+		var node = this.firstChild;
 		while (node) {
 			var nextNode = node.nextSibling;
 			if (node.nodeType == Node.TEXT_NODE) {
 				while (node.nextSibling && node.nextSibling.nodeType == Node.TEXT_NODE) {
 					// Combine node with next sibling and remove the latter
 					node.nodeValue += node.nextSibling.nodeValue;
-					parentNode.removeChild(node.nextSibling);
+					node.parentNode.removeChild(node.nextSibling);
 				}
 				// Store next sibling in case the following code removes the reference
 				nextNode = node.nextSibling;
 				// Delete empty text nodes
 				if (node.nodeValue === "") {
-					parentNode.removeChild(node);
+					node.parentNode.removeChild(node);
 				}
 			} else {
 				// Recurse
