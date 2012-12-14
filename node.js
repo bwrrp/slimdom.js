@@ -64,8 +64,10 @@ define(['lodash', './util'], function(_, util) {
 
 	// Indicates whether a node is a descendent of a given node.
 	Node.prototype.contains = function(childNode) {
-		var parents = util.parents(childNode);
-		return _.contains(parents, this);
+		while (childNode && childNode != this) {
+			childNode = childNode.parentNode;
+		}
+		return childNode == this;
 	};
 
 	// Inserts the specified node before a reference element as a child of the current node.
