@@ -31,7 +31,7 @@ define(['../util'], function(util) {
 		this.endOffset = endOffset;
 
 		// If end is before start, move start to end
-		if (util.comparePoints(this.startContainer, this.startOffset, this.endContainer, this.endOffset) < 0) {
+		if (util.comparePoints(this.startContainer, this.startOffset, this.endContainer, this.endOffset) > 0) {
 			this.setStart(endNode, endOffset);
 		}
 
