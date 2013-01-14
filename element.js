@@ -7,6 +7,13 @@ define(['./node'], function(Node) {
 	Element.prototype = new Node(Node.ELEMENT_NODE);
 	Element.prototype.constructor = Element;
 
+	Element.prototype.hasAttribute = function(attributeName) {
+		if (!this.attributes)
+			return false;
+
+		return (attributeName in this.attributes);
+	}
+
 	Element.prototype.getAttributeValue = function(attributeName) {
 		if (!this.attributes)
 			return;
