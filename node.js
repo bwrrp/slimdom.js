@@ -1,181 +1,218 @@
-define(['lodash', './util'], function(_, util) {
-	// DOM Node
-	function Node(type) {
-		this.nodeType = type;
+define(
+	[
+		'./util',
+		'./mutations/mutationrecord',
+		'lodash'
+	],
+	function(
+		util,
+		MutationRecord,
+		_) {
+		// DOM Node
+		function Node(type) {
+			this.nodeType = type;
 
-		// Parent
-		this.parentNode = null;
+			// Parent
+			this.parentNode = null;
 
-		// Siblings
-		this.nextSibling = null;
-		this.previousSibling = null;
+			// Siblings
+			this.nextSibling = null;
+			this.previousSibling = null;
 
-		// Child nodes
-		this.childNodes = [];
-		this.firstChild = this.lastChild = null;
+			// Child nodes
+			this.childNodes = [];
+			this.firstChild = this.lastChild = null;
 
-		// User data, use get/setUserData to access
-		this.userData = {};
+			// User data, use get/setUserData to access
+			this.userData = {};
 
-		// Registered mutation observers, use MutationObserver interface to manipulate
-		this.registeredObservers = [];
-	}
-
-	// Node type constants - not all DOM standard node types are supported
-	Node.prototype.ELEMENT_NODE  = Node.ELEMENT_NODE  = 1;
-	Node.prototype.TEXT_NODE     = Node.TEXT_NODE     = 3;
-	Node.prototype.DOCUMENT_NODE = Node.DOCUMENT_NODE = 9;
-
-	// Internal helper used to update the firstChild and lastChild references.
-	function updateFirstLast() {
-		this.firstChild = _.first(this.childNodes) || null;
-		this.lastChild = _.last(this.childNodes) || null;
-	}
-
-	// Internal helper used to update the nextSibling and previousSibling references.
-	function updateSiblings(index) {
-		if (!this.parentNode) {
-			// Node has been removed
-			if (this.nextSibling) this.nextSibling.previousSibling = this.previousSibling;
-			if (this.previousSibling) this.previousSibling.nextSibling = this.nextSibling;
-			this.nextSibling = this.previousSibling = null;
-			return;
+			// Registered mutation observers, use MutationObserver interface to manipulate
+			this.registeredObservers = [];
 		}
 
-		this.nextSibling = this.parentNode.childNodes[index + 1] || null;
-		this.previousSibling = this.parentNode.childNodes[index - 1] || null;
+		// Node type constants - not all DOM standard node types are supported
+		Node.prototype.ELEMENT_NODE  = Node.ELEMENT_NODE  = 1;
+		Node.prototype.TEXT_NODE     = Node.TEXT_NODE     = 3;
+		Node.prototype.DOCUMENT_NODE = Node.DOCUMENT_NODE = 9;
 
-		if (this.nextSibling) this.nextSibling.previousSibling = this;
-		if (this.previousSibling) this.previousSibling.nextSibling = this;
-	}
-
-	// Adds a node to the end of the list of children of a specified parent node.
-	// If the node already exists it is removed from current parent node, then added to new parent node.
-	Node.prototype.appendChild = function(childNode) {
-		// Detach from old parent
-		if (childNode.parentNode) {
-			childNode.parentNode.removeChild(childNode);
+		// Internal helper used to update the firstChild and lastChild references.
+		function updateFirstLast() {
+			this.firstChild = _.first(this.childNodes) || null;
+			this.lastChild = _.last(this.childNodes) || null;
 		}
 
-		childNode.parentNode = this;
-		this.childNodes.push(childNode);
-		updateFirstLast.call(this);
-		updateSiblings.call(childNode, this.childNodes.length - 1);
-
-		return childNode;
-	};
-
-	// Indicates whether a node is a descendent of a given node.
-	Node.prototype.contains = function(childNode) {
-		while (childNode && childNode != this) {
-			childNode = childNode.parentNode;
-		}
-		return childNode == this;
-	};
-
-	// Inserts the specified node before a reference element as a child of the current node.
-	Node.prototype.insertBefore = function(newNode, referenceNode) {
-		if (!referenceNode)
-			return this.appendChild(newNode);
-
-		// Check index of reference node
-		var index = _.indexOf(this.childNodes, referenceNode);
-		if (index < 0) return null;
-
-		// Detach from old parent
-		if (newNode.parentNode) {
-			newNode.parentNode.removeChild(newNode);
-		}
-		newNode.parentNode = this;
-
-		// Insert
-		this.childNodes.splice(index, 0, newNode);
-		updateFirstLast.call(this);
-		updateSiblings.call(newNode, index);
-
-		return newNode;
-	};
-
-	// Inserts the specified node before a reference element as a child of the current node.
-	Node.prototype.insertAfter = function(newNode, referenceNode) {
-		return this.insertBefore(newNode, referenceNode.nextSibling);
-	};
-	// Puts the specified node and all of its subtree into a "normalized" form.
-	// In a normalized subtree, no text nodes in the subtree are empty and there are no adjacent text nodes.
-	Node.prototype.normalize = function() {
-		var node = this.firstChild;
-		while (node) {
-			var nextNode = node.nextSibling;
-			if (node.nodeType == Node.TEXT_NODE) {
-				while (node.nextSibling && node.nextSibling.nodeType == Node.TEXT_NODE) {
-					// Combine node with next sibling and remove the latter
-					node.nodeValue += node.nextSibling.nodeValue;
-					node.parentNode.removeChild(node.nextSibling);
-				}
-				// Store next sibling in case the following code removes the reference
-				nextNode = node.nextSibling;
-				// Delete empty text nodes
-				if (node.nodeValue === "") {
-					node.parentNode.removeChild(node);
-				}
-			} else {
-				// Recurse
-				node.normalize();
+		// Internal helper used to update the nextSibling and previousSibling references.
+		function updateSiblings(index) {
+			if (!this.parentNode) {
+				// Node has been removed
+				if (this.nextSibling) this.nextSibling.previousSibling = this.previousSibling;
+				if (this.previousSibling) this.previousSibling.nextSibling = this.nextSibling;
+				this.nextSibling = this.previousSibling = null;
+				return;
 			}
-			// Move to next node
-			node = nextNode;
-		}
-	};
 
-	// Removes a child node from the DOM. Returns removed node.
-	Node.prototype.removeChild = function(childNode) {
-		// Check index of node
-		var index = _.indexOf(this.childNodes, childNode);
-		if (index < 0) return null;
+			this.nextSibling = this.parentNode.childNodes[index + 1] || null;
+			this.previousSibling = this.parentNode.childNodes[index - 1] || null;
 
-		childNode.parentNode = null;
-
-		// Remove item from array
-		this.childNodes.splice(index, 1);
-		updateFirstLast.call(this);
-		updateSiblings.call(childNode, index);
-
-		return childNode;
-	};
-
-	// Replaces one child node of the specified node with another. Returns the replaced node.
-	Node.prototype.replaceChild = function(newChild, oldChild) {
-		// Check index of old child
-		var index = _.indexOf(this.childNodes, oldChild);
-		if (index < 0) return null;
-
-		// Detach new child from old parent
-		if (newChild.parentNode) {
-			newChild.parentNode.removeChild(newChild);
+			if (this.nextSibling) this.nextSibling.previousSibling = this;
+			if (this.previousSibling) this.previousSibling.nextSibling = this;
 		}
 
-		// Replace old child with new child
-		oldChild.parentNode = null;
-		newChild.parentNode = this;
-		this.childNodes[index] = newChild;
-		updateFirstLast.call(this);
-		updateSiblings.call(oldChild, index);
-		updateSiblings.call(newChild, index);
+		// Adds a node to the end of the list of children of a specified parent node.
+		// If the node already exists it is removed from current parent node, then added to new parent node.
+		Node.prototype.appendChild = function(childNode) {
+			return this.insertBefore(childNode, null);
+		};
 
-		return oldChild;
-	};
+		// Indicates whether a node is a descendent of a given node.
+		Node.prototype.contains = function(childNode) {
+			while (childNode && childNode != this) {
+				childNode = childNode.parentNode;
+			}
+			return childNode == this;
+		};
 
-	// Retrieves the object associated to a key on a this node.
-	Node.prototype.getUserData = function(key) {
-		return key in this.userData ? this.userData[key] : null;
-	};
+		// Inserts the specified node before a reference element as a child of the current node.
+		// If referenceNode is null, the new node is appended after the current child nodes.
+		Node.prototype.insertBefore = function(newNode, referenceNode, suppressObservers) {
+			// Check index of reference node
+			var index = referenceNode ?
+				_.indexOf(this.childNodes, referenceNode) :
+				this.childNodes.length;
+			if (index < 0) return null;
 
-	// Associate an object to a key on this node.
-	Node.prototype.setUserData = function(key, data) {
-		var oldData = this.getUserData(key);
-		this.userData[key] = data;
-		return oldData;
-	};
+			// Detach from old parent
+			if (newNode.parentNode) {
+				newNode.parentNode.removeChild(newNode, suppressObservers);
+			}
+			newNode.parentNode = this;
 
-	return Node;
-});
+			// Queue mutation record
+			if (!suppressObservers) {
+				var record = new MutationRecord('childList', this);
+				record.addedNodes.push(newNode);
+				record.nextSibling = referenceNode;
+				record.previousSibling = (referenceNode && referenceNode.previousSibling) || null;
+				util.queueMutationRecord(record);
+			}
+
+			// Insert
+			this.childNodes.splice(index, 0, newNode);
+			updateFirstLast.call(this);
+			updateSiblings.call(newNode, index);
+
+			return newNode;
+		};
+
+		// Inserts the specified node before a reference element as a child of the current node.
+		Node.prototype.insertAfter = function(newNode, referenceNode) {
+			return this.insertBefore(newNode, referenceNode.nextSibling);
+		};
+		// Puts the specified node and all of its subtree into a "normalized" form.
+		// In a normalized subtree, no text nodes in the subtree are empty and there are no adjacent text nodes.
+		Node.prototype.normalize = function() {
+			var node = this.firstChild;
+			while (node) {
+				var nextNode = node.nextSibling;
+				if (node.nodeType == Node.TEXT_NODE) {
+					// Delete empty text nodes
+					if (!node.length()) {
+						node.parentNode.removeChild(node);
+					} else {
+						// Concatenate node's contiguous text nodes (excluding current)
+						var data = '',
+							siblingsToRemove = [],
+							sibling = node.nextSibling;
+						while (sibling && sibling.nodeType == Node.TEXT_NODE) {
+							data += sibling.nodeValue;
+							siblingsToRemove.push(sibling);
+						}
+						// Append concatenated data, if any
+						if (data) {
+							this.appendData(data);
+						}
+						// Remove contiguous text nodes (excluding current)
+						while (siblingsToRemove.length) {
+							node.parentNode.removeChild(siblingsToRemove.shift());
+						}
+						// Update next node to process
+						nextNode = node.nextSibling;
+					}
+				} else {
+					// Recurse
+					node.normalize();
+				}
+				// Move to next node
+				node = nextNode;
+			}
+		};
+
+		// Removes a child node from the DOM. Returns removed node.
+		Node.prototype.removeChild = function(childNode, suppressObservers) {
+			// Check index of node
+			var index = _.indexOf(this.childNodes, childNode);
+			if (index < 0) return null;
+
+			if (!suppressObservers) {
+				var record = new MutationRecord('childList', this);
+				record.removedNodes.push(childNode);
+				record.nextSibling = childNode.nextSibling;
+				record.previousSibling = childNode.previousSibling;
+				util.queueMutationRecord(record);
+			}
+
+			// TODO: add transient registered observers for subtree support
+
+			// Remove the node
+			childNode.parentNode = null;
+			this.childNodes.splice(index, 1);
+			updateFirstLast.call(this);
+			updateSiblings.call(childNode, index);
+
+			return childNode;
+		};
+
+		// Replaces one child node of the specified node with another. Returns the replaced node.
+		Node.prototype.replaceChild = function(newChild, oldChild) {
+			// Check if oldChild is a child
+			if (oldChild.parentNode !== this)
+				return null;
+
+			// Get reference node for insert
+			var referenceNode = oldChild.nextSibling;
+			if (referenceNode === newChild) referenceNode = newChild.nextSibling;
+
+			// Create mutation record
+			var record = new MutationRecord('childList', this);
+			record.addedNodes.push(newChild);
+			record.removedNodes.push(oldChild);
+			record.nextSibling = referenceNode;
+			record.previousSibling = oldChild.previousSibling;
+
+			// Remove old child
+			this.removeChild(oldChild, true);
+
+			// Insert new child
+			this.insertBefore(newChild, referenceNode, true);
+
+			// Queue mutation record
+			util.queueMutationRecord(record);
+
+			return oldChild;
+		};
+
+		// Retrieves the object associated to a key on a this node.
+		Node.prototype.getUserData = function(key) {
+			return key in this.userData ? this.userData[key] : null;
+		};
+
+		// Associate an object to a key on this node.
+		Node.prototype.setUserData = function(key, data) {
+			var oldData = this.getUserData(key);
+			this.userData[key] = data;
+			return oldData;
+		};
+
+		return Node;
+	}
+);

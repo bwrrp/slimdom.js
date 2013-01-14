@@ -1,4 +1,6 @@
-define(function() {
+define(
+	function() {
+
 	// Get all parents of the given node
 	function parents(node) {
 		var nodes = [];
@@ -41,9 +43,39 @@ define(function() {
 		return offset1 - offset2;
 	}
 
+	function queueMutationRecord(mutationRecord) {
+		// Check all inclusive ancestors of the target for registered observers
+		var nodes = parents(mutationRecord.target);
+		for (var iNode = 0, nNodes = nodes.length; iNode < nNodes; ++iNode) {
+			var node = nodes[iNode];
+			// For each registered observer
+			for (var iObserver = 0, nObservers = node.registeredObservers.length; iObserver < nObservers; ++iObserver) {
+				var registeredObserver = node.registeredObservers[iObserver];
+				// Only trigger ancestors if they are listening for subtree mutations
+				if (mutationRecord.target !== node && !registeredObserver.options.subtree)
+					continue;
+				// Ignore attribute modifications if we're not listening for them
+				if (!registeredObserver.options.attributes && mutationRecord.type === 'attributes')
+					continue;
+				// TODO: implement attribute filter?
+				// Ignore character data modifications if we're not listening for them
+				if (!registeredObserver.options.characterData && mutationRecord.type === 'characterData')
+					continue;
+				// Ignore child list modifications if we're not listening for them
+				if (!registeredObserver.options.childList && mutationRecord.type === 'childList')
+					continue;
+
+				// Queue the record
+				// TODO: we should probably make a copy here according to the options, but who cares about extra info?
+				registeredObserver.observer.recordQueue.push(mutationRecord);
+			}
+		}
+	}
+
 	return {
 		commonAncestor: commonAncestor,
 		comparePoints: comparePoints,
-		parents: parents
+		parents: parents,
+		queueMutationRecord: queueMutationRecord
 	};
 });
