@@ -1,9 +1,10 @@
 define(
 	[
 		'./node',
-		'./mutations/mutationrecord'
+		'./mutations/mutationrecord',
+		'./util'
 	],
-	function(Node, MutationRecord) {
+	function(Node, MutationRecord, util, undefined) {
 		function CharacterData(type, data) {
 			if (!arguments.length) return;
 
@@ -31,6 +32,8 @@ define(
 		};
 
 		CharacterData.prototype.deleteData = function(offset, count) {
+			// Omitting count means 'delete from offset to end'
+			if (count === undefined) count = this.length() - offset;
 			this.replaceData(offset, count, '');
 		};
 
@@ -57,5 +60,7 @@ define(
 		CharacterData.prototype.toString = function() {
 			return this.nodeValue;
 		};
+
+		return CharacterData;
 	}
 );

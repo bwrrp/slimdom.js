@@ -1,12 +1,12 @@
 define(
 	[
-		'./util',
 		'./mutations/mutationrecord',
+		'./util',
 		'lodash'
 	],
 	function(
-		util,
 		MutationRecord,
+		util,
 		_) {
 		// DOM Node
 		function Node(type) {
@@ -126,12 +126,13 @@ define(
 						while (sibling && sibling.nodeType == Node.TEXT_NODE) {
 							data += sibling.nodeValue;
 							siblingsToRemove.push(sibling);
+							sibling = sibling.nextSibling;
 						}
 						// Append concatenated data, if any
 						if (data) {
-							this.appendData(data);
+							node.appendData(data);
 						}
-						// Remove contiguous text nodes (excluding current)
+						// Remove contiguous text nodes (excluding current) in tree order
 						while (siblingsToRemove.length) {
 							node.parentNode.removeChild(siblingsToRemove.shift());
 						}

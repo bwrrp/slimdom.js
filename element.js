@@ -2,7 +2,7 @@ define(
 	[
 		'./node',
 		'./mutations/mutationrecord',
-		'./util.js'
+		'./util'
 	],
 	function(Node, MutationRecord, util) {
 		// Element node
