@@ -14,8 +14,11 @@ define(['lodash', './util'], function(_, util) {
 		this.childNodes = [];
 		this.firstChild = this.lastChild = null;
 
-		// User data
+		// User data, use get/setUserData to access
 		this.userData = {};
+
+		// Registered mutation observers, use MutationObserver interface to manipulate
+		this.registeredObservers = [];
 	}
 
 	// Node type constants - not all DOM standard node types are supported
