@@ -49,28 +49,31 @@ define(
 			invoke = null;
 		for (var iNode = 0, nNodes = nodes.length; iNode < nNodes; ++iNode) {
 			var node = nodes[iNode];
-			// For each registered observer
-			for (var iObserver = 0, nObservers = node.registeredObservers.length; iObserver < nObservers; ++iObserver) {
-				var registeredObserver = node.registeredObservers[iObserver];
-				// Only trigger ancestors if they are listening for subtree mutations
-				if (mutationRecord.target !== node && !registeredObserver.options.subtree)
-					continue;
-				// Ignore attribute modifications if we're not listening for them
-				if (!registeredObserver.options.attributes && mutationRecord.type === 'attributes')
-					continue;
-				// TODO: implement attribute filter?
-				// Ignore character data modifications if we're not listening for them
-				if (!registeredObserver.options.characterData && mutationRecord.type === 'characterData')
-					continue;
-				// Ignore child list modifications if we're not listening for them
-				if (!registeredObserver.options.childList && mutationRecord.type === 'childList')
-					continue;
+			
+			if (node.registeredObservers) {
+				// For each registered observer
+				for (var iObserver = 0, nObservers = node.registeredObservers.length; iObserver < nObservers; ++iObserver) {
+					var registeredObserver = node.registeredObservers[iObserver];
+					// Only trigger ancestors if they are listening for subtree mutations
+					if (mutationRecord.target !== node && !registeredObserver.options.subtree)
+						continue;
+					// Ignore attribute modifications if we're not listening for them
+					if (!registeredObserver.options.attributes && mutationRecord.type === 'attributes')
+						continue;
+					// TODO: implement attribute filter?
+					// Ignore character data modifications if we're not listening for them
+					if (!registeredObserver.options.characterData && mutationRecord.type === 'characterData')
+						continue;
+					// Ignore child list modifications if we're not listening for them
+					if (!registeredObserver.options.childList && mutationRecord.type === 'childList')
+						continue;
 
-				// Queue the record
-				// TODO: we should probably make a copy here according to the options, but who cares about extra info?
-				registeredObserver.observer.recordQueue.push(mutationRecord);
+					// Queue the record
+					// TODO: we should probably make a copy here according to the options, but who cares about extra info?
+					registeredObserver.observer.recordQueue.push(mutationRecord);
 
-				invoke = registeredObserver.observer.constructor.invoke;
+					invoke = registeredObserver.observer.constructor.invoke;
+				}
 			}
 		}
 
