@@ -2,7 +2,7 @@ define(
 	[
 		'lodash'
 	],
-	function(util, _) {
+	function(_) {
 		// Global list of active mutation observers
 		var notifyList = [];
 
@@ -69,7 +69,7 @@ define(
 
 		// Helper: whether the given registered observer is a transient registered observer whose observer is this
 		function isTransientRegisteredObserverForObserver(entry) {
-			return entry.isTransient && isRegisteredObserverForObserver.call(this);
+			return entry.isTransient && isRegisteredObserverForObserver.call(this, entry);
 		}
 
 		// Helper: whether the given mutation observer has a non-empty record queue
