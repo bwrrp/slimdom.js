@@ -20,7 +20,7 @@ define(
 		};
 
 		CharacterData.prototype.substringData = function(offset, count) {
-			return this.nodeValue.substring(offset, count);
+			return this.nodeValue.substr(offset, count);
 		};
 
 		CharacterData.prototype.appendData = function(data) {
