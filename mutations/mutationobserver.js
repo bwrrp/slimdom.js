@@ -2,7 +2,7 @@ define(
 	[
 		'lodash'
 	],
-	function(util, _) {
+	function(_) {
 		// Global list of active mutation observers
 		var notifyList = [];
 
