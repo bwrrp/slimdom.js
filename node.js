@@ -92,11 +92,7 @@ define(['lodash', './util'], function(_, util) {
 
 		return newNode;
 	};
-
-	// Inserts the specified node before a reference element as a child of the current node.
-	Node.prototype.insertAfter = function(newNode, referenceNode) {
-		return this.insertBefore(newNode, referenceNode.nextSibling);
-	};
+	
 	// Puts the specified node and all of its subtree into a "normalized" form.
 	// In a normalized subtree, no text nodes in the subtree are empty and there are no adjacent text nodes.
 	Node.prototype.normalize = function() {

@@ -4,6 +4,7 @@ define(['./node'], function(Node) {
 		Node.call(this, Node.ELEMENT_NODE);
 		this.nodeName = name;
 	}
+	
 	Element.prototype = new Node(Node.ELEMENT_NODE);
 	Element.prototype.constructor = Element;
 
@@ -12,14 +13,21 @@ define(['./node'], function(Node) {
 			return false;
 
 		return (attributeName in this.attributes);
-	}
+	};
+
+	Element.prototype.removeAttributeValue = function(attributeName) {
+		if (!this.attributes)
+			return;
+
+		delete this.attributes[attributeName];
+	};
 
 	Element.prototype.getAttributeValue = function(attributeName) {
 		if (!this.attributes)
 			return;
 
 		return this.attributes[attributeName];
-	}
+	};
 
 	Element.prototype.setAttributeValue = function(attributeName, attributeValue) {
 		if (!this.attributes)
@@ -30,7 +38,7 @@ define(['./node'], function(Node) {
 
 		// TODO: waarde altijd als string? Dus toString() nodig? Voorkomt wel onduidelijkheid
 		this.attributes[attributeName] = '' + attributeValue;
-	}
+	};
 
 	return Element;
 });
