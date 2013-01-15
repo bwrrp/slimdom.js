@@ -45,7 +45,8 @@ define(
 
 	function queueMutationRecord(mutationRecord) {
 		// Check all inclusive ancestors of the target for registered observers
-		var nodes = parents(mutationRecord.target);
+		var nodes = parents(mutationRecord.target),
+			invoke = null;
 		for (var iNode = 0, nNodes = nodes.length; iNode < nNodes; ++iNode) {
 			var node = nodes[iNode];
 			// For each registered observer
@@ -68,8 +69,14 @@ define(
 				// Queue the record
 				// TODO: we should probably make a copy here according to the options, but who cares about extra info?
 				registeredObserver.observer.recordQueue.push(mutationRecord);
+
+				invoke = registeredObserver.observer.constructor.invoke;
 			}
 		}
+
+		// If there are observers to invoke, schedule the callbacks
+		if (invoke)
+			setTimeout(invoke, 0);
 	}
 
 	return {

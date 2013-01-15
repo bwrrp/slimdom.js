@@ -148,6 +148,10 @@ define(
 			}
 		};
 
+		function isRegisteredObserverForSubtree(registeredObserver) {
+			return !!registeredObserver.options.subtree;
+		}
+
 		// Removes a child node from the DOM. Returns removed node.
 		Node.prototype.removeChild = function(childNode, suppressObservers) {
 			// Check index of node
@@ -162,7 +166,17 @@ define(
 				util.queueMutationRecord(record);
 			}
 
-			// TODO: add transient registered observers for subtree support
+			// Add transient registered observers to detect changes in the removed subtree
+			var parent = this;
+			while (parent) {
+				var subtreeObservers = _.filter(parent.registeredObservers, isRegisteredObserverForSubtree);
+				for (var i = 0, l = subtreeObservers.length; i < l; ++i) {
+					var registeredObserver = subtreeObservers[i];
+					// Append an identical but transient registered observer to childNode's list
+					registeredObserver.observer.observe(childNode, registeredObserver.options, true);
+				}
+				parent = parent.parentNode;
+			}
 
 			// Remove the node
 			childNode.parentNode = null;
