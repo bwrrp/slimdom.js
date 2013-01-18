@@ -55,6 +55,24 @@ define(
 			var before = this.substringData(0, offset),
 				after = this.substringData(offset + count);
 			this.nodeValue = before + data + after;
+
+			// Update ranges
+			var document = this.ownerDocument || this;
+			for (var iRange = 0, nRanges = document.ranges.length; iRange < nRanges; ++iRange) {
+				var range = document.ranges[iRange];
+				if (range.startContainer === this && range.startOffset > offset && range.startOffset <= offset + count)
+					range.setStart(range.startContainer, offset);
+				if (range.endContainer === this && range.endOffset > offset && range.endOffset <= offset + count)
+					range.setEnd(range.endContainer, offset);
+				if (range.startContainer === this && range.startOffset > offset + count) {
+					range.setStart(range.startContainer, range.startOffset + data.length);
+					range.setStart(range.startContainer, range.startOffset - count);
+				}
+				if (range.endContainer === this && range.endOffset > offset + count) {
+					range.setEnd(range.endContainer, range.endOffset + data.length);
+					range.setEnd(range.endContainer, range.endOffset - count);
+				}
+			}
 		};
 
 		CharacterData.prototype.toString = function() {

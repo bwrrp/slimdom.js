@@ -1,8 +1,9 @@
 define(
 	[
-		'./characterdata'
+		'./characterdata',
+		'lodash'
 	],
-	function(CharacterData) {
+	function(CharacterData, _) {
 		// Text node
 		function Text(content) {
 			CharacterData.call(this, Node.TEXT_NODE, content);
@@ -15,15 +16,41 @@ define(
 			var length = this.length(),
 				count = length - offset,
 				newData = this.substringData(offset, count),
-				newNode = this.ownerDocument.createTextNode(newData);
+				document = this.ownerDocument,
+				newNode = document.createTextNode(newData),
+				iRange, nRanges, range;
 
 			// If the current node is part of a tree, insert the new node
 			if (this.parentNode) {
 				this.parentNode.insertBefore(newNode, this.nextSibling);
+
+				// Update ranges
+				for (iRange = 0, nRanges = document.ranges.length; iRange < nRanges; ++iRange) {
+					range = document.ranges[iRange];
+					if (range.startContainer === this && range.startOffset > offset)
+						range.setStart(newNode, range.startOffset - offset);
+					if (range.endContainer === this && range.endOffset > offset)
+						range.setEnd(newNode, range.endOffset - offset);
+					if (range.startContainer === this.parentNode && range.startOffset == _.indexOf(this.parentNode.childNodes, this) + 1)
+						range.setStart(range.startContainer, range.startOffset + 1);
+					if (range.endContainer === this.parentNode && range.endOffset == _.indexOf(this.parentNode.childNodes, this) + 1)
+						range.setEnd(range.endContainer, range.endOffset + 1);
+				}
 			}
 
 			// Truncate our own data
 			this.deleteData(offset, count);
+
+			if (!this.parentNode) {
+				// Update ranges
+				for (iRange = 0, nRanges = document.ranges.length; iRange < nRanges; ++iRange) {
+					range = document.ranges[iRange];
+					if (range.startContainer === this && range.startOffset > offset)
+						range.setStart(range.startContainer, offset);
+					if (range.endContainer === this && range.endOffset > offset)
+						range.setEnd(range.endContainer, offset);
+				}
+			}
 
 			// Return the new node
 			return newNode;

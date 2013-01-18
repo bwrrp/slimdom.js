@@ -7,7 +7,8 @@ define(
 	function(
 		MutationRecord,
 		util,
-		_) {
+		_,
+		undefined) {
 		// DOM Node
 		function Node(type) {
 			this.nodeType = type;
@@ -81,6 +82,16 @@ define(
 				this.childNodes.length;
 			if (index < 0) return null;
 
+			// Update ranges
+			var document = this.ownerDocument || this;
+			for (var iRange = 0, nRanges = document.ranges.length; iRange < nRanges; ++iRange) {
+				var range = document.ranges[iRange];
+				if (range.startContainer === this && range.startOffset > index)
+					range.startOffset += 1;
+				if (range.endContainer === this && range.endOffset > index)
+					range.endOffset += 1;
+			}
+
 			// Detach from old parent
 			if (newNode.parentNode) {
 				newNode.parentNode.removeChild(newNode, suppressObservers);
@@ -106,41 +117,68 @@ define(
 
 		// Puts the specified node and all of its subtree into a "normalized" form.
 		// In a normalized subtree, no text nodes in the subtree are empty and there are no adjacent text nodes.
-		Node.prototype.normalize = function() {
-			var node = this.firstChild;
-			while (node) {
-				var nextNode = node.nextSibling;
-				if (node.nodeType == Node.TEXT_NODE) {
+		Node.prototype.normalize = function(recurse) {
+			if (recurse === undefined)
+				recurse = true;
+			var childNode = this.firstChild,
+				index = 0,
+				document = this.ownerDocument || this;
+			while (childNode) {
+				var nextNode = childNode.nextSibling;
+				if (childNode.nodeType == Node.TEXT_NODE) {
 					// Delete empty text nodes
-					if (!node.length()) {
-						node.parentNode.removeChild(node);
+					var length = childNode.length();
+					if (!length) {
+						childNode.parentNode.removeChild(childNode);
 					} else {
-						// Concatenate node's contiguous text nodes (excluding current)
+						// Concatenate and collect childNode's contiguous text nodes (excluding current)
 						var data = '',
 							siblingsToRemove = [],
-							sibling = node.nextSibling;
-						while (sibling && sibling.nodeType == Node.TEXT_NODE) {
+							siblingIndex, sibling;
+						for (sibling = childNode.nextSibling, siblingIndex = index;
+							sibling && sibling.nodeType == Node.TEXT_NODE;
+							sibling = sibling.nextSibling, ++siblingIndex) {
+
 							data += sibling.nodeValue;
 							siblingsToRemove.push(sibling);
-							sibling = sibling.nextSibling;
 						}
 						// Append concatenated data, if any
 						if (data) {
-							node.appendData(data);
+							childNode.appendData(data);
+						}
+						// Fix ranges
+						for (sibling = childNode.nextSibling, siblingIndex = index;
+							sibling && sibling.nodeType == Node.TEXT_NODE;
+							sibling = sibling.nextSibling, ++siblingIndex) {
+
+							for (var iRange = 0, nRanges = document.ranges.length; iRange < nRanges; ++iRange) {
+								var range = document.ranges[iRange];
+								if (range.startContainer === sibling)
+									range.setStart(childNode, length + range.startOffset);
+								if (range.endContainer === sibling)
+									range.setEnd(childNode, length + range.endOffset);
+								if (range.startContainer === this && range.startOffset == siblingIndex)
+									range.setStart(childNode, length);
+								if (range.endContainer === this && range.endOffset == siblingIndex)
+									range.setEnd(childNode, length);
+							}
+
+							length += sibling.length();
 						}
 						// Remove contiguous text nodes (excluding current) in tree order
 						while (siblingsToRemove.length) {
-							node.parentNode.removeChild(siblingsToRemove.shift());
+							this.removeChild(siblingsToRemove.shift());
 						}
 						// Update next node to process
-						nextNode = node.nextSibling;
+						nextNode = childNode.nextSibling;
 					}
-				} else {
+				} else if (recurse) {
 					// Recurse
-					node.normalize();
+					childNode.normalize();
 				}
 				// Move to next node
-				node = nextNode;
+				childNode = nextNode;
+				++index;
 			}
 		};
 
@@ -154,6 +192,23 @@ define(
 			var index = _.indexOf(this.childNodes, childNode);
 			if (index < 0) return null;
 
+			// Update ranges
+			var document = this.ownerDocument || this;
+			for (var iRange = 0, nRanges = document.ranges.length; iRange < nRanges; ++iRange) {
+				var range = document.ranges[iRange];
+				if (childNode.contains(range.startContainer)) {
+					range.setStart(this, index);
+				}
+				if (childNode.contains(range.endContainer)) {
+					range.setEnd(this, index);
+				}
+				if (range.startContainer === this && range.startOffset > index)
+					range.startOffset -= 1;
+				if (range.endContainer === this && range.endOffset > index)
+					range.endOffset -= 1;
+			}
+
+			// Queue mutation record
 			if (!suppressObservers) {
 				var record = new MutationRecord('childList', this);
 				record.removedNodes.push(childNode);

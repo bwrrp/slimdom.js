@@ -3,6 +3,8 @@ define(['./node', './element', './text', './selection/range'], function(Node, El
 	function Document() {
 		Node.call(this, Node.DOCUMENT_NODE);
 
+		this.ranges = [];
+
 		this.appendChild(new Element('root'));
 		this.documentElement = this.firstChild;
 	}
