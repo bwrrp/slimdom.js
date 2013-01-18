@@ -102,6 +102,16 @@ define(
 			}
 		};
 
+		// Create a new range with the same boundary points.
+		Range.prototype.cloneRange = function() {
+			var document = this.startContainer.ownerDocument || this.startContainer,
+				newRange = document.createRange();
+			newRange.setStart(this.startContainer, this.startOffset);
+			newRange.setEnd(this.endContainer, this.endOffset);
+
+			return newRange;
+		};
+
 		return Range;
 	}
 );
