@@ -155,10 +155,10 @@ define(
 								var range = document.ranges[iRange];
 								if (range.startContainer === sibling)
 									range.setStart(childNode, length + range.startOffset);
-								if (range.endContainer === sibling)
-									range.setEnd(childNode, length + range.endOffset);
 								if (range.startContainer === this && range.startOffset == siblingIndex)
 									range.setStart(childNode, length);
+								if (range.endContainer === sibling)
+									range.setEnd(childNode, length + range.endOffset);
 								if (range.endContainer === this && range.endOffset == siblingIndex)
 									range.setEnd(childNode, length);
 							}
