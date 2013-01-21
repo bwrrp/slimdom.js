@@ -13,8 +13,12 @@ define(
 
 		// Breaks the Text node into two nodes at the specified offset, keeping both nodes in the tree as siblings.
 		Text.prototype.splitText = function(offset) {
-			var length = this.length(),
-				count = length - offset,
+			// Check offset
+			var length = this.length();
+			if (offset < 0) offset = 0;
+			if (offset > length) offset = length;
+
+			var count = length - offset,
 				newData = this.substringData(offset, count),
 				document = this.ownerDocument,
 				newNode = document.createTextNode(newData),
