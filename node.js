@@ -76,6 +76,19 @@ define(
 		// Inserts the specified node before a reference element as a child of the current node.
 		// If referenceNode is null, the new node is appended after the current child nodes.
 		Node.prototype.insertBefore = function(newNode, referenceNode, suppressObservers) {
+			// Check if referenceNode is a child
+			if (referenceNode && referenceNode.parentNode !== this)
+				return null;
+
+			// Fix using the new node as a reference
+			if (referenceNode === newNode)
+				referenceNode = newNode.nextSibling;
+
+			// Detach from old parent
+			if (newNode.parentNode) {
+				newNode.parentNode.removeChild(newNode, suppressObservers);
+			}
+
 			// Check index of reference node
 			var index = referenceNode ?
 				_.indexOf(this.childNodes, referenceNode) :
@@ -92,12 +105,6 @@ define(
 					range.endOffset += 1;
 			}
 
-			// Detach from old parent
-			if (newNode.parentNode) {
-				newNode.parentNode.removeChild(newNode, suppressObservers);
-			}
-			newNode.parentNode = this;
-
 			// Queue mutation record
 			if (!suppressObservers) {
 				var record = new MutationRecord('childList', this);
@@ -107,7 +114,8 @@ define(
 				util.queueMutationRecord(record);
 			}
 
-			// Insert
+			// Insert the node
+			newNode.parentNode = this;
 			this.childNodes.splice(index, 0, newNode);
 			updateFirstLast.call(this);
 			updateSiblings.call(newNode, index);
