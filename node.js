@@ -99,9 +99,9 @@ define(
 			var document = this.ownerDocument || this;
 			for (var iRange = 0, nRanges = document.ranges.length; iRange < nRanges; ++iRange) {
 				var range = document.ranges[iRange];
-				if (range.startContainer === this && range.startOffset > index)
+				if (range.startContainer === this && range.startOffset >= index)
 					range.startOffset += 1;
-				if (range.endContainer === this && range.endOffset > index)
+				if (range.endContainer === this && range.endOffset >= index)
 					range.endOffset += 1;
 			}
 
