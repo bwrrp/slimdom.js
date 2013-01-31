@@ -284,6 +284,13 @@ define(
 		Node.prototype.setUserData = function(key, data) {
 			var oldData = this.getUserData(key);
 			this.userData[key] = data;
+
+			// Queue a mutation record (non-standard, but useful)
+			var record = new MutationRecord('userData', this);
+			record.attributeName = key;
+			record.oldValue = oldData;
+			util.queueMutationRecord(record);
+
 			return oldData;
 		};
 
