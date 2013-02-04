@@ -155,7 +155,7 @@ define(
 							childNode.appendData(data);
 						}
 						// Fix ranges
-						for (sibling = childNode.nextSibling, siblingIndex = index;
+						for (sibling = childNode.nextSibling, siblingIndex = index + 1;
 							sibling && sibling.nodeType == Node.TEXT_NODE;
 							sibling = sibling.nextSibling, ++siblingIndex) {
 
