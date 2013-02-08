@@ -35,9 +35,10 @@ define(
 				commonParent = parents1.shift();
 				parents2.shift();
 			}
-			// Compute offsets at the level under the last common parent
-			if (parents1.length) offset1 = _.indexOf(commonParent.childNodes, parents1[0]);
-			if (parents2.length) offset2 = _.indexOf(commonParent.childNodes, parents2[0]);
+			// Compute offsets at the level under the last common parent,
+			// we add 0.5 to indicate a position inside the parent rather than before or after
+			if (parents1.length) offset1 = _.indexOf(commonParent.childNodes, parents1[0]) + 0.5;
+			if (parents2.length) offset2 = _.indexOf(commonParent.childNodes, parents2[0]) + 0.5;
 		}
 		// Compare positions at this level
 		return offset1 - offset2;
