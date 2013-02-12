@@ -16,10 +16,12 @@ define(
 		var parents1 = parents(node1),
 			parents2 = parents(node2);
 		if (parents1[0] != parents2[0]) return null;
-		for (var i = 1, l = parents1.length; i < l; ++i) {
-			if (parents1[i] != parents2[i]) return parents1[i - 1];
+		var commonParent = parents1[0];
+		while (parents1[0] && parents2[0] && parents1[0] == parents2[0]) {
+			commonParent = parents1.shift();
+			parents2.shift();
 		}
-		return parents1[0];
+		return commonParent;
 	}
 
 	// Compare two positions within the document
