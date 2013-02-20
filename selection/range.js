@@ -16,6 +16,12 @@ define(
 			document.ranges.push(this);
 		}
 
+		// Constants for compareBoundaryPoints
+		Range.prototype.START_TO_START = Range.START_TO_START = 0;
+		Range.prototype.START_TO_END   = Range.START_TO_END   = 1;
+		Range.prototype.END_TO_END     = Range.END_TO_END     = 2;
+		Range.prototype.END_TO_START   = Range.END_TO_START   = 3;
+
 		// Call detach to dispose of a range
 		Range.prototype.detach = function() {
 			// Stop tracking the range
@@ -110,6 +116,31 @@ define(
 			newRange.setEnd(this.endContainer, this.endOffset);
 
 			return newRange;
+		};
+
+		// Compares a boundary of the current range with a boundary of the specified range.
+		Range.prototype.compareBoundaryPoints = function(comparisonType, range) {
+			switch (comparisonType) {
+				case Range.START_TO_START:
+					return util.comparePoints(this.startContainer, this.startOffset, range.startContainer, range.startOffset);
+				case Range.START_TO_END:
+					return util.comparePoints(this.startContainer, this.startOffset, range.endContainer, range.endOffset);
+				case Range.END_TO_END:
+					return util.comparePoints(this.endContainer, this.endOffset, range.endContainer, range.endOffset);
+				case Range.END_TO_START:
+					return util.comparePoints(this.endContainer, this.endOffset, range.startContainer, range.startOffset);
+			}
+		};
+
+		// Compares the given point to both boundary points.
+		Range.prototype.comparePoint = function(node, offset) {
+			if (util.comparePoints(node, offset, this.startContainer, this.startOffset) < 0)
+				return -1;
+
+			if (util.comparePoints(this.endContainer, this.endOffset, node, offset) > 0)
+				return 1;
+
+			return 0;
 		};
 
 		return Range;
