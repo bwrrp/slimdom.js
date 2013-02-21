@@ -132,17 +132,6 @@ define(
 			}
 		};
 
-		// Compares the given point to both boundary points.
-		Range.prototype.comparePoint = function(node, offset) {
-			if (util.comparePoints(node, offset, this.startContainer, this.startOffset) < 0)
-				return -1;
-
-			if (util.comparePoints(this.endContainer, this.endOffset, node, offset) > 0)
-				return 1;
-
-			return 0;
-		};
-
 		return Range;
 	}
 );
