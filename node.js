@@ -138,6 +138,7 @@ define(
 					var length = childNode.length();
 					if (!length) {
 						childNode.parentNode.removeChild(childNode);
+						--index;
 					} else {
 						// Concatenate and collect childNode's contiguous text nodes (excluding current)
 						var data = '',
