@@ -29,15 +29,16 @@ define(
 				this.parentNode.insertBefore(newNode, this.nextSibling);
 
 				// Update ranges
+				var nodeIndex = _.indexOf(this.parentNode.childNodes, this);
 				for (iRange = 0, nRanges = document.ranges.length; iRange < nRanges; ++iRange) {
 					range = document.ranges[iRange];
 					if (range.startContainer === this && range.startOffset > offset)
 						range.setStart(newNode, range.startOffset - offset);
 					if (range.endContainer === this && range.endOffset > offset)
 						range.setEnd(newNode, range.endOffset - offset);
-					if (range.startContainer === this.parentNode && range.startOffset == _.indexOf(this.parentNode.childNodes, this) + 1)
+					if (range.startContainer === this.parentNode && range.startOffset === nodeIndex + 1)
 						range.setStart(range.startContainer, range.startOffset + 1);
-					if (range.endContainer === this.parentNode && range.endOffset == _.indexOf(this.parentNode.childNodes, this) + 1)
+					if (range.endContainer === this.parentNode && range.endOffset === nodeIndex + 1)
 						range.setEnd(range.endContainer, range.endOffset + 1);
 				}
 			}
