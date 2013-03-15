@@ -75,10 +75,6 @@ define(
 			}
 		};
 
-		CharacterData.prototype.toString = function() {
-			return this.nodeValue;
-		};
-
 		return CharacterData;
 	}
 );
