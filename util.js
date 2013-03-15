@@ -52,7 +52,7 @@ define(
 			invoke = null;
 		for (var iNode = 0, nNodes = nodes.length; iNode < nNodes; ++iNode) {
 			var node = nodes[iNode];
-			
+
 			// For each registered observer
 			for (var iObserver = 0, nObservers = node.registeredObservers.length; iObserver < nObservers; ++iObserver) {
 				var registeredObserver = node.registeredObservers[iObserver];
@@ -63,6 +63,9 @@ define(
 				if (!registeredObserver.options.attributes && mutationRecord.type === 'attributes')
 					continue;
 				// TODO: implement attribute filter?
+				// Ignore user data modifications if we're not listening for them
+				if (!registeredObserver.options.userData && mutationRecord.type === 'userData')
+					continue;
 				// Ignore character data modifications if we're not listening for them
 				if (!registeredObserver.options.characterData && mutationRecord.type === 'characterData')
 					continue;
