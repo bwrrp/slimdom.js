@@ -25,12 +25,14 @@ define(
 
 		// Set the attribute with the given name to the given value
 		Element.prototype.setAttribute = function(attributeName, attributeValue) {
-			// TODO: add a way to remove / unset attributes (value === undefined / null?)
-
 			// Coerce the value to a string for consistency
 			attributeValue = '' + attributeValue;
 
 			var oldValue = this.hasAttribute(attributeName) ? this.attributes[attributeName] : null;
+
+			// No need to trigger observers if the value doesn't actually change
+			if (attributeValue === oldValue)
+				return;
 
 			// Queue a mutation record
 			var record = new MutationRecord('attributes', this);

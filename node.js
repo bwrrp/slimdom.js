@@ -284,6 +284,11 @@ define(
 		// Associate an object to a key on this node.
 		Node.prototype.setUserData = function(key, data) {
 			var oldData = this.getUserData(key);
+
+			// No need to trigger observers if the value doesn't actually change
+			if (oldData === data)
+				return oldData;
+
 			this.userData[key] = data;
 
 			// Queue a mutation record (non-standard, but useful)
