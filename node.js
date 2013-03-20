@@ -32,9 +32,10 @@ define(
 		}
 
 		// Node type constants - not all DOM standard node types are supported
-		Node.prototype.ELEMENT_NODE  = Node.ELEMENT_NODE  = 1;
-		Node.prototype.TEXT_NODE     = Node.TEXT_NODE     = 3;
-		Node.prototype.DOCUMENT_NODE = Node.DOCUMENT_NODE = 9;
+		Node.prototype.ELEMENT_NODE                = Node.ELEMENT_NODE                = 1;
+		Node.prototype.TEXT_NODE                   = Node.TEXT_NODE                   = 3;
+		Node.prototype.PROCESSING_INSTRUCTION_NODE = Node.PROCESSING_INSTRUCTION_NODE = 7;
+		Node.prototype.DOCUMENT_NODE               = Node.DOCUMENT_NODE               = 9;
 
 		// Internal helper used to update the firstChild and lastChild references.
 		function updateFirstLast() {
