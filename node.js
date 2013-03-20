@@ -39,8 +39,8 @@ define(
 
 		// Internal helper used to update the firstChild and lastChild references.
 		function updateFirstLast() {
-			this.firstChild = _.first(this.childNodes) || null;
-			this.lastChild = _.last(this.childNodes) || null;
+			this.firstChild = this.childNodes[0] || null;
+			this.lastChild = this.childNodes[this.childNodes.length - 1] || null;
 		}
 
 		// Internal helper used to update the nextSibling and previousSibling references.
