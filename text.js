@@ -1,9 +1,10 @@
 define(
 	[
 		'./characterdata',
+		'./node',
 		'lodash'
 	],
-	function(CharacterData, _) {
+	function(CharacterData, Node, _) {
 		// Text node
 		function Text(content) {
 			CharacterData.call(this, Node.TEXT_NODE, content);
