@@ -11,7 +11,6 @@ define(
 			this.nodeName = name;
 			this.attributes = {};
 
-			this.children = [];
 			this.firstElementChild = this.lastElementChild = null;
 			this.previousElementSibling = this.nextElementSibling = null;
 			this.childElementCount = 0;
@@ -20,23 +19,25 @@ define(
 		Element.prototype.constructor = Element;
 
 		function isElement(node) {
-			return node.nodeType === Node.ELEMENT_NODE;
+			return !!node && node.nodeType === Node.ELEMENT_NODE;
 		}
 
 		function findNextElementSibling(node, backwards) {
-			while (node && !isElement(node))
+			while (node) {
 				node = backwards ? node.previousSibling : node.nextSibling;
+				if (isElement(node))
+					break;
+			}
 			return node;
 		}
 
 		Element.prototype.insertBefore = function(newNode, referenceNode, suppressObservers) {
-			var oldParent = newNode.parentNode,
-				result = Node.prototype.insertBefore.call(this, newNode, referenceNode, suppressObservers);
+			var result = Node.prototype.insertBefore.call(this, newNode, referenceNode, suppressObservers);
 
 			if (isElement(newNode) && newNode.parentNode === this) {
 				// Update child references
-				this.firstElementChild = findNextElementSibling(this.firstElementChild, true);
-				this.lastElementChild = findNextElementSibling(this.lastElementChild, false);
+				this.firstElementChild = findNextElementSibling(this.firstElementChild, true) || this.firstElementChild || newNode;
+				this.lastElementChild = findNextElementSibling(this.lastElementChild, false) || this.lastElementChild || newNode;
 				// Update sibling references
 				newNode.previousElementSibling = findNextElementSibling(newNode, true);
 				if (newNode.previousElementSibling)
@@ -45,8 +46,7 @@ define(
 				if (newNode.nextElementSibling)
 					newNode.nextElementSibling.previousElementSibling = newNode;
 				// Update element count
-				if (oldParent !== this)
-					++this.childElementCount;
+				++this.childElementCount;
 			}
 
 			return result;
