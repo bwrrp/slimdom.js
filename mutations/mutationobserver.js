@@ -3,8 +3,6 @@ define(
 		'lodash'
 	],
 	function(_) {
-		// Global list of active mutation observers
-		var notifyList = [];
 
 		function MutationObserver(callback) {
 			this.callback = callback;
@@ -22,8 +20,8 @@ define(
 
 		MutationObserver.prototype.observe = function(target, options, isTransient) {
 			// Add observer to notify list
-			if (!_.contains(notifyList, this)) {
-				notifyList.push(this);
+			if (!_.contains(MutationObserver.notifyList, this)) {
+				MutationObserver.notifyList.push(this);
 			}
 
 			if (_.contains(this.targets, target)) {
@@ -58,7 +56,7 @@ define(
 			this.recordQueue = [];
 
 			// Remove the observer from the notify list
-			notifyList = _.without(notifyList, this);
+			MutationObserver.notifyList = _.without(MutationObserver.notifyList, this);
 		};
 
 		MutationObserver.prototype.takeRecords = function() {
@@ -77,10 +75,13 @@ define(
 			return !!mo.recordQueue.length;
 		}
 
+		// Global list of active mutation observers
+		MutationObserver.notifyList = [];
+
 		// Invokes callbacks for all active mutation observers
 		MutationObserver.invoke = function() {
-			for (var iMo = 0, nMo = notifyList.length; iMo < nMo; ++iMo) {
-				var mo = notifyList[iMo],
+			for (var iMo = 0, nMo = MutationObserver.notifyList.length; iMo < nMo; ++iMo) {
+				var mo = MutationObserver.notifyList[iMo],
 					queue = mo.takeRecords();
 				// Remove all transient registered observers for this observer
 				for (var iTarget = 0, nTargets = mo.targets.length; iTarget < nTargets; ++iTarget) {
@@ -93,7 +94,7 @@ define(
 					mo.callback.call(null, queue, mo);
 			}
 			// If any MutationObserver has a non-empty record queue, schedule invoke again
-			if (_.any(notifyList, hasNonEmptyRecordQueue))
+			if (_.any(MutationObserver.notifyList, hasNonEmptyRecordQueue))
 				setTimeout(MutationObserver.invoke, 0);
 		};
 
