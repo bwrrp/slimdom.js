@@ -118,6 +118,20 @@ define(
 			delete this.attributes[attributeName];
 		};
 
+		// Returns a copy of node. If deep is true or omitted, the copy also includes the node's children.
+		Element.prototype.cloneNode = function(deep, copy) {
+			copy = copy || new Element(this.nodeName);
+
+			// Copy attributes
+			for (var key in this.attributes) {
+				// Directly set attributes to avoid triggering mutation observers
+				copy.attributes[key] = this.attributes[key];
+			}
+
+			// Recurse
+			return Node.prototype.cloneNode.call(this, deep, copy);
+		};
+
 		return Element;
 	}
 );

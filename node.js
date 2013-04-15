@@ -314,6 +314,31 @@ define(
 			return oldData;
 		};
 
+		// Returns a copy of node. If deep is true or omitted, the copy also includes the node's children.
+		// Override on subclasses and pass a shallow copy of the node in the 'copy' parameter.
+		Node.prototype.cloneNode = function(deep, copy) {
+			if (!copy)
+				return null;
+
+			// Set owner document
+			if (copy.nodeType !== Node.DOCUMENT_NODE)
+				copy.ownerDocument = this.ownerDocument;
+
+			// User data is a shallow copy
+			for (var key in this.userData) {
+				copy.userData[key] = this.userData[key];
+			}
+
+			// Recurse if required
+			if (deep || deep === undefined) {
+				for (var i = 0, l = this.childNodes.length; i < l; ++i) {
+					copy.appendChild(this.childNodes[i].cloneNode(true));
+				}
+			}
+
+			return copy;
+		};
+
 		return Node;
 	}
 );

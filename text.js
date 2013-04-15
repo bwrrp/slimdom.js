@@ -62,6 +62,11 @@ define(
 			return newNode;
 		};
 
+		// Returns a copy of node. If deep is true or omitted, the copy also includes the node's children.
+		Text.prototype.cloneNode = function(deep) {
+			return CharacterData.prototype.cloneNode.call(this, deep, new Text(this.nodeValue));
+		};
+
 		return Text;
 	}
 );

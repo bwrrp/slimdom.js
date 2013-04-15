@@ -71,6 +71,11 @@ define(
 			return new Range(this);
 		};
 
+		// Returns a copy of node. If deep is true or omitted, the copy also includes the node children.
+		Document.prototype.cloneNode = function(deep) {
+			return Node.prototype.cloneNode.call(this, deep, new Document());
+		};
+
 		return Document;
 	}
 );
