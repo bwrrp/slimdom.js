@@ -16,19 +16,34 @@ define(
 		// Document base
 		function Document() {
 			Node.call(this, Node.DOCUMENT_NODE);
+			this.ownerDocument = this;
+			this.documentElement = null;
 
 			this.ranges = [];
-
-			this.appendChild(new Element('root'));
-			this.documentElement = this.firstChild;
 		}
 		Document.prototype = new Node(Node.DOCUMENT_NODE);
 		Document.prototype.constructor = Document;
 
-		// Override replaceChild to update the documentElement reference
-		Document.prototype.replaceChild = function(newChild, oldChild) {
-			Node.prototype.replaceChild.call(this, newChild, oldChild);
-			this.documentElement = this.firstChild;
+		// Override insertBefore to update the documentElement reference
+		Document.prototype.insertBefore = function(newNode, referenceNode, suppressObservers) {
+			// Document can not have more than one child element node
+			if (newNode.nodeType === Node.ELEMENT_NODE && this.documentElement)
+				return null;
+
+			var result = Node.prototype.insertBefore.call(this, newNode, referenceNode, suppressObservers);
+
+			// Update document element
+			if (result && result.nodeType === Node.ELEMENT_NODE)
+				this.documentElement = result;
+
+			return result;
+		};
+
+		// Override removeChild to update the documentElement reference
+		Document.prototype.removeChild = function(childNode, suppressObservers) {
+			var result = Node.prototype.removeChild.call(this, childNode, suppressObservers);
+			if (result === this.documentElement)
+				this.documentElement = null;
 		};
 
 		// Creates a new element with the given tag name.
