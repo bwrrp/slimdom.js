@@ -74,6 +74,14 @@ define(
 			return childNode == this;
 		};
 
+		// Internal helper used to adopt a node into a new document
+		function adopt(node, document) {
+			node.ownerDocument = document;
+			for (var i = 0, l = node.childNodes.length; i < l; ++i) {
+				adopt(node.childNodes[i], document);
+			}
+		}
+
 		// Inserts the specified node before a reference element as a child of the current node.
 		// If referenceNode is null, the new node is appended after the current child nodes.
 		Node.prototype.insertBefore = function(newNode, referenceNode, suppressObservers) {
@@ -88,6 +96,11 @@ define(
 			// Detach from old parent
 			if (newNode.parentNode) {
 				newNode.parentNode.removeChild(newNode, suppressObservers);
+			}
+
+			// Adopt nodes into document
+			if (newNode.ownerDocument !== this.ownerDocument) {
+				adopt(newNode, this.ownerDocument);
 			}
 
 			// Check index of reference node
