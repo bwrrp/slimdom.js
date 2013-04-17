@@ -124,7 +124,7 @@ define(
 				var record = new MutationRecord('childList', this);
 				record.addedNodes.push(newNode);
 				record.nextSibling = referenceNode;
-				record.previousSibling = (referenceNode && referenceNode.previousSibling) || null;
+				record.previousSibling = referenceNode ? referenceNode.previousSibling : this.lastChild;
 				util.queueMutationRecord(record);
 			}
 
