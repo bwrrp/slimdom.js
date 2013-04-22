@@ -5,6 +5,8 @@ define(
 		'./util'
 	],
 	function(Node, MutationRecord, util, undefined) {
+		'use strict';
+
 		function CharacterData(type, data) {
 			if (!arguments.length) return;
 

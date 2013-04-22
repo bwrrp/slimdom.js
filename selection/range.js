@@ -4,6 +4,8 @@ define(
 		'lodash'
 	],
 	function(util, _) {
+		'use strict';
+
 		function Range(document) {
 			// Uninitialized ranges point at the document in which they were created
 			this.commonAncestorContainer = this.startContainer = this.endContainer = document;

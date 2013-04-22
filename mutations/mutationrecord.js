@@ -1,5 +1,7 @@
 define(
 	function() {
+		'use strict';
+
 		function MutationRecord(type, target) {
 			this.type = type;
 			this.target = target;

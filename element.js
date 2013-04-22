@@ -5,6 +5,8 @@ define(
 		'./util'
 	],
 	function(Node, MutationRecord, util) {
+		'use strict';
+
 		// Element node
 		function Element(name) {
 			Node.call(this, Node.ELEMENT_NODE);

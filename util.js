@@ -1,95 +1,97 @@
 define(
 	function() {
+		'use strict';
 
-	// Get all parents of the given node
-	function parents(node) {
-		var nodes = [];
-		while (node) {
-			nodes.unshift(node);
-			node = node.parentNode;
+		// Get all parents of the given node
+		function parents(node) {
+			var nodes = [];
+			while (node) {
+				nodes.unshift(node);
+				node = node.parentNode;
+			}
+			return nodes;
 		}
-		return nodes;
-	}
 
-	// Find the common ancestor of the two nodes
-	function commonAncestor(node1, node2) {
-		var parents1 = parents(node1),
-			parents2 = parents(node2);
-		if (parents1[0] != parents2[0]) return null;
-		var commonParent = parents1[0];
-		while (parents1[0] && parents2[0] && parents1[0] == parents2[0]) {
-			commonParent = parents1.shift();
-			parents2.shift();
-		}
-		return commonParent;
-	}
-
-	// Compare two positions within the document
-	function comparePoints(node1, offset1, node2, offset2) {
-		if (node1 !== node2) {
+		// Find the common ancestor of the two nodes
+		function commonAncestor(node1, node2) {
 			var parents1 = parents(node1),
 				parents2 = parents(node2);
-			// This should not be called on nodes from different trees
-			if (parents1[0] != parents2[0]) return undefined;
-			// Skip common parents
+			if (parents1[0] != parents2[0]) return null;
 			var commonParent = parents1[0];
 			while (parents1[0] && parents2[0] && parents1[0] == parents2[0]) {
 				commonParent = parents1.shift();
 				parents2.shift();
 			}
-			// Compute offsets at the level under the last common parent,
-			// we add 0.5 to indicate a position inside the parent rather than before or after
-			if (parents1.length) offset1 = _.indexOf(commonParent.childNodes, parents1[0]) + 0.5;
-			if (parents2.length) offset2 = _.indexOf(commonParent.childNodes, parents2[0]) + 0.5;
+			return commonParent;
 		}
-		// Compare positions at this level
-		return offset1 - offset2;
-	}
 
-	function queueMutationRecord(mutationRecord) {
-		// Check all inclusive ancestors of the target for registered observers
-		var nodes = parents(mutationRecord.target),
-			invoke = null;
-		for (var iNode = 0, nNodes = nodes.length; iNode < nNodes; ++iNode) {
-			var node = nodes[iNode];
-
-			// For each registered observer
-			for (var iObserver = 0, nObservers = node.registeredObservers.length; iObserver < nObservers; ++iObserver) {
-				var registeredObserver = node.registeredObservers[iObserver];
-				// Only trigger ancestors if they are listening for subtree mutations
-				if (mutationRecord.target !== node && !registeredObserver.options.subtree)
-					continue;
-				// Ignore attribute modifications if we're not listening for them
-				if (!registeredObserver.options.attributes && mutationRecord.type === 'attributes')
-					continue;
-				// TODO: implement attribute filter?
-				// Ignore user data modifications if we're not listening for them
-				if (!registeredObserver.options.userData && mutationRecord.type === 'userData')
-					continue;
-				// Ignore character data modifications if we're not listening for them
-				if (!registeredObserver.options.characterData && mutationRecord.type === 'characterData')
-					continue;
-				// Ignore child list modifications if we're not listening for them
-				if (!registeredObserver.options.childList && mutationRecord.type === 'childList')
-					continue;
-
-				// Queue the record
-				// TODO: we should probably make a copy here according to the options, but who cares about extra info?
-				registeredObserver.observer.recordQueue.push(mutationRecord);
-
-				invoke = registeredObserver.observer.constructor.invoke;
+		// Compare two positions within the document
+		function comparePoints(node1, offset1, node2, offset2) {
+			if (node1 !== node2) {
+				var parents1 = parents(node1),
+					parents2 = parents(node2);
+				// This should not be called on nodes from different trees
+				if (parents1[0] != parents2[0]) return undefined;
+				// Skip common parents
+				var commonParent = parents1[0];
+				while (parents1[0] && parents2[0] && parents1[0] == parents2[0]) {
+					commonParent = parents1.shift();
+					parents2.shift();
+				}
+				// Compute offsets at the level under the last common parent,
+				// we add 0.5 to indicate a position inside the parent rather than before or after
+				if (parents1.length) offset1 = _.indexOf(commonParent.childNodes, parents1[0]) + 0.5;
+				if (parents2.length) offset2 = _.indexOf(commonParent.childNodes, parents2[0]) + 0.5;
 			}
+			// Compare positions at this level
+			return offset1 - offset2;
 		}
 
-		// If there are observers to invoke, schedule the callbacks
-		if (invoke)
-			setTimeout(invoke, 0);
-	}
+		function queueMutationRecord(mutationRecord) {
+			// Check all inclusive ancestors of the target for registered observers
+			var nodes = parents(mutationRecord.target),
+				invoke = null;
+			for (var iNode = 0, nNodes = nodes.length; iNode < nNodes; ++iNode) {
+				var node = nodes[iNode];
 
-	return {
-		commonAncestor: commonAncestor,
-		comparePoints: comparePoints,
-		parents: parents,
-		queueMutationRecord: queueMutationRecord
-	};
-});
+				// For each registered observer
+				for (var iObserver = 0, nObservers = node.registeredObservers.length; iObserver < nObservers; ++iObserver) {
+					var registeredObserver = node.registeredObservers[iObserver];
+					// Only trigger ancestors if they are listening for subtree mutations
+					if (mutationRecord.target !== node && !registeredObserver.options.subtree)
+						continue;
+					// Ignore attribute modifications if we're not listening for them
+					if (!registeredObserver.options.attributes && mutationRecord.type === 'attributes')
+						continue;
+					// TODO: implement attribute filter?
+					// Ignore user data modifications if we're not listening for them
+					if (!registeredObserver.options.userData && mutationRecord.type === 'userData')
+						continue;
+					// Ignore character data modifications if we're not listening for them
+					if (!registeredObserver.options.characterData && mutationRecord.type === 'characterData')
+						continue;
+					// Ignore child list modifications if we're not listening for them
+					if (!registeredObserver.options.childList && mutationRecord.type === 'childList')
+						continue;
+
+					// Queue the record
+					// TODO: we should probably make a copy here according to the options, but who cares about extra info?
+					registeredObserver.observer.recordQueue.push(mutationRecord);
+
+					invoke = registeredObserver.observer.constructor.invoke;
+				}
+			}
+
+			// If there are observers to invoke, schedule the callbacks
+			if (invoke)
+				setTimeout(invoke, 0);
+		}
+
+		return {
+			commonAncestor: commonAncestor,
+			comparePoints: comparePoints,
+			parents: parents,
+			queueMutationRecord: queueMutationRecord
+		};
+	}
+);

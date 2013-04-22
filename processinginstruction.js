@@ -4,6 +4,8 @@ define(
 		'./node'
 	],
 	function(CharacterData, Node) {
+		'use strict';
+
 		function ProcessingInstruction(target, data) {
 			CharacterData.call(this, Node.PROCESSING_INSTRUCTION_NODE, data);
 

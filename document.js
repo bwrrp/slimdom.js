@@ -12,6 +12,7 @@ define(
 		ProcessingInstruction,
 		Text,
 		Range) {
+		'use strict';
 
 		// Document base
 		function Document() {

@@ -3,6 +3,7 @@ define(
 		'lodash'
 	],
 	function(_) {
+		'use strict';
 
 		function MutationObserver(callback) {
 			this.callback = callback;

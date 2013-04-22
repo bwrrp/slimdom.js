@@ -5,6 +5,8 @@ define(
 		'lodash'
 	],
 	function(CharacterData, Node, _) {
+		'use strict';
+
 		// Text node
 		function Text(content) {
 			CharacterData.call(this, Node.TEXT_NODE, content);

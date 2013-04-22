@@ -9,6 +9,8 @@ define(
 		util,
 		_,
 		undefined) {
+		'use strict';
+
 		// DOM Node
 		function Node(type) {
 			this.nodeType = type;
