@@ -294,7 +294,11 @@ define(
 
 		// Retrieves the object associated to a key on a this node.
 		Node.prototype.getUserData = function(key) {
-			return key in this.userData ? this.userData[key] : null;
+			var data = this.userData[key];
+			if (data === undefined)
+				return null;
+
+			return data;
 		};
 
 		// Associate an object to a key on this node.
