@@ -1,3 +1,3 @@
-# Dom
+# SlimDOM.js
 
-Minimal javascript DOM implementation.
+Fast, tiny DOM implementation in pure JS.
