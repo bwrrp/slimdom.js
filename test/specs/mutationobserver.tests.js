@@ -115,6 +115,28 @@ define(
 					expect(queue[0].previousSibling).toBe(text);
 					expect(queue[0].nextSibling).toBeNull();
 				});
+
+				it('continues tracking under a removed node until javascript re-enters the event loop', function() {
+					var newElement = element.appendChild(document.createElement('meep')),
+						newText = newElement.appendChild(document.createTextNode('test'));
+					element.appendChild(newElement);
+					observer.takeRecords();
+
+					element.removeChild(newElement);
+					observer.takeRecords();
+
+					newText.replaceData(0, text.length(), 'meep');
+					var queue = observer.takeRecords();
+					expect(queue[0].type).toBe('characterData');
+					expect(queue[0].oldValue).toBe('test');
+					expect(queue[0].target).toBe(newText);
+
+					newElement.removeChild(newText);
+					queue = observer.takeRecords();
+					expect(queue[0].type).toBe('childList');
+					expect(queue[0].target).toBe(newElement);
+					expect(queue[0].removedNodes[0]).toBe(newText);
+				});
 			});
 
 			describe('asynchronous usage', function() {
