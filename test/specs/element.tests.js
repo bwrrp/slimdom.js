@@ -37,8 +37,7 @@ define(
 
 			it('initially has no attributes', function() {
 				expect(element.hasAttribute('test')).toBe(false);
-				// TODO: should return null
-				expect(element.getAttribute('test')).toBeUndefined();
+				expect(element.getAttribute('test')).toBeNull();
 				expect(element.attributes).toEqual([]);
 			});
 
@@ -56,23 +55,20 @@ define(
 				});
 
 				it('has attributes', function() {
-					// TODO: attributes should be an array according to spec
-					expect(element.attributes).toEqual({test: '123'});
+					expect(element.attributes).toEqual([{name: 'test', value: '123'}]);
 				});
 
 				it('can overwrite the attribute', function() {
 					element.setAttribute('test', '456');
 					expect(element.hasAttribute('test')).toBe(true);
 					expect(element.getAttribute('test')).toBe('456');
-					// TODO: attributes should be an array according to spec
-					expect(element.attributes).toEqual({test: '456'});
+					expect(element.attributes).toEqual([{name: 'test', value: '456'}]);
 				});
 
 				it('can remove the attribute', function() {
 					element.removeAttribute('test');
 					expect(element.hasAttribute('test')).toBe(false);
-					// TODO: attributes should be an array according to spec
-					expect(element.attributes).toEqual({});
+					expect(element.attributes).toEqual([]);
 				});
 
 				it('ignores removing non-existent attributes', function() {
@@ -80,8 +76,7 @@ define(
 					element.removeAttribute('other');
 					expect(element.hasAttribute('other')).toBe(false);
 					expect(element.hasAttribute('test')).toBe(true);
-					// TODO: attributes should be an array according to spec
-					expect(element.attributes).toEqual({test: '123'});
+					expect(element.attributes).toEqual([{name: 'test', value: '123'}]);
 				});
 			});
 
