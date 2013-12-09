@@ -104,7 +104,7 @@ define(
 					expect(callback).not.toHaveBeenCalled();
 				});
 
-				it('responds to hierarchy changes', function() {
+				it('responds to insertions (appendChild)', function() {
 					var newElement = document.createElement('meep');
 					element.appendChild(newElement);
 
@@ -114,6 +114,60 @@ define(
 					expect(queue[0].removedNodes).toEqual([]);
 					expect(queue[0].previousSibling).toBe(text);
 					expect(queue[0].nextSibling).toBeNull();
+				});
+
+				it('responds to insertions (replaceChild)', function() {
+					var newElement = document.createElement('meep');
+					element.replaceChild(newElement, text);
+
+					var queue = observer.takeRecords();
+					expect(queue[0].type).toBe('childList');
+					expect(queue[0].addedNodes).toEqual([newElement]);
+					expect(queue[0].removedNodes).toEqual([text]);
+					expect(queue[0].previousSibling).toBeNull();
+					expect(queue[0].nextSibling).toBeNull();
+				});
+
+				it('responds to moves (insertBefore)', function() {
+					var newElement = document.createElement('meep');
+					element.appendChild(newElement);
+					observer.takeRecords();
+
+					element.insertBefore(newElement, text);
+
+					var queue = observer.takeRecords();
+					expect(queue[0].type).toBe('childList');
+					expect(queue[0].addedNodes).toEqual([]);
+					expect(queue[0].removedNodes).toEqual([newElement]);
+					expect(queue[0].previousSibling).toBe(text);
+					expect(queue[0].nextSibling).toBeNull();
+
+					expect(queue[1].type).toBe('childList');
+					expect(queue[1].addedNodes).toEqual([newElement]);
+					expect(queue[1].removedNodes).toEqual([]);
+					expect(queue[1].previousSibling).toBeNull();
+					expect(queue[1].nextSibling).toBe(text);
+				});
+
+				it('responds to moves (replaceChild)', function() {
+					var newElement = document.createElement('meep');
+					element.appendChild(newElement);
+					observer.takeRecords();
+
+					element.replaceChild(newElement, text);
+
+					var queue = observer.takeRecords();
+					expect(queue[0].type).toBe('childList');
+					expect(queue[0].addedNodes).toEqual([]);
+					expect(queue[0].removedNodes).toEqual([newElement]);
+					expect(queue[0].previousSibling).toBe(text);
+					expect(queue[0].nextSibling).toBeNull();
+
+					expect(queue[1].type).toBe('childList');
+					expect(queue[1].addedNodes).toEqual([newElement]);
+					expect(queue[1].removedNodes).toEqual([text]);
+					expect(queue[1].previousSibling).toBeNull();
+					expect(queue[1].nextSibling).toBeNull();
 				});
 
 				it('continues tracking under a removed node until javascript re-enters the event loop', function() {
