@@ -1,0 +1,27 @@
+{
+	"name": "slimdom",
+	"version": "0.1.0",
+	"homepage": "https://github.com/bwrrp/slimdom.js",
+	"authors": [
+		"Stef Busking <stef.busking@gmail.com>"
+	],
+	"description": "Fast, tiny DOM implementation in pure JS",
+	"main": "lib/main.js",
+	"moduleType": [
+		"amd",
+		"node"
+	],
+	"keywords": [
+		"DOM",
+		"XML"
+	],
+	"license": "MIT",
+	"ignore": [
+		"**/.*",
+		"*.sublime_project",
+		"*.sublime_workspace",
+		"node_modules",
+		"bower_components",
+		"test"
+	]
+}
