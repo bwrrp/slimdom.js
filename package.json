@@ -14,9 +14,8 @@
 		"url": "git://github.com/bwrrp/slimdom.js.git"
 	},
 	"keywords": [
-		"DOM",
-		"DOM4",
-		"XML"
+		"dom",
+		"xml"
 	],
 	"author": "Stef Busking",
 	"license": "MIT",
