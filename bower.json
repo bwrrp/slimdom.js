@@ -18,8 +18,8 @@
 	"license": "MIT",
 	"ignore": [
 		"**/.*",
-		"*.sublime_project",
-		"*.sublime_workspace",
+		"*.sublime-project",
+		"*.sublime-workspace",
 		"node_modules",
 		"bower_components",
 		"test"
