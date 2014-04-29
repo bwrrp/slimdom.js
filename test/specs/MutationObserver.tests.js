@@ -37,7 +37,7 @@ define(
 				it('responds to text changes', function() {
 					// TODO: direct assignment not yet detected
 					//text.data = 'meep';
-					text.replaceData(0, text.length(), 'meep');
+					text.replaceData(0, text.length, 'meep');
 
 					var queue = observer.takeRecords();
 					expect(queue[0].type).toBe('characterData');
@@ -179,7 +179,7 @@ define(
 					element.removeChild(newElement);
 					observer.takeRecords();
 
-					newText.replaceData(0, text.length(), 'meep');
+					newText.replaceData(0, text.length, 'meep');
 					var queue = observer.takeRecords();
 					expect(queue[0].type).toBe('characterData');
 					expect(queue[0].oldValue).toBe('test');
@@ -195,9 +195,7 @@ define(
 
 			describe('asynchronous usage', function() {
 				it('responds to text changes', function() {
-					// TODO: direct assignment not yet detected
-					//text.data = 'meep';
-					text.replaceData(0, text.length(), 'meep');
+					text.data = 'meep';
 
 					jasmine.Clock.tick(100);
 					expect(callback).toHaveBeenCalled();
