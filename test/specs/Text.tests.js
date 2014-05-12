@@ -7,25 +7,11 @@ define(
 
 		describe('Text', function() {
 			var document,
-				text,
-				actualRecord,
-				observer;
+				text;
 			beforeEach(function() {
 				jasmine.Clock.useMock();
 				document = slimdom.createDocument();
 				text = document.createTextNode('text');
-				actualRecord = null;
-
-				observer = new slimdom.MutationObserver(function(record) {
-					actualRecord = record;
-				});
-				observer.observe(text, {
-					characterData: true
-				});
-			});
-
-			afterEach(function() {
-				observer.disconnect();
 			});
 
 			it('has nodeType 3', function() {
@@ -43,11 +29,6 @@ define(
 				expect(text.data).toBe(newValue);
 				expect(text.nodeValue).toBe(newValue);
 				expect(text.length).toBe(newValue.length);
-
-				// check mutation records
-				var actualRecord = observer.takeRecords()[0];
-				expect(actualRecord).toBeDefined();
-				expect(actualRecord.oldValue).toBe('text');
 			});
 
 			it('has nodeValue', function() {
