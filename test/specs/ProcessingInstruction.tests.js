@@ -14,27 +14,25 @@ define(
 			});
 
 			it('has nodeType 7', function() {
-				expect(processingInstruction.nodeType).toBe(7);
+				chai.expect(processingInstruction.nodeType).to.equal(7);
 			});
 
 			it('has data', function() {
-				// TODO: data property not yet supported
-				//expect(processingInstruction.data).toBe('somedata');
-				expect(processingInstruction.nodeValue).toBe('somedata');
+				chai.expect(processingInstruction.nodeValue).to.equal('somedata');
+				chai.expect(processingInstruction.data).to.equal('somedata');
 			});
 
 			it('has a target', function() {
-				expect(processingInstruction.target).toBe('sometarget');
+				chai.expect(processingInstruction.target).to.equal('sometarget');
 			});
 
 			it('can be cloned', function() {
 				var clone = processingInstruction.cloneNode(true);
-				expect(clone.nodeType).toBe(7);
-				// TODO: data property not yet supported
-				//expect(clone.data).toBe('somedata');
-				expect(clone.nodeValue).toBe('somedata');
-				expect(clone.target).toBe('sometarget');
-				expect(clone).not.toBe(processingInstruction);
+				chai.expect(clone.nodeType).to.equal(7);
+				chai.expect(clone.nodeValue).to.equal('somedata');
+				chai.expect(clone.data).to.equal('somedata');
+				chai.expect(clone.target).to.equal('sometarget');
+				chai.expect(clone).not.to.equal(processingInstruction);
 			});
 		});
 	}

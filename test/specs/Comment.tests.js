@@ -14,22 +14,20 @@ define(
 			});
 
 			it('has nodeType 8', function() {
-				expect(comment.nodeType).toBe(8);
+				chai.expect(comment.nodeType).to.equal(8);
 			});
 
 			it('has data', function() {
-				// TODO: data property not yet supported
-				//expect(comment.data).toBe('somedata');
-				expect(comment.nodeValue).toBe('somedata');
+				chai.expect(comment.nodeValue).to.equal('somedata');
+				chai.expect(comment.data).to.equal('somedata');
 			});
 
 			it('can be cloned', function() {
 				var clone = comment.cloneNode(true);
-				expect(clone.nodeType).toBe(8);
-				// TODO: data property not yet supported
-				//expect(clone.data).toBe('somedata');
-				expect(clone.nodeValue).toBe('somedata');
-				expect(clone).not.toBe(comment);
+				chai.expect(clone.nodeType).to.equal(8);
+				chai.expect(clone.nodeValue).to.equal('somedata');
+				chai.expect(clone.data).to.equal('somedata');
+				chai.expect(clone).to.not.equal(comment);
 			});
 		});
 	}
