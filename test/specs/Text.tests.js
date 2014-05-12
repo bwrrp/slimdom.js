@@ -57,7 +57,9 @@ define(
 			it('can not set nodeValue property', function() {
 				// change the value
 				var newValue = 'a new text value';
-				expect(function() {text.nodeValue = newValue }).toThrow();
+				expect(function() {
+					text.nodeValue = newValue;
+				}).toThrow();
 			});
 
 			it('has a length', function() {
