@@ -2,10 +2,10 @@
 require(
 	{
 		// Base url for all scripts
-		baseUrl: '/base/lib',
+		baseUrl: '/base/src',
 		// Paths for external libs
 		paths: {
-			lodash: '../test/lib/lodash.min'
+			lodash: '../test/src/lodash.min'
 		},
 		// Tell RequireJS how to load non-AMD modules
 		shim: {

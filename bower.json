@@ -6,7 +6,7 @@
 		"Stef Busking <stef.busking@gmail.com>"
 	],
 	"description": "Fast, tiny DOM implementation in pure JS",
-	"main": "lib/main.js",
+	"main": "src/main.js",
 	"moduleType": [
 		"amd",
 		"node"
