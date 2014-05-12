@@ -94,60 +94,73 @@ define(
 			it('can appendData', function() {
 				text.appendData('123');
 				expect(text.data).toBe('text123');
+				expect(text.nodeValue).toBe(text.data);
 				expect(text.length).toBe(7);
 			});
 
 			it('can insertData', function() {
 				text.insertData(2, '123');
 				expect(text.data).toBe('te123xt');
+				expect(text.nodeValue).toBe(text.data);
 				expect(text.length).toBe(7);
 
 				text.insertData(-100, '123');
 				expect(text.data).toBe('123te123xt');
+				expect(text.nodeValue).toBe(text.data);
 				expect(text.length).toBe(10);
 
 				text.insertData(100, '123');
 				expect(text.data).toBe('123te123xt123');
+				expect(text.nodeValue).toBe(text.data);
 				expect(text.length).toBe(13);
 			});
 
 			it('can deleteData', function() {
 				text.deleteData(0, 0);
 				expect(text.data).toBe('text');
+				expect(text.nodeValue).toBe(text.data);
 				expect(text.length).toBe(4);
 
 				text.deleteData(-100, 1);
 				expect(text.data).toBe('text');
+				expect(text.nodeValue).toBe(text.data);
 				expect(text.length).toBe(4);
 
 				text.deleteData(100, 2);
 				expect(text.data).toBe('text');
+				expect(text.nodeValue).toBe(text.data);
 				expect(text.length).toBe(4);
 
 				text.deleteData(1, 1);
 				expect(text.data).toBe('txt');
+				expect(text.nodeValue).toBe(text.data);
 				expect(text.length).toBe(3);
 
 				text.deleteData(2);
 				expect(text.data).toBe('tx');
+				expect(text.nodeValue).toBe(text.data);
 				expect(text.length).toBe(2);
 			});
 
 			it('can replaceData', function() {
 				text.replaceData(0, 0, '');
 				expect(text.data).toBe('text');
+				expect(text.nodeValue).toBe(text.data);
 				expect(text.length).toBe(4);
 
 				text.replaceData(-100, 10, 'asd');
 				expect(text.data).toBe('asdtext');
+				expect(text.nodeValue).toBe(text.data);
 				expect(text.length).toBe(7);
 
 				text.replaceData(100, 10, 'asd');
 				expect(text.data).toBe('asdtextasd');
+				expect(text.nodeValue).toBe(text.data);
 				expect(text.length).toBe(10);
 
 				text.replaceData(3, 4, 'asd');
 				expect(text.data).toBe('asdasdasd');
+				expect(text.nodeValue).toBe(text.data);
 				expect(text.length).toBe(9);
 			});
 
@@ -155,7 +168,9 @@ define(
 				it('can be split', function() {
 					var otherHalf = text.splitText(2);
 					expect(text.data).toBe('te');
+					expect(text.nodeValue).toBe(text.data);
 					expect(otherHalf.data).toBe('xt');
+					expect(otherHalf.nodeValue).toBe(otherHalf.data);
 				});
 				
 				describe('under a parent', function() {
@@ -169,7 +184,9 @@ define(
 
 					it('is split correctly', function() {
 						expect(text.data).toBe('te');
+						expect(text.nodeValue).toBe(text.data);
 						expect(otherHalf.data).toBe('xt');
+						expect(otherHalf.nodeValue).toBe(otherHalf.data);
 					});
 
 					it('both halves are children of the parent', function() {
