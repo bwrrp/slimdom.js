@@ -3,7 +3,7 @@
 	"version": "0.3.0",
 	"description": "Fast, tiny DOM implementation in pure JS",
 	"directories": {
-		"lib": "lib",
+		"lib": "src",
 		"test": "test"
 	},
 	"scripts": {

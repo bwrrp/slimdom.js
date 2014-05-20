@@ -9,7 +9,7 @@ files = [
   REQUIRE_ADAPTER,
   'test/karma.bootstrap.js',
 
-  {pattern: 'lib/**/*.js', included: false},
+  {pattern: 'src/**/*.js', included: false},
   {pattern: 'test/**/*.js', included: false}
 ];
 
