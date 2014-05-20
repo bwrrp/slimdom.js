@@ -14,31 +14,31 @@ define(
 			});
 
 			it('has nodeType 1', function() {
-				expect(element.nodeType).toBe(1);
+				chai.expect(element.nodeType).to.equal(1);
 			});
 
 			it('is owned by the document', function() {
-				expect(element.ownerDocument).toBe(document);
+				chai.expect(element.ownerDocument).to.equal(document);
 			});
 
 			it('initially has no child nodes', function() {
-				expect(element.firstChild).toBeNull();
-				expect(element.lastChild).toBeNull();
-				expect(element.childNodes).toEqual([]);
+				chai.expect(element.firstChild).to.be.null;
+				chai.expect(element.lastChild).to.be.null;
+				chai.expect(element.childNodes).to.deep.equal([]);
 			});
 
 			it('initially has no child elements', function() {
-				expect(element.firstElementChild).toBeNull();
-				expect(element.lastElementChild).toBeNull();
+				chai.expect(element.firstElementChild).to.be.null;
+				chai.expect(element.lastElementChild).to.be.null;
 				// TODO: Element.children not yet supported
-				//expect(element.children).toEqual([]);
-				expect(element.childElementCount).toBe(0);
+				//chai.expect(element.children).to.deep.equal([]);
+				chai.expect(element.childElementCount).to.equal(0);
 			});
 
 			it('initially has no attributes', function() {
-				expect(element.hasAttribute('test')).toBe(false);
-				expect(element.getAttribute('test')).toBeNull();
-				expect(element.attributes).toEqual([]);
+				chai.expect(element.hasAttribute('test')).to.equal(false);
+				chai.expect(element.getAttribute('test')).to.be.null;
+				chai.expect(element.attributes).to.deep.equal([]);
 			});
 
 			describe('setting attributes', function() {
@@ -47,36 +47,36 @@ define(
 				});
 
 				it('has the attribute', function() {
-					expect(element.hasAttribute('test')).toBe(true);
+					chai.expect(element.hasAttribute('test')).to.equal(true);
 				});
 
 				it('returns the attribute value', function() {
-					expect(element.getAttribute('test')).toBe('123');
+					chai.expect(element.getAttribute('test')).to.equal('123');
 				});
 
 				it('has attributes', function() {
-					expect(element.attributes).toEqual([{name: 'test', value: '123'}]);
+					chai.expect(element.attributes).to.deep.equal([{name: 'test', value: '123'}]);
 				});
 
 				it('can overwrite the attribute', function() {
 					element.setAttribute('test', '456');
-					expect(element.hasAttribute('test')).toBe(true);
-					expect(element.getAttribute('test')).toBe('456');
-					expect(element.attributes).toEqual([{name: 'test', value: '456'}]);
+					chai.expect(element.hasAttribute('test')).to.equal(true);
+					chai.expect(element.getAttribute('test')).to.equal('456');
+					chai.expect(element.attributes).to.deep.equal([{name: 'test', value: '456'}]);
 				});
 
 				it('can remove the attribute', function() {
 					element.removeAttribute('test');
-					expect(element.hasAttribute('test')).toBe(false);
-					expect(element.attributes).toEqual([]);
+					chai.expect(element.hasAttribute('test')).to.equal(false);
+					chai.expect(element.attributes).to.deep.equal([]);
 				});
 
 				it('ignores removing non-existent attributes', function() {
-					expect(element.hasAttribute('other')).toBe(false);
+					chai.expect(element.hasAttribute('other')).to.equal(false);
 					element.removeAttribute('other');
-					expect(element.hasAttribute('other')).toBe(false);
-					expect(element.hasAttribute('test')).toBe(true);
-					expect(element.attributes).toEqual([{name: 'test', value: '123'}]);
+					chai.expect(element.hasAttribute('other')).to.equal(false);
+					chai.expect(element.hasAttribute('test')).to.equal(true);
+					chai.expect(element.attributes).to.deep.equal([{name: 'test', value: '123'}]);
 				});
 			});
 
@@ -88,17 +88,17 @@ define(
 				});
 
 				it('has child node references', function() {
-					expect(element.firstChild).toBe(child);
-					expect(element.lastChild).toBe(child);
-					expect(element.childNodes).toEqual([child]);
+					chai.expect(element.firstChild).to.equal(child);
+					chai.expect(element.lastChild).to.equal(child);
+					chai.expect(element.childNodes).to.deep.equal([child]);
 				});
 
 				it('has child element references', function() {
-					expect(element.firstElementChild).toBe(child);
-					expect(element.lastElementChild).toBe(child);
+					chai.expect(element.firstElementChild).to.equal(child);
+					chai.expect(element.lastElementChild).to.equal(child);
 					// TODO: Element.children not yet supported
-					//expect(element.children).toEqual([child]);
-					expect(element.childElementCount).toBe(1);
+					//chai.expect(element.children).to.deep.equal([child]);
+					chai.expect(element.childElementCount).to.equal(1);
 				});
 
 				describe('after removing the child element', function() {
@@ -107,17 +107,17 @@ define(
 					});
 
 					it('has no child nodes', function() {
-						expect(element.firstChild).toBeNull();
-						expect(element.lastChild).toBeNull();
-						expect(element.childNodes).toEqual([]);
+						chai.expect(element.firstChild).to.be.null;
+						chai.expect(element.lastChild).to.be.null;
+						chai.expect(element.childNodes).to.deep.equal([]);
 					});
 
 					it('has no child elements', function() {
-						expect(element.firstElementChild).toBeNull();
-						expect(element.lastElementChild).toBeNull();
+						chai.expect(element.firstElementChild).to.be.null;
+						chai.expect(element.lastElementChild).to.be.null;
 						// TODO: Element.children not yet supported
-						//expect(element.children).toEqual([]);
-						expect(element.childElementCount).toBe(0);
+						//chai.expect(element.children).to.deep.equal([]);
+						chai.expect(element.childElementCount).to.equal(0);
 					});
 				});
 
@@ -129,17 +129,17 @@ define(
 					});
 
 					it('has child node references', function() {
-						expect(element.firstChild).toBe(otherChild);
-						expect(element.lastChild).toBe(otherChild);
-						expect(element.childNodes).toEqual([otherChild]);
+						chai.expect(element.firstChild).to.equal(otherChild);
+						chai.expect(element.lastChild).to.equal(otherChild);
+						chai.expect(element.childNodes).to.deep.equal([otherChild]);
 					});
 
 					it('has child element references', function() {
-						expect(element.firstElementChild).toBe(otherChild);
-						expect(element.lastElementChild).toBe(otherChild);
+						chai.expect(element.firstElementChild).to.equal(otherChild);
+						chai.expect(element.lastElementChild).to.equal(otherChild);
 						// TODO: Element.children not yet supported
-						//expect(element.children).toEqual([otherChild]);
-						expect(element.childElementCount).toBe(1);
+						//chai.expect(element.children).to.deep.equal([otherChild]);
+						chai.expect(element.childElementCount).to.equal(1);
 					});
 				});
 
@@ -151,29 +151,29 @@ define(
 					});
 
 					it('has child node references', function() {
-						expect(element.firstChild).toBe(otherChild);
-						expect(element.lastChild).toBe(child);
-						expect(element.childNodes).toEqual([otherChild, child]);
+						chai.expect(element.firstChild).to.equal(otherChild);
+						chai.expect(element.lastChild).to.equal(child);
+						chai.expect(element.childNodes).to.deep.equal([otherChild, child]);
 					});
 
 					it('has child element references', function() {
-						expect(element.firstElementChild).toBe(otherChild);
-						expect(element.lastElementChild).toBe(child);
+						chai.expect(element.firstElementChild).to.equal(otherChild);
+						chai.expect(element.lastElementChild).to.equal(child);
 						// TODO: Element.children not yet supported
-						//expect(element.children).toEqual([otherChild, child]);
-						expect(element.childElementCount).toBe(2);
+						//chai.expect(element.children).to.deep.equal([otherChild, child]);
+						chai.expect(element.childElementCount).to.equal(2);
 					});
 
 					it('has correct siblings on the children', function() {
-						expect(child.nextSibling).toBeNull();
-						expect(child.previousSibling).toBe(otherChild);
-						expect(child.nextElementSibling).toBeNull();
-						expect(child.previousElementSibling).toBe(otherChild);
+						chai.expect(child.nextSibling).to.be.null;
+						chai.expect(child.previousSibling).to.equal(otherChild);
+						chai.expect(child.nextElementSibling).to.be.null;
+						chai.expect(child.previousElementSibling).to.equal(otherChild);
 
-						expect(otherChild.nextSibling).toBe(child);
-						expect(otherChild.previousSibling).toBeNull();
-						expect(otherChild.nextElementSibling).toBe(child);
-						expect(otherChild.previousElementSibling).toBeNull();
+						chai.expect(otherChild.nextSibling).to.equal(child);
+						chai.expect(otherChild.previousSibling).to.be.null;
+						chai.expect(otherChild.nextElementSibling).to.equal(child);
+						chai.expect(otherChild.previousElementSibling).to.be.null;
 					});
 				});
 
@@ -185,29 +185,29 @@ define(
 					});
 
 					it('has child node references', function() {
-						expect(element.firstChild).toBe(child);
-						expect(element.lastChild).toBe(otherChild);
-						expect(element.childNodes).toEqual([child, otherChild]);
+						chai.expect(element.firstChild).to.equal(child);
+						chai.expect(element.lastChild).to.equal(otherChild);
+						chai.expect(element.childNodes).to.deep.equal([child, otherChild]);
 					});
 
 					it('has child element references', function() {
-						expect(element.firstElementChild).toBe(child);
-						expect(element.lastElementChild).toBe(otherChild);
+						chai.expect(element.firstElementChild).to.equal(child);
+						chai.expect(element.lastElementChild).to.equal(otherChild);
 						// TODO: Element.children not yet supported
-						//expect(element.children).toEqual([child, otherChild]);
-						expect(element.childElementCount).toBe(2);
+						//chai.expect(element.children).to.deep.equal([child, otherChild]);
+						chai.expect(element.childElementCount).to.equal(2);
 					});
 
 					it('has correct siblings on the children', function() {
-						expect(child.nextSibling).toBe(otherChild);
-						expect(child.previousSibling).toBeNull();
-						expect(child.nextElementSibling).toBe(otherChild);
-						expect(child.previousElementSibling).toBeNull();
+						chai.expect(child.nextSibling).to.equal(otherChild);
+						chai.expect(child.previousSibling).to.be.null;
+						chai.expect(child.nextElementSibling).to.equal(otherChild);
+						chai.expect(child.previousElementSibling).to.be.null;
 
-						expect(otherChild.nextSibling).toBeNull();
-						expect(otherChild.previousSibling).toBe(child);
-						expect(otherChild.nextElementSibling).toBeNull();
-						expect(otherChild.previousElementSibling).toBe(child);
+						chai.expect(otherChild.nextSibling).to.be.null;
+						chai.expect(otherChild.previousSibling).to.equal(child);
+						chai.expect(otherChild.nextElementSibling).to.be.null;
+						chai.expect(otherChild.previousElementSibling).to.equal(child);
 					});
 				});
 
@@ -218,24 +218,24 @@ define(
 					});
 
 					it('has child node references', function() {
-						expect(element.firstChild).toBe(child);
-						expect(element.lastChild).toBe(child);
-						expect(element.childNodes).toEqual([child]);
+						chai.expect(element.firstChild).to.equal(child);
+						chai.expect(element.lastChild).to.equal(child);
+						chai.expect(element.childNodes).to.deep.equal([child]);
 					});
 
 					it('has child element references', function() {
-						expect(element.firstElementChild).toBe(child);
-						expect(element.lastElementChild).toBe(child);
+						chai.expect(element.firstElementChild).to.equal(child);
+						chai.expect(element.lastElementChild).to.equal(child);
 						// TODO: Element.children not yet supported
-						//expect(element.children).toEqual([child]);
-						expect(element.childElementCount).toBe(1);
+						//chai.expect(element.children).to.deep.equal([child]);
+						chai.expect(element.childElementCount).to.equal(1);
 					});
 
 					it('has no siblings on child', function() {
-						expect(child.nextSibling).toBeNull();
-						expect(child.previousSibling).toBeNull();
-						expect(child.nextElementSibling).toBeNull();
-						expect(child.previousElementSibling).toBeNull();
+						chai.expect(child.nextSibling).to.be.null;
+						chai.expect(child.previousSibling).to.be.null;
+						chai.expect(child.nextElementSibling).to.be.null;
+						chai.expect(child.previousElementSibling).to.be.null;
 					});
 				});
 			});
@@ -248,17 +248,17 @@ define(
 				});
 
 				it('has child node references', function() {
-					expect(element.firstChild).toBe(processingInstruction);
-					expect(element.lastChild).toBe(processingInstruction);
-					expect(element.childNodes).toEqual([processingInstruction]);
+					chai.expect(element.firstChild).to.equal(processingInstruction);
+					chai.expect(element.lastChild).to.equal(processingInstruction);
+					chai.expect(element.childNodes).to.deep.equal([processingInstruction]);
 				});
 
 				it('has no child elements', function() {
-					expect(element.firstElementChild).toBeNull();
-					expect(element.lastElementChild).toBeNull();
+					chai.expect(element.firstElementChild).to.be.null;
+					chai.expect(element.lastElementChild).to.be.null;
 					// TODO: Element.children not yet supported
-					//expect(element.children).toEqual([]);
-					expect(element.childElementCount).toBe(0);
+					//chai.expect(element.children).to.deep.equal([]);
+					chai.expect(element.childElementCount).to.equal(0);
 				});
 
 				describe('after replacing with an element', function() {
@@ -269,17 +269,17 @@ define(
 					});
 
 					it('has child node references', function() {
-						expect(element.firstChild).toBe(otherChild);
-						expect(element.lastChild).toBe(otherChild);
-						expect(element.childNodes).toEqual([otherChild]);
+						chai.expect(element.firstChild).to.equal(otherChild);
+						chai.expect(element.lastChild).to.equal(otherChild);
+						chai.expect(element.childNodes).to.deep.equal([otherChild]);
 					});
 
 					it('has child element references', function() {
-						expect(element.firstElementChild).toBe(otherChild);
-						expect(element.lastElementChild).toBe(otherChild);
+						chai.expect(element.firstElementChild).to.equal(otherChild);
+						chai.expect(element.lastElementChild).to.equal(otherChild);
 						// TODO: Element.children not yet supported
-						//expect(element.children).toEqual([otherChild]);
-						expect(element.childElementCount).toBe(1);
+						//chai.expect(element.children).to.deep.equal([otherChild]);
+						chai.expect(element.childElementCount).to.equal(1);
 					});
 				});
 			});
@@ -288,19 +288,18 @@ define(
 				it('removes empty text nodes', function() {
 					var textNode = element.appendChild(document.createTextNode(''));
 					element.normalize();
-					expect(textNode.parentNode).toBeNull();
+					chai.expect(textNode.parentNode).to.be.null;
 				});
 
 				it('combines adjacent text nodes', function() {
 					element.appendChild(document.createTextNode('test'));
 					element.appendChild(document.createTextNode('123'));
 					element.appendChild(document.createTextNode('abc'));
-					expect(element.childNodes.length).toBe(3);
+					chai.expect(element.childNodes.length).to.equal(3);
 					element.normalize();
-					expect(element.childNodes.length).toBe(1);
-					// TODO: data property not yet supported
-					//expect(element.firstChild.data).toBe('test123abc');
-					expect(element.firstChild.nodeValue).toBe('test123abc');
+					chai.expect(element.childNodes.length).to.equal(1);
+					chai.expect(element.firstChild.nodeValue).to.equal('test123abc');
+					chai.expect(element.firstChild.data).to.equal('test123abc');
 				});
 			});
 		});

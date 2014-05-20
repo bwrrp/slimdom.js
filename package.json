@@ -2,12 +2,9 @@
 	"name": "slimdom",
 	"version": "0.3.0",
 	"description": "Fast, tiny DOM implementation in pure JS",
-	"directories": {
-		"lib": "src",
-		"test": "test"
-	},
 	"scripts": {
-		"test": "karma start test/karma.conf.js --browsers Firefox --single-run"
+		"test": "testem -f test/testem.json ci",
+		"test-dev": "testem -f test/testem.json"
 	},
 	"repository": {
 		"type": "git",
@@ -24,6 +21,10 @@
 		"amdefine": "~0.0.5"
 	},
 	"devDependencies": {
-		"karma": "~0.8"
+		"mocha": "~1.19.0",
+		"testem": "~0.6.15",
+		"chai": "~1.9.1",
+		"sinon-chai": "~2.5.0",
+		"requirejs": "^2.1.11"
 	}
 }

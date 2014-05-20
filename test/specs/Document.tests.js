@@ -12,22 +12,22 @@ define(
 			});
 
 			it('has nodeType 9', function() {
-				expect(document.nodeType).toBe(9);
+				chai.expect(document.nodeType).to.equal(9);
 			});
 
 			it('initially has no documentElement', function() {
-				expect(document.documentElement).toBeNull();
+				chai.expect(document.documentElement).to.be.null;
 			});
 
 			it('initially has no childNodes', function() {
-				expect(document.childNodes).toEqual([]);
+				chai.expect(document.childNodes).to.deep.equal([]);
 			});
 
 			it('can have user data', function() {
 				// TODO: should return undefined
-				expect(document.getUserData('test')).toBeNull();
+				chai.expect(document.getUserData('test')).to.be.null;
 				document.setUserData('test', {abc: 123});
-				expect(document.getUserData('test')).toEqual({abc: 123});
+				chai.expect(document.getUserData('test')).to.deep.equal({abc: 123});
 			});
 
 			describe('after appending a child element', function() {
@@ -38,15 +38,15 @@ define(
 				});
 
 				it('has a documentElement', function() {
-					expect(document.documentElement).toBe(element);
+					chai.expect(document.documentElement).to.equal(element);
 				});
 
 				it('has childNodes', function() {
-					expect(document.childNodes).toEqual([element]);
+					chai.expect(document.childNodes).to.deep.equal([element]);
 				});
 
 				it('the child element is adopted into the document', function() {
-					expect(element.ownerDocument).toBe(document);
+					chai.expect(element.ownerDocument).to.equal(document);
 				});
 
 				describe('after removing the element', function() {
@@ -55,11 +55,11 @@ define(
 					});
 
 					it('has no documentElement', function() {
-						expect(document.documentElement).toBeNull();
+						chai.expect(document.documentElement).to.be.null;
 					});
 
 					it('has no childNodes', function() {
-						expect(document.childNodes).toEqual([]);
+						chai.expect(document.childNodes).to.deep.equal([]);
 					});
 				});
 
@@ -71,11 +71,11 @@ define(
 					});
 
 					it('has the other element as documentElement', function() {
-						expect(document.documentElement).toBe(otherElement);
+						chai.expect(document.documentElement).to.equal(otherElement);
 					});
 
 					it('has childNodes', function() {
-						expect(document.childNodes).toEqual([otherElement]);
+						chai.expect(document.childNodes).to.deep.equal([otherElement]);
 					});
 				});
 			});
@@ -88,11 +88,11 @@ define(
 				});
 
 				it('has no documentElement', function() {
-					expect(document.documentElement).toBeNull();
+					chai.expect(document.documentElement).to.be.null;
 				});
 
 				it('has childNodes', function() {
-					expect(document.childNodes).toEqual([processingInstruction]);
+					chai.expect(document.childNodes).to.deep.equal([processingInstruction]);
 				});
 
 				describe('after replacing with an element', function() {
@@ -103,11 +103,11 @@ define(
 					});
 
 					it('has the other element as documentElement', function() {
-						expect(document.documentElement).toBe(otherElement);
+						chai.expect(document.documentElement).to.equal(otherElement);
 					});
 
 					it('has childNodes', function() {
-						expect(document.childNodes).toEqual([otherElement]);
+						chai.expect(document.childNodes).to.deep.equal([otherElement]);
 					});
 				});
 			});
@@ -120,14 +120,14 @@ define(
 				});
 
 				it('is a new document', function() {
-					expect(clone.nodeType).toBe(9);
-					expect(clone).not.toBe(document);
+					chai.expect(clone.nodeType).to.equal(9);
+					chai.expect(clone).not.to.equal(document);
 				});
 
 				it('has a new document element', function() {
-					expect(clone.documentElement.nodeType).toBe(1);
-					expect(clone.documentElement.nodeName).toBe('root');
-					expect(clone.documentElement).not.toBe(document.documentElement);
+					chai.expect(clone.documentElement.nodeType).to.equal(1);
+					chai.expect(clone.documentElement.nodeName).to.equal('root');
+					chai.expect(clone.documentElement).to.not.equal(document.documentElement);
 				});
 			});
 		});
