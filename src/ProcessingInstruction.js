@@ -41,7 +41,7 @@ define(
 			 * @property target
 			 * @type {String}
 			 */
-			this.target = target;
+			this.target = '' + target;
 		}
 		ProcessingInstruction.prototype = new CharacterData();
 		ProcessingInstruction.prototype.constructor = ProcessingInstruction;

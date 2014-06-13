@@ -41,7 +41,7 @@ define(
 			 * @type {String}
 			 * @private
 			 */
-			this._data = data;
+			this._data = '' + data;
 		}
 		CharacterData.prototype = new Node();
 		CharacterData.prototype.constructor = CharacterData;
