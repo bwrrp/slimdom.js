@@ -14,15 +14,25 @@ define(
 		'./Node',
 		'./Element',
 		'./selections/Range',
-		'./mutations/MutationObserver'
+		'./mutations/MutationObserver',
+
+		'./DOMImplementation',
+		'./globals'
 	],
 	function(
 		Document,
 	 	Node,
 		Element,
 		Range,
-	 	MutationObserver) {
+	 	MutationObserver,
+
+	 	DOMImplementation,
+	 	globals
+	 	) {
 		'use strict';
+
+		// Create a single DOMImplementation instance shared by the entire library
+		var domImplementation = globals.domImplementation = new DOMImplementation();
 
 		/**
 		 * The API object for the slimdom library.
@@ -32,14 +42,25 @@ define(
 		 */
 		return {
 			/**
+			 * The DOMImplementation instance.
+			 *
+			 * @property implementation
+			 * @type {DOMImplementation}
+			 * @final
+			 */
+			implementation: domImplementation,
+
+			/**
 			 * Creates a new Document and returns it.
 			 *
 			 * @method createDocument
+			 *
 			 * @return {Document} The newly created Document.
 			 */
 			createDocument: function() {
-				return new Document();
+				return domImplementation.createDocument('');
 			},
+
 			/**
 			 * The Document class constructor.
 			 *

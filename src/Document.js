@@ -9,7 +9,9 @@ define(
 		'./Text',
 		'./ProcessingInstruction',
 		'./Comment',
-		'./selections/Range'
+		'./selections/Range',
+
+		'./globals'
 	],
 	function(
 		Node,
@@ -17,7 +19,10 @@ define(
 		Text,
 		ProcessingInstruction,
 		Comment,
-		Range) {
+		Range,
+
+		globals
+		) {
 		'use strict';
 
 		/**
@@ -30,8 +35,6 @@ define(
 		 * @extends Node
 		 *
 		 * @constructor
-		 *
-		 *
 		 */
 		function Document() {
 			Node.call(this, Node.DOCUMENT_NODE);
@@ -39,22 +42,40 @@ define(
 			this.ownerDocument = this;
 
 			/**
-			 * The Element that is a direct child of the current document.
+			 * The DocumentType that is a direct child of the current document, or null if there is none.
+			 *
+			 * @property doctype
+			 * @type {DocumentElement|null}
+			 * @final
+			 */
+			this.doctype = null;
+
+			/**
+			 * The Element that is a direct child of the current document, or null if there is none.
 			 *
 			 * @property documentElement
-			 * @type {Element}
+			 * @type {Element|null}
 			 * @final
 			 */
 			this.documentElement = null;
 
 			/**
-			 * Lists the ranges that are active on the current document.
+			 * Non-standard. Lists the ranges that are active on the current document.
 			 *
 			 * @property ranges
 			 * @type {Range[]}
 			 * @final
 			 */
 			this.ranges = [];
+
+			/**
+			 * Returns a reference to the DOMImplementation object which created the document.
+			 *
+			 * @property implementation
+			 * @type {DOMImplementation}
+			 * @final
+			 */
+			this.implementation = globals.domImplementation;
 		}
 		Document.prototype = new Node(Node.DOCUMENT_NODE);
 		Document.prototype.constructor = Document;
@@ -67,20 +88,32 @@ define(
 		 * @param  {Node}       newNode            The node that is inserted.
 		 * @param  {Node}       referenceNode      The node in front of which the given newNode is inserted.
 		 * @param  {Boolean}    suppressObservers  Whether or not to suppress creating any MutationRecords for the
-		 * changes that occur by executing this insertBefore operation.
+		 *                                           changes that occur by executing this insertBefore operation.
 		 *
 		 * @return {null|Node}  The inserted node or null if something went wrong.
 		 */
 		Document.prototype.insertBefore = function(newNode, referenceNode, suppressObservers) {
 			// Document can not have more than one child element node
-			if (newNode.nodeType === Node.ELEMENT_NODE && this.documentElement)
+			if (newNode.nodeType === Node.ELEMENT_NODE && this.documentElement) {
 				return this.documentElement === newNode ? newNode : null;
+			}
+
+			// Document can not have more than one child doctype node
+			if (newNode.nodeType === Node.DOCUMENT_TYPE_NODE && this.doctype) {
+				return this.doctype === newNode ? newNode : null;
+			}
 
 			var result = Node.prototype.insertBefore.call(this, newNode, referenceNode, suppressObservers);
 
 			// Update document element
-			if (result && result.nodeType === Node.ELEMENT_NODE)
+			if (result && result.nodeType === Node.ELEMENT_NODE) {
 				this.documentElement = result;
+			}
+
+			// Update doctype
+			if (result && result.nodeType === Node.DOCUMENT_TYPE_NODE) {
+				this.doctype = result;
+			}
 
 			return result;
 		};
@@ -98,8 +131,11 @@ define(
 		 */
 		Document.prototype.removeChild = function(childNode, suppressObservers) {
 			var result = Node.prototype.removeChild.call(this, childNode, suppressObservers);
-			if (result === this.documentElement)
+			if (result === this.documentElement) {
 				this.documentElement = null;
+			} else if (result === this.doctype) {
+				this.doctype = null;
+			}
 
 			return result;
 		};

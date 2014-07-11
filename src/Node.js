@@ -21,9 +21,6 @@ define(
 		 * A Node is a class from which a number of DOM types inherit, and allows these various types to be treated
 		 * (or tested) similarly.
 		 *
-		 * The following classes all inherit from Node its methods and properties: Document, Element, CharacterData
-		 * (which Text inherit) and ProcessingInstruction.
-		 *
 		 * @class Node
 		 *
 		 * @constructor
@@ -35,6 +32,7 @@ define(
 		 *     Node.prototype.PROCESSING_INSTRUCTION_NODE = Node.PROCESSING_INSTRUCTION_NODE = 7;
 		 *     Node.prototype.COMMENT_NODE                = Node.COMMENT_NODE                = 8;
 		 *     Node.prototype.DOCUMENT_NODE               = Node.DOCUMENT_NODE               = 9;
+		 *     Node.prototype.DOCUMENT_TYPE_NODE          = Node.DOCUMENT_TYPE_NODE          = 10;
 		 */
 		function Node(type) {
 			/**
@@ -45,6 +43,7 @@ define(
 			 *     Node.prototype.PROCESSING_INSTRUCTION_NODE = Node.PROCESSING_INSTRUCTION_NODE = 7;
 			 *     Node.prototype.COMMENT_NODE                = Node.COMMENT_NODE                = 8;
 			 *     Node.prototype.DOCUMENT_NODE               = Node.DOCUMENT_NODE               = 9;
+			 *     Node.prototype.DOCUMENT_TYPE_NODE          = Node.DOCUMENT_TYPE_NODE          = 10;
 			 *
 			 * @property nodeType
 			 * @type {Number}
@@ -176,8 +175,7 @@ define(
 		Node.PROCESSING_INSTRUCTION_NODE = 7;
 
 		/**
-		 * Indicates the node is a processing instruction node (meaning it's an instance of the ProcessingInstruction
-		 * class).
+		 * Indicates the node is a comment node (meaning it's an instance of the Comment class).
 		 *
 		 * @property COMMENT_NODE
 		 * @type {Number}
@@ -185,7 +183,7 @@ define(
 		 */
 		Node.prototype.COMMENT_NODE = 8;
 		/**
-		 * Indicates the node is a processing instruction node.
+		 * Indicates the node is a comment node.
 		 *
 		 * @property COMMENT_NODE
 		 * @type {Number}
@@ -203,7 +201,7 @@ define(
 		 */
 		Node.prototype.DOCUMENT_NODE = 9;
 		/**
-		 * Indicates the node is a processing instruction node.
+		 * Indicates the node is a document node.
 		 *
 		 * @property DOCUMENT_NODE
 		 * @type {Number}
@@ -211,6 +209,24 @@ define(
 		 * @static
 		 */
 		Node.DOCUMENT_NODE = 9;
+
+		/**
+		 * Indicates the node is a document type node (meaning it's an instance of the DocumentType class).
+		 *
+		 * @property DOCUMENT_TYPE_NODE
+		 * @type {Number}
+		 * @final
+		 */
+		Node.prototype.DOCUMENT_TYPE_NODE = 10;
+		/**
+		 * Indicates the node is a document type node.
+		 *
+		 * @property DOCUMENT_TYPE_NODE
+		 * @type {Number}
+		 * @final
+		 * @static
+		 */
+		Node.DOCUMENT_TYPE_NODE = 10;
 
 		/**
 		 * Internal helper used to update the firstChild and lastChild references.

@@ -1,8 +1,13 @@
+/* jshint expr: true */
 define(
 	[
-		'slimdom'
+		'slimdom',
+		'slimdom/DOMImplementation'
 	],
-	function(slimdom) {
+	function(
+		slimdom,
+		DOMImplementation
+		) {
 		'use strict';
 
 		describe('Document', function() {
@@ -13,6 +18,14 @@ define(
 
 			it('has nodeType 9', function() {
 				chai.expect(document.nodeType).to.equal(9);
+			});
+
+			it('exposes its DOMImplementation', function() {
+				chai.expect(document.implementation).to.be.an.instanceOf(DOMImplementation);
+			});
+
+			it('initially has no doctype', function() {
+				chai.expect(document.doctype).to.be.null;
 			});
 
 			it('initially has no documentElement', function() {
