@@ -23,7 +23,7 @@ define(
 		 *
 		 * @class CharacterData
 		 * @extends Node
-		 * 
+		 *
 		 * @constructor
 		 *
 		 * @param  {number}  type  The Node type to assign to this CharacterData object
@@ -99,10 +99,10 @@ define(
 		 * specified offset.
 		 *
 		 * @method substringData
-		 * 
+		 *
 		 * @param  {number}  offset   An integer between 0 and the length of the string.
 		 * @param  {number}  [count]  An integer between 0 and the length of the string.
-		 * 
+		 *
 		 * @return {string}          The substring extracted from the textual data of this CharacterData node.
 		 */
 		CharacterData.prototype.substringData = function(offset, count) {
@@ -114,7 +114,7 @@ define(
 		 * concatenated string.
 		 *
 		 * @method  appendData
-		 * 
+		 *
 		 * @param  {string}  data  Is a string representing the textual data to append to the CharacterData node.
 		 */
 		CharacterData.prototype.appendData = function(data) {
@@ -126,7 +126,7 @@ define(
 		 * returns, data contains the modified string.
 		 *
 		 * @method insertData
-		 * 
+		 *
 		 * @param  {number}  offset  An integer between 0 and the length of the string.
 		 * @param  {string}  data    Is a string representing the textual data to insert into the CharacterData node.
 		 */
@@ -139,7 +139,7 @@ define(
 		 * string; when this method returns, data contains the shortened string.
 		 *
 		 * @method deleteData
-		 * 
+		 *
 		 * @param  {number}  offset   An integer between 0 and the length of the string.
 		 * @param  {number}  [count]  An integer between 0 and the length of the string. Omitting count means 'delete
 		 * from offset to end'
@@ -155,7 +155,7 @@ define(
 		 * when this method returns, data contains the modified string.
 		 *
 		 * @method replaceData
-		 * 
+		 *
 		 * @param  {number}  offset  An integer between 0 and the length of the string.
 		 * @param  {number}  count   An integer between 0 and the length of the string.
 		 * @param  {string}  data    Is a string representing the textual data to use as replacement for the
@@ -170,15 +170,19 @@ define(
 			if (offset + count > length)
 				count = length - offset;
 
-			// Queue mutation record
-			var record = new MutationRecord('characterData', this);
-			record.oldValue = this._data;
-			util.queueMutationRecord(record);
-
-			// Replace data
 			var before = this.substringData(0, offset),
-				after = this.substringData(offset + count);
-			this._data = before + data + after;
+				after = this.substringData(offset + count),
+				newData = before + data + after;
+
+			if (newData !== this._data) {
+				// Queue mutation record
+				var record = new MutationRecord('characterData', this);
+				record.oldValue = this._data;
+				util.queueMutationRecord(record);
+
+				// Replace data
+				this._data = newData;
+			}
 
 			// Update ranges
 			var document = this.ownerDocument || this;
