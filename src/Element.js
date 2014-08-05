@@ -37,8 +37,25 @@ define(
 			 * @final
 			 */
 			this.nodeName = name;
+
+			/**
+			 * The attributes as an array of Attr objects, having name and value.
+			 *
+			 * @property attributes
+			 * @type {Attr[]}
+			 * @final
+			 */
 			this.attributes = [];
-			this.attributesByName = {};
+
+			/**
+			 * Internal lookup of Attr objects by their name.
+			 *
+			 * @property _attributesByName
+			 * @type {Object}
+			 * @private
+			 * @final
+			 */
+			this._attributesByName = {};
 
 			/**
 			 * The first child node of the current element that's an Element node.
@@ -92,7 +109,7 @@ define(
 		 * @method isElement
 		 * @static
 		 * @private
-		 * 
+		 *
 		 * @param  {Object}  node  The object to check the type of.
 		 *
 		 * @return {Boolean} Returns whether or not the given node is an Element object.
@@ -205,7 +222,7 @@ define(
 		 * @return {Boolean}  Whether or not the element has an attribute with the given name.
 		 */
 		Element.prototype.hasAttribute = function(name) {
-			return !!this.attributesByName[name];
+			return !!this._attributesByName[name];
 		};
 
 		/**
@@ -219,7 +236,7 @@ define(
 		 * @return {null|any}  The value of the attribute.
 		 */
 		Element.prototype.getAttribute = function(name) {
-			var attr = this.attributesByName[name];
+			var attr = this._attributesByName[name];
 			return attr ? attr.value : null;
 		};
 
@@ -236,8 +253,8 @@ define(
 			// Coerce the value to a string for consistency
 			value = '' + value;
 
-			var oldAttr = this.attributesByName[name],
-				newValue = {
+			var oldAttr = this._attributesByName[name],
+				newAttr = {
 					name: name,
 					value: value
 				},
@@ -257,8 +274,8 @@ define(
 			if (oldAttr) {
 				oldAttr.value = value;
 			} else {
-				this.attributesByName[name] = newValue;
-				this.attributes.push(newValue);
+				this._attributesByName[name] = newAttr;
+				this.attributes.push(newAttr);
 			}
 		};
 
@@ -270,9 +287,10 @@ define(
 		 * @param  {String}    name   The name of the attribute to remove.
 		 */
 		Element.prototype.removeAttribute = function(name) {
-			var attr = this.attributesByName[name];
-			if (!attr)
+			var attr = this._attributesByName[name];
+			if (!attr) {
 				return;
+			}
 
 			// Queue mutation record
 			var record = new MutationRecord('attributes', this);
@@ -281,8 +299,8 @@ define(
 			util.queueMutationRecord(record);
 
 			// Remove the attribute
-			delete this.attributesByName[name];
-			var attrIndex = this.attributes.indexOf(this.attributes, attr);
+			delete this._attributesByName[name];
+			var attrIndex = this.attributes.indexOf(attr);
 			this.attributes.splice(attrIndex, 1);
 		};
 

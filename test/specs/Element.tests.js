@@ -1,3 +1,4 @@
+/* jshint expr: true */
 define(
 	[
 		'slimdom'
@@ -43,32 +44,53 @@ define(
 
 			describe('setting attributes', function() {
 				beforeEach(function() {
+					element.setAttribute('firstAttribute', 'first');
 					element.setAttribute('test', '123');
+					element.setAttribute('lastAttribute', 'last');
 				});
 
 				it('has the attribute', function() {
+					chai.expect(element.hasAttribute('firstAttribute')).to.equal(true);
 					chai.expect(element.hasAttribute('test')).to.equal(true);
+					chai.expect(element.hasAttribute('lastAttribute')).to.equal(true);
+					chai.expect(element.hasAttribute('noSuchAttribute')).to.equal(false);
 				});
 
 				it('returns the attribute value', function() {
+					chai.expect(element.getAttribute('firstAttribute')).to.equal('first');
 					chai.expect(element.getAttribute('test')).to.equal('123');
+					chai.expect(element.getAttribute('lastAttribute')).to.equal('last');
+					chai.expect(element.getAttribute('noSuchAttribute')).to.be.null;
 				});
 
 				it('has attributes', function() {
-					chai.expect(element.attributes).to.deep.equal([{name: 'test', value: '123'}]);
+					chai.expect(element.attributes).to.deep.equal([
+						{name: 'firstAttribute', value: 'first'},
+						{name: 'test', value: '123'},
+						{name: 'lastAttribute', value: 'last'}
+					]);
 				});
 
 				it('can overwrite the attribute', function() {
 					element.setAttribute('test', '456');
 					chai.expect(element.hasAttribute('test')).to.equal(true);
 					chai.expect(element.getAttribute('test')).to.equal('456');
-					chai.expect(element.attributes).to.deep.equal([{name: 'test', value: '456'}]);
+					chai.expect(element.attributes).to.deep.equal([
+						{name: 'firstAttribute', value: 'first'},
+						{name: 'test', value: '456'},
+						{name: 'lastAttribute', value: 'last'}
+					]);
 				});
 
 				it('can remove the attribute', function() {
 					element.removeAttribute('test');
+					chai.expect(element.hasAttribute('firstAttribute')).to.equal(true);
 					chai.expect(element.hasAttribute('test')).to.equal(false);
-					chai.expect(element.attributes).to.deep.equal([]);
+					chai.expect(element.hasAttribute('lastAttribute')).to.equal(true);
+					chai.expect(element.attributes).to.deep.equal([
+						{name: 'firstAttribute', value: 'first'},
+						{name: 'lastAttribute', value: 'last'}
+					]);
 				});
 
 				it('ignores removing non-existent attributes', function() {
@@ -76,7 +98,11 @@ define(
 					element.removeAttribute('other');
 					chai.expect(element.hasAttribute('other')).to.equal(false);
 					chai.expect(element.hasAttribute('test')).to.equal(true);
-					chai.expect(element.attributes).to.deep.equal([{name: 'test', value: '123'}]);
+					chai.expect(element.attributes).to.deep.equal([
+						{name: 'firstAttribute', value: 'first'},
+						{name: 'test', value: '123'},
+						{name: 'lastAttribute', value: 'last'}
+					]);
 				});
 			});
 
