@@ -469,6 +469,10 @@ define(
 		 * @return {null|Node}  Returns the removed node or null if something went wrong.
 		 */
 		Node.prototype.removeChild = function(childNode, suppressObservers) {
+			// Check if childNode is a child
+			if (childNode.parentNode !== this)
+				return null;
+
 			// Check index of node
 			var index = util.getNodeIndex(childNode);
 			if (index < 0) return null;
