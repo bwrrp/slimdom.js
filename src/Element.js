@@ -233,7 +233,7 @@ define(
 		 *
 		 * @param  {String}    name  The name of the attribute to search for.
 		 *
-		 * @return {null|any}  The value of the attribute.
+		 * @return {String|null}  The value of the attribute. Null if not value exists
 		 */
 		Element.prototype.getAttribute = function(name) {
 			var attr = this._attributesByName[name];
