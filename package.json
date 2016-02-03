@@ -21,10 +21,11 @@
 		"amdefine": "~0.0.5"
 	},
 	"devDependencies": {
-		"mocha": "~1.19.0",
-		"testem": "~0.6.15",
-		"chai": "~1.9.1",
-		"sinon-chai": "~2.5.0",
-		"requirejs": "^2.1.11"
+		"chai": "^3.4.1",
+		"mocha": "^2.3.3",
+		"requirejs": "^2.1.15",
+		"sinon": "^1.17.2",
+		"sinon-chai": "^2.8.0",
+		"testem": "^0.9.11"
 	}
 }
