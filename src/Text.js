@@ -1,7 +1,6 @@
 /**
  * @module slimdom
  */
-if (typeof define !== 'function') { var define = require('amdefine')(module); }
 define(
 	[
 		'./CharacterData',
@@ -23,10 +22,10 @@ define(
 		 * New documents have a single Text node for each block of text. Over time, more Text nodes may be created as
 		 * the document's content changes.  The Node.normalize() method merges adjacent Text objects back into a single
 		 * node for each block of text.
-		 * 
+		 *
 		 * @class Text
 		 * @extends CharacterData
-		 * 
+		 *
 		 * @constructor
 		 *
 		 * @param {String} [content=""]  Is a string representing the textual data contained in this object.
@@ -48,9 +47,9 @@ define(
 		 * Separated text nodes can be concatenated using the Node.normalize() method.
 		 *
 		 * @method splitText
-		 * 
+		 *
 		 * @param  {Number}  offset  The offset at which to split te textual content of the Text node
-		 * 
+		 *
 		 * @return {Text}    The new Text node containing the textual content after the offset
 		 */
 		Text.prototype.splitText = function(offset) {

@@ -1,6 +1,6 @@
 {
 	"name": "slimdom",
-	"version": "0.5.3",
+	"version": "0.6.0",
 	"description": "Fast, tiny DOM implementation in pure JS",
 	"scripts": {
 		"test": "testem -f test/testem.json ci",
@@ -17,9 +17,6 @@
 	"author": "Stef Busking",
 	"license": "MIT",
 	"readmeFilename": "README.md",
-	"dependencies": {
-		"amdefine": "~0.0.5"
-	},
 	"devDependencies": {
 		"chai": "^3.4.1",
 		"mocha": "^2.3.3",

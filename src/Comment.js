@@ -1,7 +1,6 @@
 /**
  * @module slimdom
  */
-if (typeof define !== 'function') { var define = require('amdefine')(module); }
 define(
 	[
 		'./CharacterData',
@@ -20,7 +19,7 @@ define(
 		 *
 		 * @class Comment
 		 * @extends CharacterData
-		 * 
+		 *
 		 * @constructor
 		 *
 		 * @param {String}  [data]  The comment's text.

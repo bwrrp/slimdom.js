@@ -1,7 +1,6 @@
 /**
  * @module slimdom
  */
-if (typeof define !== 'function') { var define = require('amdefine')(module); }
 define(
 	[
 		'./CharacterData',
@@ -25,7 +24,7 @@ define(
 		 *
 		 * @class ProcessingInstruction
 		 * @extends CharacterData
-		 * 
+		 *
 		 * @constructor
 		 *
 		 * @param {String}  target  The string that goes after the &lt;? and before the whitespace,

@@ -7,7 +7,6 @@
  *
  * @submodule mutations
  */
-if (typeof define !== 'function') { var define = require('amdefine')(module); }
 define(
 	[
 		'./NotifyList'
@@ -77,7 +76,7 @@ define(
 		 * another observer to it.</em>
 		 *
 		 * @method observe
-		 * 
+		 *
 		 * @param  {Node}     target       The Node on which to observe DOM mutations.
 		 * @param  {Object}   options      An options object (formally a MutationObserverInit object, but just a plain js
 		 * object in Slimdom) which specifies which DOM mutations should be reported. TODO: add options property docs.
