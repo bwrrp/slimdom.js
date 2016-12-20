@@ -1,28 +1,35 @@
 {
-	"name": "slimdom",
-	"version": "0.6.0",
-	"description": "Fast, tiny DOM implementation in pure JS",
-	"scripts": {
-		"test": "testem -f test/testem.json ci",
-		"test-dev": "testem -f test/testem.json"
-	},
-	"repository": {
-		"type": "git",
-		"url": "git://github.com/bwrrp/slimdom.js.git"
-	},
-	"keywords": [
-		"dom",
-		"xml"
-	],
-	"author": "Stef Busking",
-	"license": "MIT",
-	"readmeFilename": "README.md",
-	"devDependencies": {
-		"chai": "^3.4.1",
-		"mocha": "^2.3.3",
-		"requirejs": "^2.1.15",
-		"sinon": "^1.17.2",
-		"sinon-chai": "^2.8.0",
-		"testem": "^0.9.11"
-	}
+  "name": "slimdom",
+  "version": "0.7.0",
+  "description": "Fast, tiny DOM implementation in pure JS",
+  "author": "Stef Busking",
+  "license": "MIT",
+  "keywords": [
+    "dom",
+    "xml"
+  ],
+  "readmeFilename": "README.md",
+  "main": "dist/slimdom.js",
+  "module": "src/index.js",
+  "scripts": {
+    "build": "webpack",
+    "test": "testem -f test/testem.json ci",
+    "test-dev": "testem -f test/testem.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bwrrp/slimdom.js.git"
+  },
+  "devDependencies": {
+    "awesome-typescript-loader": "^3.0.0-beta.17",
+    "chai": "^3.4.1",
+    "mocha": "^2.3.3",
+    "requirejs": "^2.1.15",
+    "sinon": "^1.17.2",
+    "sinon-chai": "^2.8.0",
+    "source-map-loader": "^0.1.5",
+    "testem": "^0.9.11",
+    "typescript": "^2.1.4",
+    "webpack": "^2.2.0-rc.1"
+  }
 }
