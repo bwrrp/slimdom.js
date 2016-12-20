@@ -83,8 +83,8 @@ export default class MutationObserver {
 	 * again with the same will do nothing. However if the callback object is different it will of course add
 	 * another observer to it.
 	 */
-	observe (target: Node, options: MutationObserverInit, isTransient: boolean) {
-		target._registeredObservers.register(this, options, isTransient);
+	observe (target: Node, options: MutationObserverInit, _isTransient: boolean = false) {
+		target._registeredObservers.register(this, options, _isTransient);
 	}
 
 	/**

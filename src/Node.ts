@@ -210,7 +210,7 @@ export default class Node {
 		while (childNode) {
 			let nextNode = childNode.nextSibling;
 			if (childNode.nodeType === Node.TEXT_NODE) {
-				const textChildNode = <Text>childNode;
+				const textChildNode = childNode as Text;
 
 				// Delete empty text nodes
 				let length = textChildNode.length;
