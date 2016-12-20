@@ -1,9 +1,9 @@
 import DOMImplementation from './DOMImplementation';
 
-interface Globals {
+interface SlimdomGlobals {
 	domImplementation: DOMImplementation | null
 }
 
-export default <Globals>{
+export default {
 	domImplementation: null
-}
+} as SlimdomGlobals;

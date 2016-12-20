@@ -53,12 +53,12 @@ export default class Document extends Node {
 
 		// Update document element
 		if (result && result.nodeType === Node.ELEMENT_NODE) {
-			this.documentElement = <Element>result;
+			this.documentElement = result as Element;
 		}
 
 		// Update doctype
 		if (result && result.nodeType === Node.DOCUMENT_TYPE_NODE) {
-			this.doctype = <DocumentType>result;
+			this.doctype = result as DocumentType;
 		}
 
 		return result;

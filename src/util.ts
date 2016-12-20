@@ -66,6 +66,7 @@ export function comparePoints (node1: Node, offset1: number, node2: Node, offset
 
 		// Skip common parents
 		while (parents1[0] && parents2[0] && parents1[0] === parents2[0]) {
+			parents1.shift();
 			parents2.shift();
 		}
 

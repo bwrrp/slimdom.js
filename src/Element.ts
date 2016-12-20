@@ -93,7 +93,7 @@ export default class Element extends Node {
 		const result = super.insertBefore(newNode, referenceNode, _suppressObservers);
 
 		if (isElement(newNode) && newNode.parentNode === this) {
-			const newElement = <Element>newNode;
+			const newElement = newNode as Element;
 			// Update child references
 			this.firstElementChild = findNextElementSibling(this.firstElementChild, true) || this.firstElementChild || newElement;
 			this.lastElementChild = findNextElementSibling(this.lastElementChild, false) || this.lastElementChild || newElement;
@@ -118,7 +118,7 @@ export default class Element extends Node {
 	// Override removeChild to update element-specific properties
 	public removeChild (childNode: Node, _suppressObservers: boolean = false) {
 		if (isElement(childNode) && childNode.parentNode === this) {
-			const childElement = <Element>childNode;
+			const childElement = childNode as Element;
 			// Update child references
 			if (childNode === this.firstElementChild) {
 				this.firstElementChild = findNextElementSibling(childNode, false);
@@ -215,7 +215,7 @@ export default class Element extends Node {
 	}
 
 	public cloneNode (deep: boolean = true, _copy: Node = null) {
-		const copyElement = <Element>_copy || new Element(this.nodeName);
+		const copyElement = _copy as Element || new Element(this.nodeName);
 
 		// Copy attributes
 		this.attributes.forEach(attr => copyElement.setAttribute(attr.name, attr.value));
