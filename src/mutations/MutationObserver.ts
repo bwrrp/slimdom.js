@@ -68,7 +68,7 @@ export default class MutationObserver {
 	 * its MutationRecord object on this list with a reference to itself. The NotifyList is then responsible for 
 	 * periodically reporting of these records to the observers.
 	 */
-	static _notifyList = MutationObserver._notifyList;
+	static _notifyList = new NotifyList();
 
 	constructor (callback: MutationObserverCallback) {
 		this._callback = callback;
