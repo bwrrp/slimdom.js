@@ -5,6 +5,8 @@ import Element from '../../src/Element';
 import Text from '../../src/Text';
 import Range from '../../src/selections/Range';
 
+import * as chai from 'chai';
+
 describe('Range', () => {
 	let document: Document;
 	let element: Element;

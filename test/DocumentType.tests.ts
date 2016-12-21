@@ -2,6 +2,8 @@ import slimdom from '../src/index';
 
 import DocumentType from '../src/DocumentType';
 
+import * as chai from 'chai';
+
 describe('DocumentType', () => {
 	let doctype: DocumentType;
 	beforeEach(() => {

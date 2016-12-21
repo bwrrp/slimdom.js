@@ -12,9 +12,10 @@
   "main": "dist/slimdom.js",
   "module": "src/index.ts",
   "scripts": {
-    "build": "webpack",
-    "test": "karma start",
-    "test-dev": "karma watch"
+    "build:amd": "rimraf lib && tsc --module amd",
+    "build:commonjs": "rimraf lib && tsc --module commonjs",
+    "build:umd": "rimraf dist && webpack",
+    "test": "tsc -P test && mocha --recursive test/bin/test"
   },
   "repository": {
     "type": "git",
@@ -26,17 +27,10 @@
     "@types/mocha": "^2.2.34",
     "awesome-typescript-loader": "^3.0.0-beta.17",
     "chai": "^3.5.0",
-    "karma": "^1.3.0",
-    "karma-chai": "^0.1.0",
-    "karma-chrome-launcher": "^2.0.0",
-    "karma-firefox-launcher": "^1.0.0",
-    "karma-mocha": "^1.3.0",
-    "karma-webpack": "^1.8.0",
     "lolex": "^1.5.2",
     "mocha": "^2.5.3",
-    "requirejs": "^2.1.15",
+    "rimraf": "^2.5.4",
     "source-map-loader": "^0.1.5",
-    "testem": "^0.9.11",
     "typescript": "^2.1.4",
     "webpack": "^2.1.0-beta"
   }

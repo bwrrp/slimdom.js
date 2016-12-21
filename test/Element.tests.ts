@@ -4,6 +4,8 @@ import Document from '../src/Document';
 import Element from '../src/Element';
 import Text from '../src/Text';
 
+import * as chai from 'chai';
+
 describe('Element', () => {
 	let document: Document;
 	let element: Element;

@@ -6,6 +6,8 @@ import Element from '../src/Element';
 import Node from '../src/Node';
 import ProcessingInstruction from '../src/ProcessingInstruction';
 
+import * as chai from 'chai';
+
 describe('Document', () => {
 	let document: Document;
 	beforeEach(() => {

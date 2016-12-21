@@ -3,6 +3,8 @@ import slimdom from '../src/index';
 import Document from '../src/Document';
 import ProcessingInstruction from '../src/ProcessingInstruction';
 
+import * as chai from 'chai';
+
 describe('ProcessingInstruction', () => {
 	let document: Document;
 	let processingInstruction: ProcessingInstruction;

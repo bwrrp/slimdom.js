@@ -1,5 +1,7 @@
 import slimdom from '../src/index';
 
+import * as chai from 'chai';
+
 describe('Comment', () => {
 	let document, comment;
 	beforeEach(() => {

@@ -5,6 +5,7 @@ import Element from '../../src/Element';
 import Text from '../../src/Text';
 import MutationObserver from '../../src/mutations/MutationObserver';
 
+import * as chai from 'chai';
 import * as lolex from 'lolex';
 
 describe('MutationObserver', () => {

@@ -1,2 +1,4 @@
-node_modules
 /dist/
+/lib/
+/test/bin/
+node_modules

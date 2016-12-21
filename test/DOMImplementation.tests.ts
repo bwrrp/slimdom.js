@@ -1,5 +1,7 @@
 import DOMImplementation from '../src/DOMImplementation';
 
+import * as chai from 'chai';
+
 describe('DOMImplementation', () => {
 	let domImplementation: DOMImplementation;
 	beforeEach(() => {
