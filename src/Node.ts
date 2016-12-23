@@ -15,6 +15,11 @@ function adopt (node: Node, document: Document) {
 	node.childNodes.forEach(child => adopt(child, document));
 }
 
+interface UserDataEntry {
+	name: string,
+	value: any
+}
+
 /**
  * A Node is a class from which a number of DOM types inherit, and allows these various types to be treated
  * (or tested) similarly.
@@ -68,8 +73,8 @@ export default class Node {
 	public ownerDocument: Document | null = null;
 
 	// User data, use get/setUserData to access
-	private _userData = [];
-	private _userDataByKey = {};
+	private _userData: UserDataEntry[] = [];
+	private _userDataByKey: { [key: string]: UserDataEntry } = {};
 
 	// (internal) Registered mutation observers, use MutationObserver interface to manipulate
 	public _registeredObservers: RegisteredObservers;
@@ -222,12 +227,13 @@ export default class Node {
 					// Concatenate and collect childNode's contiguous text nodes (excluding current)
 					let data = '';
 					const siblingsToRemove = [];
-					let siblingIndex, sibling;
+					let siblingIndex: number;
+					let sibling: Node;
 					for (sibling = childNode.nextSibling, siblingIndex = index;
 						sibling && sibling.nodeType == Node.TEXT_NODE;
 						sibling = sibling.nextSibling, ++siblingIndex
 					) {
-						data += sibling.data;
+						data += (sibling as Text).data;
 						siblingsToRemove.push(sibling);
 					}
 
@@ -256,7 +262,7 @@ export default class Node {
 							}
 						});
 
-						length += sibling.length;
+						length += (sibling as Text).length;
 					};
 
 					// Remove contiguous text nodes (excluding current) in tree order

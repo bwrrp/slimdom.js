@@ -80,7 +80,7 @@ export default class Document extends Node {
 	/**
 	 * Creates a new Element node with the given tag name.
 	 */
-	public createElement (name): Element {
+	public createElement (name: string): Element {
 		const node = new Element(name);
 		node.ownerDocument = this;
 		return node;

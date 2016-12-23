@@ -2,6 +2,7 @@ import slimdom from '../src/index'
 
 import Document from '../src/Document';
 import Element from '../src/Element';
+import ProcessingInstruction from '../src/ProcessingInstruction';
 import Text from '../src/Text';
 
 import * as chai from 'chai';
@@ -260,7 +261,7 @@ describe('Element', () => {
 	});
 
 	describe('after appending a processing instruction', () => {
-		var processingInstruction;
+		let processingInstruction: ProcessingInstruction;
 		beforeEach(() => {
 			processingInstruction = document.createProcessingInstruction('test', 'test');
 			element.appendChild(processingInstruction);
