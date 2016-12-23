@@ -2,7 +2,7 @@
 	"compilerOptions": {
 		"outDir": "lib",
 		"sourceMap": true,
-		"noImplicitAny": false,
+		"noImplicitAny": true,
 		"module": "es6",
 		"target": "es5"
 	},

@@ -11,7 +11,7 @@ export interface Attr {
 /**
  * Internal helper used to check if the given node is an Element object.
  */
-function isElement (node) {
+function isElement (node: Node): boolean {
 	return !!node && node.nodeType === Node.ELEMENT_NODE;
 }
 
@@ -77,14 +77,14 @@ export default class Element extends Node {
 	 */
 	public childElementCount: number = 0;
 
-	constructor (name) {
+	constructor (name: string) {
 		super(Node.ELEMENT_NODE);
 
 		this.nodeName = name;
 	}
 
 	// Override insertBefore to update element-specific properties
-	public insertBefore (newNode: Node, referenceNode: Node | null, _suppressObservers: boolean = false) {
+	public insertBefore (newNode: Node, referenceNode: Node | null, _suppressObservers: boolean = false): Node | null {
 		// Already there?
 		if (newNode.parentNode === this && (newNode === referenceNode || newNode.nextSibling === referenceNode)) {
 			return newNode;
@@ -116,7 +116,7 @@ export default class Element extends Node {
 	}
 
 	// Override removeChild to update element-specific properties
-	public removeChild (childNode: Node, _suppressObservers: boolean = false) {
+	public removeChild (childNode: Node, _suppressObservers: boolean = false): Node | null {
 		if (isElement(childNode) && childNode.parentNode === this) {
 			const childElement = childNode as Element;
 			// Update child references
@@ -214,7 +214,7 @@ export default class Element extends Node {
 		this.attributes.splice(attrIndex, 1);
 	}
 
-	public cloneNode (deep: boolean = true, _copy: Node = null) {
+	public cloneNode (deep: boolean = true, _copy: Node = null): Node {
 		const copyElement = _copy as Element || new Element(this.nodeName);
 
 		// Copy attributes

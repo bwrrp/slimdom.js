@@ -19,8 +19,8 @@ describe('MutationObserver', () => {
 	});
 
 	let callbackCalled: boolean;
-	let callbackArgs = [];
-	function callback (...args) {
+	let callbackArgs: any[] = [];
+	function callback (...args: any[]) {
 		callbackCalled = true;
 		callbackArgs.push(args);
 	}
