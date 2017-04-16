@@ -145,6 +145,19 @@ define(
 				chai.expect(text.length).to.equal(9);
 			});
 
+			it('keeps ranges at the end of a fully updated characterData valid', function() {
+				var range = document.createRange();
+				range.setStart(text, 0); // From the start
+				range.setEnd(text, 5); // To the end of the new node length
+				text.replaceData(0, 4, 'blaat');
+
+				chai.expect(range.startContainer).to.equal(text);
+				chai.expect(range.startOffset).to.equal(0);
+
+				chai.expect(range.endContainer).to.equal(text);
+				chai.expect(range.endOffset).to.equal(5);
+			});
+
 			describe('splitting', function() {
 				it('can be split', function() {
 					var otherHalf = text.splitText(2);
@@ -153,7 +166,7 @@ define(
 					chai.expect(otherHalf.data).to.equal('xt');
 					chai.expect(otherHalf.nodeValue).to.equal(otherHalf.data);
 				});
-				
+
 				describe('under a parent', function() {
 					var element,
 						otherHalf;
