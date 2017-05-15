@@ -3,7 +3,7 @@ import Node from './Node';
 /**
  * Get all parents of the given node.
  */
-export function parents (node: Node): Node[] {
+export function parents (node: Node | null): Node[] {
 	const nodes = [];
 	while (node) {
 		nodes.unshift(node);
@@ -17,7 +17,7 @@ export function parents (node: Node): Node[] {
  * Used as an offset, this represents the position just before the given node.
  */
 export function getNodeIndex (node: Node): number {
-	return node.parentNode.childNodes.indexOf(node);
+	return (node.parentNode as Node).childNodes.indexOf(node);
 }
 
 /**

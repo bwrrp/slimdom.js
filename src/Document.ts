@@ -13,12 +13,12 @@ export default class Document extends Node {
 	/**
 	 * The DocumentType that is a direct child of the current document, or null if there is none.
 	 */
-	public doctype: DocumentType = null;
+	public doctype: DocumentType | null = null;
 
 	/**
 	 * The Element that is a direct child of the current document, or null if there is none.
 	 */
-	public documentElement: Element = null;
+	public documentElement: Element | null = null;
 
 	/**
 	 * Returns a reference to the DOMImplementation object which created the document.
@@ -120,8 +120,8 @@ export default class Document extends Node {
 		return new Range(this);
 	}
 
-	public cloneNode (deep: boolean = true, _copy: Node = null) {
+	public cloneNode (deep: boolean = true, _copy?: Document): Document {
 		_copy = _copy || new Document();
-		return super.cloneNode(deep, _copy);
+		return super.cloneNode(deep, _copy) as Document;
 	}
 }

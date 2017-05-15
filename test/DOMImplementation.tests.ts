@@ -1,4 +1,5 @@
 import DOMImplementation from '../src/DOMImplementation';
+import Element from '../src/Element';
 
 import * as chai from 'chai';
 
@@ -38,7 +39,7 @@ describe('DOMImplementation', () => {
 			const document = domImplementation.createDocument(null, 'someRootElementName');
 			chai.assert.equal(document.nodeType, 9);
 			chai.assert.equal(document.firstChild, document.documentElement);
-			chai.assert.equal(document.documentElement.nodeName, 'someRootElementName');
+			chai.assert.equal((document.documentElement as Element).nodeName, 'someRootElementName');
 		});
 	});
 });

@@ -31,7 +31,7 @@ export default class Range {
 	/**
 	 * The closest node that is a parent of both start and end positions.
 	 */
-	public commonAncestorContainer: Node;
+	public commonAncestorContainer: Node | null;
 
 	/**
 	 * A detached range should no longer be used.
@@ -63,8 +63,8 @@ export default class Range {
 	 */
 	public detach () {
 		// Stop tracking the range
-		const startContainer = this.startContainer;
-		const document = startContainer instanceof Document ? startContainer : startContainer.ownerDocument;
+		const startContainer = this.startContainer as Node;
+		const document = startContainer instanceof Document ? startContainer : startContainer.ownerDocument as Document;
 		const rangeIndex = document._ranges.indexOf(this);
 		document._ranges.splice(rangeIndex, 1);
 
@@ -82,7 +82,7 @@ export default class Range {
 	 * Helper used to update the range when start and/or end has changed
 	 */
 	private _pointsChanged () {
-		this.commonAncestorContainer = commonAncestor(this.startContainer, this.endContainer);
+		this.commonAncestorContainer = commonAncestor(this.startContainer as Node, this.endContainer as Node);
 		this.collapsed = (this.startContainer == this.endContainer && this.startOffset == this.endOffset);
 	}
 
@@ -94,7 +94,7 @@ export default class Range {
 		this.startOffset = offset;
 
 		// If start is after end, move end to start
-		if (comparePoints(this.startContainer, this.startOffset, this.endContainer, this.endOffset) > 0) {
+		if (comparePoints(this.startContainer as Node, this.startOffset, this.endContainer as Node, this.endOffset) as number > 0) {
 			this.setEnd(node, offset);
 		}
 
@@ -109,7 +109,7 @@ export default class Range {
 		this.endOffset = offset;
 
 		// If end is before start, move start to end
-		if (comparePoints(this.startContainer, this.startOffset, this.endContainer, this.endOffset) > 0) {
+		if (comparePoints(this.startContainer as Node, this.startOffset, this.endContainer as Node, this.endOffset) as number > 0) {
 			this.setStart(node, offset);
 		}
 
@@ -120,28 +120,28 @@ export default class Range {
 	 * Sets the start position of this Range relative to another Node.
 	 */
 	public setStartBefore (referenceNode: Node) {
-		this.setStart(referenceNode.parentNode, getNodeIndex(referenceNode));
+		this.setStart(referenceNode.parentNode as Node, getNodeIndex(referenceNode));
 	}
 
 	/**
 	 * Sets the start position of this Range relative to another Node.
 	 */
 	public setStartAfter (referenceNode: Node) {
-		this.setStart(referenceNode.parentNode, getNodeIndex(referenceNode) + 1);
+		this.setStart(referenceNode.parentNode as Node, getNodeIndex(referenceNode) + 1);
 	}
 
 	/**
 	 * Sets the end position of this Range relative to another Node.
 	 */
 	public setEndBefore (referenceNode: Node) {
-		this.setEnd(referenceNode.parentNode, getNodeIndex(referenceNode));
+		this.setEnd(referenceNode.parentNode as Node, getNodeIndex(referenceNode));
 	}
 
 	/**
 	 * Sets the end position of this Range relative to another Node.
 	 */
 	public setEndAfter (referenceNode: Node) {
-		this.setEnd(referenceNode.parentNode, getNodeIndex(referenceNode) + 1);
+		this.setEnd(referenceNode.parentNode as Node, getNodeIndex(referenceNode) + 1);
 	}
 
 	/**
@@ -165,10 +165,10 @@ export default class Range {
 	 */
 	public collapse (toStart: boolean = false) {
 		if (toStart) {
-			this.setEnd(this.startContainer, this.startOffset);
+			this.setEnd(this.startContainer as Node, this.startOffset);
 		}
 		else {
-			this.setStart(this.endContainer, this.endOffset);
+			this.setStart(this.endContainer as Node, this.endOffset);
 		}
 	}
 
@@ -176,11 +176,11 @@ export default class Range {
 	 * Create a new range with the same boundary points.
 	 */
 	public cloneRange (): Range {
-		const startContainer = this.startContainer;
-		const document = startContainer instanceof Document ? startContainer : startContainer.ownerDocument;
+		const startContainer = this.startContainer as Node;
+		const document = startContainer instanceof Document ? startContainer : startContainer.ownerDocument as Document;
 		const newRange = document.createRange();
-		newRange.setStart(this.startContainer, this.startOffset);
-		newRange.setEnd(this.endContainer, this.endOffset);
+		newRange.setStart(this.startContainer as Node, this.startOffset);
+		newRange.setEnd(this.endContainer as Node, this.endOffset);
 
 		return newRange;
 	}
@@ -191,13 +191,13 @@ export default class Range {
 	public compareBoundaryPoints (comparisonType: number, range: Range): number | undefined {
 		switch (comparisonType) {
 			case Range.START_TO_START:
-				return comparePoints(this.startContainer, this.startOffset, range.startContainer, range.startOffset);
+				return comparePoints(this.startContainer as Node, this.startOffset, range.startContainer as Node, range.startOffset);
 			case Range.START_TO_END:
-				return comparePoints(this.startContainer, this.startOffset, range.endContainer, range.endOffset);
+				return comparePoints(this.startContainer as Node, this.startOffset, range.endContainer as Node, range.endOffset);
 			case Range.END_TO_END:
-				return comparePoints(this.endContainer, this.endOffset, range.endContainer, range.endOffset);
+				return comparePoints(this.endContainer as Node, this.endOffset, range.endContainer as Node, range.endOffset);
 			case Range.END_TO_START:
-				return comparePoints(this.endContainer, this.endOffset, range.startContainer, range.startOffset);
+				return comparePoints(this.endContainer as Node, this.endOffset, range.startContainer as Node, range.startOffset);
 		}
 
 		return undefined;

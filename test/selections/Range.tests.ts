@@ -2,6 +2,7 @@ import slimdom from '../../src/index';
 
 import Document from '../../src/Document';
 import Element from '../../src/Element';
+import Node from '../../src/Node';
 import Text from '../../src/Text';
 import Range from '../../src/selections/Range';
 
@@ -114,7 +115,7 @@ describe('Range', () => {
 			});
 
 			it('moves positions beyond a remove', () => {
-				element.removeChild(element.firstChild);
+				element.removeChild(element.firstChild as Node);
 				chai.assert.equal(range.startContainer, element);
 				chai.assert.equal(range.startOffset, 0);
 				chai.assert.equal(range.endContainer, element);
@@ -221,7 +222,7 @@ describe('Range', () => {
 			});
 
 			it('moves with text node merges during normalization', () => {
-				const otherText = element.appendChild(document.createTextNode('more'));
+				const otherText = element.appendChild(document.createTextNode('more')) as Node;
 				range.setStartBefore(otherText);
 				range.setEnd(otherText, 2);
 				element.normalize(true);

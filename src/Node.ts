@@ -131,7 +131,7 @@ export default class Node {
 	/**
 	 * Indicates whether the given node is a descendant of the current node.
 	 */
-	public contains (childNode: Node): boolean {
+	public contains (childNode: Node | null): boolean {
 		while (childNode && childNode != this) {
 			childNode = childNode.parentNode;
 		}
@@ -165,8 +165,9 @@ export default class Node {
 		}
 
 		// Adopt nodes into document
-		if (newNode.ownerDocument !== this.ownerDocument) {
-			adopt(newNode, this.ownerDocument);
+		const ownerDocument = this instanceof Document ? this : this.ownerDocument as Document;
+		if (newNode.ownerDocument !== ownerDocument) {
+			adopt(newNode, ownerDocument);
 		}
 
 		// Check index of reference node
@@ -176,8 +177,7 @@ export default class Node {
 		}
 
 		// Update ranges
-		const document = this instanceof Document ? this : this.ownerDocument;
-		document._ranges.forEach(range => {
+		ownerDocument._ranges.forEach(range => {
 			if (range.startContainer === this && range.startOffset > index) {
 				range.startOffset += 1;
 			}
@@ -211,7 +211,7 @@ export default class Node {
 	public normalize (recurse: boolean = true) {
 		let childNode = this.firstChild;
 		let index = 0;
-		const document = this instanceof Document ? this : this.ownerDocument;
+		const document = this instanceof Document ? this : this.ownerDocument as Document;
 		while (childNode) {
 			let nextNode = childNode.nextSibling;
 			if (childNode.nodeType === Node.TEXT_NODE) {
@@ -220,7 +220,7 @@ export default class Node {
 				// Delete empty text nodes
 				let length = textChildNode.length;
 				if (!length) {
-					childNode.parentNode.removeChild(childNode);
+					this.removeChild(childNode);
 					--index;
 				}
 				else {
@@ -228,7 +228,7 @@ export default class Node {
 					let data = '';
 					const siblingsToRemove = [];
 					let siblingIndex: number;
-					let sibling: Node;
+					let sibling: Node | null;
 					for (sibling = childNode.nextSibling, siblingIndex = index;
 						sibling && sibling.nodeType == Node.TEXT_NODE;
 						sibling = sibling.nextSibling, ++siblingIndex
@@ -249,16 +249,16 @@ export default class Node {
 
 						document._ranges.forEach(range => {
 							if (range.startContainer === sibling) {
-								range.setStart(childNode, length + range.startOffset);
+								range.setStart(childNode as Node, length + range.startOffset);
 							}
 							if (range.startContainer === this && range.startOffset == siblingIndex) {
-								range.setStart(childNode, length);
+								range.setStart(childNode as Node, length);
 							}
 							if (range.endContainer === sibling) {
-								range.setEnd(childNode, length + range.endOffset);
+								range.setEnd(childNode as Node, length + range.endOffset);
 							}
 							if (range.endContainer === this && range.endOffset == siblingIndex) {
-								range.setEnd(childNode, length);
+								range.setEnd(childNode as Node, length);
 							}
 						});
 
@@ -267,7 +267,7 @@ export default class Node {
 
 					// Remove contiguous text nodes (excluding current) in tree order
 					while (siblingsToRemove.length) {
-						this.removeChild(siblingsToRemove.shift());
+						this.removeChild(siblingsToRemove.shift() as Node);
 					}
 
 					// Update next node to process
@@ -301,7 +301,7 @@ export default class Node {
 		}
 
 		// Update ranges
-		const document = this instanceof Document ? this : this.ownerDocument;
+		const document = this instanceof Document ? this : this.ownerDocument as Document;
 		document._ranges.forEach(range => {
 			if (childNode.contains(range.startContainer)) {
 				range.setStart(this, index);
@@ -327,7 +327,7 @@ export default class Node {
 		}
 
 		// Add transient registered observers to detect changes in the removed subtree
-		for (let ancestor: Node = this; ancestor; ancestor = ancestor.parentNode) {
+		for (let ancestor: Node | null = this; ancestor; ancestor = ancestor.parentNode) {
 			childNode._registeredObservers.appendTransientsForAncestor(ancestor._registeredObservers);
 		}
 
@@ -368,8 +368,9 @@ export default class Node {
 		}
 
 		// Adopt nodes into document
-		if (newChild.ownerDocument !== this.ownerDocument) {
-			adopt(newChild, this.ownerDocument);
+		const ownerDocument = this instanceof Document ? this : this.ownerDocument as Document;
+		if (newChild.ownerDocument !== ownerDocument) {
+			adopt(newChild, ownerDocument);
 		}
 
 		// Create mutation record
@@ -460,7 +461,7 @@ export default class Node {
 	 * Override on subclasses and pass a shallow copy of the node in the 'copy' parameter (I.e. they create a new
 	 * instance of their class with their specific constructor parameters.)
 	 */
-	public cloneNode (deep: boolean = true, _copy: Node = null) {
+	public cloneNode (deep: boolean = true, _copy?: Node): Node | null {
 		if (!_copy) {
 			return null;
 		}
@@ -475,7 +476,7 @@ export default class Node {
 		// Recurse if required
 		if (deep) {
 			for (let child = this.firstChild; child; child = child.nextSibling) {
-				_copy.appendChild(child.cloneNode(true));
+				_copy.appendChild(child.cloneNode(true) as Node);
 			}
 		}
 
