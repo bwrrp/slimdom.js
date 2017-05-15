@@ -14,6 +14,9 @@ import { getNodeIndex } from './util';
  * node for each block of text.
  */
 export default class Text extends CharacterData {
+    /**
+	 * @param content Content for the text node
+	 */
 	constructor (content: string) {
 		super(Node.TEXT_NODE, content);
 	}
@@ -27,13 +30,17 @@ export default class Text extends CharacterData {
 	 * If the offset is equal to the length of the original node, the newly created node has no data.
 	 *
 	 * Separated text nodes can be concatenated using the Node.normalize() method.
+	 *
+	 * @param offset Offset at which to split
+	 *
+	 * @return The new text node created to hold the second half of the split content
 	 */
 	public splitText (offset: number): Text {
 		// Check offset
 		const length = this.length;
 		if (offset < 0) {
 			offset = 0;
-		} 
+		}
 		if (offset > length) {
 			offset = length;
 		}

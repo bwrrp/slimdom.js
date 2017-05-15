@@ -64,12 +64,15 @@ export default class MutationObserver {
 	public _targets: Node[] = [];
 
 	/**
-	 * (internal) The NotifyList instance that is shared between all MutationObserver objects. Each observer queues 
-	 * its MutationRecord object on this list with a reference to itself. The NotifyList is then responsible for 
+	 * (internal) The NotifyList instance that is shared between all MutationObserver objects. Each observer queues
+	 * its MutationRecord object on this list with a reference to itself. The NotifyList is then responsible for
 	 * periodically reporting of these records to the observers.
 	 */
 	static _notifyList = new NotifyList();
 
+    /**
+	 * @param callback Function called after mutations have been observed.
+	 */
 	constructor (callback: MutationObserverCallback) {
 		this._callback = callback;
 	}
@@ -82,6 +85,9 @@ export default class MutationObserver {
 	 * twice, nor will you have to run disconnect() twice. In other words, once an element is observed, observing it
 	 * again with the same will do nothing. However if the callback object is different it will of course add
 	 * another observer to it.
+	 *
+	 * @param target  Node (or root of subtree) to observe
+	 * @param options Determines which types of mutations to observe
 	 */
 	observe (target: Node, options: MutationObserverInit, _isTransient: boolean = false) {
 		target._registeredObservers.register(this, options, _isTransient);
@@ -102,7 +108,8 @@ export default class MutationObserver {
 
 	/**
 	 * Empties the MutationObserver instance's record queue and returns what was in there.
-	 * @return {MutationRecord[]}  An Array of MutationRecord objects that were recorded.
+	 *
+	 * @return An Array of MutationRecord objects that were recorded.
 	 */
 	takeRecords (): MutationRecord[] {
 		const recordQueue = this._recordQueue;

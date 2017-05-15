@@ -9,6 +9,10 @@ export default class DOMImplementation {
 	/**
 	 * Returns a DocumentType object which can either be used with DOMImplementation.createDocument upon document
 	 * creation or can be put into the document via methods like Node.insertBefore() or Node.replaceChild().
+	 *
+	 * @param qualifiedName The name of the doctype
+	 * @param publicId      The public identifier of the doctype
+	 * @param systemId      The system identifier of the doctype
 	 */
 	public createDocumentType (qualifiedName: string, publicId: string, systemId: string): DocumentType {
 		return new DocumentType(qualifiedName, publicId, systemId);
@@ -16,8 +20,14 @@ export default class DOMImplementation {
 
 	/**
 	 * Creates and returns a new Document.
-	 * 
+	 *
 	 * Note that namespaces are not currently supported; namespace and any prefix in qualifiedName will be ignored
+	 *
+	 * @param namespace     Namespace URI for the new document's root element, not currently supported
+	 * @param qualifiedName Qualified name for the new document's root element, currently interpreted as local name
+	 * @param doctype       Document type for the new document, or null to omit
+	 *
+	 * @return The new Document, with optional doctype and/or root element
 	 */
 	public createDocument (namespace: string | null, qualifiedName: string, doctype: DocumentType | null = null) {
 		const document = new Document();

@@ -29,6 +29,9 @@ export default class NotifyList {
 
 	/**
 	 * Adds a given MutationRecord to the recordQueue of the given MutationObserver and schedules it for reporting.
+	 *
+	 * @param observer The observer for which to enqueue the record
+	 * @param record   The record to enqueue
 	 */
 	queueRecord (observer: MutationObserver, record: MutationRecord) {
 		// Only queue the same record once per observer

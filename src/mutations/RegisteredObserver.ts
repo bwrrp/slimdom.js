@@ -32,6 +32,12 @@ export default class RegisteredObserver {
 	 */
 	public isTransient: boolean;
 
+    /**
+	 * @param observer    The observer being registered
+	 * @param target      The node being observed
+	 * @param options     Options for the registration
+	 * @param isTransient Whether the registration is automatically removed when control returns to the event loop
+	 */
 	constructor (observer: MutationObserver, target: Node, options: MutationObserverInit, isTransient: boolean) {
 		this.observer = observer;
 		this.target = target;
@@ -43,6 +49,8 @@ export default class RegisteredObserver {
 	 * Adds the given mutationRecord to the NotifyList of the registered MutationObserver. It only adds the record
 	 * when it's type isn't blocked by one of the flags of this registered MutationObserver options (formally the
 	 * MutationObserverInit object).
+	 *
+	 * @param mutationRecord The record to enqueue
 	 */
 	public queueRecord (mutationRecord: MutationRecord) {
 		const options = this.options;

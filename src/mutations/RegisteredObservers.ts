@@ -19,12 +19,19 @@ export default class RegisteredObservers {
 
 	private _registeredObservers: RegisteredObserver[] = [];
 
+    /**
+	 * @param target Node for which this instance holds RegisteredObserver instances.
+	 */
 	constructor (target: Node) {
 		this._target = target;
 	}
 
 	/**
 	 * Registers a given MutationObserver with the given options.
+	 *
+	 * @param observer    Observer to create a registration for
+	 * @param options     Options for the registration
+	 * @param isTransient Whether the registration is automatically removed when control returns to the event loop
 	 */
 	public register (observer: MutationObserver, options: MutationObserverInit, isTransient: boolean) {
 		// Ensure our node is in the observer's list of targets
@@ -52,6 +59,12 @@ export default class RegisteredObservers {
 		this._registeredObservers.push(new RegisteredObserver(observer, this._target, options, isTransient));
 	}
 
+    /**
+     * Creates transient registrations for all subtree observers on an ancestor of our target when target nodes are
+	 * removed from under that ancestor.
+	 *
+	 * @param registeredObserversForAncestor Registrations for an ancestor of our target
+	 */
 	public appendTransientsForAncestor (registeredObserversForAncestor: RegisteredObservers) {
 		registeredObserversForAncestor._registeredObservers.forEach(ancestorRegisteredObserver => {
 			// Only append transients for subtree observers
@@ -63,6 +76,12 @@ export default class RegisteredObservers {
 		});
 	};
 
+    /**
+	 * @param observer       Observer for which to remove the registration
+	 * @param transientsOnly Whether to remove only transient registrations
+	 *
+	 * @return Whether any non-transient registrations were not removed because transientsOnly was set to true
+	 */
 	public removeObserver (observer: MutationObserver, transientsOnly: boolean = false): boolean {
 		// Remove all registered observers for this observer
 		let write = 0;
@@ -89,6 +108,9 @@ export default class RegisteredObservers {
 		return hasMore;
 	}
 
+    /**
+	 * @param observer Observer to remove any transient registrations for
+	 */
 	public removeTransients (observer: MutationObserver) {
 		const hasNonTransients = this.removeObserver(observer, true);
 		if (!hasNonTransients) {
@@ -102,6 +124,8 @@ export default class RegisteredObservers {
 
 	/**
 	 * Queues a given MutationRecord on each registered MutationObserver in this list of registered observers.
+	 *
+	 * @param mutationRecord Record to enqueue
 	 */
 	public queueRecord (mutationRecord: MutationRecord) {
 		this._registeredObservers.forEach(registeredObserver => registeredObserver.queueRecord(mutationRecord));
