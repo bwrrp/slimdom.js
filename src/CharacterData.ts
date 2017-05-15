@@ -46,7 +46,7 @@ export default class CharacterData extends Node {
 	 * 
 	 * If count is omitted, returns all data starting at offset.
 	 */
-	public substringData (offset: number, count: number = undefined): string {
+	public substringData (offset: number, count?: number): string {
 		return this._data.substr(offset, count);
 	}
 
@@ -105,7 +105,7 @@ export default class CharacterData extends Node {
 		}
 
 		// Update ranges
-		var document = this instanceof Document ? this : this.ownerDocument;
+		var document = this.ownerDocument as Document;
 		document._ranges.forEach(range => {
 			if (range.startContainer === this && range.startOffset > offset && range.startOffset <= offset + count) {
 				range.setStart(range.startContainer, offset);

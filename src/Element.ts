@@ -11,7 +11,7 @@ export interface Attr {
 /**
  * Internal helper used to check if the given node is an Element object.
  */
-function isElement (node: Node): boolean {
+function isElement (node?: Node | null): boolean {
 	return !!node && node.nodeType === Node.ELEMENT_NODE;
 }
 
@@ -214,12 +214,12 @@ export default class Element extends Node {
 		this.attributes.splice(attrIndex, 1);
 	}
 
-	public cloneNode (deep: boolean = true, _copy: Node = null): Node {
+	public cloneNode (deep: boolean = true, _copy?: Element): Element {
 		const copyElement = _copy as Element || new Element(this.nodeName);
 
 		// Copy attributes
 		this.attributes.forEach(attr => copyElement.setAttribute(attr.name, attr.value));
 
-		return super.cloneNode(deep, copyElement);
+		return super.cloneNode(deep, copyElement) as Element;
 	}
 }

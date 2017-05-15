@@ -2,6 +2,7 @@ import slimdom from '../src/index'
 
 import Document from '../src/Document';
 import Element from '../src/Element';
+import Node from '../src/Node';
 import ProcessingInstruction from '../src/ProcessingInstruction';
 import Text from '../src/Text';
 
@@ -285,7 +286,7 @@ describe('Element', () => {
 			let otherChild: Element;
 			beforeEach(() => {
 				otherChild = document.createElement('other');
-				element.replaceChild(otherChild, element.firstChild);
+				element.replaceChild(otherChild, element.firstChild as Node);
 			});
 
 			it('has child node references', () => {
@@ -306,7 +307,7 @@ describe('Element', () => {
 
 	describe('normalization', () => {
 		it('removes empty text nodes', () => {
-			let textNode = element.appendChild(document.createTextNode(''));
+			let textNode = element.appendChild(document.createTextNode('')) as Node;
 			element.normalize();
 			chai.assert.equal(textNode.parentNode, null);
 		});

@@ -1,4 +1,5 @@
 import CharacterData from './CharacterData';
+import Document from './Document';
 import Node from './Node';
 
 import { getNodeIndex } from './util';
@@ -39,7 +40,7 @@ export default class Text extends CharacterData {
 
 		const count = length - offset;
 		const newData = this.substringData(offset, count);
-		const document = this.ownerDocument;
+		const document = this.ownerDocument as Document;
 		const newNode = document.createTextNode(newData);
 
 		// If the current node is part of a tree, insert the new node
@@ -50,10 +51,10 @@ export default class Text extends CharacterData {
 			var nodeIndex = getNodeIndex(this);
 			document._ranges.forEach(range => {
 				if (range.startContainer === this.parentNode && range.startOffset === nodeIndex + 1) {
-					range.setStart(range.startContainer, range.startOffset + 1);
+					range.setStart(range.startContainer as Node, range.startOffset + 1);
 				}
 				if (range.endContainer === this.parentNode && range.endOffset === nodeIndex + 1) {
-					range.setEnd(range.endContainer, range.endOffset + 1);
+					range.setEnd(range.endContainer as Node, range.endOffset + 1);
 				}
 				if (range.startContainer === this && range.startOffset > offset) {
 					range.setStart(newNode, range.startOffset - offset);
@@ -83,8 +84,8 @@ export default class Text extends CharacterData {
 		return newNode;
 	}
 
-	public cloneNode (deep: boolean = true, _copy: Node = null) {
+	public cloneNode (deep: boolean = true, _copy?: Text): Text {
 		_copy = _copy || new Text(this.data);
-		return super.cloneNode(deep, _copy);
+		return super.cloneNode(deep, _copy) as Text;
 	}
 }

@@ -8,30 +8,31 @@
     "dom",
     "xml"
   ],
-  "readmeFilename": "README.md",
   "main": "dist/slimdom.js",
-  "module": "src/index.ts",
+  "module": "dist/slimdom.mjs",
   "scripts": {
     "build:amd": "rimraf lib && tsc --module amd",
     "build:commonjs": "rimraf lib && tsc --module commonjs",
-    "build:umd": "rimraf dist && webpack",
-    "test": "tsc -P test && mocha --recursive test/bin/test"
+    "build:es": "rimraf lib && tsc --module es6",
+    "build:bundle": "rimraf dist && rimraf lib && tsc && rollup -c",
+    "docs": "typedoc --out docs --excludePrivate --excludeNotExported src/index.ts",
+    "test": "rimraf test/bin && tsc -P test && mocha --recursive test/bin/test"
   },
   "repository": {
     "type": "git",
     "url": "git://github.com/bwrrp/slimdom.js.git"
   },
   "devDependencies": {
-    "@types/chai": "^3.4.34",
-    "@types/lolex": "^1.5.30",
-    "@types/mocha": "^2.2.34",
-    "awesome-typescript-loader": "^3.0.0-beta.17",
+    "@types/chai": "^3.5.2",
+    "@types/lolex": "^1.5.31",
+    "@types/mocha": "^2.2.41",
     "chai": "^3.5.0",
-    "lolex": "^1.5.2",
-    "mocha": "^2.5.3",
-    "rimraf": "^2.5.4",
-    "source-map-loader": "^0.1.5",
-    "typescript": "^2.1.4",
-    "webpack": "^2.1.0-beta"
+    "lolex": "^1.6.0",
+    "mocha": "^3.3.0",
+    "rimraf": "^2.6.1",
+    "rollup": "^0.41.6",
+    "rollup-plugin-babili": "^3.0.0",
+    "typedoc": "^0.6.0",
+    "typescript": "^2.3.2"
   }
 }

@@ -103,8 +103,8 @@ describe('Document', () => {
 		});
 
 		it('has a new document element', () => {
-			chai.assert.equal(clone.documentElement.nodeType, 1);
-			chai.assert.equal(clone.documentElement.nodeName, 'root');
+			chai.assert.equal((clone.documentElement as Node).nodeType, 1);
+			chai.assert.equal((clone.documentElement as Element).nodeName, 'root');
 			chai.assert.notEqual(clone.documentElement, document.documentElement);
 		});
 	});

@@ -16,8 +16,8 @@ export default class DocumentType extends Node {
 		this.systemId = systemId;
 	}
 
-	public cloneNode (deep: boolean = true, _copy: Node = null) {
+	public cloneNode (deep: boolean = true, _copy?: DocumentType): DocumentType {
 		_copy = _copy || new DocumentType(this.name, this.publicId, this.systemId);
-		return super.cloneNode(deep, _copy);
+		return super.cloneNode(deep, _copy) as DocumentType;
 	}
 }

@@ -186,7 +186,7 @@ describe('MutationObserver', () => {
 		});
 
 		it('continues tracking under a removed node until javascript re-enters the event loop', () => {
-			const newElement = element.appendChild(document.createElement('meep'));
+			const newElement = element.appendChild(document.createElement('meep')) as Element;
 			const newText = newElement.appendChild(document.createTextNode('test')) as Text;
 			element.appendChild(newElement);
 			observer.takeRecords();

@@ -24,8 +24,8 @@ export default class ProcessingInstruction extends CharacterData {
 		this.target = target;
 	}
 
-	public cloneNode (deep: boolean = true, _copy: Node = null) {
+	public cloneNode (deep: boolean = true, _copy?: ProcessingInstruction): ProcessingInstruction {
 		_copy = _copy || new ProcessingInstruction(this.target, this.data);
-		return super.cloneNode(deep, _copy);
+		return super.cloneNode(deep, _copy) as ProcessingInstruction;
 	}
 }
