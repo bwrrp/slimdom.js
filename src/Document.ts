@@ -1,5 +1,6 @@
 import Comment from './Comment';
 import DocumentType from './DocumentType';
+import DOMImplementation from './DOMImplementation';
 import Element from './Element';
 import Node from './Node';
 import ProcessingInstruction from './ProcessingInstruction';
@@ -7,7 +8,7 @@ import Text from './Text';
 
 import Range from './selections/Range';
 
-import globals from './globals';
+import { implementation } from './globals';
 
 export default class Document extends Node {
 	/**
@@ -23,7 +24,7 @@ export default class Document extends Node {
 	/**
 	 * Returns a reference to the DOMImplementation object which created the document.
 	 */
-	public implementation = globals.domImplementation;
+	public implementation: DOMImplementation = implementation;
 
 	/**
 	 * (internal) The ranges that are active on the current document.

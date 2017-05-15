@@ -5,10 +5,7 @@ import Range from './selections/Range';
 import MutationObserver from './mutations/MutationObserver';
 
 import DOMImplementation from './DOMImplementation';
-import globals from './globals';
-
-// Create a single DOMImplementation instance shared by the entire library
-const implementation = globals.domImplementation = new DOMImplementation();
+import { implementation } from './globals';
 
 export default {
 	/**
