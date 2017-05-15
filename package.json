@@ -16,8 +16,12 @@
     "build:es": "rimraf lib && tsc --module es6",
     "build:bundle": "rimraf dist && rimraf lib && tsc && rollup -c",
     "docs": "typedoc --out docs --excludePrivate --excludeNotExported src/index.ts",
+    "prepare": "npm run build:bundle",
     "test": "rimraf test/bin && tsc -P test && mocha --recursive test/bin/test"
   },
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git://github.com/bwrrp/slimdom.js.git"
