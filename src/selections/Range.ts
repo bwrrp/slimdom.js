@@ -38,6 +38,11 @@ export default class Range {
 	 */
 	private _isDetached: boolean;
 
+    /**
+     * Do not use directly! Use Document#createRange to create an instance.
+	 *
+	 * @param document Document in which to create the Range
+	 */
 	constructor (document: Document) {
 		this.startContainer = document;
 		this.startOffset = 0;
@@ -88,6 +93,9 @@ export default class Range {
 
 	/**
 	 * Sets the start position of a range to a given node and a given offset inside that node.
+	 *
+	 * @param node   Container for the position
+	 * @param offset Index of the child or character before which to place the position
 	 */
 	public setStart (node: Node, offset: number) {
 		this.startContainer = node;
@@ -102,7 +110,10 @@ export default class Range {
 	}
 
 	/**
-	 * Sets the start position of a range to a given node and a given offset inside that node.
+	 * Sets the end position of a range to a given node and a given offset inside that node.
+	 *
+	 * @param node   Container for the position
+	 * @param offset Index of the child or character before which to place the position
 	 */
 	public setEnd (node: Node, offset: number) {
 		this.endContainer = node;
@@ -118,6 +129,8 @@ export default class Range {
 
 	/**
 	 * Sets the start position of this Range relative to another Node.
+	 *
+	 * @param referenceNode Node before which to place the position
 	 */
 	public setStartBefore (referenceNode: Node) {
 		this.setStart(referenceNode.parentNode as Node, getNodeIndex(referenceNode));
@@ -125,6 +138,8 @@ export default class Range {
 
 	/**
 	 * Sets the start position of this Range relative to another Node.
+	 *
+	 * @param referenceNode Node after which to place the position
 	 */
 	public setStartAfter (referenceNode: Node) {
 		this.setStart(referenceNode.parentNode as Node, getNodeIndex(referenceNode) + 1);
@@ -132,6 +147,8 @@ export default class Range {
 
 	/**
 	 * Sets the end position of this Range relative to another Node.
+	 *
+	 * @param referenceNode Node before which to place the position
 	 */
 	public setEndBefore (referenceNode: Node) {
 		this.setEnd(referenceNode.parentNode as Node, getNodeIndex(referenceNode));
@@ -139,6 +156,8 @@ export default class Range {
 
 	/**
 	 * Sets the end position of this Range relative to another Node.
+	 *
+	 * @param referenceNode Node after which to place the position
 	 */
 	public setEndAfter (referenceNode: Node) {
 		this.setEnd(referenceNode.parentNode as Node, getNodeIndex(referenceNode) + 1);
@@ -146,6 +165,8 @@ export default class Range {
 
 	/**
 	 * Sets the Range to contain the Node and its contents.
+	 *
+	 * @param referenceNode Node to place the range around
 	 */
 	public selectNode (referenceNode: Node) {
 		this.setStartBefore(referenceNode);
@@ -154,6 +175,8 @@ export default class Range {
 
 	/**
 	 * Sets the Range to contain the contents of a Node.
+	 *
+	 * @param referenceNode Node to place the range within
 	 */
 	public selectNodeContents (referenceNode: Node) {
 		this.setStart(referenceNode, 0);
@@ -162,6 +185,8 @@ export default class Range {
 
 	/**
 	 * Collapses the Range to one of its boundary points.
+	 *
+	 * @param toStart Whether to collapse to the start rather than the end position
 	 */
 	public collapse (toStart: boolean = false) {
 		if (toStart) {
@@ -174,6 +199,8 @@ export default class Range {
 
 	/**
 	 * Create a new range with the same boundary points.
+	 *
+	 * @return Copy of the current range
 	 */
 	public cloneRange (): Range {
 		const startContainer = this.startContainer as Node;
@@ -187,6 +214,11 @@ export default class Range {
 
 	/**
 	 * Compares a boundary of the current range with a boundary of the specified range.
+	 *
+	 * @param comparisonType One of the constants exposed on the Range constructor determining the comparison to make
+	 * @param range          Range against which to compare the current instance
+	 *
+	 * @return Either negative, zero or positive, depending on the relative positions of the points being compared
 	 */
 	public compareBoundaryPoints (comparisonType: number, range: Range): number | undefined {
 		switch (comparisonType) {

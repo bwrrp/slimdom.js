@@ -8,6 +8,9 @@ import Node from './Node';
  * a comment.
  */
 export default class Comment extends CharacterData {
+    /**
+	 * @param data Text of the comment
+	 */
 	constructor (data: string = '') {
 		super(Node.COMMENT_NODE, data);
 	}

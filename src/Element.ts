@@ -77,6 +77,9 @@ export default class Element extends Node {
 	 */
 	public childElementCount: number = 0;
 
+    /**
+	 * @param name The NodeName for the Element
+	 */
 	constructor (name: string) {
 		super(Node.ELEMENT_NODE);
 
@@ -144,6 +147,10 @@ export default class Element extends Node {
 
 	/**
 	 * Returns whether or not the element has an attribute with the given name.
+	 *
+	 * @param name Name of the attribute
+	 *
+	 * @return Whether the attribute exists on the current element
 	 */
 	public hasAttribute (name: string): boolean {
 		return !!this._attrByName[name];
@@ -152,6 +159,10 @@ export default class Element extends Node {
 	/**
 	 * Returns the value of the attribute with the given name for the current element or null if the attribute
 	 * doesn't exist.
+	 *
+	 * @param name Name of the attribute
+	 *
+	 * @return The value of the attribute, or null of no such attribute exists on the current element
 	 */
 	public getAttribute (name: string): string | null {
 		const attr = this._attrByName[name];
@@ -160,6 +171,9 @@ export default class Element extends Node {
 
 	/**
 	 * Sets the value of the attribute with the given name to the given value.
+	 *
+	 * @param name  Name of the attribute
+	 * @param value New value for the attribute
 	 */
 	public setAttribute (name: string, value: string) {
 		// Coerce the value to a string for consistency
@@ -186,7 +200,7 @@ export default class Element extends Node {
 		// Set value
 		if (oldAttr) {
 			oldAttr.value = value;
-		} 
+		}
 		else {
 			this._attrByName[name] = newAttr;
 			this.attributes.push(newAttr);
@@ -195,6 +209,8 @@ export default class Element extends Node {
 
 	/**
 	 * Removes the attribute with the given name.
+	 *
+	 * @param name Name of the attribute
 	 */
 	public removeAttribute (name: string) {
 		const attr = this._attrByName[name];

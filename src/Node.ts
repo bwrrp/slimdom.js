@@ -79,6 +79,9 @@ export default class Node {
 	// (internal) Registered mutation observers, use MutationObserver interface to manipulate
 	public _registeredObservers: RegisteredObservers;
 
+    /**
+	 * @param type NodeType for the node
+	 */
 	constructor (type: number) {
 		this.nodeType = type;
 		this._registeredObservers = new RegisteredObservers(this);
@@ -123,6 +126,10 @@ export default class Node {
 	/**
 	 * Adds a node to the end of the list of children of a specified parent node.
 	 * If the node already exists it is removed from current parent node, then added to new parent node.
+	 *
+	 * @param childNode Node to append
+	 *
+	 * @return The node that was inserted
 	 */
 	public appendChild (childNode: Node): Node | null {
 		return this.insertBefore(childNode, null);
@@ -130,6 +137,10 @@ export default class Node {
 
 	/**
 	 * Indicates whether the given node is a descendant of the current node.
+	 *
+	 * @param childNode Node to check
+	 *
+	 * @return Whether childNode is an inclusive descendant of the current node
 	 */
 	public contains (childNode: Node | null): boolean {
 		while (childNode && childNode != this) {
@@ -141,6 +152,11 @@ export default class Node {
 	/**
 	 * Inserts the specified node before a reference node as a child of the current node.
 	 * If referenceNode is null, the new node is appended after the last child node of the current node.
+	 *
+	 * @param newNode       Node to insert
+	 * @param referenceNode Childnode of the current node before which to insert, or null to append newNode at the end
+	 *
+	 * @return The node that was inserted
 	 */
 	public insertBefore (newNode: Node, referenceNode: Node | null, suppressObservers: boolean = false): Node | null {
 		// Check if referenceNode is a child
@@ -207,6 +223,8 @@ export default class Node {
 	/**
 	 * Puts the specified node and all of its subtree into a "normalized" form.
 	 * In a normalized subtree, no text nodes in the subtree are empty and there are no adjacent text nodes.
+	 *
+	 * @param recurse Whether to also normalize all descendants of the current node
 	 */
 	public normalize (recurse: boolean = true) {
 		let childNode = this.firstChild;
@@ -287,6 +305,10 @@ export default class Node {
 
 	/**
 	 * Removes a child node from the DOM and returns the removed node.
+	 *
+	 * @param childNode Child of the current node to remove
+	 *
+	 * @return The node that was removed
 	 */
 	public removeChild (childNode: Node, suppressObservers: boolean = false): Node | null {
 		// Check if childNode is a child
@@ -343,6 +365,11 @@ export default class Node {
 	/**
 	 * Replaces the given oldChild node with the given newChild node and returns the node that was replaced
 	 * (i.e. oldChild).
+	 *
+	 * @param newChild Node to insert
+	 * @param oldChild Node to remove
+	 *
+	 * @return The node that was removed
 	 */
 	public replaceChild (newChild: Node, oldChild: Node): Node | null {
 		// Check if oldChild is a child
@@ -394,6 +421,10 @@ export default class Node {
 
 	/**
 	 * Retrieves the object associated to a key on this node.
+	 *
+	 * @param key Key under which the value is stored
+	 *
+	 * @return The associated value, or null of none exists
 	 */
 	public getUserData (key: string): any | null {
 		const data = this._userDataByKey[key];
@@ -415,6 +446,10 @@ export default class Node {
 	 * structure of a document and in a standard fashion, but it also means that extra steps may need to be taken
 	 * if one wishes to serialize the information or include the information upon clone, import, or rename
 	 * operations.
+	 *
+	 * @param key Key under which the value is stored
+	 *
+	 * @return Previous data associated with the key, or null if none existed
 	 */
 	public setUserData (key: string, data: any = undefined) {
 		const oldData = this._userDataByKey[key];
@@ -460,6 +495,10 @@ export default class Node {
 	 * Returns a copy of the current node.
 	 * Override on subclasses and pass a shallow copy of the node in the 'copy' parameter (I.e. they create a new
 	 * instance of their class with their specific constructor parameters.)
+	 *
+	 * @param deep Whether to also clone the node's descendants
+	 *
+	 * @return A copy of the current node
 	 */
 	public cloneNode (deep: boolean = true, _copy?: Node): Node | null {
 		if (!_copy) {

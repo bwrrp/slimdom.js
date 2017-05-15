@@ -34,17 +34,24 @@ export default class CharacterData extends Node {
 		return this._data.length;
 	}
 
+    /**
+	 * @param type Node type
+	 * @param data Content of the node
+	 */
 	constructor (type: number, data: string) {
 		super(type);
-		
+
 		this._data = data;
 	}
 
 	/**
 	 * Returns a string containing the part of CharacterData.data of the specified length and starting at the
 	 * specified offset.
-	 * 
-	 * If count is omitted, returns all data starting at offset.
+	 *
+	 * @param offset Offset at which to start the substring
+	 * @param count  Number of characters to return. If omitted, returns all data starting at offset.
+	 *
+	 * @return The specified substring of the current content
 	 */
 	public substringData (offset: number, count?: number): string {
 		return this._data.substr(offset, count);
@@ -53,6 +60,8 @@ export default class CharacterData extends Node {
 	/**
 	 * Appends the given string to the CharacterData.data string; when this method returns, data contains the
 	 * concatenated string.
+	 *
+	 * @param data Content to add to the end of the current content
 	 */
 	public appendData (data: string) {
 		this.replaceData(this.length, 0, data);
@@ -61,6 +70,9 @@ export default class CharacterData extends Node {
 	/**
 	 * Inserts the specified characters, at the specified offset, in the CharacterData.data string; when this method
 	 * returns, data contains the modified string.
+	 *
+	 * @param offset Offset at which to insert data
+	 * @param data   Content to insert
 	 */
 	public insertData (offset: number, data: string) {
 		this.replaceData(offset, 0, data);
@@ -69,8 +81,9 @@ export default class CharacterData extends Node {
 	/**
 	 * Removes the specified amount of characters, starting at the specified offset, from the CharacterData.data
 	 * string; when this method returns, data contains the shortened string.
-	 * 
-	 * Omitting count deletes from offset to the end of data.
+	 *
+	 * @param offset Offset at which to start removing content
+	 * @param count  Number of characters to remove. Omitting count deletes from offset to the end of data.
 	 */
 	public deleteData (offset: number, count: number = this.length) {
 		this.replaceData(offset, count, '');
@@ -79,6 +92,10 @@ export default class CharacterData extends Node {
 	/**
 	 * Replaces the specified amount of characters, starting at the specified offset, with the specified string;
 	 * when this method returns, data contains the modified string.
+	 *
+	 * @param offset Offset at which to remove and then insert content
+	 * @param count  Number of characters to remove
+	 * @param data   Content to insert
 	 */
 	public replaceData (offset: number, count: number, data: string) {
 		const length = this.length;

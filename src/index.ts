@@ -11,42 +11,42 @@ import globals from './globals';
 const implementation = globals.domImplementation = new DOMImplementation();
 
 export default {
- 	/**
- 	 * The DOMImplementation instance.
- 	 */
- 	implementation,
+	/**
+	 * The DOMImplementation instance.
+	 */
+	implementation,
 
- 	/**
- 	 * Creates a new Document and returns it.
- 	 *
- 	 * @return {Document} The newly created Document.
- 	 */
- 	createDocument (): Document {
- 		return implementation.createDocument(null, '');
- 	},
+	/**
+	 * Creates a new Document and returns it.
+	 *
+	 * @return The newly created Document.
+	 */
+	createDocument (): Document {
+		return implementation.createDocument(null, '');
+	},
 
- 	/**
- 	 * The Document constructor.
- 	 */
- 	Document,
+	/**
+	 * The Document constructor.
+	 */
+	Document,
 
- 	/**
- 	 * The Node constructor.
- 	 */
- 	Node,
+	/**
+	 * The Node constructor.
+	 */
+	Node,
 
- 	/**
- 	 * The Element constructor.
- 	 */
- 	Element,
+	/**
+	 * The Element constructor.
+	 */
+	Element,
 
- 	/**
- 	 * The Range constructor.
- 	 */
- 	Range,
+	/**
+	* The Range constructor.
+	*/
+	Range,
 
- 	/**
- 	 * The MutationObserver constructor.
- 	 */
- 	MutationObserver
+	/**
+	 * The MutationObserver constructor.
+	 */
+	MutationObserver
 };

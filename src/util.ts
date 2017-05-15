@@ -1,7 +1,11 @@
 import Node from './Node';
 
 /**
- * Get all parents of the given node.
+ * Get all inclusive ancestors of the given node.
+ *
+ * @param node Node to collect ancestors for
+ *
+ * @return All inclusive ancestors, ordered from root down to node
  */
 export function parents (node: Node | null): Node[] {
 	const nodes = [];
@@ -15,6 +19,10 @@ export function parents (node: Node | null): Node[] {
 /**
  * Returns the index of the given node in its parent's childNodes.
  * Used as an offset, this represents the position just before the given node.
+ *
+ * @param node Node to determine the index of
+ *
+ * @return The index among node's siblings
  */
 export function getNodeIndex (node: Node): number {
 	return (node.parentNode as Node).childNodes.indexOf(node);
@@ -22,6 +30,11 @@ export function getNodeIndex (node: Node): number {
 
 /**
  * Returns the first common ancestor of the two nodes.
+ *
+ * @param node1 First node
+ * @param node2 Second node
+ *
+ * @return Common ancestor of node1 and node2, or null if the nodes are in different trees
  */
 export function commonAncestor (node1: Node, node2: Node): Node | null {
 	if (node1 === node2) {
@@ -54,6 +67,13 @@ export function commonAncestor (node1: Node, node2: Node): Node | null {
 
 /**
  * Compares two positions within the document.
+ *
+ * @param node1   Container of first position
+ * @param offset1 Offset of first position
+ * @param node2   Container of second position
+ * @param offset2 Offset of second position
+ *
+ * @return Negative, 0 or positive, depending on the relative ordering of the given positions
  */
 export function comparePoints (node1: Node, offset1: number, node2: Node, offset2: number): number | undefined {
 	if (node1 !== node2) {

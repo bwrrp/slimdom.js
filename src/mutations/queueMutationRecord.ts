@@ -3,6 +3,8 @@ import Node from '../Node';
 
 /**
  * Queues mutation on all target nodes, and on all target nodes of all its ancestors.
+ *
+ * @param mutationRecord The record to enqueue
  */
 export default function queueMutationRecord (mutationRecord: MutationRecord) {
 	// Check all inclusive ancestors of the target for registered observers

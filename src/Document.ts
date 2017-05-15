@@ -69,7 +69,7 @@ export default class Document extends Node {
 		var result = Node.prototype.removeChild.call(this, childNode, _suppressObservers);
 		if (result === this.documentElement) {
 			this.documentElement = null;
-		} 
+		}
 		else if (result === this.doctype) {
 			this.doctype = null;
 		}
@@ -79,6 +79,10 @@ export default class Document extends Node {
 
 	/**
 	 * Creates a new Element node with the given tag name.
+	 *
+	 * @param name NodeName of the new Element
+	 *
+	 * @return The new Element
 	 */
 	public createElement (name: string): Element {
 		const node = new Element(name);
@@ -88,6 +92,10 @@ export default class Document extends Node {
 
 	/**
 	 * Creates a new Text node with the given content.
+	 *
+	 * @param content Content for the new text node
+	 *
+	 * @return The new text node
 	 */
 	public createTextNode (content: string): Text {
 		const node = new Text(content);
@@ -97,6 +105,11 @@ export default class Document extends Node {
 
 	/**
 	 * Creates a new ProcessingInstruction node with a given target and given data.
+	 *
+	 * @param target Target of the processing instruction
+	 * @param data   Content of the processing instruction
+	 *
+	 * @return The new processing instruction
 	 */
 	public createProcessingInstruction (target: string, data: string): ProcessingInstruction {
 		const node = new ProcessingInstruction(target, data);
@@ -106,6 +119,10 @@ export default class Document extends Node {
 
 	/**
 	 * Creates a new Comment node with the given data.
+	 *
+	 * @param data Content of the comment
+	 *
+	 * @return The new comment node
 	 */
 	public createComment (data: string): Comment {
 		const node = new Comment(data);
@@ -115,6 +132,8 @@ export default class Document extends Node {
 
 	/**
 	 * Creates a selection range within the current document.
+	 *
+	 * @return The new range, positioned just inside the root of the document
 	 */
 	public createRange (): Range {
 		return new Range(this);

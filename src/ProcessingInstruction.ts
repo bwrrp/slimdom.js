@@ -18,6 +18,10 @@ export default class ProcessingInstruction extends CharacterData {
 	 */
 	public target: string;
 
+    /**
+	 * @param target Target for the processing instruction
+	 * @param data   Content for the processing instruction
+	 */
 	constructor (target: string, data: string) {
 		super(Node.PROCESSING_INSTRUCTION_NODE, data);
 

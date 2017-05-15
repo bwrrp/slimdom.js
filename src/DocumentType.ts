@@ -8,6 +8,11 @@ export default class DocumentType extends Node {
 	public publicId: string;
 	public systemId: string;
 
+    /**
+	 * @param name     The name of the document type
+	 * @param publicId The public identifier of the doctype
+	 * @param systemId The system identifier of the doctype
+	 */
 	constructor (name: string, publicId: string, systemId: string) {
 		super(Node.DOCUMENT_TYPE_NODE);
 
