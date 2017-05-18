@@ -9,7 +9,7 @@ export default {
         { dest: MODULE_DEST_FILE, format: 'es' },
     ],
     moduleName: 'slimdom',
-    exports: 'named',
+    exports: 'default',
     sourceMap: true,
     plugins: [
         babili({
