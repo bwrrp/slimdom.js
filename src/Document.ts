@@ -1,147 +1,270 @@
+import { NonElementParentNode, ParentNode, getChildren } from './mixins';
+import Attr from './Attr';
+import CDATASection from './CDATASection';
 import Comment from './Comment';
 import DocumentType from './DocumentType';
-import DOMImplementation from './DOMImplementation';
-import Element from './Element';
+import { implementation, default as DOMImplementation } from './DOMImplementation';
+import { createElement, default as Element } from './Element';
 import Node from './Node';
 import ProcessingInstruction from './ProcessingInstruction';
 import Text from './Text';
+import Range from './Range';
 
-import Range from './selections/Range';
+import cloneNode from './util/cloneNode';
+import createElementNS from './util/createElementNS';
+import { throwNotSupportedError } from './util/errorHelpers';
+import { adoptNode } from './util/mutationAlgorithms';
+import { NodeType, isNodeOfType } from './util/NodeType';
+import { validateAndExtract } from './util/namespaceHelpers';
 
-import { implementation } from './globals';
+/**
+ * 3.5. Interface Document
+ */
+export default class Document extends Node implements NonElementParentNode, ParentNode {
+	// Node
 
-export default class Document extends Node {
+	public get nodeType (): number {
+		return NodeType.DOCUMENT_NODE;
+	}
+
+	public get nodeName (): string {
+		return '#document';
+	}
+
+	public get nodeValue (): string | null {
+		return null;
+	}
+
+	public set nodeValue (newValue: string | null) {
+		// Do nothing.
+	}
+
+	// ParentNode
+
+	public get children (): Element[] {
+		return getChildren(this);
+	}
+
+	public firstElementChild: Element | null = null;
+	public lastElementChild: Element | null = null;
+	public childElementCount: number = 0;
+
+	// Document
+
 	/**
-	 * The DocumentType that is a direct child of the current document, or null if there is none.
+	 * Returns a reference to the DOMImplementation object associated with the document.
+	 */
+	public get implementation (): DOMImplementation {
+		return implementation;
+	}
+
+	/**
+	 * The doctype, or null if there is none.
 	 */
 	public doctype: DocumentType | null = null;
 
 	/**
-	 * The Element that is a direct child of the current document, or null if there is none.
+	 * The document element, or null if there is none.
 	 */
 	public documentElement: Element | null = null;
 
 	/**
-	 * Returns a reference to the DOMImplementation object which created the document.
+	 * Creates a new Document.
+	 *
+	 * Note: Unlike DOMImplementation#createDocument(), this constructor does not return an XMLDocument object, but a
+	 * document (Document object).
 	 */
-	public implementation: DOMImplementation = implementation;
-
-	/**
-	 * (internal) The ranges that are active on the current document.
-	 */
-	public _ranges: Range[] = [];
-
-	constructor () {
-		super(Node.DOCUMENT_NODE);
-
-		// Non-standard: should be null for Document nodes.
-		this.ownerDocument = this;
-	}
-
-	// Override insertBefore to update the documentElement reference.
-	public insertBefore (newNode: Node, referenceNode: Node | null, suppressObservers: boolean = false): Node | null {
-		// Document can not have more than one child element node
-		if (newNode.nodeType === Node.ELEMENT_NODE && this.documentElement) {
-			return this.documentElement === newNode ? newNode : null;
-		}
-
-		// Document can not have more than one child doctype node
-		if (newNode.nodeType === Node.DOCUMENT_TYPE_NODE && this.doctype) {
-			return this.doctype === newNode ? newNode : null;
-		}
-
-		const result = super.insertBefore(newNode, referenceNode, suppressObservers);
-
-		// Update document element
-		if (result && result.nodeType === Node.ELEMENT_NODE) {
-			this.documentElement = result as Element;
-		}
-
-		// Update doctype
-		if (result && result.nodeType === Node.DOCUMENT_TYPE_NODE) {
-			this.doctype = result as DocumentType;
-		}
-
-		return result;
-	}
-
-	// Override removeChild to keep the documentElement property in sync.
-	public removeChild (childNode: Node, suppressObservers: boolean = false): Node | null {
-		var result = Node.prototype.removeChild.call(this, childNode, suppressObservers);
-		if (result === this.documentElement) {
-			this.documentElement = null;
-		}
-		else if (result === this.doctype) {
-			this.doctype = null;
-		}
-
-		return result;
+	constructor() {
+		super(null);
 	}
 
 	/**
-	 * Creates a new Element node with the given tag name.
+	 * Creates a new element in the null namespace.
 	 *
-	 * @param name NodeName of the new Element
+	 * @param localName Local name of the element
 	 *
-	 * @return The new Element
+	 * @return The new element
 	 */
-	public createElement (name: string): Element {
-		const node = new Element(name);
-		node.ownerDocument = this;
-		return node;
+	public createElement (localName: string): Element {
+		// 1. If localName does not match the Name production, then throw an InvalidCharacterError.
+
+		// 2. If the context object is an HTML document, then set localName to localName in ASCII lowercase.
+		// (html documents not implemented)
+
+		// 3. Let is be the value of is member of options, or null if no such member exists.
+		// (custom elements not implemented)
+
+		// 4. Let namespace be the HTML namespace, if the context object is an HTML document or context object’s content
+		// type is "application/xhtml+xml", and null otherwise.
+		// (html documents not implemented)
+		const namespace: string | null = null;
+
+		// 5. Let element be the result of creating an element given the context object, localName, namespace, null, is,
+		// and with the synchronous custom elements flag set.
+		const element = createElement(this, localName, namespace, null);
+
+		// 6. If is is non-null, then set an attribute value for element using "is" and is.
+		// (custom elements not implemented)
+
+		// 7. Return element.
+		return element;
 	}
 
 	/**
-	 * Creates a new Text node with the given content.
+	 * Creates a new element in the given namespace.
 	 *
-	 * @param content Content for the new text node
+	 * @param namespace     Namespace URI for the new element
+	 * @param qualifiedName Qualified name for the new element
+	 *
+	 * @return The new element
+	 */
+	public createElementNS (namespace: string | null, qualifiedName: string): Element {
+		// return the result of running the internal createElementNS steps, given context object, namespace,
+		// qualifiedName, and options.
+		return createElementNS(this, namespace, qualifiedName);
+	}
+
+	/**
+	 * Creates a new text node with the given data.
+	 *
+	 * @param data Data for the new text node
 	 *
 	 * @return The new text node
 	 */
-	public createTextNode (content: string): Text {
-		const node = new Text(content);
-		node.ownerDocument = this;
-		return node;
+	public createTextNode (data: string): Text {
+		return new Text(this, data);
 	}
 
 	/**
-	 * Creates a new ProcessingInstruction node with a given target and given data.
+	 * Creates a new CDATA section with the given data.
 	 *
-	 * @param target Target of the processing instruction
-	 * @param data   Content of the processing instruction
+	 * @param data Data for the new CDATA section
 	 *
-	 * @return The new processing instruction
+	 * @return The new CDATA section
 	 */
-	public createProcessingInstruction (target: string, data: string): ProcessingInstruction {
-		const node = new ProcessingInstruction(target, data);
-		node.ownerDocument = this;
-		return node;
+	public createCDATASection (data: string): CDATASection {
+		return new CDATASection(this, data);
 	}
 
 	/**
-	 * Creates a new Comment node with the given data.
+	 * Creates a new comment node with the given data.
 	 *
-	 * @param data Content of the comment
+	 * @param data Data for the new comment
 	 *
 	 * @return The new comment node
 	 */
 	public createComment (data: string): Comment {
-		const node = new Comment(data);
-		node.ownerDocument = this;
+		return new Comment(this, data);
+	}
+
+	/**
+	 * Creates a new processing instruction.
+	 *
+	 * @param target Target for the new processing instruction
+	 * @param data   Data for the new processing instruction
+	 *
+	 * @return The new processing instruction
+	 */
+	public createProcessingInstruction (target: string, data: string): ProcessingInstruction {
+		return new ProcessingInstruction(this, target, data);
+	}
+
+	/**
+	 * Creates a copy of a node from an external document that can be inserted into the current document.
+	 *
+	 * @param node The node to import
+	 * @param deep Whether to also import node's children
+	 */
+	public importNode (node: Node, deep: boolean = false): Node {
+		// 1. If node is a document or shadow root, then throw a NotSupportedError.
+		if (isNodeOfType(node, NodeType.DOCUMENT_NODE)) {
+			throwNotSupportedError('importing a Document node is not supported');
+		}
+
+		// 2. Return a clone of node, with context object and the clone children flag set if deep is true.
+		return cloneNode(node, deep, this);
+	}
+
+	/**
+	 * Adopts a node. The node and its subtree is removed from the document it's in (if any), and its ownerDocument is
+	 * changed to the current document. The node can then be inserted into the current document.
+	 *
+	 * @param node The node to adopt
+	 */
+	public adoptNode (node: Node): Node {
+		// 1. If node is a document, then throw a NotSupportedError.
+		if (isNodeOfType(node, NodeType.DOCUMENT_NODE)) {
+			throwNotSupportedError('adopting a Document node is not supported');
+		}
+
+		// 2. If node is a shadow root, then throw a HierarchyRequestError.
+		// (shadow dom not implemented)
+
+		// 3. Adopt node into the context object.
+		adoptNode(node, this);
+
+		// 4. Return node.
 		return node;
 	}
 
 	/**
-	 * Creates a selection range within the current document.
+	 * Creates a new attribute node with the null namespace and given local name.
 	 *
-	 * @return The new range, positioned just inside the root of the document
+	 * @param localName The local name of the attribute
+	 *
+	 * @return The new attribute node
+	 */
+	public createAttribute (localName: string): Attr {
+		// 1. If localName does not match the Name production in XML, then throw an InvalidCharacterError.
+
+		// 2. If the context object is an HTML document, then set localName to localName in ASCII lowercase.
+		// (html documents not implemented)
+
+		// 3. Return a new attribute whose local name is localName and node document is context object.
+		return new Attr(this, null, null, localName, '', null);
+	}
+
+	/**
+	 * Creates a new attribute node with the given namespace and qualified name.
+	 *
+	 * @param namespace     Namespace URI for the new attribute, or null for the null namespace
+	 * @param qualifiedName Qualified name for the new attribute
+	 *
+	 * @return The new attribute node
+	 */
+	public createAttributeNS (namespace: string | null, qualifiedName: string): Attr {
+		// 1. Let namespace, prefix, and localName be the result of passing namespace and qualifiedName to validate and
+		// extract.
+		const { namespace: validatedNamespace, prefix, localName } = validateAndExtract(namespace, qualifiedName);
+
+		// 2. Return a new attribute whose namespace is namespace, namespace prefix is prefix, local name is localName,
+		// and node document is context object.
+		return new Attr(this, validatedNamespace, prefix, localName, '', null);
+	}
+
+	/**
+	 * Creates a new Range, initially positioned at the root of this document.
+	 *
+	 * Note: although the spec encourages use of the Range() constructor, this implementation does not associate any
+	 * Document with the global object, preventing implementation of that constructor.
+	 *
+	 * @return The new Range
 	 */
 	public createRange (): Range {
 		return new Range(this);
 	}
 
-	public cloneNode (deep: boolean = true, copy?: Document): Document {
-		copy = copy || new Document();
-		return super.cloneNode(deep, copy) as Document;
+	/**
+	 * (non-standard) Creates a copy of the context object, not including its children.
+	 *
+	 * @param document The node document to associate with the copy
+	 *
+	 * @return A shallow copy of the context object
+	 */
+	public _copy (document: Document): Document {
+		// Set copy’s encoding, content type, URL, origin, type, and mode, to those of node.
+		// (properties not implemented)
+
+		return new Document();
 	}
 }

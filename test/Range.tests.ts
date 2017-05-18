@@ -1,10 +1,10 @@
-import slimdom from '../../src/index';
+import * as slimdom from '../src/index';
 
-import Document from '../../src/Document';
-import Element from '../../src/Element';
-import Node from '../../src/Node';
-import Text from '../../src/Text';
-import Range from '../../src/selections/Range';
+import Document from '../src/Document';
+import Element from '../src/Element';
+import Node from '../src/Node';
+import Text from '../src/Text';
+import Range from '../src/Range';
 
 import * as chai from 'chai';
 
@@ -214,7 +214,7 @@ describe('Range', () => {
 
 			it('moves with text node deletes during normalization', () => {
 				text.deleteData(0, 4);
-				element.normalize(true);
+				element.normalize();
 				chai.assert.equal(range.startContainer, element);
 				chai.assert.equal(range.startOffset, 0);
 				chai.assert.equal(range.endContainer, element);
@@ -225,7 +225,7 @@ describe('Range', () => {
 				const otherText = element.appendChild(document.createTextNode('more')) as Node;
 				range.setStartBefore(otherText);
 				range.setEnd(otherText, 2);
-				element.normalize(true);
+				element.normalize();
 				chai.assert.equal(range.startContainer, text);
 				chai.assert.equal(range.startOffset, 4);
 				chai.assert.equal(range.endContainer, text);

@@ -1,4 +1,4 @@
-import slimdom from '../src/index';
+import * as slimdom from '../src/index';
 
 import Document from '../src/Document';
 import ProcessingInstruction from '../src/ProcessingInstruction';

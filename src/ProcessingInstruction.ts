@@ -1,35 +1,45 @@
 import CharacterData from './CharacterData';
-import Node from './Node';
+import Document from './Document';
+import { NodeType } from './util/NodeType';
 
 /**
- * A processing instruction provides an opportunity for application-specific instructions to be embedded within
- * XML and which can be ignored by XML processors which do not support processing their instructions (outside
- * of their having a place in the DOM).
- *
- * A Processing instruction is distinct from a XML Declaration which is used for other information about the
- * document such as encoding and which appear (if it does) as the first item in the document.
- *
- * User-defined processing instructions cannot begin with 'xml', as these are reserved (e.g., as used in
- * <?xml-stylesheet?>).
+ * 3.13. Interface ProcessingInstruction
  */
 export default class ProcessingInstruction extends CharacterData {
-	/**
-	 * The string that goes after the <? and before the whitespace, delimiting it from the data.
-	 */
+	// Node
+
+	public get nodeType (): number {
+		return NodeType.PROCESSING_INSTRUCTION_NODE;
+	}
+
+	public get nodeName (): string {
+		return this.target;
+	}
+
+	// ProcessingInstruction
+
 	public target: string;
 
 	/**
-	 * @param target Target for the processing instruction
-	 * @param data   Content for the processing instruction
+	 * (non-standard) Use Document#createProcessingInstruction to create a processing instruction.
+	 *
+	 * @param document The node document to associate with the processing instruction
+	 * @param target   The target of the processing instruction
 	 */
-	constructor (target: string, data: string) {
-		super(Node.PROCESSING_INSTRUCTION_NODE, data);
-
+	constructor (document: Document, target: string, data: string) {
+		super(document, data);
 		this.target = target;
 	}
 
-	public cloneNode (deep: boolean = true, copy?: ProcessingInstruction): ProcessingInstruction {
-		copy = copy || new ProcessingInstruction(this.target, this.data);
-		return super.cloneNode(deep, copy) as ProcessingInstruction;
+	/**
+	 * (non-standard) Creates a copy of the context object, not including its children.
+	 *
+	 * @param document The node document to associate with the copy
+	 *
+	 * @return A shallow copy of the context object
+	 */
+	public _copy (document: Document): ProcessingInstruction {
+		// Set copy’s target and data to those of node.
+		return new ProcessingInstruction(document, this.target, this.data);
 	}
 }

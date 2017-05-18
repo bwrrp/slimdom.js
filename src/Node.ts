@@ -1,44 +1,44 @@
+import Element from './Element';
 import Document from './Document';
 import Text from './Text';
-
-import MutationRecord from './mutations/MutationRecord';
-import RegisteredObservers from './mutations/RegisteredObservers';
-import queueMutationRecord from './mutations/queueMutationRecord';
-
-import { getNodeIndex } from './util';
-
-/**
- * Internal helper used to adopt a given node into a given document.
- *
- * @param node     Node to adopt
- * @param document Document to adopt node into
- */
-function adopt (node: Node, document: Document) {
-	node.ownerDocument = document;
-	node.childNodes.forEach(child => adopt(child, document));
-}
-
-interface UserDataEntry {
-	name: string,
-	value: any
-}
+import { ranges } from './Range';
+import RegisteredObservers from './mutation-observer/RegisteredObservers';
+import cloneNode from './util/cloneNode';
+import { preInsertNode, appendNode, replaceChildWithNode, preRemoveChild, removeNode } from './util/mutationAlgorithms';
+import { NodeType, isNodeOfType } from './util/NodeType';
+import { getNodeDocument } from './util/treeHelpers';
 
 /**
- * A Node is a class from which a number of DOM types inherit, and allows these various types to be treated
- * (or tested) similarly.
+ * 3.4. Interface Node
  */
 export default abstract class Node {
-	static ELEMENT_NODE = 1;
-	static TEXT_NODE = 3;
-	static PROCESSING_INSTRUCTION_NODE = 7;
-	static COMMENT_NODE = 8;
-	static DOCUMENT_NODE = 9;
-	static DOCUMENT_TYPE_NODE = 10;
+	static ELEMENT_NODE: number = NodeType.ELEMENT_NODE;
+	static ATTRIBUTE_NODE: number = NodeType.ATTRIBUTE_NODE;
+	static TEXT_NODE: number = NodeType.TEXT_NODE;
+	static CDATA_SECTION_NODE: number = NodeType.CDATA_SECTION_NODE;
+	static ENTITY_REFERENCE_NODE: number = NodeType.ENTITY_REFERENCE_NODE; // historical
+	static ENTITY_NODE: number = NodeType.ENTITY_NODE; // historical
+	static PROCESSING_INSTRUCTION_NODE: number = NodeType.PROCESSING_INSTRUCTION_NODE;
+	static COMMENT_NODE: number = NodeType.COMMENT_NODE;
+	static DOCUMENT_NODE: number = NodeType.DOCUMENT_NODE;
+	static DOCUMENT_TYPE_NODE: number = NodeType.DOCUMENT_TYPE_NODE;
+	static DOCUMENT_FRAGMENT_NODE: number = NodeType.DOCUMENT_FRAGMENT_NODE;
+	static NOTATION_NODE: number = NodeType.NOTATION_NODE; // historical
 
 	/**
-	 * An integer representing the type of the node.
+	 * Returns the type of node, represented by a number.
 	 */
-	public nodeType: number;
+	public abstract get nodeType (): number;
+
+	/**
+	 * Returns a string appropriate for the type of node.
+	 */
+	public abstract get nodeName (): string;
+
+	/**
+	 * A reference to the Document node in which the current node resides.
+	 */
+	public ownerDocument: Document | null = null;
 
 	/**
 	 * The parent node of the current node.
@@ -46,493 +46,262 @@ export default abstract class Node {
 	public parentNode: Node | null = null;
 
 	/**
-	 * The next sibling node of the current node (on the right, could be a Text node).
+	 * The parent if it is an element, or null otherwise.
 	 */
-	public nextSibling: Node | null = null;
+	public get parentElement (): Element | null {
+		return this.parentNode && isNodeOfType(this.parentNode, NodeType.ELEMENT_NODE) ? this.parentNode as Element : null;
+	}
 
 	/**
-	 * The next sibling node of the current node (on the left, could be a Text node).
+	 * Returns true if the context object has children, and false otherwise.
 	 */
-	public previousSibling: Node | null = null;
+	public hasChildNodes (): boolean {
+		return !!this.childNodes.length;
+	}
 
 	/**
-	 * A list of childNodes (including Text nodes) of this node.
+	 * The node's children.
+	 *
+	 * Non-standard: implemented as an array rather than a NodeList.
 	 */
 	public childNodes: Node[] = [];
 
 	/**
-	 * The first child node of the current node.
+	 * The first child node of the current node, or null if it has no children.
 	 */
 	public firstChild: Node | null = null;
 
 	/**
-	 * The last child node of the current node.
+	 * The last child node of the current node, or null if it has no children.
 	 */
 	public lastChild: Node | null = null;
 
 	/**
-	 * A reference to the Document node in which the current node resides.
+	 * The first preceding sibling of the current node, or null if it has none.
 	 */
-	public ownerDocument: Document | null = null;
-
-	// User data, use get/setUserData to access
-	private _userData: UserDataEntry[] = [];
-	private _userDataByKey: { [key: string]: UserDataEntry } = {};
-
-	// (internal) Registered mutation observers, use MutationObserver interface to manipulate
-	public _registeredObservers: RegisteredObservers;
+	public previousSibling: Node | null = null;
 
 	/**
-	 * @param type NodeType for the node
+	 * The first following sibling of the current node, or null if it has none.
 	 */
-	constructor (type: number) {
-		this.nodeType = type;
-		this._registeredObservers = new RegisteredObservers(this);
+	public nextSibling: Node | null = null;
+
+	/**
+	 * The value of the node.
+	 */
+	public abstract get nodeValue (): string | null;
+	public abstract set nodeValue (value: string | null);
+
+	/**
+	 * (non-standard) Each node has an associated list of registered observers.
+	 */
+	public _registeredObservers: RegisteredObservers = new RegisteredObservers(this);
+
+	/**
+	 * (non-standard) Node should never be instantiated directly.
+	 *
+	 * @param document The node document to associate with the node
+	 */
+	constructor (document: Document | null) {
+		this.ownerDocument = document;
 	}
 
 	/**
-	 * Internal helper used to update the firstChild and lastChild references.
+	 * Puts the specified node and all of its subtree into a "normalized" form. In a normalized subtree, no text nodes
+	 * in the subtree are empty and there are no adjacent text nodes.
 	 */
-	private _updateFirstLast () {
-		this.firstChild = this.childNodes[0] || null;
-		this.lastChild = this.childNodes[this.childNodes.length - 1] || null;
-	}
-
-	/**
-	 * Internal helper used to update the nextSibling and previousSibling references.
-	 */
-	private _updateSiblings (index: number) {
-		if (!this.parentNode) {
-			// Node has been removed
-			if (this.nextSibling) {
-				this.nextSibling.previousSibling = this.previousSibling;
-			}
-			if (this.previousSibling) {
-				this.previousSibling.nextSibling = this.nextSibling;
-			}
-			this.nextSibling = null;
-			this.previousSibling = null;
-			return;
-		}
-
-		this.nextSibling = this.parentNode.childNodes[index + 1] || null;
-		this.previousSibling = this.parentNode.childNodes[index - 1] || null;
-
-		if (this.nextSibling) {
-			this.nextSibling.previousSibling = this;
-		}
-		if (this.previousSibling) {
-			this.previousSibling.nextSibling = this;
-		}
-	}
-
-	/**
-	 * Adds a node to the end of the list of children of a specified parent node.
-	 * If the node already exists it is removed from current parent node, then added to new parent node.
-	 *
-	 * @param childNode Node to append
-	 *
-	 * @return The node that was inserted
-	 */
-	public appendChild (childNode: Node): Node | null {
-		return this.insertBefore(childNode, null);
-	}
-
-	/**
-	 * Indicates whether the given node is a descendant of the current node.
-	 *
-	 * @param childNode Node to check
-	 *
-	 * @return Whether childNode is an inclusive descendant of the current node
-	 */
-	public contains (childNode: Node | null): boolean {
-		while (childNode && childNode != this) {
-			childNode = childNode.parentNode;
-		}
-		return childNode === this;
-	}
-
-	/**
-	 * Inserts the specified node before a reference node as a child of the current node.
-	 * If referenceNode is null, the new node is appended after the last child node of the current node.
-	 *
-	 * @param newNode           Node to insert
-	 * @param referenceNode     Childnode of the current node before which to insert, or null to append at the end
-	 * @param suppressObservers (non-standard) Whether to enqueue a mutation record for the mutation
-	 *
-	 * @return The node that was inserted
-	 */
-	public insertBefore (newNode: Node, referenceNode: Node | null, suppressObservers: boolean = false): Node | null {
-		// Check if referenceNode is a child
-		if (referenceNode && referenceNode.parentNode !== this) {
-			return null;
-		}
-
-		// Fix using the new node as a reference
-		if (referenceNode === newNode) {
-			referenceNode = newNode.nextSibling;
-		}
-
-		// Already there?
-		if (newNode.parentNode === this && newNode.nextSibling === referenceNode) {
-			return newNode;
-		}
-
-		// Detach from old parent
-		if (newNode.parentNode) {
-			// This removal is never suppressed
-			newNode.parentNode.removeChild(newNode, false);
-		}
-
-		// Adopt nodes into document
-		const ownerDocument = this instanceof Document ? this : this.ownerDocument as Document;
-		if (newNode.ownerDocument !== ownerDocument) {
-			adopt(newNode, ownerDocument);
-		}
-
-		// Check index of reference node
-		const index = referenceNode ? getNodeIndex(referenceNode) : this.childNodes.length;
-		if (index < 0) {
-			return null;
-		}
-
-		// Update ranges
-		ownerDocument._ranges.forEach(range => {
-			if (range.startContainer === this && range.startOffset > index) {
-				range.startOffset += 1;
-			}
-			if (range.endContainer === this && range.endOffset > index) {
-				range.endOffset += 1;
-			}
-		});
-
-		// Queue mutation record
-		if (!suppressObservers) {
-			const record = new MutationRecord('childList', this);
-			record.addedNodes.push(newNode);
-			record.nextSibling = referenceNode;
-			record.previousSibling = referenceNode ? referenceNode.previousSibling : this.lastChild;
-			queueMutationRecord(record);
-		}
-
-		// Insert the node
-		newNode.parentNode = this;
-		this.childNodes.splice(index, 0, newNode);
-		this._updateFirstLast();
-		newNode._updateSiblings(index);
-
-		return newNode;
-	}
-
-	/**
-	 * Puts the specified node and all of its subtree into a "normalized" form.
-	 * In a normalized subtree, no text nodes in the subtree are empty and there are no adjacent text nodes.
-	 *
-	 * @param recurse Whether to also normalize all descendants of the current node
-	 */
-	public normalize (recurse: boolean = true) {
-		let childNode = this.firstChild;
+	public normalize (): void {
+		// for each descendant exclusive Text node node of context object:
+		let node = this.firstChild;
 		let index = 0;
-		const document = this instanceof Document ? this : this.ownerDocument as Document;
-		while (childNode) {
-			let nextNode = childNode.nextSibling;
-			if (childNode.nodeType === Node.TEXT_NODE) {
-				const textChildNode = childNode as Text;
-
-				// Delete empty text nodes
-				let length = textChildNode.length;
-				if (!length) {
-					this.removeChild(childNode);
-					--index;
-				}
-				else {
-					// Concatenate and collect childNode's contiguous text nodes (excluding current)
-					let data = '';
-					const siblingsToRemove = [];
-					let siblingIndex: number;
-					let sibling: Node | null;
-					for (sibling = childNode.nextSibling, siblingIndex = index;
-						sibling && sibling.nodeType == Node.TEXT_NODE;
-						sibling = sibling.nextSibling, ++siblingIndex
-					) {
-						data += (sibling as Text).data;
-						siblingsToRemove.push(sibling);
-					}
-
-					// Append concatenated data, if any
-					if (data) {
-						textChildNode.appendData(data);
-					}
-
-					// Fix ranges
-					for (sibling = childNode.nextSibling, siblingIndex = index + 1;
-						sibling && sibling.nodeType == Node.TEXT_NODE;
-						sibling = sibling.nextSibling, ++siblingIndex) {
-
-						document._ranges.forEach(range => {
-							if (range.startContainer === sibling) {
-								range.setStart(childNode as Node, length + range.startOffset);
-							}
-							if (range.startContainer === this && range.startOffset == siblingIndex) {
-								range.setStart(childNode as Node, length);
-							}
-							if (range.endContainer === sibling) {
-								range.setEnd(childNode as Node, length + range.endOffset);
-							}
-							if (range.endContainer === this && range.endOffset == siblingIndex) {
-								range.setEnd(childNode as Node, length);
-							}
-						});
-
-						length += (sibling as Text).length;
-					};
-
-					// Remove contiguous text nodes (excluding current) in tree order
-					while (siblingsToRemove.length) {
-						this.removeChild(siblingsToRemove.shift() as Node);
-					}
-
-					// Update next node to process
-					nextNode = childNode.nextSibling;
-				}
+		const document = getNodeDocument(this);
+		while (node) {
+			let nextNode = node.nextSibling;
+			if (!isNodeOfType(node, NodeType.TEXT_NODE)) {
+				// Process descendants
+				node.normalize();
+				node = nextNode;
+				continue;
 			}
-			else if (recurse) {
-				// Recurse
-				childNode.normalize();
+
+			const textNode = node as Text;
+			// 1. Let length be node’s length.
+			let length = textNode.length;
+
+			// 2. If length is zero, then remove node and continue with the next exclusive Text node, if any.
+			if (length === 0) {
+				removeNode(node, this);
+				--index;
+				node = nextNode;
+				continue;
+			}
+
+			// 3. Let data be the concatenation of the data of node’s contiguous exclusive Text nodes (excluding
+			// itself), in tree order.
+			let data = '';
+			const siblingsToRemove = [];
+			for (let sibling = textNode.nextSibling;
+				sibling && isNodeOfType(sibling, NodeType.TEXT_NODE);
+				sibling = sibling.nextSibling
+			) {
+				data += (sibling as Text).data;
+				siblingsToRemove.push(sibling);
+			}
+
+			// 4. Replace data with node node, offset length, count 0, and data data.
+			if (data) {
+				textNode.replaceData(length, 0, data);
+			}
+
+			// 5. Let currentNode be node’s next sibling.
+			// 6. While currentNode is an exclusive Text node:
+			for (let i = 0, l = siblingsToRemove.length; i < l; ++i) {
+				const currentNode = siblingsToRemove[i];
+				const currentNodeIndex = index + i + 1;
+
+				ranges.forEach(range => {
+					// 6.1. For each range whose start node is currentNode, add length to its start offset and set its
+					// start node to node.
+					if (range.startContainer === currentNode) {
+						range.startOffset += length;
+						range.startContainer = textNode;
+					}
+
+					// 6.2. For each range whose end node is currentNode, add length to its end offset and set its end
+					// node to node.
+					if (range.endContainer === currentNode) {
+						range.endOffset += length;
+						range.endContainer = textNode;
+					}
+
+					// 6.3. For each range whose start node is currentNode’s parent and start offset is currentNode’s
+					// index, set its start node to node and its start offset to length.
+					if (range.startContainer === this && range.startOffset === currentNodeIndex) {
+						range.startContainer = textNode;
+						range.startOffset = length;
+					}
+
+					// 6.4. For each range whose end node is currentNode’s parent and end offset is currentNode’s index,
+					// set its end node to node and its end offset to length.
+					if (range.endContainer === this && range.endOffset === currentNodeIndex) {
+						range.endContainer = textNode;
+						range.endOffset = length;
+					}
+				});
+
+				// 6.5. Add currentNode’s length to length.
+				length += (currentNode as Text).length;
+
+				// 6.6. Set currentNode to its next sibling.
+				// (see for-loop increment)
+			}
+
+			// 7. Remove node’s contiguous exclusive Text nodes (excluding itself), in tree order.
+			while (siblingsToRemove.length) {
+				removeNode(siblingsToRemove.shift() as Node, this);
 			}
 
 			// Move to next node
-			childNode = nextNode;
+			node = node.nextSibling;
 			++index;
 		}
 	}
 
 	/**
-	 * Removes a child node from the DOM and returns the removed node.
-	 *
-	 * @param childNode         Child of the current node to remove
-	 * @param suppressObservers (non-standard) Whether to enqueue a mutation record for the mutation
-	 *
-	 * @return The node that was removed
-	 */
-	public removeChild (childNode: Node, suppressObservers: boolean = false): Node | null {
-		// Check if childNode is a child
-		if (childNode.parentNode !== this) {
-			return null;
-		}
-
-		// Check index of node
-		const index = getNodeIndex(childNode);
-		if (index < 0) {
-			return null;
-		}
-
-		// Update ranges
-		const document = this instanceof Document ? this : this.ownerDocument as Document;
-		document._ranges.forEach(range => {
-			if (childNode.contains(range.startContainer)) {
-				range.setStart(this, index);
-			}
-			if (childNode.contains(range.endContainer)) {
-				range.setEnd(this, index);
-			}
-			if (range.startContainer === this && range.startOffset > index) {
-				range.startOffset -= 1;
-			}
-			if (range.endContainer === this && range.endOffset > index) {
-				range.endOffset -= 1;
-			}
-		});
-
-		// Queue mutation record
-		if (!suppressObservers) {
-			const record = new MutationRecord('childList', this);
-			record.removedNodes.push(childNode);
-			record.nextSibling = childNode.nextSibling;
-			record.previousSibling = childNode.previousSibling;
-			queueMutationRecord(record);
-		}
-
-		// Add transient registered observers to detect changes in the removed subtree
-		for (let ancestor: Node | null = this; ancestor; ancestor = ancestor.parentNode) {
-			childNode._registeredObservers.appendTransientsForAncestor(ancestor._registeredObservers);
-		}
-
-		// Remove the node
-		childNode.parentNode = null;
-		this.childNodes.splice(index, 1);
-		this._updateFirstLast();
-		childNode._updateSiblings(index);
-
-		return childNode;
-	}
-
-	/**
-	 * Replaces the given oldChild node with the given newChild node and returns the node that was replaced
-	 * (i.e. oldChild).
-	 *
-	 * @param newChild Node to insert
-	 * @param oldChild Node to remove
-	 *
-	 * @return The node that was removed
-	 */
-	public replaceChild (newChild: Node, oldChild: Node): Node | null {
-		// Check if oldChild is a child
-		if (oldChild.parentNode !== this) {
-			return null;
-		}
-
-		// Already there?
-		if (newChild === oldChild) {
-			return oldChild;
-		}
-
-		// Get reference node for insert
-		let referenceNode = oldChild.nextSibling;
-		if (referenceNode === newChild) {
-			referenceNode = newChild.nextSibling;
-		}
-
-		// Detach from old parent
-		if (newChild.parentNode) {
-			// This removal is never suppressed
-			newChild.parentNode.removeChild(newChild, false);
-		}
-
-		// Adopt nodes into document
-		const ownerDocument = this instanceof Document ? this : this.ownerDocument as Document;
-		if (newChild.ownerDocument !== ownerDocument) {
-			adopt(newChild, ownerDocument);
-		}
-
-		// Create mutation record
-		const record = new MutationRecord('childList', this);
-		record.addedNodes.push(newChild);
-		record.removedNodes.push(oldChild);
-		record.nextSibling = referenceNode;
-		record.previousSibling = oldChild.previousSibling;
-
-		// Remove old child
-		this.removeChild(oldChild, true);
-
-		// Insert new child
-		this.insertBefore(newChild, referenceNode, true);
-
-		// Queue mutation record
-		queueMutationRecord(record);
-
-		return oldChild;
-	}
-
-	/**
-	 * Retrieves the object associated to a key on this node.
-	 *
-	 * @param key Key under which the value is stored
-	 *
-	 * @return The associated value, or null of none exists
-	 */
-	public getUserData (key: string): any | null {
-		const data = this._userDataByKey[key];
-		if (data === undefined) {
-			return null;
-		}
-
-		return data.value;
-	}
-
-	/**
-	 * Retrieves the object associated to a key on this node. User data allows a user to attach (or remove) data to
-	 * an element, without needing to modify the DOM. Note that such data will not be preserved when imported via
-	 * Node.importNode, as with Node.cloneNode() and Node.renameNode() operations (though Node.adoptNode does
-	 * preserve the information), and equality tests in Node.isEqualNode() do not consider user data in making the
-	 * assessment.
-	 *
-	 * This method offers the convenience of associating data with specific nodes without needing to alter the
-	 * structure of a document and in a standard fashion, but it also means that extra steps may need to be taken
-	 * if one wishes to serialize the information or include the information upon clone, import, or rename
-	 * operations.
-	 *
-	 * @param key  Key under which the value is stored
-	 * @param data Data to store
-	 *
-	 * @return Previous data associated with the key, or null if none existed
-	 */
-	public setUserData (key: string, data: any = undefined) {
-		const oldData = this._userDataByKey[key];
-		const newData = {
-			name: key,
-			value: data
-		};
-		let oldValue = null;
-
-		// No need to trigger observers if the value doesn't actually change
-		if (oldData) {
-			oldValue = oldData.value;
-			if (oldValue === data) {
-				return oldValue;
-			}
-
-			if (data === undefined || data === null) {
-				// Remove user data
-				delete this._userDataByKey[key];
-				const oldDataIndex = this._userData.indexOf(oldData);
-				this._userData.splice(oldDataIndex, 1);
-			}
-			else {
-				// Overwrite data
-				oldData.value = data;
-			}
-		}
-		else {
-			this._userDataByKey[key] = newData;
-			this._userData.push(newData);
-		}
-
-		// Queue a mutation record (non-standard, but useful)
-		const record = new MutationRecord('userData', this);
-		record.attributeName = key;
-		record.oldValue = oldValue;
-		queueMutationRecord(record);
-
-		return oldValue;
-	}
-
-	/**
 	 * Returns a copy of the current node.
-	 * Override on subclasses and pass a shallow copy of the node in the 'copy' parameter (I.e. they create a new
-	 * instance of their class with their specific constructor parameters.)
 	 *
 	 * @param deep Whether to also clone the node's descendants
-	 * @param copy (non-standard) Copy to populate
 	 *
 	 * @return A copy of the current node
 	 */
-	public cloneNode (deep: boolean = true, copy?: Node): Node | null {
-		if (!copy) {
-			return null;
-		}
-
-		// Set owner document
-		if (copy.nodeType !== Node.DOCUMENT_NODE) {
-			copy.ownerDocument = this.ownerDocument;
-		}
-
-		// User data is not copied, it is assumed to apply only to the original instance
-
-		// Recurse if required
-		if (deep) {
-			for (let child = this.firstChild; child; child = child.nextSibling) {
-				copy.appendChild(child.cloneNode(true) as Node);
-			}
-		}
-
-		return copy;
+	public cloneNode (deep: boolean = false): Node {
+		return cloneNode(this, deep);
 	}
+
+	/**
+	 * Returns true if other is an inclusive descendant of context object, and false otherwise (including when other is
+	 * null).
+	 *
+	 * @param childNode Node to check
+	 *
+	 * @return Whether childNode is an inclusive descendant of the current node
+	 */
+	public contains (other: Node | null): boolean {
+		while (other && other != this) {
+			other = other.parentNode;
+		}
+		return other === this;
+	}
+
+	/**
+	 * Inserts the specified node before child within context object.
+	 *
+	 * If child is null, the new node is appended after the last child node of the current node.
+	 *
+	 * @param node  Node to insert
+	 * @param child Childnode of the current node before which to insert, or null to append newNode at the end
+	 *
+	 * @return The node that was inserted
+	 */
+	public insertBefore (node: Node, child: Node | null): Node {
+		return preInsertNode(node, this, child);
+	}
+
+	/**
+	 * Adds node to the end of the list of children of the context object.
+	 *
+	 * If the node already exists it is removed from its current parent node, then added.
+	 *
+	 * @param node Node to append
+	 *
+	 * @return The node that was inserted
+	 */
+	public appendChild (node: Node): Node {
+		return appendNode(node, this);
+	}
+
+	/**
+	 * Replaces child with node within context object and returns child.
+	 *
+	 * @param node  Node to insert
+	 * @param child Node to remove
+	 *
+	 * @return The node that was removed
+	 */
+	public replaceChild (node: Node, child: Node): Node {
+		return replaceChildWithNode(child, node, this);
+	}
+
+	/**
+	 * Removes child from context object and returns the removed node.
+	 *
+	 * @param child Child of the current node to remove
+	 *
+	 * @return The node that was removed
+	 */
+	public removeChild (child: Node): Node {
+		return preRemoveChild(child, this);
+	}
+
+	/**
+	 * (non-standard) Creates a copy of the context object, not including its children.
+	 *
+	 * @param document The node document to associate with the copy
+	 *
+	 * @return A shallow copy of the context object
+	 */
+	public abstract _copy (document: Document): Node;
 }
 
-(Node.prototype as any).ELEMENT_NODE = 1;
-(Node.prototype as any).TEXT_NODE = 3;
-(Node.prototype as any).PROCESSING_INSTRUCTION_NODE = 7;
-(Node.prototype as any).COMMENT_NODE = 8;
-(Node.prototype as any).DOCUMENT_NODE = 9;
-(Node.prototype as any).DOCUMENT_TYPE_NODE = 10;
+(Node.prototype as any).ELEMENT_NODE = NodeType.ELEMENT_NODE;
+(Node.prototype as any).ATTRIBUTE_NODE = NodeType.ATTRIBUTE_NODE;
+(Node.prototype as any).TEXT_NODE = NodeType.TEXT_NODE;
+(Node.prototype as any).CDATA_SECTION_NODE = NodeType.CDATA_SECTION_NODE;
+(Node.prototype as any).ENTITY_REFERENCE_NODE = NodeType.ENTITY_REFERENCE_NODE; // historical
+(Node.prototype as any).ENTITY_NODE = NodeType.ENTITY_NODE; // historical
+(Node.prototype as any).PROCESSING_INSTRUCTION_NODE = NodeType.PROCESSING_INSTRUCTION_NODE;
+(Node.prototype as any).COMMENT_NODE = NodeType.COMMENT_NODE;
+(Node.prototype as any).DOCUMENT_NODE = NodeType.DOCUMENT_NODE;
+(Node.prototype as any).DOCUMENT_TYPE_NODE = NodeType.DOCUMENT_TYPE_NODE;
+(Node.prototype as any).DOCUMENT_FRAGMENT_NODE = NodeType.DOCUMENT_FRAGMENT_NODE;
+(Node.prototype as any).NOTATION_NODE = NodeType.NOTATION_NODE; // historical

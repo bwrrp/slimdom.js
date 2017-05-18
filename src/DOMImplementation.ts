@@ -1,52 +1,81 @@
-import Document from './Document';
 import DocumentType from './DocumentType';
+import XMLDocument from './XMLDocument';
 
-/**
- * The DOMImplementation interface represents an object providing methods which are not dependent on any
- * particular document. Such an object is returned by the Document.implementation property.
- */
+import createElementNS from './util/createElementNS';
+import { validateQualifiedName } from './util/namespaceHelpers';
+
 export default class DOMImplementation {
 	/**
-	 * Returns a DocumentType object which can either be used with DOMImplementation.createDocument upon document
-	 * creation or can be put into the document via methods like Node.insertBefore() or Node.replaceChild().
+	 * Returns a doctype, with the given qualifiedName, publicId, and systemId.
 	 *
-	 * @param qualifiedName The name of the doctype
-	 * @param publicId      The public identifier of the doctype
-	 * @param systemId      The system identifier of the doctype
+	 * (Non-standard) As this implementation does not associate a document with the global object, the returned
+	 * doctype does not have an associated node document until it is inserted in one.
 	 *
-	 * @return The new doctype
+	 * @param qualifiedName Qualified name for the doctype
+	 * @param publicId      Public ID for the doctype
+	 * @param systemId      System ID for the doctype
+	 *
+	 * @return The new doctype node
 	 */
-	public createDocumentType (qualifiedName: string, publicId: string, systemId: string): DocumentType {
-		return new DocumentType(qualifiedName, publicId, systemId);
+	createDocumentType (qualifiedName: string, publicId: string, systemId: string): DocumentType {
+		// 1. Validate qualifiedName.
+		validateQualifiedName(qualifiedName);
+
+		// 2. Return a new doctype, with qualifiedName as its name, publicId as its public ID, and systemId as its
+		// system ID, and with its node document set to the associated document of the context object.
+		return new DocumentType(null, qualifiedName, publicId, systemId);
 	}
 
 	/**
-	 * Creates and returns a new Document.
+	 * Returns an XMLDocument, with a document element whose local name is qualifiedName and whose namespace is
+	 * namespace (unless qualifiedName is the empty string), and with doctype, if it is given, as its doctype.
 	 *
-	 * Note that namespaces are not currently supported; namespace and any prefix in qualifiedName will be ignored
+	 * @param namespace     The namespace for the root element
+	 * @param qualifiedName The qualified name for the root element, or empty string to not create a root element
+	 * @param doctype       The doctype for the new document, or null to not add a doctype
 	 *
-	 * @param namespace     Namespace URI for the new document's root element, not currently supported
-	 * @param qualifiedName Qualified name for the new document's root element, currently interpreted as local name
-	 * @param doctype       Document type for the new document, or null to omit
-	 *
-	 * @return The new Document, with optional doctype and/or root element
+	 * @return The new XMLDocument
 	 */
-	public createDocument (namespace: string | null, qualifiedName: string, doctype: DocumentType | null = null) {
-		const document = new Document();
-		let element = null;
-		if (qualifiedName !== '') {
-			// TODO: use createElementNS once it is supported
-			element = document.createElement(qualifiedName);
+	createDocument (namespace: string | null, qualifiedName: string | null, doctype: DocumentType | null = null): XMLDocument {
+		// [TreatNullAs=EmptyString] for qualifiedName
+		if (qualifiedName === null) {
+			qualifiedName = '';
 		}
 
+		// 1. Let document be a new XMLDocument.
+		const document = new XMLDocument();
+
+		// 2. Let element be null.
+		let element = null;
+
+		// 3. If qualifiedName is not the empty string, then set element to the result of running the internal
+		// createElementNS steps, given document, namespace, qualifiedName, and an empty dictionary.
+		if (qualifiedName !== '') {
+			element = createElementNS(document, namespace, qualifiedName);
+		}
+
+		// 4. If doctype is non-null, append doctype to document.
 		if (doctype) {
 			document.appendChild(doctype);
 		}
 
+		// 5. If element is non-null, append element to document.
 		if (element) {
 			document.appendChild(element);
 		}
 
+		// 6. document’s origin is context object’s associated document’s origin.
+		// (origin not implemented)
+
+		// 7. document’s content type is determined by namespace:
+		// HTML namespace: application/xhtml+xml
+		// SVG namespace: image/svg+xml
+		// Any other namespace: application/xml
+		// (content type not implemented)
+
+		// 8. Return document.
 		return document;
 	}
 }
+
+export const implementation = new DOMImplementation();

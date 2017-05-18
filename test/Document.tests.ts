@@ -1,4 +1,4 @@
-import slimdom from '../src/index';
+import * as slimdom from '../src/index';
 
 import Document from '../src/Document';
 import DOMImplementation from '../src/DOMImplementation';
@@ -23,12 +23,6 @@ describe('Document', () => {
 	it('initially has no documentElement', () => chai.assert.equal(document.documentElement, null));
 
 	it('initially has no childNodes', () => chai.assert.deepEqual(document.childNodes, []));
-
-	it('can have user data', () => {
-		chai.assert.equal(document.getUserData('test'), null);
-		document.setUserData('test', {abc: 123});
-		chai.assert.deepEqual(document.getUserData('test'), {abc: 123});
-	});
 
 	describe('after appending a child element', () => {
 		let element: Element;

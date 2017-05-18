@@ -1,49 +1,11 @@
-import Document from './Document';
-import Node from './Node';
-import Element from './Element';
-import Range from './selections/Range';
-import MutationObserver from './mutations/MutationObserver';
+import { implementation } from './DOMImplementation';
+import XMLDocument from './XMLDocument';
 
-import DOMImplementation from './DOMImplementation';
-import { implementation } from './globals';
+export { implementation } from './DOMImplementation';
+export { default as Node } from './Node';
+export { default as Range } from './Range';
+export { default as MutationObserver } from './mutation-observer/MutationObserver';
 
-export default {
-	/**
-	 * The DOMImplementation instance.
-	 */
-	implementation,
-
-	/**
-	 * Creates a new Document and returns it.
-	 *
-	 * @return The newly created Document.
-	 */
-	createDocument (): Document {
-		return implementation.createDocument(null, '');
-	},
-
-	/**
-	 * The Document constructor.
-	 */
-	Document,
-
-	/**
-	 * The Node constructor.
-	 */
-	Node,
-
-	/**
-	 * The Element constructor.
-	 */
-	Element,
-
-	/**
-	* The Range constructor.
-	*/
-	Range,
-
-	/**
-	 * The MutationObserver constructor.
-	 */
-	MutationObserver
-};
+export function createDocument (): XMLDocument {
+	return implementation.createDocument(null, '');
+}
