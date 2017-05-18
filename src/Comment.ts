@@ -1,22 +1,42 @@
 import CharacterData from './CharacterData';
-import Node from './Node';
+import Document from './Document';
+import { NodeType } from './util/NodeType';
 
-/**
- * The Comment interface represents textual notations within markup; although it is generally not visually
- * shown, such comments are available to be read in the source view. Comments are represented in HTML and
- * XML as content between '&lt;!--' and '--&gt;'. In XML, the character sequence '--' cannot be used within
- * a comment.
- */
 export default class Comment extends CharacterData {
-    /**
-	 * @param data Text of the comment
-	 */
-	constructor (data: string = '') {
-		super(Node.COMMENT_NODE, data);
+	// Node
+
+	public get nodeType (): number {
+		return NodeType.COMMENT_NODE;
 	}
 
-	public cloneNode (deep: boolean = true, copy?: Comment): Comment {
-		copy = copy || new Comment(this.data);
-		return super.cloneNode(deep, copy) as Comment;
+	public get nodeName (): string {
+		return '#comment';
+	}
+
+	// Comment
+
+	/**
+	 * Returns a new Comment node whose data is data.
+	 *
+	 * Non-standard: as this implementation does not have a document associated with the global object, it is required
+	 * to pass a document to this constructor.
+	 *
+	 * @param document (non-standard) The node document to associate with the new comment
+	 * @param data     The data for the new comment
+	 */
+	constructor (document: Document, data: string = '') {
+		super(document, data);
+	}
+
+	/**
+	 * (non-standard) Creates a copy of the context object, not including its children.
+	 *
+	 * @param document The node document to associate with the copy
+	 *
+	 * @return A shallow copy of the context object
+	 */
+	public _copy (document: Document): Comment {
+		// Set copy’s data, to that of node.
+		return new Comment(document, this.data);
 	}
 }

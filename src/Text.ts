@@ -1,98 +1,131 @@
-import CharacterData from './CharacterData';
+import { replaceData, substringData, default as CharacterData } from './CharacterData';
 import Document from './Document';
-import Node from './Node';
-
-import { getNodeIndex } from './util';
+import { ranges } from './Range';
+import { throwIndexSizeError } from './util/errorHelpers';
+import { insertNode } from './util/mutationAlgorithms';
+import { NodeType } from './util/NodeType';
+import { getNodeIndex } from './util/treeHelpers';
 
 /**
- * The Text interface represents the textual content of an Element node. If an element has no markup within its
- * content, it has a single child implementing Text that contains the element's text.  However, if the element
- * contains markup, it is parsed into information items and Text nodes that form its children.
- *
- * New documents have a single Text node for each block of text. Over time, more Text nodes may be created as
- * the document's content changes.  The Node.normalize() method merges adjacent Text objects back into a single
- * node for each block of text.
+ * 3.11. Interface Text
  */
 export default class Text extends CharacterData {
+	// Node
+
+	public get nodeType (): number {
+		return NodeType.TEXT_NODE;
+	}
+
+	public get nodeName (): string {
+		return '#text';
+	}
+
+	// Text
+
 	/**
-	 * @param content Content for the text node
+	 * Returns a new Text node whose data is data.
+	 *
+	 * Non-standard: as this implementation does not have a document associated with the global object, it is required
+	 * to pass a document to this constructor.
+	 *
+	 * @param document (non-standard) The node document for the new node
+	 * @param data     The data for the new text node
 	 */
-	constructor (content: string) {
-		super(Node.TEXT_NODE, content);
+	constructor (document: Document, data: string = '') {
+		super(document, data);
 	}
 
 	/**
-	 * Breaks the Text node into two nodes at the specified offset, keeping both nodes in the tree as siblings.
+	 * Splits data at the given offset and returns the remainder as Text node.
 	 *
-	 * After the split, the current node contains all the content up to the specified offset point, and a newly
-	 * created node of the same type contains the remaining text.  The newly created node is returned to the caller.
-	 * If the original node had a parent, the new node is inserted as the next sibling of the original node.
-	 * If the offset is equal to the length of the original node, the newly created node has no data.
+	 * @param offset The offset at which to split
 	 *
-	 * Separated text nodes can be concatenated using the Node.normalize() method.
-	 *
-	 * @param offset Offset at which to split
-	 *
-	 * @return The new text node created to hold the second half of the split content
+	 * @return a text node containing the second half of the split node's data
 	 */
 	public splitText (offset: number): Text {
-		// Check offset
-		const length = this.length;
-		if (offset < 0) {
-			offset = 0;
-		}
-		if (offset > length) {
-			offset = length;
-		}
-
-		const count = length - offset;
-		const newData = this.substringData(offset, count);
-		const document = this.ownerDocument as Document;
-		const newNode = document.createTextNode(newData);
-
-		// If the current node is part of a tree, insert the new node
-		if (this.parentNode) {
-			this.parentNode.insertBefore(newNode, this.nextSibling);
-
-			// Update ranges
-			var nodeIndex = getNodeIndex(this);
-			document._ranges.forEach(range => {
-				if (range.startContainer === this.parentNode && range.startOffset === nodeIndex + 1) {
-					range.setStart(range.startContainer as Node, range.startOffset + 1);
-				}
-				if (range.endContainer === this.parentNode && range.endOffset === nodeIndex + 1) {
-					range.setEnd(range.endContainer as Node, range.endOffset + 1);
-				}
-				if (range.startContainer === this && range.startOffset > offset) {
-					range.setStart(newNode, range.startOffset - offset);
-				}
-				if (range.endContainer === this && range.endOffset > offset) {
-					range.setEnd(newNode, range.endOffset - offset);
-				}
-			});
-		}
-
-		// Truncate our own data
-		this.deleteData(offset, count);
-
-		if (!this.parentNode) {
-			// Update ranges
-			document._ranges.forEach(range => {
-				if (range.startContainer === this && range.startOffset > offset) {
-					range.setStart(range.startContainer, offset);
-				}
-				if (range.endContainer === this && range.endOffset > offset) {
-					range.setEnd(range.endContainer, offset);
-				}
-			});
-		}
-
-		// Return the new node
-		return newNode;
+		return splitText(this, offset);
 	}
 
-	public cloneNode (deep: boolean = true, copy?: Text): Text {
-		copy = copy || new Text(this.data);
-		return super.cloneNode(deep, copy) as Text;
+	/**
+	 * (non-standard) Creates a copy of the context object, not including its children.
+	 *
+	 * @param document The node document to associate with the copy
+	 *
+	 * @return A shallow copy of the context object
+	 */
+	public _copy (document: Document): Text {
+		// Set copy’s data, to that of node.
+		return new Text(document, this.data);
 	}
+}
+
+/**
+ * To split a Text node node with offset offset, run these steps:
+ *
+ * @param node   The text node to split
+ * @param offset The offset to split at
+ *
+ * @return a text node containing the second half of the split node's data
+ */
+function splitText (node: Text, offset: number): Text {
+	// 1. Let length be node’s length.
+	const length = node.length;
+
+	// 2. If offset is greater than length, then throw an IndexSizeError.
+	if (offset > length) {
+		throwIndexSizeError('can not split past the node\'s length');
+	}
+
+	// 3. Let count be length minus offset.
+	const count = length - offset;
+
+	// 4. Let new data be the result of substringing data with node node, offset offset, and count count.
+	const newData = substringData(node, offset, count);
+
+	// 5. Let new node be a new Text node, with the same node document as node. Set new node’s data to new data.
+	const newNode = new Text(node.ownerDocument!, newData);
+
+	// 6. Let parent be node’s parent.
+	const parent = node.parentNode;
+
+	// 7. If parent is not null, then:
+	if (parent !== null) {
+		// 7.1. Insert new node into parent before node’s next sibling.
+		insertNode(newNode, parent, node.nextSibling);
+
+		const indexOfNodePlusOne = getNodeIndex(node) + 1;
+		ranges.forEach(range => {
+			// 7.2. For each range whose start node is node and start offset is greater than offset, set its start node
+			// to new node and decrease its start offset by offset.
+			if (range.startContainer === node && range.startOffset > offset) {
+				range.startContainer = newNode;
+				range.startOffset -= offset;
+			}
+
+			// 7.3. For each range whose end node is node and end offset is greater than offset, set its end node to new
+			// node and decrease its end offset by offset.
+			if (range.endContainer === node && range.endOffset > offset) {
+				range.endContainer = newNode;
+				range.endOffset -= offset;
+			}
+
+			// 7.4. For each range whose start node is parent and start offset is equal to the index of node + 1,
+			// increase its start offset by one.
+			if (range.startContainer === parent && range.startOffset === indexOfNodePlusOne) {
+				range.startOffset += 1;
+			}
+
+			// 7.5. For each range whose end node is parent and end offset is equal to the index of node + 1, increase
+			// its end offset by one.
+			if (range.endContainer === parent && range.endOffset === indexOfNodePlusOne) {
+				range.endOffset += 1;
+			}
+		})
+	}
+
+	// 8. Replace data with node node, offset offset, count count, and data the empty string.
+	replaceData(node, offset, count, '');
+
+	// 9. Return new node.
+	return newNode;
 }

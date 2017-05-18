@@ -5,7 +5,11 @@
 		"strict": true,
 		"module": "es6",
 		"target": "es5",
-		"declaration": true
+		"declaration": true,
+		"lib": [
+			"es2015"
+		],
+		"types": []
 	},
 	"include": [
 		"src/**/*"
