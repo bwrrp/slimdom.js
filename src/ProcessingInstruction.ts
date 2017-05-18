@@ -18,7 +18,7 @@ export default class ProcessingInstruction extends CharacterData {
 	 */
 	public target: string;
 
-    /**
+	/**
 	 * @param target Target for the processing instruction
 	 * @param data   Content for the processing instruction
 	 */
@@ -28,8 +28,8 @@ export default class ProcessingInstruction extends CharacterData {
 		this.target = target;
 	}
 
-	public cloneNode (deep: boolean = true, _copy?: ProcessingInstruction): ProcessingInstruction {
-		_copy = _copy || new ProcessingInstruction(this.target, this.data);
-		return super.cloneNode(deep, _copy) as ProcessingInstruction;
+	public cloneNode (deep: boolean = true, copy?: ProcessingInstruction): ProcessingInstruction {
+		copy = copy || new ProcessingInstruction(this.target, this.data);
+		return super.cloneNode(deep, copy) as ProcessingInstruction;
 	}
 }

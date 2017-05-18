@@ -32,7 +32,7 @@ export default class RegisteredObserver {
 	 */
 	public isTransient: boolean;
 
-    /**
+	/**
 	 * @param observer    The observer being registered
 	 * @param target      The node being observed
 	 * @param options     Options for the registration

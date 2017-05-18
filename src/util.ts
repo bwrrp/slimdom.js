@@ -73,7 +73,8 @@ export function commonAncestor (node1: Node, node2: Node): Node | null {
  * @param node2   Container of second position
  * @param offset2 Offset of second position
  *
- * @return Negative, 0 or positive, depending on the relative ordering of the given positions
+ * @return Negative, 0 or positive, depending on the relative ordering of the given positions, or undefined if the
+ *   containers are in different trees
  */
 export function comparePoints (node1: Node, offset1: number, node2: Node, offset2: number): number | undefined {
 	if (node1 !== node2) {

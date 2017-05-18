@@ -39,7 +39,7 @@ export default class Document extends Node {
 	}
 
 	// Override insertBefore to update the documentElement reference.
-	public insertBefore (newNode: Node, referenceNode: Node | null, _suppressObservers: boolean = false): Node | null {
+	public insertBefore (newNode: Node, referenceNode: Node | null, suppressObservers: boolean = false): Node | null {
 		// Document can not have more than one child element node
 		if (newNode.nodeType === Node.ELEMENT_NODE && this.documentElement) {
 			return this.documentElement === newNode ? newNode : null;
@@ -50,7 +50,7 @@ export default class Document extends Node {
 			return this.doctype === newNode ? newNode : null;
 		}
 
-		const result = super.insertBefore(newNode, referenceNode, _suppressObservers);
+		const result = super.insertBefore(newNode, referenceNode, suppressObservers);
 
 		// Update document element
 		if (result && result.nodeType === Node.ELEMENT_NODE) {
@@ -66,8 +66,8 @@ export default class Document extends Node {
 	}
 
 	// Override removeChild to keep the documentElement property in sync.
-	public removeChild (childNode: Node, _suppressObservers: boolean = false): Node | null {
-		var result = Node.prototype.removeChild.call(this, childNode, _suppressObservers);
+	public removeChild (childNode: Node, suppressObservers: boolean = false): Node | null {
+		var result = Node.prototype.removeChild.call(this, childNode, suppressObservers);
 		if (result === this.documentElement) {
 			this.documentElement = null;
 		}
@@ -140,8 +140,8 @@ export default class Document extends Node {
 		return new Range(this);
 	}
 
-	public cloneNode (deep: boolean = true, _copy?: Document): Document {
-		_copy = _copy || new Document();
-		return super.cloneNode(deep, _copy) as Document;
+	public cloneNode (deep: boolean = true, copy?: Document): Document {
+		copy = copy || new Document();
+		return super.cloneNode(deep, copy) as Document;
 	}
 }

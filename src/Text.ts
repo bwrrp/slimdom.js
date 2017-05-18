@@ -14,7 +14,7 @@ import { getNodeIndex } from './util';
  * node for each block of text.
  */
 export default class Text extends CharacterData {
-    /**
+	/**
 	 * @param content Content for the text node
 	 */
 	constructor (content: string) {
@@ -91,8 +91,8 @@ export default class Text extends CharacterData {
 		return newNode;
 	}
 
-	public cloneNode (deep: boolean = true, _copy?: Text): Text {
-		_copy = _copy || new Text(this.data);
-		return super.cloneNode(deep, _copy) as Text;
+	public cloneNode (deep: boolean = true, copy?: Text): Text {
+		copy = copy || new Text(this.data);
+		return super.cloneNode(deep, copy) as Text;
 	}
 }

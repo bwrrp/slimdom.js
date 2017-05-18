@@ -9,6 +9,9 @@ import { getNodeIndex } from './util';
 
 /**
  * Internal helper used to adopt a given node into a given document.
+ *
+ * @param node     Node to adopt
+ * @param document Document to adopt node into
  */
 function adopt (node: Node, document: Document) {
 	node.ownerDocument = document;
@@ -24,7 +27,7 @@ interface UserDataEntry {
  * A Node is a class from which a number of DOM types inherit, and allows these various types to be treated
  * (or tested) similarly.
  */
-export default class Node {
+export default abstract class Node {
 	static ELEMENT_NODE = 1;
 	static TEXT_NODE = 3;
 	static PROCESSING_INSTRUCTION_NODE = 7;
@@ -79,7 +82,7 @@ export default class Node {
 	// (internal) Registered mutation observers, use MutationObserver interface to manipulate
 	public _registeredObservers: RegisteredObservers;
 
-    /**
+	/**
 	 * @param type NodeType for the node
 	 */
 	constructor (type: number) {
@@ -153,8 +156,9 @@ export default class Node {
 	 * Inserts the specified node before a reference node as a child of the current node.
 	 * If referenceNode is null, the new node is appended after the last child node of the current node.
 	 *
-	 * @param newNode       Node to insert
-	 * @param referenceNode Childnode of the current node before which to insert, or null to append newNode at the end
+	 * @param newNode           Node to insert
+	 * @param referenceNode     Childnode of the current node before which to insert, or null to append at the end
+	 * @param suppressObservers (non-standard) Whether to enqueue a mutation record for the mutation
 	 *
 	 * @return The node that was inserted
 	 */
@@ -306,7 +310,8 @@ export default class Node {
 	/**
 	 * Removes a child node from the DOM and returns the removed node.
 	 *
-	 * @param childNode Child of the current node to remove
+	 * @param childNode         Child of the current node to remove
+	 * @param suppressObservers (non-standard) Whether to enqueue a mutation record for the mutation
 	 *
 	 * @return The node that was removed
 	 */
@@ -447,7 +452,8 @@ export default class Node {
 	 * if one wishes to serialize the information or include the information upon clone, import, or rename
 	 * operations.
 	 *
-	 * @param key Key under which the value is stored
+	 * @param key  Key under which the value is stored
+	 * @param data Data to store
 	 *
 	 * @return Previous data associated with the key, or null if none existed
 	 */
@@ -497,17 +503,18 @@ export default class Node {
 	 * instance of their class with their specific constructor parameters.)
 	 *
 	 * @param deep Whether to also clone the node's descendants
+	 * @param copy (non-standard) Copy to populate
 	 *
 	 * @return A copy of the current node
 	 */
-	public cloneNode (deep: boolean = true, _copy?: Node): Node | null {
-		if (!_copy) {
+	public cloneNode (deep: boolean = true, copy?: Node): Node | null {
+		if (!copy) {
 			return null;
 		}
 
 		// Set owner document
-		if (_copy.nodeType !== Node.DOCUMENT_NODE) {
-			_copy.ownerDocument = this.ownerDocument;
+		if (copy.nodeType !== Node.DOCUMENT_NODE) {
+			copy.ownerDocument = this.ownerDocument;
 		}
 
 		// User data is not copied, it is assumed to apply only to the original instance
@@ -515,11 +522,11 @@ export default class Node {
 		// Recurse if required
 		if (deep) {
 			for (let child = this.firstChild; child; child = child.nextSibling) {
-				_copy.appendChild(child.cloneNode(true) as Node);
+				copy.appendChild(child.cloneNode(true) as Node);
 			}
 		}
 
-		return _copy;
+		return copy;
 	}
 }
 

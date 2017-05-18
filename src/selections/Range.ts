@@ -38,8 +38,8 @@ export default class Range {
 	 */
 	private _isDetached: boolean;
 
-    /**
-     * Do not use directly! Use Document#createRange to create an instance.
+	/**
+	 * Do not use directly! Use Document#createRange to create an instance.
 	 *
 	 * @param document Document in which to create the Range
 	 */

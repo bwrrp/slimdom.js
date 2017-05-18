@@ -9,7 +9,7 @@ import queueMutationRecord from './mutations/queueMutationRecord';
  * interface, meaning there aren't any object of type CharacterData: it is implemented by other interfaces,
  * like Text, Comment, or ProcessingInstruction which aren't abstract.
  */
-export default class CharacterData extends Node {
+export default abstract class CharacterData extends Node {
 	private _data: string;
 
 	public get data (): string {
@@ -34,7 +34,7 @@ export default class CharacterData extends Node {
 		return this._data.length;
 	}
 
-    /**
+	/**
 	 * @param type Node type
 	 * @param data Content of the node
 	 */
