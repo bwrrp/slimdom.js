@@ -19,7 +19,7 @@ export default class RegisteredObservers {
 
 	private _registeredObservers: RegisteredObserver[] = [];
 
-    /**
+	/**
 	 * @param target Node for which this instance holds RegisteredObserver instances.
 	 */
 	constructor (target: Node) {
@@ -59,8 +59,8 @@ export default class RegisteredObservers {
 		this._registeredObservers.push(new RegisteredObserver(observer, this._target, options, isTransient));
 	}
 
-    /**
-     * Creates transient registrations for all subtree observers on an ancestor of our target when target nodes are
+	/**
+	 * Creates transient registrations for all subtree observers on an ancestor of our target when target nodes are
 	 * removed from under that ancestor.
 	 *
 	 * @param registeredObserversForAncestor Registrations for an ancestor of our target
@@ -76,7 +76,7 @@ export default class RegisteredObservers {
 		});
 	};
 
-    /**
+	/**
 	 * @param observer       Observer for which to remove the registration
 	 * @param transientsOnly Whether to remove only transient registrations
 	 *
@@ -108,7 +108,7 @@ export default class RegisteredObservers {
 		return hasMore;
 	}
 
-    /**
+	/**
 	 * @param observer Observer to remove any transient registrations for
 	 */
 	public removeTransients (observer: MutationObserver) {

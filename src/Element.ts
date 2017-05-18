@@ -10,6 +10,10 @@ export interface Attr {
 
 /**
  * Internal helper used to check if the given node is an Element object.
+ *
+ * @param node Node to check
+ *
+ * @return Whether node is an element
  */
 function isElement (node?: Node | null): boolean {
 	return !!node && node.nodeType === Node.ELEMENT_NODE;
@@ -19,6 +23,11 @@ function isElement (node?: Node | null): boolean {
  * Returns the first element sibling in the given direction: if it's backwards it's the first previousSibling
  * node starting from the given node that's an Element, if it's forwards it's the first nextSibling node that's
  * an Element.
+ *
+ * @param node      Node to start from
+ * @param backwards Whether to look at node's preceding rather than its following siblings
+ *
+ * @return The element if found, or null otherwise
  */
 function findNextElementSibling (node: Node | null, backwards: boolean): Element | null {
 	while (node) {
@@ -77,7 +86,7 @@ export default class Element extends Node {
 	 */
 	public childElementCount: number = 0;
 
-    /**
+	/**
 	 * @param name The NodeName for the Element
 	 */
 	constructor (name: string) {
@@ -87,13 +96,13 @@ export default class Element extends Node {
 	}
 
 	// Override insertBefore to update element-specific properties
-	public insertBefore (newNode: Node, referenceNode: Node | null, _suppressObservers: boolean = false): Node | null {
+	public insertBefore (newNode: Node, referenceNode: Node | null, suppressObservers: boolean = false): Node | null {
 		// Already there?
 		if (newNode.parentNode === this && (newNode === referenceNode || newNode.nextSibling === referenceNode)) {
 			return newNode;
 		}
 
-		const result = super.insertBefore(newNode, referenceNode, _suppressObservers);
+		const result = super.insertBefore(newNode, referenceNode, suppressObservers);
 
 		if (isElement(newNode) && newNode.parentNode === this) {
 			const newElement = newNode as Element;
@@ -119,7 +128,7 @@ export default class Element extends Node {
 	}
 
 	// Override removeChild to update element-specific properties
-	public removeChild (childNode: Node, _suppressObservers: boolean = false): Node | null {
+	public removeChild (childNode: Node, suppressObservers: boolean = false): Node | null {
 		if (isElement(childNode) && childNode.parentNode === this) {
 			const childElement = childNode as Element;
 			// Update child references
@@ -142,7 +151,7 @@ export default class Element extends Node {
 			this.childElementCount -= 1;
 		}
 
-		return super.removeChild(childNode, _suppressObservers);
+		return super.removeChild(childNode, suppressObservers);
 	}
 
 	/**
@@ -230,8 +239,8 @@ export default class Element extends Node {
 		this.attributes.splice(attrIndex, 1);
 	}
 
-	public cloneNode (deep: boolean = true, _copy?: Element): Element {
-		const copyElement = _copy as Element || new Element(this.nodeName);
+	public cloneNode (deep: boolean = true, copy?: Element): Element {
+		const copyElement = copy as Element || new Element(this.nodeName);
 
 		// Copy attributes
 		this.attributes.forEach(attr => copyElement.setAttribute(attr.name, attr.value));

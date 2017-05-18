@@ -13,6 +13,8 @@ export default class DOMImplementation {
 	 * @param qualifiedName The name of the doctype
 	 * @param publicId      The public identifier of the doctype
 	 * @param systemId      The system identifier of the doctype
+	 *
+	 * @return The new doctype
 	 */
 	public createDocumentType (qualifiedName: string, publicId: string, systemId: string): DocumentType {
 		return new DocumentType(qualifiedName, publicId, systemId);

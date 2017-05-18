@@ -15,8 +15,8 @@ export default class Comment extends CharacterData {
 		super(Node.COMMENT_NODE, data);
 	}
 
-	public cloneNode (deep: boolean = true, _copy?: Comment): Comment {
-		_copy = _copy || new Comment(this.data);
-		return super.cloneNode(deep, _copy) as Comment;
+	public cloneNode (deep: boolean = true, copy?: Comment): Comment {
+		copy = copy || new Comment(this.data);
+		return super.cloneNode(deep, copy) as Comment;
 	}
 }

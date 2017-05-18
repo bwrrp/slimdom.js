@@ -70,7 +70,7 @@ export default class MutationObserver {
 	 */
 	static _notifyList = new NotifyList();
 
-    /**
+	/**
 	 * @param callback Function called after mutations have been observed.
 	 */
 	constructor (callback: MutationObserverCallback) {
@@ -86,11 +86,12 @@ export default class MutationObserver {
 	 * again with the same will do nothing. However if the callback object is different it will of course add
 	 * another observer to it.
 	 *
-	 * @param target  Node (or root of subtree) to observe
-	 * @param options Determines which types of mutations to observe
+	 * @param target      Node (or root of subtree) to observe
+	 * @param options     Determines which types of mutations to observe
+	 * @param isTransient (non-standard) Adds a transient registered observer if set to true
 	 */
-	observe (target: Node, options: MutationObserverInit, _isTransient: boolean = false) {
-		target._registeredObservers.register(this, options, _isTransient);
+	observe (target: Node, options: MutationObserverInit, isTransient: boolean = false) {
+		target._registeredObservers.register(this, options, isTransient);
 	}
 
 	/**
