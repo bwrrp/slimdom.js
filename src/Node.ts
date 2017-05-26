@@ -4,9 +4,11 @@ import Text from './Text';
 import { ranges } from './Range';
 import RegisteredObservers from './mutation-observer/RegisteredObservers';
 import cloneNode from './util/cloneNode';
+import { expectArity } from './util/errorHelpers';
 import { preInsertNode, appendNode, replaceChildWithNode, preRemoveChild, removeNode } from './util/mutationAlgorithms';
 import { NodeType, isNodeOfType } from './util/NodeType';
 import { getNodeDocument } from './util/treeHelpers';
+import { asNullableObject, asObject } from './util/typeHelpers';
 
 /**
  * 3.4. Interface Node
@@ -244,6 +246,10 @@ export default abstract class Node {
 	 * @return The node that was inserted
 	 */
 	public insertBefore (node: Node, child: Node | null): Node {
+		expectArity(arguments, 2);
+		node = asObject(node, Node);
+		child = asNullableObject(child, Node);
+
 		return preInsertNode(node, this, child);
 	}
 
@@ -257,6 +263,9 @@ export default abstract class Node {
 	 * @return The node that was inserted
 	 */
 	public appendChild (node: Node): Node {
+		expectArity(arguments, 1);
+		node = asObject(node, Node);
+
 		return appendNode(node, this);
 	}
 
@@ -269,6 +278,10 @@ export default abstract class Node {
 	 * @return The node that was removed
 	 */
 	public replaceChild (node: Node, child: Node): Node {
+		expectArity(arguments, 2);
+		node = asObject(node, Node);
+		child = asObject(child, Node);
+
 		return replaceChildWithNode(child, node, this);
 	}
 
@@ -280,6 +293,9 @@ export default abstract class Node {
 	 * @return The node that was removed
 	 */
 	public removeChild (child: Node): Node {
+		expectArity(arguments, 1);
+		child = asObject(child, Node);
+
 		return preRemoveChild(child, this);
 	}
 

@@ -1,3 +1,23 @@
+export function expectArity (args: IArguments, minArity: number): void {
+	// According to WebIDL overload resolution semantics, only a lower bound applies to the number of arguments provided
+	if (args.length < minArity) {
+		throw new TypeError(`Function should be called with at least ${minArity} arguments`);
+	}
+}
+
+export function expectObject<T> (value: T, Constructor: any): void {
+	if (!(value instanceof Constructor)) {
+		throw new TypeError(`Value should be an instance of ${Constructor.name}`);
+	}
+}
+
+function createDOMException (name: string, code: number, message: string): Error {
+	const err = new Error(`${name}: ${message}`);
+	err.name = name;
+	(err as any).code = code;
+	return err;
+}
+
 export function throwHierarchyRequestError (message: string): never {
 	throw new Error(`HierarchyRequestError: ${message}`);
 }
