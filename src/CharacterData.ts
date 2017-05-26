@@ -4,11 +4,8 @@ import Element from './Element';
 import Node from './Node';
 import { ranges } from './Range';
 import queueMutationRecord from './mutation-observer/queueMutationRecord';
-import { throwIndexSizeError } from './util/errorHelpers';
-
-function asUnsignedLong (number: number): number {
-	return number >>> 0;
-}
+import { expectArity, throwIndexSizeError } from './util/errorHelpers';
+import { asUnsignedLong, treatNullAsEmptyString } from './util/typeHelpers';
 
 /**
  * 3.10. Interface CharacterData
@@ -46,8 +43,12 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 		return this._data;
 	}
 
-	public set data (data: string) {
-		replaceData(this, 0, this.length, data);
+	public set data (newValue: string) {
+		// [TreatNullAs=EmptyString]
+		newValue = treatNullAsEmptyString(newValue);
+
+		// replace data with node context object, offset 0, count context object’s length, and data new value.
+		replaceData(this, 0, this.length, newValue);
 	}
 
 	public get length (): number {
@@ -72,6 +73,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	 * @return The specified substring
 	 */
 	public substringData (offset: number, count: number): string {
+		expectArity(arguments, 2);
 		return substringData(this, offset, count);
 	}
 
@@ -81,6 +83,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	 * @param data Data to append
 	 */
 	public appendData (data: string): void {
+		expectArity(arguments, 1);
 		replaceData(this, this.length, 0, data);
 	}
 
@@ -91,6 +94,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	 * @param data   Data to insert
 	 */
 	public insertData (offset: number, data: string): void {
+		expectArity(arguments, 1);
 		replaceData(this, offset, 0, data);
 	}
 
@@ -101,6 +105,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	 * @param count  Number of code units to delete
 	 */
 	public deleteData (offset: number, count: number): void {
+		expectArity(arguments, 2);
 		replaceData(this, offset, count, '');
 	}
 
@@ -112,6 +117,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	 * @param data   Data to insert
 	 */
 	public replaceData (offset: number, count: number, data: string): void {
+		expectArity(arguments, 3);
 		replaceData(this, offset, count, data);
 	}
 }
@@ -125,8 +131,9 @@ export default abstract class CharacterData extends Node implements NonDocumentT
  * @param data   The data to insert in place of the removed data
  */
 export function replaceData (node: CharacterData, offset: number, count: number, data: string): void {
-	// Match spec data type
+	// Match spec data types
 	offset = asUnsignedLong(offset);
+	count = asUnsignedLong(count);
 
 	// 1. Let length be node’s length.
 	const length = node.length;
@@ -190,8 +197,9 @@ export function replaceData (node: CharacterData, offset: number, count: number,
  * @return The requested substring
  */
 export function substringData (node: CharacterData, offset: number, count: number): string {
-	// Match spec data type
+	// Match spec data types
 	offset = asUnsignedLong(offset);
+	count = asUnsignedLong(count);
 
 	// 1. Let length be node’s length.
 	const length = node.length;

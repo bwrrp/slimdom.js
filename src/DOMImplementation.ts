@@ -2,7 +2,9 @@ import DocumentType from './DocumentType';
 import XMLDocument from './XMLDocument';
 
 import createElementNS from './util/createElementNS';
+import { expectArity } from './util/errorHelpers';
 import { validateQualifiedName } from './util/namespaceHelpers';
+import { asNullableObject, asNullableString, treatNullAsEmptyString } from './util/typeHelpers';
 
 export default class DOMImplementation {
 	/**
@@ -37,10 +39,11 @@ export default class DOMImplementation {
 	 * @return The new XMLDocument
 	 */
 	createDocument (namespace: string | null, qualifiedName: string | null, doctype: DocumentType | null = null): XMLDocument {
+		expectArity(arguments, 2);
+		namespace = asNullableString(namespace);
 		// [TreatNullAs=EmptyString] for qualifiedName
-		if (qualifiedName === null) {
-			qualifiedName = '';
-		}
+		qualifiedName = treatNullAsEmptyString(qualifiedName);
+		doctype = asNullableObject(doctype, DocumentType);
 
 		// 1. Let document be a new XMLDocument.
 		const document = new XMLDocument();

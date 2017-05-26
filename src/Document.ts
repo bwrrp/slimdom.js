@@ -12,10 +12,11 @@ import Range from './Range';
 
 import cloneNode from './util/cloneNode';
 import createElementNS from './util/createElementNS';
-import { throwNotSupportedError } from './util/errorHelpers';
+import { throwInvalidCharacterError, throwNotSupportedError } from './util/errorHelpers';
 import { adoptNode } from './util/mutationAlgorithms';
 import { NodeType, isNodeOfType } from './util/NodeType';
-import { validateAndExtract } from './util/namespaceHelpers';
+import { matchesNameProduction, validateAndExtract } from './util/namespaceHelpers';
+import { asNullableString } from './util/typeHelpers';
 
 /**
  * 3.5. Interface Document
@@ -86,7 +87,12 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new element
 	 */
 	public createElement (localName: string): Element {
+		localName = String(localName);
+
 		// 1. If localName does not match the Name production, then throw an InvalidCharacterError.
+		if (!matchesNameProduction(localName)) {
+			throwInvalidCharacterError('The local name is not a valid Name');
+		}
 
 		// 2. If the context object is an HTML document, then set localName to localName in ASCII lowercase.
 		// (html documents not implemented)
@@ -119,6 +125,9 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new element
 	 */
 	public createElementNS (namespace: string | null, qualifiedName: string): Element {
+		namespace = asNullableString(namespace);
+		qualifiedName = String(qualifiedName);
+
 		// return the result of running the internal createElementNS steps, given context object, namespace,
 		// qualifiedName, and options.
 		return createElementNS(this, namespace, qualifiedName);
@@ -132,6 +141,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new text node
 	 */
 	public createTextNode (data: string): Text {
+		data = String(data);
+
 		return new Text(this, data);
 	}
 
@@ -143,6 +154,17 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new CDATA section
 	 */
 	public createCDATASection (data: string): CDATASection {
+		data = String(data);
+
+		// 1. If context object is an HTML document, then throw a NotSupportedError.
+		// (html documents not implemented)
+
+		// 2. If data contains the string "]]>", then throw an InvalidCharacterError.
+		if (data.indexOf(']]>') >= 0) {
+			throwInvalidCharacterError('Data must not contain the string "]]>"');
+		}
+
+		// 3. Return a new CDATASection node with its data set to data and node document set to the context object.
 		return new CDATASection(this, data);
 	}
 
@@ -154,6 +176,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new comment node
 	 */
 	public createComment (data: string): Comment {
+		data = String(data);
+
 		return new Comment(this, data);
 	}
 
@@ -166,7 +190,25 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new processing instruction
 	 */
 	public createProcessingInstruction (target: string, data: string): ProcessingInstruction {
+		target = String(target);
+		data = String(data);
+
+		// 1. If target does not match the Name production, then throw an InvalidCharacterError.
+		if (!matchesNameProduction(target)) {
+			throwInvalidCharacterError('The target is not a valid Name');
+		}
+
+		// 2. If data contains the string "?>", then throw an InvalidCharacterError.
+		if (data.indexOf('?>') >= 0) {
+			throwInvalidCharacterError('Data must not contain the string "?>"');
+		}
+
+		// 3. Return a new ProcessingInstruction node, with target set to target, data set to data, and node document
+		// set to the context object.
 		return new ProcessingInstruction(this, target, data);
+
+		// Note: No check is performed that target contains "xml" or ":", or that data contains characters that match
+		// the Char production.
 	}
 
 	/**
@@ -215,7 +257,12 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new attribute node
 	 */
 	public createAttribute (localName: string): Attr {
+		localName = String(localName);
+
 		// 1. If localName does not match the Name production in XML, then throw an InvalidCharacterError.
+		if (!matchesNameProduction(localName)) {
+			throwInvalidCharacterError('The local name is not a valid Name');
+		}
 
 		// 2. If the context object is an HTML document, then set localName to localName in ASCII lowercase.
 		// (html documents not implemented)
@@ -233,6 +280,9 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new attribute node
 	 */
 	public createAttributeNS (namespace: string | null, qualifiedName: string): Attr {
+		namespace = asNullableString(namespace);
+		qualifiedName = String(qualifiedName);
+
 		// 1. Let namespace, prefix, and localName be the result of passing namespace and qualifiedName to validate and
 		// extract.
 		const { namespace: validatedNamespace, prefix, localName } = validateAndExtract(namespace, qualifiedName);

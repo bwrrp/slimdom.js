@@ -3,6 +3,7 @@ import Node from './Node';
 import { throwIndexSizeError, throwInvalidNodeTypeError, throwNotSupportedError, throwWrongDocumentError } from './util/errorHelpers';
 import { NodeType, isNodeOfType } from './util/NodeType';
 import { determineLengthOfNode, getInclusiveAncestors, getNodeDocument, getNodeIndex, getRootOfNode } from './util/treeHelpers';
+import { asObject, asUnsignedLong } from './util/typeHelpers';
 
 export const ranges: Range[] = [];
 
@@ -64,6 +65,9 @@ export default class Range {
 	 * @param offset The new start offset
 	 */
 	setStart (node: Node, offset: number): void {
+		node = asObject(node, Node);
+		offset = asUnsignedLong(offset);
+
 		// 1. If node is a doctype, then throw an InvalidNodeTypeError.
 		if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE)) {
 			throwInvalidNodeTypeError('Can not set a range under a doctype node');
@@ -104,6 +108,9 @@ export default class Range {
 	 * @param offset The new end offset
 	 */
 	setEnd (node: Node, offset: number): void {
+		node = asObject(node, Node);
+		offset = asUnsignedLong(offset);
+
 		// 1. If node is a doctype, then throw an InvalidNodeTypeError.
 		if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE)) {
 			throwInvalidNodeTypeError('Can not set a range under a doctype node');
@@ -143,6 +150,8 @@ export default class Range {
 	 * @param node The node to set the range's start before
 	 */
 	setStartBefore (node: Node): void {
+		node = asObject(node, Node);
+
 		// 1. Let parent be node’s parent.
 		const parent = node.parentNode;
 
@@ -161,6 +170,8 @@ export default class Range {
 	 * @param node The node to set the range's start before
 	 */
 	setStartAfter (node: Node): void {
+		node = asObject(node, Node);
+
 		// 1. Let parent be node’s parent.
 		const parent = node.parentNode;
 
@@ -179,6 +190,8 @@ export default class Range {
 	 * @param node The node to set the range's end before
 	 */
 	setEndBefore (node: Node): void {
+		node = asObject(node, Node);
+
 		// 1. Let parent be node’s parent.
 		const parent = node.parentNode;
 
@@ -198,6 +211,8 @@ export default class Range {
 	 * @param node The node to set the range's end before
 	 */
 	setEndAfter (node: Node): void {
+		node = asObject(node, Node);
+
 		// 1. Let parent be node’s parent.
 		const parent = node.parentNode;
 
@@ -228,6 +243,8 @@ export default class Range {
 	}
 
 	selectNode (node: Node): void {
+		node = asObject(node, Node);
+
 		// 1. Let parent be node’s parent.
 		let parent = node.parentNode;
 
@@ -249,6 +266,8 @@ export default class Range {
 	}
 
 	selectNodeContents (node: Node): void {
+		node = asObject(node, Node);
+
 		// 1. If node is a doctype, throw an InvalidNodeTypeError.
 		if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE)) {
 			throwInvalidNodeTypeError('Can not place range inside a doctype node');
@@ -272,6 +291,8 @@ export default class Range {
 	static END_TO_START = 3;
 
 	compareBoundaryPoints (how: number, sourceRange: Range): number {
+		sourceRange = asObject(sourceRange, Range);
+
 		// 1. If how is not one of START_TO_START, START_TO_END, END_TO_END, and END_TO_START, then throw a
 		// NotSupportedError.
 		if (
@@ -386,6 +407,9 @@ export default class Range {
 	 * @return Whether the point is in the range
 	 */
 	isPointInRange (node: Node, offset: number): boolean {
+		node = asObject(node, Node);
+		offset = asUnsignedLong(offset);
+
 		// 1. If node’s root is different from the context object’s root, return false.
 		if (getRootOfNode(node) !== getRootOfRange(this)) {
 			return false;
@@ -422,6 +446,9 @@ export default class Range {
 	 * @return -1, 0 or 1 depending on whether the point is before, inside or after the range, respectively
 	 */
 	comparePoint (node: Node, offset: number): number {
+		node = asObject(node, Node);
+		offset = asUnsignedLong(offset);
+
 		// 1. If node’s root is different from the context object’s root, then throw a WrongDocumentError.
 		if (getRootOfNode(node) !== getRootOfRange(this)) {
 			throwWrongDocumentError('Can not compare point to range in different trees');
@@ -459,6 +486,8 @@ export default class Range {
 	 * @return Whether the range intersects node
 	 */
 	intersectsNode (node: Node): boolean {
+		node = asObject(node, Node);
+
 		// 1. If node’s root is different from the context object’s root, return false.
 		if (getRootOfNode(node) !== getRootOfRange(this)) {
 			return false;

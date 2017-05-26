@@ -8,6 +8,7 @@ import { appendAttribute, changeAttribute, removeAttribute, replaceAttribute } f
 import { throwInUseAttributeError, throwNotFoundError } from './util/errorHelpers';
 import { validateAndExtract } from './util/namespaceHelpers';
 import { NodeType } from './util/NodeType';
+import { asNullableString } from './util/typeHelpers';
 
 /**
  * 3.9. Interface Element
@@ -119,6 +120,8 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @return The value of the attribute, or null if no such attribute exists
 	 */
 	public getAttributeNS (namespace: string | null, localName: string): string | null {
+		namespace = asNullableString(namespace);
+
 		// 1. Let attr be the result of getting an attribute given namespace, localName, and the context object.
 		const attr = getAttributeByNamespaceAndLocalName(namespace, localName, this);
 
@@ -168,6 +171,8 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param value         The value for the attribute
 	 */
 	public setAttributeNS (namespace: string | null, qualifiedName: string, value: string): void {
+		namespace = asNullableString(namespace);
+
 		// 1. Let namespace, prefix, and localName be the result of passing namespace and qualifiedName to validate and
 		// extract.
 		const { namespace: validatedNamespace, prefix, localName } = validateAndExtract(namespace, qualifiedName);
@@ -192,6 +197,8 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param localName The local name of the attribute
 	 */
 	public removeAttributeNS (namespace: string | null, localName: string): void {
+		namespace = asNullableString(namespace);
+
 		removeAttributeByNamespaceAndLocalName(namespace, localName, this);
 	}
 
@@ -217,6 +224,8 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param localName The local name of the attribute
 	 */
 	public hasAttributeNS (namespace: string | null, localName: string): boolean {
+		namespace = asNullableString(namespace);
+
 		// 1. If namespace is the empty string, set it to null.
 		// (handled by getAttributeByNamespaceAndLocalName, called below)
 		// 2. Return true if the context object has an attribute whose namespace is namespace and local name is
@@ -244,6 +253,8 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @return The attribute, or null if no such attribute exists
 	 */
 	public getAttributeNodeNS (namespace: string | null, localName: string): Attr | null {
+		namespace = asNullableString(namespace);
+
 		return getAttributeByNamespaceAndLocalName(namespace, localName, this);
 	}
 
