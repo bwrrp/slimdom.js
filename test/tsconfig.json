@@ -10,8 +10,10 @@
 		],
 		"types": [
 			"chai",
-			"mocha"
-		]
+			"mocha",
+			"node"
+		],
+		"moduleResolution": "node"
 	},
 	"include": [
 		"./**/*"
