@@ -1,10 +1,14 @@
+import Document from './Document';
 import DocumentType from './DocumentType';
+import { createElement } from './Element';
 import XMLDocument from './XMLDocument';
 
 import createElementNS from './util/createElementNS';
 import { expectArity } from './util/errorHelpers';
 import { validateQualifiedName } from './util/namespaceHelpers';
 import { asNullableObject, asNullableString, treatNullAsEmptyString } from './util/typeHelpers';
+
+const HTML_NAMESPACE = 'http://www.w3.org/1999/xhtml';
 
 export default class DOMImplementation {
 	private _document: Document;
@@ -86,5 +90,56 @@ export default class DOMImplementation {
 
 		// 8. Return document.
 		return document;
+	}
+
+	/**
+	 * Returns a HTML document with a basic tree already constructed.
+	 *
+	 * @param title Optional title for the new HTML document
+	 *
+	 * @return The new document
+	 */
+	createHTMLDocument (title?: string | null): Document {
+		title = asNullableString(title);
+
+		// 1. Let doc be a new document that is an HTML document.
+		const doc = new Document();
+
+		// 2. Set doc’s content type to "text/html".
+		// (content type not implemented)
+
+		// 3. Append a new doctype, with "html" as its name and with its node document set to doc, to doc.
+		doc.appendChild(new DocumentType(doc, 'html'));
+
+		// 4. Append the result of creating an element given doc, html, and the HTML namespace, to doc.
+		const htmlElement = createElement(doc, 'html', HTML_NAMESPACE);
+		doc.appendChild(htmlElement);
+
+		// 5. Append the result of creating an element given doc, head, and the HTML namespace, to the html element
+		// created earlier.
+		const headElement = createElement(doc, 'head', HTML_NAMESPACE);
+		htmlElement.appendChild(headElement);
+
+		// 6. If title is given:
+		if (title !== null) {
+			// 6.1. Append the result of creating an element given doc, title, and the HTML namespace, to the head
+			// element created earlier.
+			const titleElement = createElement(doc, 'title', HTML_NAMESPACE);
+			headElement.appendChild(titleElement);
+
+			// 6.2. Append a new Text node, with its data set to title (which could be the empty string) and its node
+			// document set to doc, to the title element created earlier.
+			titleElement.appendChild(doc.createTextNode(title));
+		}
+
+		// 7. Append the result of creating an element given doc, body, and the HTML namespace, to the html element
+		// created earlier.
+		htmlElement.appendChild(createElement(doc, 'body', HTML_NAMESPACE));
+
+		// 8. doc’s origin is context object’s associated document’s origin.
+		// (origin not implemented)
+
+		// 9. Return doc.
+		return doc;
 	}
 }
