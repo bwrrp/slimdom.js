@@ -284,7 +284,7 @@ export function replaceChildWithNode (child: Node, node: Node, parent: Node): No
 	if (isNodeOfType(node, NodeType.TEXT_NODE) && isNodeOfType(parent, NodeType.DOCUMENT_NODE)) {
 		throwHierarchyRequestError('can not insert a Text node under a Document');
 	}
-	if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE) && !isNodeOfType(node, NodeType.DOCUMENT_NODE)) {
+	if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE) && !isNodeOfType(parent, NodeType.DOCUMENT_NODE)) {
 		throwHierarchyRequestError('can only insert a DocumentType node under a Document');
 	}
 
