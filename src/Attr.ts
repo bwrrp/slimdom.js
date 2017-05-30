@@ -82,7 +82,7 @@ export default class Attr extends Node {
 	 */
 	public _copy (document: Document): Attr {
 		// Set copy’s namespace, namespace prefix, local name, and value, to those of node.
-		return new Attr(document, this.namespaceURI, this.prefix, this.localName, this.value, this.ownerElement);
+		return new Attr(document, this.namespaceURI, this.prefix, this.localName, this.value, null);
 	}
 }
 
