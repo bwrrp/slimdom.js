@@ -2,6 +2,7 @@ import { NonElementParentNode, ParentNode, getChildren } from './mixins';
 import Attr from './Attr';
 import CDATASection from './CDATASection';
 import Comment from './Comment';
+import DocumentFragment from './DocumentFragment';
 import DocumentType from './DocumentType';
 import DOMImplementation from './DOMImplementation';
 import { createElement, default as Element } from './Element';
@@ -129,6 +130,15 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		// return the result of running the internal createElementNS steps, given context object, namespace,
 		// qualifiedName, and options.
 		return createElementNS(this, namespace, qualifiedName);
+	}
+
+	/**
+	 * Creates a new DocumentFragment node.
+	 *
+	 * @return The new document fragment
+	 */
+	public createDocumentFragment (): DocumentFragment {
+		return new DocumentFragment(this);
 	}
 
 	/**

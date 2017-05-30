@@ -3,6 +3,7 @@ import { NodeType, isNodeOfType } from './NodeType';
 import { determineLengthOfNode, getNodeDocument, getNodeIndex, forEachInclusiveDescendant } from './treeHelpers';
 import { insertIntoChildren, removeFromChildren } from './treeMutations';
 import Document from '../Document';
+import DocumentFragment from '../DocumentFragment';
 import Element from '../Element';
 import Node from '../Node';
 import { ranges } from '../Range';
@@ -62,9 +63,27 @@ function ensurePreInsertionValidity (node: Node, parent: Node, child: Node | nul
 			// DocumentFragment node
 			case NodeType.DOCUMENT_FRAGMENT_NODE:
 				// If node has more than one element child or has a Text node child.
+				const fragment = node as DocumentFragment;
+				if (fragment.firstElementChild !== fragment.lastElementChild) {
+					throwHierarchyRequestError('can not insert more than one element under a Document');
+				}
+				if (Array.from(fragment.childNodes).some(child => isNodeOfType(child, NodeType.TEXT_NODE))) {
+					throwHierarchyRequestError('can not insert a Text node under a Document');
+				}
 				// Otherwise, if node has one element child and either parent has an element child, child is a doctype,
 				// or child is not null and a doctype is following child.
-				// (document fragments not implemented)
+				if (
+					fragment.firstElementChild &&
+					(
+						parentDocument.documentElement ||
+						(child && isNodeOfType(child, NodeType.DOCUMENT_TYPE_NODE)) ||
+						(child && parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype))
+					)
+				) {
+					throwHierarchyRequestError(
+						'Document should contain at most one doctype, followed by at most one element'
+					);
+				}
 				break;
 
 			// element
@@ -296,9 +315,26 @@ export function replaceChildWithNode (child: Node, node: Node, parent: Node): No
 			// DocumentFragment node
 			case NodeType.DOCUMENT_FRAGMENT_NODE:
 				// If node has more than one element child or has a Text node child.
+				const fragment = node as DocumentFragment;
+				if (fragment.firstElementChild !== fragment.lastElementChild) {
+					throwHierarchyRequestError('can not insert more than one element under a Document');
+				}
+				if (Array.from(fragment.childNodes).some(child => isNodeOfType(child, NodeType.TEXT_NODE))) {
+					throwHierarchyRequestError('can not insert a Text node under a Document');
+				}
 				// Otherwise, if node has one element child and either parent has an element child that is not child or
 				// a doctype is following child.
-				// (document fragments not implemented)
+				if (
+					fragment.firstElementChild &&
+					(
+						(parentDocument.documentElement && parentDocument.documentElement !== child) ||
+						(child && parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype))
+					)
+				) {
+					throwHierarchyRequestError(
+						'Document should contain at most one doctype, followed by at most one element'
+					);
+				}
 				break;
 
 			// element

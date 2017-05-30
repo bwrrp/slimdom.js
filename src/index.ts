@@ -4,6 +4,7 @@ export { default as Attr } from './Attr';
 export { default as CharacterData } from './CharacterData';
 export { default as Comment } from './Comment';
 export { default as Document } from './Document';
+export { default as DocumentFragment } from './DocumentFragment';
 export { default as DocumentType } from './DocumentType';
 export { default as DOMImplementation } from './DOMImplementation';
 export { default as Element } from './Element';

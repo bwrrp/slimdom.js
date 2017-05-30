@@ -1,5 +1,6 @@
 import CharacterData from './CharacterData';
 import Document from './Document';
+import DocumentFragment from './DocumentFragment';
 import Element from './Element';
 import Node from './Node';
 
@@ -28,9 +29,8 @@ export interface ParentNode {
 // Element implements ParentNode;
 
 export function asParentNode (node: Node): ParentNode | null {
-	// (document fragments not implemented)
-	if (isNodeOfType(node, NodeType.ELEMENT_NODE, NodeType.DOCUMENT_NODE)) {
-		return node as Element | Document;
+	if (isNodeOfType(node, NodeType.ELEMENT_NODE, NodeType.DOCUMENT_NODE, NodeType.DOCUMENT_FRAGMENT_NODE)) {
+		return node as Element | Document | DocumentFragment;
 	}
 
 	return null;
