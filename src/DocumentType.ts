@@ -46,7 +46,7 @@ export default class DocumentType extends Node implements ChildNode {
 	 * @param publicId The public ID of the doctype
 	 * @param systemId The system ID of the doctype
 	 */
-	constructor (document: Document | null, name: string, publicId: string = '', systemId: string = '') {
+	constructor (document: Document, name: string, publicId: string = '', systemId: string = '') {
 		super(document);
 
 		this.name = name;

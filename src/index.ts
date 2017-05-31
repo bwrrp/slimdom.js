@@ -1,4 +1,3 @@
-import { implementation } from './DOMImplementation';
 import XMLDocument from './XMLDocument';
 
 export { default as Attr } from './Attr';
@@ -8,7 +7,6 @@ export { default as Document } from './Document';
 export { default as DocumentType } from './DocumentType';
 export { default as DOMImplementation } from './DOMImplementation';
 export { default as Element } from './Element';
-export { implementation } from './DOMImplementation';
 export { default as Node } from './Node';
 export { default as ProcessingInstruction } from './ProcessingInstruction';
 export { default as Range } from './Range';
@@ -17,5 +15,5 @@ export { default as XMLDocument } from './XMLDocument';
 export { default as MutationObserver } from './mutation-observer/MutationObserver';
 
 export function createDocument (): XMLDocument {
-	return implementation.createDocument(null, '');
+	return new XMLDocument();
 }

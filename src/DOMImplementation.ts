@@ -7,11 +7,19 @@ import { validateQualifiedName } from './util/namespaceHelpers';
 import { asNullableObject, asNullableString, treatNullAsEmptyString } from './util/typeHelpers';
 
 export default class DOMImplementation {
+	private _document: Document;
+
+	/**
+	 * (non-standard) Use Document#implementation to access instances of this class
+	 *
+	 * @param document The document to associate with this instance
+	 */
+	constructor (document: Document) {
+		this._document = document;
+	}
+
 	/**
 	 * Returns a doctype, with the given qualifiedName, publicId, and systemId.
-	 *
-	 * (Non-standard) As this implementation does not associate a document with the global object, the returned
-	 * doctype does not have an associated node document until it is inserted in one.
 	 *
 	 * @param qualifiedName Qualified name for the doctype
 	 * @param publicId      Public ID for the doctype
@@ -25,7 +33,7 @@ export default class DOMImplementation {
 
 		// 2. Return a new doctype, with qualifiedName as its name, publicId as its public ID, and systemId as its
 		// system ID, and with its node document set to the associated document of the context object.
-		return new DocumentType(null, qualifiedName, publicId, systemId);
+		return new DocumentType(this._document, qualifiedName, publicId, systemId);
 	}
 
 	/**
@@ -80,5 +88,3 @@ export default class DOMImplementation {
 		return document;
 	}
 }
-
-export const implementation = new DOMImplementation();
