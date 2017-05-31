@@ -3,7 +3,7 @@ import Attr from './Attr';
 import CDATASection from './CDATASection';
 import Comment from './Comment';
 import DocumentType from './DocumentType';
-import { implementation, default as DOMImplementation } from './DOMImplementation';
+import DOMImplementation from './DOMImplementation';
 import { createElement, default as Element } from './Element';
 import Node from './Node';
 import ProcessingInstruction from './ProcessingInstruction';
@@ -55,9 +55,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	/**
 	 * Returns a reference to the DOMImplementation object associated with the document.
 	 */
-	public get implementation (): DOMImplementation {
-		return implementation;
-	}
+	public readonly implementation: DOMImplementation = new DOMImplementation(this);
 
 	/**
 	 * The doctype, or null if there is none.
