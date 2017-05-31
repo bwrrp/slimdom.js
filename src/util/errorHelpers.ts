@@ -19,33 +19,33 @@ function createDOMException (name: string, code: number, message: string): Error
 }
 
 export function throwHierarchyRequestError (message: string): never {
-	throw new Error(`HierarchyRequestError: ${message}`);
+	throw createDOMException('HierarchyRequestError', 3, message);
 }
 
 export function throwIndexSizeError (message: string): never {
-	throw new Error(`IndexSizeError: ${message}`);
+	throw createDOMException('IndexSizeError', 1, message);
 }
 
 export function throwInUseAttributeError (message: string): never {
-	throw new Error(`InUseAttributeError: ${message}`);
+	throw createDOMException('InUseAttributeError', 10, message);
 }
 
 export function throwInvalidNodeTypeError (message: string): never {
-	throw new Error(`InvalidNodeTypeError: ${message}`);
+	throw createDOMException('InvalidNodeTypeError', 24, message);
 }
 
 export function throwNamespaceError (message: string): never {
-	throw new Error(`NamespaceError: ${message}`);
+	throw createDOMException('NamespaceError', 14, message);
 }
 
 export function throwNotFoundError (message: string): never {
-	throw new Error(`NotFoundError: ${message}`);
+	throw createDOMException('NotFoundError', 8, message);
 }
 
 export function throwNotSupportedError (message: string): never {
-	throw new Error(`NotSupportedError: ${message}`);
+	throw createDOMException('NotSupportedError', 9, message);
 }
 
 export function throwWrongDocumentError (message: string): never {
-	throw new Error(`WrongDocumentError: ${message}`);
+	throw createDOMException('WrongDocumentError', 4, message);
 }
