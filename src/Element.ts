@@ -5,8 +5,8 @@ import Document from './Document';
 import Node from './Node';
 
 import { appendAttribute, changeAttribute, removeAttribute, replaceAttribute } from './util/attrMutations';
-import { throwInUseAttributeError, throwNotFoundError } from './util/errorHelpers';
-import { validateAndExtract } from './util/namespaceHelpers';
+import { throwInUseAttributeError, throwInvalidCharacterError, throwNotFoundError } from './util/errorHelpers';
+import { matchesNameProduction, validateAndExtract } from './util/namespaceHelpers';
 import { NodeType } from './util/NodeType';
 import { asNullableString } from './util/typeHelpers';
 
@@ -142,6 +142,9 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 */
 	public setAttribute (qualifiedName: string, value: string): void {
 		// 1. If qualifiedName does not match the Name production in XML, then throw an InvalidCharacterError.
+		if (!matchesNameProduction(qualifiedName)) {
+			throwInvalidCharacterError('The qualified name does not match the Name production');
+		}
 
 		// 2. If the context object is in the HTML namespace and its node document is an HTML document, then set
 		// qualifiedName to qualifiedName in ASCII lowercase.
