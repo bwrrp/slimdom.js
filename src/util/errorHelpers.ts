@@ -30,6 +30,10 @@ export function throwInUseAttributeError (message: string): never {
 	throw createDOMException('InUseAttributeError', 10, message);
 }
 
+export function throwInvalidCharacterError (message: string): never {
+	throw createDOMException('InvalidCharacterError', 5, message);
+}
+
 export function throwInvalidNodeTypeError (message: string): never {
 	throw createDOMException('InvalidNodeTypeError', 24, message);
 }
