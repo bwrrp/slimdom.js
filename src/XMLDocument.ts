@@ -8,7 +8,7 @@ export default class XMLDocument extends Document {
 	 *
 	 * @return A shallow copy of the context object
 	 */
-	public _copy (document: Document): XMLDocument {
+	public _copy(document: Document): XMLDocument {
 		// Set copy’s encoding, content type, URL, origin, type, and mode, to those of node.
 		// (properties not implemented)
 

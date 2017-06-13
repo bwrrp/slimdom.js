@@ -13,7 +13,7 @@ import { validateAndExtract } from './namespaceHelpers';
  *
  * @return The new element
  */
-export default function createElementNS (document: Document, namespace: string | null, qualifiedName: string): Element {
+export default function createElementNS(document: Document, namespace: string | null, qualifiedName: string): Element {
 	// 1. Let namespace, prefix, and localName be the result of passing namespace and qualifiedName to validate and
 	// extract.
 	const { namespace: validatedNamespace, prefix, localName } = validateAndExtract(namespace, qualifiedName);

@@ -99,7 +99,6 @@ describe('Range', () => {
 	});
 
 	describe('under mutations', () => {
-
 		describe('in element', () => {
 			beforeEach(() => {
 				range.setStart(element, 0);

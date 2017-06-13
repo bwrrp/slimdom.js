@@ -33,7 +33,7 @@ describe('Document', () => {
 
 		it('has a documentElement', () => chai.assert.equal(document.documentElement, element));
 
-		it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [ element ]));
+		it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [element]));
 
 		it('the child element is adopted into the document', () => chai.assert.equal(element.ownerDocument, document));
 
@@ -56,7 +56,7 @@ describe('Document', () => {
 
 			it('has the other element as documentElement', () => chai.assert.equal(document.documentElement, otherElement));
 
-			it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [ otherElement ]));
+			it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [otherElement]));
 		});
 	});
 
@@ -69,7 +69,7 @@ describe('Document', () => {
 
 		it('has no documentElement', () => chai.assert.equal(document.documentElement, null));
 
-		it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [ processingInstruction ]));
+		it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [processingInstruction]));
 
 		describe('after replacing with an element', () => {
 			let otherElement: Element;
@@ -80,7 +80,7 @@ describe('Document', () => {
 
 			it('has the other element as documentElement', () => chai.assert.equal(document.documentElement, otherElement));
 
-			it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [ otherElement ]));
+			it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [otherElement]));
 		});
 	});
 

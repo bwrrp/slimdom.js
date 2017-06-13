@@ -14,7 +14,7 @@ import queueMutationRecord from '../mutation-observer/queueMutationRecord';
 /**
  * To ensure pre-insertion validity of a node into a parent before a child, run these steps:
  */
-function ensurePreInsertionValidity (node: Node, parent: Node, child: Node | null): void {
+function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null): void {
 	// 1. If parent is not a Document, DocumentFragment, or Element node, throw a HierarchyRequestError.
 	if (!isNodeOfType(parent, NodeType.DOCUMENT_NODE, NodeType.DOCUMENT_FRAGMENT_NODE, NodeType.ELEMENT_NODE)) {
 		throwHierarchyRequestError('parent must be a Document, DocumentFragment or Element node');
@@ -32,15 +32,17 @@ function ensurePreInsertionValidity (node: Node, parent: Node, child: Node | nul
 
 	// 4. If node is not a DocumentFragment, DocumentType, Element, Text, ProcessingInstruction, or Comment node, throw
 	// a HierarchyRequestError.
-	if (!isNodeOfType(
-		node,
-		NodeType.DOCUMENT_FRAGMENT_NODE,
-		NodeType.DOCUMENT_TYPE_NODE,
-		NodeType.ELEMENT_NODE,
-		NodeType.TEXT_NODE,
-		NodeType.PROCESSING_INSTRUCTION_NODE,
-		NodeType.COMMENT_NODE
-	)) {
+	if (
+		!isNodeOfType(
+			node,
+			NodeType.DOCUMENT_FRAGMENT_NODE,
+			NodeType.DOCUMENT_TYPE_NODE,
+			NodeType.ELEMENT_NODE,
+			NodeType.TEXT_NODE,
+			NodeType.PROCESSING_INSTRUCTION_NODE,
+			NodeType.COMMENT_NODE
+		)
+	) {
 		throwHierarchyRequestError(
 			'node must be a DocumentFragment, DocumentType, Element, Text, ProcessingInstruction or Comment node'
 		);
@@ -74,15 +76,11 @@ function ensurePreInsertionValidity (node: Node, parent: Node, child: Node | nul
 				// or child is not null and a doctype is following child.
 				if (
 					fragment.firstElementChild &&
-					(
-						parentDocument.documentElement ||
+					(parentDocument.documentElement ||
 						(child && isNodeOfType(child, NodeType.DOCUMENT_TYPE_NODE)) ||
-						(child && parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype))
-					)
+						(child && parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype)))
 				) {
-					throwHierarchyRequestError(
-						'Document should contain at most one doctype, followed by at most one element'
-					);
+					throwHierarchyRequestError('Document should contain at most one doctype, followed by at most one element');
 				}
 				break;
 
@@ -95,9 +93,7 @@ function ensurePreInsertionValidity (node: Node, parent: Node, child: Node | nul
 					(child && isNodeOfType(child, NodeType.DOCUMENT_TYPE_NODE)) ||
 					(child && parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype))
 				) {
-					throwHierarchyRequestError(
-						'Document should contain at most one doctype, followed by at most one element'
-					);
+					throwHierarchyRequestError('Document should contain at most one doctype, followed by at most one element');
 				}
 				break;
 
@@ -107,16 +103,12 @@ function ensurePreInsertionValidity (node: Node, parent: Node, child: Node | nul
 				// parent has an element child.
 				if (
 					parentDocument.doctype ||
-					(
-						child &&
+					(child &&
 						parentDocument.documentElement &&
-						getNodeIndex(parentDocument.documentElement) < getNodeIndex(child)
-					) ||
+						getNodeIndex(parentDocument.documentElement) < getNodeIndex(child)) ||
 					(!child && parentDocument.documentElement)
 				) {
-					throwHierarchyRequestError(
-						'Document should contain at most one doctype, followed by at most one element'
-					);
+					throwHierarchyRequestError('Document should contain at most one doctype, followed by at most one element');
 				}
 				break;
 		}
@@ -132,7 +124,7 @@ function ensurePreInsertionValidity (node: Node, parent: Node, child: Node | nul
  *
  * @return The inserted node
  */
-export function preInsertNode (node: Node, parent: Node, child: Node | null): Node {
+export function preInsertNode(node: Node, parent: Node, child: Node | null): Node {
 	// 1. Ensure pre-insertion validity of node into parent before child.
 	ensurePreInsertionValidity(node, parent, child);
 
@@ -162,7 +154,7 @@ export function preInsertNode (node: Node, parent: Node, child: Node | null): No
  * @param child             Child to insert before, or null to insert at end of parent
  * @param suppressObservers Whether to skip enqueueing a mutation record for this mutation
  */
-export function insertNode (node: Node, parent: Node, child: Node | null, suppressObservers: boolean = false): void {
+export function insertNode(node: Node, parent: Node, child: Node | null, suppressObservers: boolean = false): void {
 	// 1. Let count be the number of children of node if it is a DocumentFragment node, and one otherwise.
 	const isDocumentFragment = isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE);
 	const count = isDocumentFragment ? determineLengthOfNode(node) : 1;
@@ -208,7 +200,7 @@ export function insertNode (node: Node, parent: Node, child: Node | null, suppre
 	nodes.forEach(node => {
 		// 6.1. If child is null, then append node to parent’s children.
 		// 6.2. Otherwise, insert node into parent’s children before child’s index.
-		insertIntoChildren(node, parent, child)
+		insertIntoChildren(node, parent, child);
 
 		// 6.3. If parent is a shadow host and node is a slotable, then assign a slot for node.
 		// 6.4. If parent is a slot whose assigned nodes is the empty list, then run signal a slot change for parent.
@@ -251,7 +243,7 @@ export function insertNode (node: Node, parent: Node, child: Node | null, suppre
  *
  * @return The appended node
  */
-export function appendNode (node: Node, parent: Node): Node {
+export function appendNode(node: Node, parent: Node): Node {
 	// pre-insert node into parent before null.
 	return preInsertNode(node, parent, null);
 }
@@ -265,7 +257,7 @@ export function appendNode (node: Node, parent: Node): Node {
  *
  * @return The old child node
  */
-export function replaceChildWithNode (child: Node, node: Node, parent: Node): Node {
+export function replaceChildWithNode(child: Node, node: Node, parent: Node): Node {
 	// 1. If parent is not a Document, DocumentFragment, or Element node, throw a HierarchyRequestError.
 	if (!isNodeOfType(parent, NodeType.DOCUMENT_NODE, NodeType.DOCUMENT_FRAGMENT_NODE, NodeType.ELEMENT_NODE)) {
 		throwHierarchyRequestError('Can not replace under a non-parent node');
@@ -283,18 +275,20 @@ export function replaceChildWithNode (child: Node, node: Node, parent: Node): No
 
 	// 4. If node is not a DocumentFragment, DocumentType, Element, Text, ProcessingInstruction, or Comment node, throw
 	// a HierarchyRequestError.
-	if (!isNodeOfType(
-		node,
-		NodeType.DOCUMENT_FRAGMENT_NODE,
-		NodeType.DOCUMENT_TYPE_NODE,
-		NodeType.ELEMENT_NODE,
-		NodeType.TEXT_NODE,
-		NodeType.PROCESSING_INSTRUCTION_NODE,
-		NodeType.COMMENT_NODE
-	)) {
+	if (
+		!isNodeOfType(
+			node,
+			NodeType.DOCUMENT_FRAGMENT_NODE,
+			NodeType.DOCUMENT_TYPE_NODE,
+			NodeType.ELEMENT_NODE,
+			NodeType.TEXT_NODE,
+			NodeType.PROCESSING_INSTRUCTION_NODE,
+			NodeType.COMMENT_NODE
+		)
+	) {
 		throwHierarchyRequestError(
-			'Can not insert a node that isn\'t a DocumentFragment, DocumentType, Element, Text, ' +
-			'ProcessingInstruction or Comment'
+			"Can not insert a node that isn't a DocumentFragment, DocumentType, Element, Text, " +
+				'ProcessingInstruction or Comment'
 		);
 	}
 
@@ -326,14 +320,10 @@ export function replaceChildWithNode (child: Node, node: Node, parent: Node): No
 				// a doctype is following child.
 				if (
 					fragment.firstElementChild &&
-					(
-						(parentDocument.documentElement && parentDocument.documentElement !== child) ||
-						(child && parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype))
-					)
+					((parentDocument.documentElement && parentDocument.documentElement !== child) ||
+						(child && parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype)))
 				) {
-					throwHierarchyRequestError(
-						'Document should contain at most one doctype, followed by at most one element'
-					);
+					throwHierarchyRequestError('Document should contain at most one doctype, followed by at most one element');
 				}
 				break;
 
@@ -344,9 +334,7 @@ export function replaceChildWithNode (child: Node, node: Node, parent: Node): No
 					(parentDocument.documentElement && parentDocument.documentElement !== child) ||
 					(parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype))
 				) {
-					throwHierarchyRequestError(
-						'Document should contain at most one doctype, followed by at most one element'
-					);
+					throwHierarchyRequestError('Document should contain at most one doctype, followed by at most one element');
 				}
 				break;
 
@@ -355,14 +343,9 @@ export function replaceChildWithNode (child: Node, node: Node, parent: Node): No
 				// parent has a doctype child that is not child, or an element is preceding child.
 				if (
 					(parentDocument.doctype && parentDocument.doctype !== child) ||
-					(
-						parentDocument.documentElement &&
-						getNodeIndex(parentDocument.documentElement) < getNodeIndex(child)
-					)
+					(parentDocument.documentElement && getNodeIndex(parentDocument.documentElement) < getNodeIndex(child))
 				) {
-					throwHierarchyRequestError(
-						'Document should contain at most one doctype, followed by at most one element'
-					);
+					throwHierarchyRequestError('Document should contain at most one doctype, followed by at most one element');
 				}
 				break;
 		}
@@ -423,7 +406,7 @@ export function replaceChildWithNode (child: Node, node: Node, parent: Node): No
  *
  * @return The removed child
  */
-export function preRemoveChild (child: Node, parent: Node): Node {
+export function preRemoveChild(child: Node, parent: Node): Node {
 	// 1. If child’s parent is not parent, then throw a NotFoundError.
 	if (child.parentNode !== parent) {
 		throwNotFoundError('child is not a child of parent');
@@ -443,7 +426,7 @@ export function preRemoveChild (child: Node, parent: Node): Node {
  * @param parent            Parent to remove child from
  * @param suppressObservers Whether to skip enqueueing a mutation record for this mutation
  */
-export function removeNode (node: Node, parent: Node, suppressObservers: boolean = false): void {
+export function removeNode(node: Node, parent: Node, suppressObservers: boolean = false): void {
 	// 1. Let index be node’s index.
 	const index = getNodeIndex(node);
 
@@ -471,7 +454,7 @@ export function removeNode (node: Node, parent: Node, suppressObservers: boolean
 		if (range.endContainer === parent && range.endOffset > index) {
 			range.endOffset -= 1;
 		}
-	})
+	});
 
 	// 6. For each NodeIterator object iterator whose root’s node document is node’s node document, run the NodeIterator
 	// pre-removing steps given node and iterator.
@@ -546,7 +529,7 @@ export function removeNode (node: Node, parent: Node, suppressObservers: boolean
  * @param node     Node to adopt
  * @param document Document to adopt node into
  */
-export function adoptNode (node: Node, document: Document): void {
+export function adoptNode(node: Node, document: Document): void {
 	// 1. Let oldDocument be node’s node document.
 	const oldDocument = getNodeDocument(node);
 
@@ -573,7 +556,7 @@ export function adoptNode (node: Node, document: Document): void {
 				attr.ownerDocument = document;
 			}
 		}
-	})
+	});
 
 	// 3.2. For each inclusiveDescendant in node’s shadow-including inclusive descendants that is custom, enqueue a
 	// custom element callback reaction with inclusiveDescendant, callback name "adoptedCallback", and an argument list

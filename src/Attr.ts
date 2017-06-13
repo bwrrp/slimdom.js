@@ -10,20 +10,20 @@ import { NodeType } from './util/NodeType';
 export default class Attr extends Node {
 	// Node
 
-	public get nodeType (): number {
+	public get nodeType(): number {
 		return NodeType.ATTRIBUTE_NODE;
 	}
 
-	public get nodeName (): string {
+	public get nodeName(): string {
 		// Return the qualified name
 		return this.name;
 	}
 
-	public get nodeValue (): string | null {
+	public get nodeValue(): string | null {
 		return this._value;
 	}
 
-	public set nodeValue (newValue: string | null) {
+	public set nodeValue(newValue: string | null) {
 		// if the new value is null, act as if it was the empty string instead
 		if (newValue === null) {
 			newValue = '';
@@ -42,11 +42,11 @@ export default class Attr extends Node {
 
 	private _value: string;
 
-	public get value (): string {
+	public get value(): string {
 		return this._value;
 	}
 
-	public set value (value: string) {
+	public set value(value: string) {
 		setExistingAttributeValue(this, value);
 	}
 
@@ -62,7 +62,14 @@ export default class Attr extends Node {
 	 * @param value     The value for the attribute
 	 * @param element   The element for the attribute, or null if the attribute is not attached to an element
 	 */
-	constructor (document: Document, namespace: string | null, prefix: string | null, localName: string, value: string, element: Element | null) {
+	constructor(
+		document: Document,
+		namespace: string | null,
+		prefix: string | null,
+		localName: string,
+		value: string,
+		element: Element | null
+	) {
 		super(document);
 		this.namespaceURI = namespace;
 		this.prefix = prefix;
@@ -80,7 +87,7 @@ export default class Attr extends Node {
 	 *
 	 * @return A shallow copy of the context object
 	 */
-	public _copy (document: Document): Attr {
+	public _copy(document: Document): Attr {
 		// Set copy’s namespace, namespace prefix, local name, and value, to those of node.
 		return new Attr(document, this.namespaceURI, this.prefix, this.localName, this.value, null);
 	}
@@ -92,14 +99,13 @@ export default class Attr extends Node {
  * @param attribute The attribute to set the value of
  * @param value     The new value for attribute
  */
-function setExistingAttributeValue (attribute: Attr, value: string) {
+function setExistingAttributeValue(attribute: Attr, value: string) {
 	// 1. If attribute’s element is null, then set attribute’s value to value.
 	const element = attribute.ownerElement;
 	if (element === null) {
 		(attribute as any)._value = value;
-	}
-	// 2. Otherwise, change attribute from attribute’s element to value.
-	else {
+	} else {
+		// 2. Otherwise, change attribute from attribute’s element to value.
 		changeAttribute(attribute, element, value);
 	}
 }

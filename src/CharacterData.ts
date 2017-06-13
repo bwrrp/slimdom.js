@@ -13,11 +13,11 @@ import { asUnsignedLong, treatNullAsEmptyString } from './util/typeHelpers';
 export default abstract class CharacterData extends Node implements NonDocumentTypeChildNode, ChildNode {
 	// Node
 
-	public get nodeValue (): string | null {
+	public get nodeValue(): string | null {
 		return this._data;
 	}
 
-	public set nodeValue (newValue: string | null) {
+	public set nodeValue(newValue: string | null) {
 		// if the new value is null, act as if it was the empty string instead
 		if (newValue === null) {
 			newValue = '';
@@ -39,11 +39,11 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	 */
 	protected _data: string;
 
-	public get data (): string {
+	public get data(): string {
 		return this._data;
 	}
 
-	public set data (newValue: string) {
+	public set data(newValue: string) {
 		// [TreatNullAs=EmptyString]
 		newValue = treatNullAsEmptyString(newValue);
 
@@ -51,7 +51,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 		replaceData(this, 0, this.length, newValue);
 	}
 
-	public get length (): number {
+	public get length(): number {
 		return this.data.length;
 	}
 
@@ -59,7 +59,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	 * @param document The node document to associate with the node
 	 * @param data     The data to associate with the node
 	 */
-	protected constructor (document: Document, data: string) {
+	protected constructor(document: Document, data: string) {
 		super(document);
 		this._data = data;
 	}
@@ -72,7 +72,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	 *
 	 * @return The specified substring
 	 */
-	public substringData (offset: number, count: number): string {
+	public substringData(offset: number, count: number): string {
 		expectArity(arguments, 2);
 		return substringData(this, offset, count);
 	}
@@ -82,7 +82,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	 *
 	 * @param data Data to append
 	 */
-	public appendData (data: string): void {
+	public appendData(data: string): void {
 		expectArity(arguments, 1);
 		replaceData(this, this.length, 0, data);
 	}
@@ -93,7 +93,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	 * @param offset Offset at which to insert
 	 * @param data   Data to insert
 	 */
-	public insertData (offset: number, data: string): void {
+	public insertData(offset: number, data: string): void {
 		expectArity(arguments, 1);
 		replaceData(this, offset, 0, data);
 	}
@@ -104,7 +104,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	 * @param offset Offset at which to delete
 	 * @param count  Number of code units to delete
 	 */
-	public deleteData (offset: number, count: number): void {
+	public deleteData(offset: number, count: number): void {
 		expectArity(arguments, 2);
 		replaceData(this, offset, count, '');
 	}
@@ -116,7 +116,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	 * @param count  Number of code units to remove
 	 * @param data   Data to insert
 	 */
-	public replaceData (offset: number, count: number, data: string): void {
+	public replaceData(offset: number, count: number, data: string): void {
 		expectArity(arguments, 3);
 		replaceData(this, offset, count, data);
 	}
@@ -130,7 +130,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
  * @param count  The number of code units to replace
  * @param data   The data to insert in place of the removed data
  */
-export function replaceData (node: CharacterData, offset: number, count: number, data: string): void {
+export function replaceData(node: CharacterData, offset: number, count: number, data: string): void {
 	// Match spec data types
 	offset = asUnsignedLong(offset);
 	count = asUnsignedLong(count);
@@ -140,7 +140,7 @@ export function replaceData (node: CharacterData, offset: number, count: number,
 
 	// 2. If offset is greater than length, then throw an IndexSizeError.
 	if (offset > length) {
-		throwIndexSizeError('can not replace data past the node\'s length');
+		throwIndexSizeError("can not replace data past the node's length");
 	}
 
 	// 3. If offset plus count is greater than length, then set count to length minus offset.
@@ -196,7 +196,7 @@ export function replaceData (node: CharacterData, offset: number, count: number,
  *
  * @return The requested substring
  */
-export function substringData (node: CharacterData, offset: number, count: number): string {
+export function substringData(node: CharacterData, offset: number, count: number): string {
 	// Match spec data types
 	offset = asUnsignedLong(offset);
 	count = asUnsignedLong(count);
@@ -206,7 +206,7 @@ export function substringData (node: CharacterData, offset: number, count: numbe
 
 	// 2. If offset is greater than length, then throw an IndexSizeError.
 	if (offset > length) {
-		throwIndexSizeError('can not substring data past the node\'s length');
+		throwIndexSizeError("can not substring data past the node's length");
 	}
 
 	// 3. If offset plus count is greater than length, return a string whose value is the code units from the offsetth

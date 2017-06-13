@@ -18,7 +18,7 @@ export default class DOMImplementation {
 	 *
 	 * @param document The document to associate with this instance
 	 */
-	constructor (document: Document) {
+	constructor(document: Document) {
 		this._document = document;
 	}
 
@@ -31,7 +31,7 @@ export default class DOMImplementation {
 	 *
 	 * @return The new doctype node
 	 */
-	createDocumentType (qualifiedName: string, publicId: string, systemId: string): DocumentType {
+	createDocumentType(qualifiedName: string, publicId: string, systemId: string): DocumentType {
 		// 1. Validate qualifiedName.
 		validateQualifiedName(qualifiedName);
 
@@ -50,7 +50,11 @@ export default class DOMImplementation {
 	 *
 	 * @return The new XMLDocument
 	 */
-	createDocument (namespace: string | null, qualifiedName: string | null, doctype: DocumentType | null = null): XMLDocument {
+	createDocument(
+		namespace: string | null,
+		qualifiedName: string | null,
+		doctype: DocumentType | null = null
+	): XMLDocument {
 		expectArity(arguments, 2);
 		namespace = asNullableString(namespace);
 		// [TreatNullAs=EmptyString] for qualifiedName
@@ -99,7 +103,7 @@ export default class DOMImplementation {
 	 *
 	 * @return The new document
 	 */
-	createHTMLDocument (title?: string | null): Document {
+	createHTMLDocument(title?: string | null): Document {
 		title = asNullableString(title);
 
 		// 1. Let doc be a new document that is an HTML document.

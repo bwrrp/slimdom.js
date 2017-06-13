@@ -17,7 +17,7 @@ export default class RegisteredObservers {
 	/**
 	 * @param node Node for which this instance holds RegisteredObserver instances.
 	 */
-	constructor (node: Node) {
+	constructor(node: Node) {
 		this._node = node;
 	}
 
@@ -27,7 +27,7 @@ export default class RegisteredObservers {
 	 * @param observer Observer to create a registration for
 	 * @param options  Options for the registration
 	 */
-	public register (observer: MutationObserver, options: MutationObserverInit) {
+	public register(observer: MutationObserver, options: MutationObserverInit) {
 		// (continuing from MutationObserver#observe)
 		// 7. For each registered observer registered in target’s list of registered observers whose observer is the
 		// context object:
@@ -66,7 +66,7 @@ export default class RegisteredObservers {
 	 *
 	 * @param registeredObserver The registered observer to remove
 	 */
-	public remove (registeredObserver: RegisteredObserver): void {
+	public remove(registeredObserver: RegisteredObserver): void {
 		const index = this._registeredObservers.indexOf(registeredObserver);
 		if (index >= 0) {
 			this._registeredObservers.splice(index, 1);
@@ -81,7 +81,7 @@ export default class RegisteredObservers {
 	 *
 	 * @param observer Observer for which to remove the registration
 	 */
-	public removeForObserver (observer: MutationObserver): void {
+	public removeForObserver(observer: MutationObserver): void {
 		// Filter the array in-place
 		let write = 0;
 		for (let read = 0, l = this._registeredObservers.length; read < l; ++read) {
@@ -107,18 +107,18 @@ export default class RegisteredObservers {
 	 * @param interestedObservers Array of mutation observer objects to append to
 	 * @param pairedStrings       Paired strings for the mutation observer objects
 	 */
-	public collectInterestedObservers (type: string, target: Node, data: MutationRecordInit, interestedObservers: MutationObserver[], pairedStrings: (string | null | undefined)[]) {
+	public collectInterestedObservers(
+		type: string,
+		target: Node,
+		data: MutationRecordInit,
+		interestedObservers: MutationObserver[],
+		pairedStrings: (string | null | undefined)[]
+	) {
 		// (continuing from queueMutationRecord)
 		// 3. ...and then for each registered observer (with registered observer’s options as options) in node’s list of
 		// registered observers:
 		this._registeredObservers.forEach(registeredObserver => {
-			registeredObserver.collectInterestedObservers(
-				type,
-				target,
-				data,
-				interestedObservers,
-				pairedStrings
-			);
+			registeredObserver.collectInterestedObservers(type, target, data, interestedObservers, pairedStrings);
 		});
 	}
 
@@ -127,7 +127,7 @@ export default class RegisteredObservers {
 	 *
 	 * @param node Node to append the transient registered observers to
 	 */
-	public appendTransientRegisteredObservers (node: Node): void {
+	public appendTransientRegisteredObservers(node: Node): void {
 		this._registeredObservers.forEach(registeredObserver => {
 			if (registeredObserver.options.subtree) {
 				node._registeredObservers.registerTransient(registeredObserver);
@@ -140,10 +140,8 @@ export default class RegisteredObservers {
 	 *
 	 * @param source The source registered observer
 	 */
-	public registerTransient (source: RegisteredObserver): void {
-		this._registeredObservers.push(
-			new RegisteredObserver(source.observer, this._node, source.options, source)
-		);
+	public registerTransient(source: RegisteredObserver): void {
+		this._registeredObservers.push(new RegisteredObserver(source.observer, this._node, source.options, source));
 		// Note that node is not added to the transient observer's observer's list of nodes.
 	}
 }
@@ -153,7 +151,7 @@ export default class RegisteredObservers {
  *
  * @param observer The mutation observer object to remove transient registered observers for
  */
-export function removeTransientRegisteredObserversForObserver (observer: MutationObserver): void {
+export function removeTransientRegisteredObserversForObserver(observer: MutationObserver): void {
 	observer._transients.forEach(transientRegisteredObserver => {
 		transientRegisteredObserver.node._registeredObservers.remove(transientRegisteredObserver);
 	});
@@ -165,7 +163,7 @@ export function removeTransientRegisteredObserversForObserver (observer: Mutatio
  *
  * @param source The registered observer to remove transient registered observers for
  */
-export function removeTransientRegisteredObserversForSource (source: RegisteredObserver): void {
+export function removeTransientRegisteredObserversForSource(source: RegisteredObserver): void {
 	for (let i = source.observer._transients.length - 1; i >= 0; --i) {
 		const transientRegisteredObserver = source.observer._transients[i];
 		if (transientRegisteredObserver.source !== source) {

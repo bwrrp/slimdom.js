@@ -78,7 +78,7 @@ export default class MutationObserver {
 	 *
 	 * @param callback Function called after mutations have been observed.
 	 */
-	constructor (callback: MutationCallback) {
+	constructor(callback: MutationCallback) {
 		// create a new MutationObserver object with callback set to callback
 		this._callback = callback;
 
@@ -99,7 +99,7 @@ export default class MutationObserver {
 	 * @param target  Node (or root of subtree) to observe
 	 * @param options Determines which types of mutations to observe
 	 */
-	observe (target: Node, options: MutationObserverInit) {
+	observe(target: Node, options: MutationObserverInit) {
 		// Defaults from IDL
 		options.childList = !!options.childList;
 		options.subtree = !!options.subtree;
@@ -136,7 +136,7 @@ export default class MutationObserver {
 		if (options.characterDataOldValue && !options.characterData) {
 			throw new TypeError(
 				'The options object may only set "characterDataOldValue" to true when "characterData" is true or not ' +
-				'present.'
+					'present.'
 			);
 		}
 
@@ -154,7 +154,7 @@ export default class MutationObserver {
 	 * Stops the MutationObserver instance from receiving notifications of DOM mutations. Until the observe() method
 	 * is used again, observer's callback will not be invoked.
 	 */
-	disconnect () {
+	disconnect() {
 		// for each node node in context object’s list of nodes, remove any registered observer on node for which
 		// context object is the observer,
 		this._nodes.forEach(node => node._registeredObservers.removeForObserver(this));
@@ -169,7 +169,7 @@ export default class MutationObserver {
 	 *
 	 * @return An Array of MutationRecord objects that were recorded.
 	 */
-	takeRecords (): MutationRecord[] {
+	takeRecords(): MutationRecord[] {
 		// return a copy of the record queue
 		const recordQueue = this._recordQueue.concat();
 		// and then empty the record queue

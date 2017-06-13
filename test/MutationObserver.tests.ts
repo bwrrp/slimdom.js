@@ -20,7 +20,7 @@ describe('MutationObserver', () => {
 
 	let callbackCalled: boolean;
 	let callbackArgs: any[] = [];
-	function callback (...args: any[]) {
+	function callback(...args: any[]) {
 		callbackCalled = true;
 		callbackArgs.push(args);
 	}
@@ -129,7 +129,7 @@ describe('MutationObserver', () => {
 
 			const queue = observer.takeRecords();
 			chai.assert.equal(queue[0].type, 'childList');
-			chai.assert.deepEqual(queue[0].addedNodes, [ newElement ]);
+			chai.assert.deepEqual(queue[0].addedNodes, [newElement]);
 			chai.assert.deepEqual(queue[0].removedNodes, []);
 			chai.assert.equal(queue[0].previousSibling, text);
 			chai.assert.equal(queue[0].nextSibling, null);
@@ -141,8 +141,8 @@ describe('MutationObserver', () => {
 
 			const queue = observer.takeRecords();
 			chai.assert.equal(queue[0].type, 'childList');
-			chai.assert.deepEqual(queue[0].addedNodes, [ newElement ]);
-			chai.assert.deepEqual(queue[0].removedNodes, [ text ]);
+			chai.assert.deepEqual(queue[0].addedNodes, [newElement]);
+			chai.assert.deepEqual(queue[0].removedNodes, [text]);
 			chai.assert.equal(queue[0].previousSibling, null);
 			chai.assert.equal(queue[0].nextSibling, null);
 		});
@@ -157,12 +157,12 @@ describe('MutationObserver', () => {
 			const queue = observer.takeRecords();
 			chai.assert.equal(queue[0].type, 'childList');
 			chai.assert.deepEqual(queue[0].addedNodes, []);
-			chai.assert.deepEqual(queue[0].removedNodes, [ newElement ]);
+			chai.assert.deepEqual(queue[0].removedNodes, [newElement]);
 			chai.assert.equal(queue[0].previousSibling, text);
 			chai.assert.equal(queue[0].nextSibling, null);
 
 			chai.assert.equal(queue[1].type, 'childList');
-			chai.assert.deepEqual(queue[1].addedNodes, [ newElement ]);
+			chai.assert.deepEqual(queue[1].addedNodes, [newElement]);
 			chai.assert.deepEqual(queue[1].removedNodes, []);
 			chai.assert.equal(queue[1].previousSibling, null);
 			chai.assert.equal(queue[1].nextSibling, text);
@@ -179,14 +179,14 @@ describe('MutationObserver', () => {
 			chai.assert.equal(queue[0].type, 'childList');
 			chai.assert.equal(queue[0].target, element);
 			chai.assert.deepEqual(queue[0].addedNodes, []);
-			chai.assert.deepEqual(queue[0].removedNodes, [ newElement ]);
+			chai.assert.deepEqual(queue[0].removedNodes, [newElement]);
 			chai.assert.equal(queue[0].previousSibling, text);
 			chai.assert.equal(queue[0].nextSibling, null);
 
 			chai.assert.equal(queue[1].type, 'childList');
 			chai.assert.equal(queue[1].target, element);
-			chai.assert.deepEqual(queue[1].addedNodes, [ newElement ]);
-			chai.assert.deepEqual(queue[1].removedNodes, [ text ]);
+			chai.assert.deepEqual(queue[1].addedNodes, [newElement]);
+			chai.assert.deepEqual(queue[1].removedNodes, [text]);
 			chai.assert.equal(queue[1].previousSibling, null);
 			chai.assert.equal(queue[1].nextSibling, null);
 		});

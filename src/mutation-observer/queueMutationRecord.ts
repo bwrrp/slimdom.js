@@ -13,7 +13,7 @@ import Node from '../Node';
  * @param target The target node
  * @param data   The data for the mutation record
  */
-export default function queueMutationRecord (type: string, target: Node, data: MutationRecordInit) {
+export default function queueMutationRecord(type: string, target: Node, data: MutationRecordInit) {
 	// 1. Let interested observers be an initially empty set of MutationObserver objects optionally paired with a
 	// string.
 	const interestedObservers: MutationObserver[] = [];

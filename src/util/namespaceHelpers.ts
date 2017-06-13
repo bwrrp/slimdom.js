@@ -74,7 +74,7 @@ const NameChar = NameStartChar.clone()
 
 return `^(?:${NameStartChar.toString()})(?:${NameChar.toString()})*$`;
 */
-const NAME_REGEX_XML_1_0_FIFTH_EDITION = /^(?:[:A-Z_a-z\xC0-\xD6\xD8-\xF6\xF8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]|[\uD800-\uDB7F][\uDC00-\uDFFF])(?:[\-\.0-:A-Z_a-z\xB7\xC0-\xD6\xD8-\xF6\xF8-\u037D\u037F-\u1FFF\u200C\u200D\u203F\u2040\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]|[\uD800-\uDB7F][\uDC00-\uDFFF])*$/
+const NAME_REGEX_XML_1_0_FIFTH_EDITION = /^(?:[:A-Z_a-z\xC0-\xD6\xD8-\xF6\xF8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]|[\uD800-\uDB7F][\uDC00-\uDFFF])(?:[\-\.0-:A-Z_a-z\xB7\xC0-\xD6\xD8-\xF6\xF8-\u037D\u037F-\u1FFF\u200C\u200D\u203F\u2040\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]|[\uD800-\uDB7F][\uDC00-\uDFFF])*$/;
 
 /**
  * Returns true if name matches the Name production.
@@ -83,7 +83,7 @@ const NAME_REGEX_XML_1_0_FIFTH_EDITION = /^(?:[:A-Z_a-z\xC0-\xD6\xD8-\xF6\xF8-\u
  *
  * @return true if name matches Name, otherwise false
  */
-export function matchesNameProduction (name: string): boolean {
+export function matchesNameProduction(name: string): boolean {
 	return NAME_REGEX_XML_1_0_FOURTH_EDITION.test(name);
 }
 
@@ -95,7 +95,7 @@ export function matchesNameProduction (name: string): boolean {
  *
  * @return True if the name is a valid QName, provided it is also a valid Name, otherwise false
  */
-function isValidQName (name: string): boolean {
+function isValidQName(name: string): boolean {
 	const parts = name.split(':');
 	if (parts.length > 2) {
 		return false;
@@ -112,7 +112,7 @@ function isValidQName (name: string): boolean {
  *
  * @param qualifiedName Qualified name to validate
  */
-export function validateQualifiedName (qualifiedName: string): void {
+export function validateQualifiedName(qualifiedName: string): void {
 	// throw an InvalidCharacterError if qualifiedName does not match the Name or QName production.
 	// (QName is basically (Name without ':') ':' (Name without ':'), so just check the position of the :
 	if (!isValidQName(qualifiedName) || !matchesNameProduction(qualifiedName)) {
@@ -128,7 +128,10 @@ export function validateQualifiedName (qualifiedName: string): void {
  *
  * @return Namespace, prefix and localName
  */
-export function validateAndExtract (namespace: string | null, qualifiedName: string): { namespace: string | null, prefix: string | null, localName: string } {
+export function validateAndExtract(
+	namespace: string | null,
+	qualifiedName: string
+): { namespace: string | null; prefix: string | null; localName: string } {
 	// 1. If namespace is the empty string, set it to null.
 	if (namespace === '') {
 		namespace = null;

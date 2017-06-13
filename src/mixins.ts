@@ -9,8 +9,7 @@ import { NodeType, isNodeOfType } from './util/NodeType';
 /**
  * 3.2.4. Mixin NonElementParentNode
  */
-export interface NonElementParentNode {
-}
+export interface NonElementParentNode {}
 // Document implements NonElementParentNode;
 // DocumentFragment implements NonElementParentNode;
 
@@ -28,7 +27,7 @@ export interface ParentNode {
 // DocumentFragment implements ParentNode;
 // Element implements ParentNode;
 
-export function asParentNode (node: Node): ParentNode | null {
+export function asParentNode(node: Node): ParentNode | null {
 	if (isNodeOfType(node, NodeType.ELEMENT_NODE, NodeType.DOCUMENT_NODE, NodeType.DOCUMENT_FRAGMENT_NODE)) {
 		return node as Element | Document | DocumentFragment;
 	}
@@ -46,7 +45,7 @@ export function asParentNode (node: Node): ParentNode | null {
  *
  * @return The
  */
-export function getChildren (node: ParentNode): Element[] {
+export function getChildren(node: ParentNode): Element[] {
 	const elements: Element[] = [];
 	for (let child = node.firstElementChild; child; child = child.nextElementSibling) {
 		elements.push(child);
@@ -64,22 +63,24 @@ export interface NonDocumentTypeChildNode {
 // Element implements NonDocumentTypeChildNode;
 // CharacterData implements NonDocumentTypeChildNode;
 
-export function asNonDocumentTypeChildNode (node: Node): NonDocumentTypeChildNode | null {
-	if (isNodeOfType(
-		node,
-		NodeType.ELEMENT_NODE,
-		NodeType.COMMENT_NODE,
-		NodeType.PROCESSING_INSTRUCTION_NODE,
-		NodeType.TEXT_NODE,
-		NodeType.CDATA_SECTION_NODE
-	)) {
+export function asNonDocumentTypeChildNode(node: Node): NonDocumentTypeChildNode | null {
+	if (
+		isNodeOfType(
+			node,
+			NodeType.ELEMENT_NODE,
+			NodeType.COMMENT_NODE,
+			NodeType.PROCESSING_INSTRUCTION_NODE,
+			NodeType.TEXT_NODE,
+			NodeType.CDATA_SECTION_NODE
+		)
+	) {
 		return node as Element | CharacterData;
 	}
 
 	return null;
 }
 
-export function getPreviousElementSibling (node: Node): Element | null {
+export function getPreviousElementSibling(node: Node): Element | null {
 	for (let sibling = node.previousSibling; sibling; sibling = sibling.previousSibling) {
 		if (isNodeOfType(sibling, NodeType.ELEMENT_NODE)) {
 			return sibling as Element;
@@ -89,7 +90,7 @@ export function getPreviousElementSibling (node: Node): Element | null {
 	return null;
 }
 
-export function getNextElementSibling (node: Node): Element | null {
+export function getNextElementSibling(node: Node): Element | null {
 	for (let sibling = node.nextSibling; sibling; sibling = sibling.nextSibling) {
 		if (isNodeOfType(sibling, NodeType.ELEMENT_NODE)) {
 			return sibling as Element;
@@ -102,8 +103,7 @@ export function getNextElementSibling (node: Node): Element | null {
 /**
  * 3.2.8. Mixin ChildNode
  */
-export interface ChildNode {
-}
+export interface ChildNode {}
 // DocumentType implements ChildNode;
 // Element implements ChildNode;
 // CharacterData implements ChildNode;

@@ -10,7 +10,7 @@ import { NodeType, isNodeOfType } from './NodeType';
  *
  * @return The length of the node
  */
-export function determineLengthOfNode (node: Node): number {
+export function determineLengthOfNode(node: Node): number {
 	switch (node.nodeType) {
 		// DocumentType: Zero.
 		case NodeType.DOCUMENT_TYPE_NODE:
@@ -35,7 +35,7 @@ export function determineLengthOfNode (node: Node): number {
  *
  * @return Node's inclusive ancestors, in tree order
  */
-export function getInclusiveAncestors (node: Node): Node[] {
+export function getInclusiveAncestors(node: Node): Node[] {
 	let ancestor: Node | null = node;
 	let ancestors: Node[] = [];
 	while (ancestor) {
@@ -53,7 +53,7 @@ export function getInclusiveAncestors (node: Node): Node[] {
  *
  * @return The node document for node
  */
-export function getNodeDocument (node: Node): Document {
+export function getNodeDocument(node: Node): Document {
 	if (isNodeOfType(node, NodeType.DOCUMENT_NODE)) {
 		return node as Document;
 	}
@@ -68,7 +68,7 @@ export function getNodeDocument (node: Node): Document {
  *
  * @return The index of node in its parent's children
  */
-export function getNodeIndex (node: Node): number {
+export function getNodeIndex(node: Node): number {
 	return (node.parentNode as Node).childNodes.indexOf(node);
 }
 
@@ -79,7 +79,7 @@ export function getNodeIndex (node: Node): number {
  *
  * @return The root of node
  */
-export function getRootOfNode (node: Node): Node {
+export function getRootOfNode(node: Node): Node {
 	while (node.parentNode) {
 		node = node.parentNode;
 	}
@@ -93,7 +93,7 @@ export function getRootOfNode (node: Node): Node {
  * @param node     Root of the subtree to process
  * @param callback Callback to invoke for each descendant, should not modify node's position in the tree
  */
-export function forEachInclusiveDescendant (node: Node, callback: (node: Node) => void): void {
+export function forEachInclusiveDescendant(node: Node, callback: (node: Node) => void): void {
 	callback(node);
 	for (let child = node.firstChild; child; child = child.nextSibling) {
 		forEachInclusiveDescendant(child, callback);

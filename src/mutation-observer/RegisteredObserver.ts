@@ -37,7 +37,7 @@ export default class RegisteredObserver {
 	 * @param options  Options for the registration
 	 * @param source   If not null, creates a transient registered observer for the given registered observer
 	 */
-	constructor (observer: MutationObserver, node: Node, options: MutationObserverInit, source?: RegisteredObserver) {
+	constructor(observer: MutationObserver, node: Node, options: MutationObserverInit, source?: RegisteredObserver) {
 		this.observer = observer;
 		this.node = node;
 		this.options = options;
@@ -58,7 +58,13 @@ export default class RegisteredObserver {
 	 * @param interestedObservers Array of mutation observer objects to append to
 	 * @param pairedStrings       Paired strings for the mutation observer objects
 	 */
-	public collectInterestedObservers (type: string, target: Node, data: MutationRecordInit, interestedObservers: MutationObserver[], pairedStrings: (string | null | undefined)[]) {
+	public collectInterestedObservers(
+		type: string,
+		target: Node,
+		data: MutationRecordInit,
+		interestedObservers: MutationObserver[],
+		pairedStrings: (string | null | undefined)[]
+	) {
 		// (continued from RegisteredObservers#queueMutationRecord)
 
 		// 3.1. If none of the following are true

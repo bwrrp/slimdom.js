@@ -15,7 +15,7 @@ import { NodeType, isNodeOfType } from './NodeType';
  * @param parent         Parent to insert under
  * @param referenceChild Child to insert before
  */
-export function insertIntoChildren (node: Node, parent: Node, referenceChild: Node | null): void {
+export function insertIntoChildren(node: Node, parent: Node, referenceChild: Node | null): void {
 	// Node
 	node.parentNode = parent;
 	const previousSibling: Node | null = referenceChild === null ? parent.lastChild : referenceChild.previousSibling;
@@ -24,15 +24,13 @@ export function insertIntoChildren (node: Node, parent: Node, referenceChild: No
 	node.nextSibling = nextSibling;
 	if (previousSibling) {
 		previousSibling.nextSibling = node;
-	}
-	else {
+	} else {
 		parent.firstChild = node;
 	}
 	if (nextSibling) {
 		nextSibling.previousSibling = node;
 		parent.childNodes.splice(parent.childNodes.indexOf(nextSibling), 0, node);
-	}
-	else {
+	} else {
 		parent.lastChild = node;
 		parent.childNodes.push(node);
 	}
@@ -83,8 +81,7 @@ export function insertIntoChildren (node: Node, parent: Node, referenceChild: No
 		const parentDocument = parent as Document;
 		if (isNodeOfType(node, NodeType.ELEMENT_NODE)) {
 			parentDocument.documentElement = node as Element;
-		}
-		else if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE)) {
+		} else if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE)) {
 			parentDocument.doctype = node as DocumentType;
 		}
 	}
@@ -98,7 +95,7 @@ export function insertIntoChildren (node: Node, parent: Node, referenceChild: No
  * @param node   Node to remove
  * @param parent Parent to remove from
  */
-export function removeFromChildren (node: Node, parent: Node) {
+export function removeFromChildren(node: Node, parent: Node) {
 	const previousSibling = node.previousSibling;
 	const nextSibling = node.nextSibling;
 	const isElement = isNodeOfType(node, NodeType.ELEMENT_NODE);
@@ -111,14 +108,12 @@ export function removeFromChildren (node: Node, parent: Node) {
 	node.nextSibling = null;
 	if (previousSibling) {
 		previousSibling.nextSibling = nextSibling;
-	}
-	else {
+	} else {
 		parent.firstChild = nextSibling;
 	}
 	if (nextSibling) {
 		nextSibling.previousSibling = previousSibling;
-	}
-	else {
+	} else {
 		parent.lastChild = previousSibling;
 	}
 	parent.childNodes.splice(parent.childNodes.indexOf(node), 1);
@@ -142,8 +137,7 @@ export function removeFromChildren (node: Node, parent: Node) {
 		const parentDocument = parent as Document;
 		if (isNodeOfType(node, NodeType.ELEMENT_NODE)) {
 			parentDocument.documentElement = null;
-		}
-		else if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE)) {
+		} else if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE)) {
 			parentDocument.doctype = null;
 		}
 	}

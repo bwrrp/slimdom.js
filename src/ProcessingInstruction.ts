@@ -8,11 +8,11 @@ import { NodeType } from './util/NodeType';
 export default class ProcessingInstruction extends CharacterData {
 	// Node
 
-	public get nodeType (): number {
+	public get nodeType(): number {
 		return NodeType.PROCESSING_INSTRUCTION_NODE;
 	}
 
-	public get nodeName (): string {
+	public get nodeName(): string {
 		return this.target;
 	}
 
@@ -26,7 +26,7 @@ export default class ProcessingInstruction extends CharacterData {
 	 * @param document The node document to associate with the processing instruction
 	 * @param target   The target of the processing instruction
 	 */
-	constructor (document: Document, target: string, data: string) {
+	constructor(document: Document, target: string, data: string) {
 		super(document, data);
 		this.target = target;
 	}
@@ -38,7 +38,7 @@ export default class ProcessingInstruction extends CharacterData {
 	 *
 	 * @return A shallow copy of the context object
 	 */
-	public _copy (document: Document): ProcessingInstruction {
+	public _copy(document: Document): ProcessingInstruction {
 		// Set copy’s target and data to those of node.
 		return new ProcessingInstruction(document, this.target, this.data);
 	}

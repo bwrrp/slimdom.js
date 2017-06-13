@@ -5,11 +5,11 @@ import { NodeType } from './util/NodeType';
 export default class CDATASection extends Text {
 	// Node
 
-	public get nodeType (): number {
+	public get nodeType(): number {
 		return NodeType.CDATA_SECTION_NODE;
 	}
 
-	public get nodeName (): string {
+	public get nodeName(): string {
 		return '#cdata-section';
 	}
 
@@ -21,7 +21,7 @@ export default class CDATASection extends Text {
 	 * @param document (non-standard) The node document to associate with the node
 	 * @param data     The data for the node
 	 */
-	constructor (document: Document, data: string) {
+	constructor(document: Document, data: string) {
 		super(document, data);
 	}
 
@@ -32,7 +32,7 @@ export default class CDATASection extends Text {
 	 *
 	 * @return A shallow copy of the context object
 	 */
-	public _copy (document: Document): CDATASection {
+	public _copy(document: Document): CDATASection {
 		// Set copy’s data, to that of node.
 		return new CDATASection(document, this.data);
 	}

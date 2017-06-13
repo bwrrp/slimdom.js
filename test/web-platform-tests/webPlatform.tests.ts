@@ -16,20 +16,31 @@ const TEST_BLACKLIST: { [key: string]: (string | { [key: string]: string }) } = 
 	'dom/lists': 'DOMTokenList (Element#classList) not implemented',
 	'dom/nodes/append-on-Document.html': 'ParentNode#append not implemented',
 	'dom/nodes/attributes.html': {
-		'setAttribute should lowercase its name argument (upper case attribute)': 'HTML attribute lowercasing not implemented',
-		'setAttribute should lowercase its name argument (mixed case attribute)': 'HTML attribute lowercasing not implemented',
+		'setAttribute should lowercase its name argument (upper case attribute)':
+			'HTML attribute lowercasing not implemented',
+		'setAttribute should lowercase its name argument (mixed case attribute)':
+			'HTML attribute lowercasing not implemented',
 		'Attributes should work in document fragments.': 'Element#attributes not implemented as NamedNodeMap',
-		'Only lowercase attributes are returned on HTML elements (upper case attribute)': 'HTML attribute lowercasing not implemented',
-		'Only lowercase attributes are returned on HTML elements (mixed case attribute)': 'HTML attribute lowercasing not implemented',
-		'setAttributeNode, if it fires mutation events, should fire one with the new node when resetting an existing attribute (outer shell)': 'Mutation events not implemented',
+		'Only lowercase attributes are returned on HTML elements (upper case attribute)':
+			'HTML attribute lowercasing not implemented',
+		'Only lowercase attributes are returned on HTML elements (mixed case attribute)':
+			'HTML attribute lowercasing not implemented',
+		'setAttributeNode, if it fires mutation events, should fire one with the new node when resetting an existing attribute (outer shell)':
+			'Mutation events not implemented',
 		'getAttributeNames tests': 'Element#getAttributeNames not implemented',
 		'Own property correctness with basic attributes': 'Element#attributes not implemented as NamedNodeMap',
-		'Own property correctness with non-namespaced attribute before same-name namespaced one': 'Element#attributes not implemented as NamedNodeMap',
-		'Own property correctness with namespaced attribute before same-name non-namespaced one': 'Element#attributes not implemented as NamedNodeMap',
-		'Own property correctness with two namespaced attributes with the same name-with-prefix': 'Element#attributes not implemented as NamedNodeMap',
-		'Own property names should only include all-lowercase qualified names for an HTML element in an HTML document': 'Element#attributes not implemented as NamedNodeMap',
-		'Own property names should include all qualified names for a non-HTML element in an HTML document': 'Element#attributes not implemented as NamedNodeMap',
-		'Own property names should include all qualified names for an HTML element in a non-HTML document': 'Element#attributes not implemented as NamedNodeMap',
+		'Own property correctness with non-namespaced attribute before same-name namespaced one':
+			'Element#attributes not implemented as NamedNodeMap',
+		'Own property correctness with namespaced attribute before same-name non-namespaced one':
+			'Element#attributes not implemented as NamedNodeMap',
+		'Own property correctness with two namespaced attributes with the same name-with-prefix':
+			'Element#attributes not implemented as NamedNodeMap',
+		'Own property names should only include all-lowercase qualified names for an HTML element in an HTML document':
+			'Element#attributes not implemented as NamedNodeMap',
+		'Own property names should include all qualified names for a non-HTML element in an HTML document':
+			'Element#attributes not implemented as NamedNodeMap',
+		'Own property names should include all qualified names for an HTML element in a non-HTML document':
+			'Element#attributes not implemented as NamedNodeMap'
 	},
 	'dom/nodes/case.html': 'HTML case behavior not implemented',
 	'dom/nodes/CharacterData-remove.html': 'ChildNode#remove not implemented',
@@ -62,14 +73,16 @@ const TEST_BLACKLIST: { [key: string]: (string | { [key: string]: string }) } = 
 		'createDocument test: metadata for "http://www.w3.org/2000/svg","",null': 'SVG contentType not implemented'
 	},
 	'dom/nodes/DOMImplementation-createDocumentType.html': 'DocumentType#ownerDocument not implemented per spec',
- 	'dom/nodes/DOMImplementation-createHTMLDocument.html': 'HTML*Element interfaces not implemented',
+	'dom/nodes/DOMImplementation-createHTMLDocument.html': 'HTML*Element interfaces not implemented',
 	'dom/nodes/DOMImplementation-hasFeature.html': 'DOMImplementation#hasFeature not implemented',
 	'dom/nodes/Element-children.html': 'Element#children not implemented as HTMLCollection',
 	'dom/nodes/Element-classlist.html': 'Element#classList not implemented',
 	'dom/nodes/Element-closest.html': 'Element#closest not implemented',
 	'dom/nodes/Element-getElementsByClassName.html': 'Element#getElementsByClassName not implemented',
-	'dom/nodes/Element-getElementsByTagName-change-document-HTMLNess.html': 'Element#getElementsByTagName not implemented',
-	'dom/nodes/Element-getElementsByTagName-change-document-HTMLNess-iframe.html': 'Element#getElementsByTagName not implemented',
+	'dom/nodes/Element-getElementsByTagName-change-document-HTMLNess.html':
+		'Element#getElementsByTagName not implemented',
+	'dom/nodes/Element-getElementsByTagName-change-document-HTMLNess-iframe.html':
+		'Element#getElementsByTagName not implemented',
 	'dom/nodes/Element-getElementsByTagName.html': 'Element#getElementsByTagName not implemented',
 	'dom/nodes/Element-getElementsByTagNameNS.html': 'Element#getElementsByTagNameNS not implemented',
 	'dom/nodes/Element-insertAdjacentElement.html': 'Element#insertAdjacentElement not implemented',
@@ -101,24 +114,28 @@ const TEST_BLACKLIST: { [key: string]: (string | { [key: string]: string }) } = 
 		'attributes Element.classList.toggle: token removal mutation': 'Element#classList not implemented',
 		'attributes Element.classList.toggle: token addition mutation': 'Element#classList not implemented',
 		'attributes Element.classList.toggle: forced token removal mutation': 'Element#classList not implemented',
-		'attributes Element.classList.toggle: forced missing token removal no mutation': 'Element#classList not implemented',
-		'attributes Element.classList.toggle: forced existing token addition no mutation': 'Element#classList not implemented',
+		'attributes Element.classList.toggle: forced missing token removal no mutation':
+			'Element#classList not implemented',
+		'attributes Element.classList.toggle: forced existing token addition no mutation':
+			'Element#classList not implemented',
 		'attributes Element.classList.toggle: forced token addition mutation': 'Element#classList not implemented',
 		'attributes Element.removeAttribute: removal no mutation': 'Element#id not implemented',
 		'childList HTMLInputElement.removeAttribute: type removal mutation': 'Element#id not implemented',
 		'attributes Element.removeAttributeNS: removal no mutation': 'Element#id not implemented',
 		'attributes Element.removeAttributeNS: prefixed attribute removal no mutation': 'Element#id not implemented',
 		'attributes/attributeFilter Element.id/Element.className: update mutation': 'attributeFilter not implemented',
-		'attributes/attributeFilter Element.id/Element.className: multiple filter update mutation': 'attributeFilter not implemented',
+		'attributes/attributeFilter Element.id/Element.className: multiple filter update mutation':
+			'attributeFilter not implemented',
 		'attributeOldValue alone Element.id: update mutation': 'Element#id not implemented',
-		'attributeFilter alone Element.id/Element.className: multiple filter update mutation': 'attributeFilter not implemented',
+		'attributeFilter alone Element.id/Element.className: multiple filter update mutation':
+			'attributeFilter not implemented',
 		'childList false: no childList mutation': 'Element#textContent setter not implemented'
 	},
 	'dom/nodes/MutationObserver-characterData.html': {
 		'characterData Range.deleteContents: child and data removal mutation': 'Range#deleteContents not implemented',
 		'characterData Range.deleteContents: child and data removal mutation (2)': 'Range#deleteContents not implemented',
 		'characterData Range.extractContents: child and data removal mutation': 'Range#extractContents not implemented',
-		'characterData Range.extractContents: child and data removal mutation (2)': 'Range#extractContents not implemented',
+		'characterData Range.extractContents: child and data removal mutation (2)': 'Range#extractContents not implemented'
 	},
 	'dom/nodes/MutationObserver-childList.html': {
 		'childList Node.textContent: replace content mutation': 'Element#textContent setter not implemented',
@@ -131,7 +148,7 @@ const TEST_BLACKLIST: { [key: string]: (string | { [key: string]: string }) } = 
 		'childList Range.extractContents: child and data removal mutation': 'Range#extractContents not implemented',
 		'childList Range.insertNode: child insertion mutation': 'Range#insertNode not implemented',
 		'childList Range.insertNode: children insertion mutation': 'Range#insertNode not implemented',
-		'childList Range.surroundContents: children removal and addition mutation': 'Range#surroundContents not implemented',
+		'childList Range.surroundContents: children removal and addition mutation': 'Range#surroundContents not implemented'
 	},
 	'dom/nodes/MutationObserver-disconnect.html': 'Element#id not implemented',
 	'dom/nodes/MutationObserver-document.html': 'Running script during parsing not implemented',
@@ -331,50 +348,51 @@ const TEST_BLACKLIST: { [key: string]: (string | { [key: string]: string }) } = 
 	'dom/ranges/Range-stringifier.html': 'Range#toString not implemented',
 	'dom/ranges/Range-surroundContents.html': 'Range#surroundContents not implemented',
 	'dom/traversal': 'NodeIterator and TreeWalker not implemented'
-}
+};
 
-function getNodes (root: slimdom.Node, ...path: string[]): slimdom.Node[] {
+function getNodes(root: slimdom.Node, ...path: string[]): slimdom.Node[] {
 	if (!path.length) {
 		return [root];
 	}
 
 	const [nodeName, ...remainder] = path;
 	const matchingChildren = Array.from((root as slimdom.Element).childNodes).filter(n => n.nodeName === nodeName);
-	return matchingChildren.reduce(
-		(nodes, child) => nodes.concat(getNodes(child, ...remainder)),
-		[] as slimdom.Node[]
-	);
+	return matchingChildren.reduce((nodes, child) => nodes.concat(getNodes(child, ...remainder)), [] as slimdom.Node[]);
 }
 
-function getAllText (root: slimdom.Node, ...path: string[]): string {
-	return getNodes(root, ...path)
-		.map(n => (n as slimdom.Text).data)
-		.join('');
+function getAllText(root: slimdom.Node, ...path: string[]): string {
+	return getNodes(root, ...path).map(n => (n as slimdom.Text).data).join('');
 }
 
-function getAllScripts (doc: slimdom.Document, casePath: string) {
+function getAllScripts(doc: slimdom.Document, casePath: string) {
 	const scriptElements = (doc as any).getElementsByTagName('script');
-	return scriptElements.reduce((scripts: string[], el: slimdom.Element) => {
-		const src = el.attributes.find(a => a.name === 'src');
-		if (src) {
-			const resolvedPath = src.value.startsWith('/')
-				? path.resolve(process.env.WEB_PLATFORM_TESTS_PATH, src.value.substring(1))
-				: path.resolve(path.dirname(casePath), src.value);
-			return scripts.concat([fs.readFileSync(resolvedPath, 'utf-8')]);
-		}
+	return scriptElements
+		.reduce((scripts: string[], el: slimdom.Element) => {
+			const src = el.attributes.find(a => a.name === 'src');
+			if (src) {
+				const resolvedPath = src.value.startsWith('/')
+					? path.resolve(process.env.WEB_PLATFORM_TESTS_PATH, src.value.substring(1))
+					: path.resolve(path.dirname(casePath), src.value);
+				return scripts.concat([fs.readFileSync(resolvedPath, 'utf-8')]);
+			}
 
-		return scripts.concat([getAllText(el, '#text')]);
-	}, []).join('\n');
+			return scripts.concat([getAllText(el, '#text')]);
+		}, [])
+		.join('\n');
 }
 
-function createTest (casePath: string, blacklistReason: { [key: string]: string } = {}): void {
-	const document = parse5.parse(fs.readFileSync(casePath, 'utf-8'), { treeAdapter: new SlimdomTreeAdapter }) as slimdom.Document;
+function createTest(casePath: string, blacklistReason: { [key: string]: string } = {}): void {
+	const document = parse5.parse(fs.readFileSync(casePath, 'utf-8'), {
+		treeAdapter: new SlimdomTreeAdapter()
+	}) as slimdom.Document;
 	const title = getAllText(document, 'html', 'head', 'title', '#text') || path.basename(casePath);
 	const script = getAllScripts(document, casePath);
 	const scriptAsFunction = new Function('stubEnvironment', `with (stubEnvironment) { ${script} }`);
-	let stubs: { global: any, onLoadCallbacks: Function[], onErrorCallback?: Function };
+	let stubs: { global: any; onLoadCallbacks: Function[]; onErrorCallback?: Function };
 
-	function createStubEnvironment (document: slimdom.Document): { global: any, onLoadCallbacks: Function[], onErrorCallback?: Function } {
+	function createStubEnvironment(
+		document: slimdom.Document
+	): { global: any; onLoadCallbacks: Function[]; onErrorCallback?: Function } {
 		const onLoadCallbacks: Function[] = [];
 		let onErrorCallback: Function | undefined = undefined;
 		let global: any = {
@@ -382,7 +400,7 @@ function createTest (casePath: string, blacklistReason: { [key: string]: string 
 			location: { href: casePath },
 			window: null,
 
-			get frames () {
+			get frames() {
 				return (document as any).getElementsByTagName('iframe').map((iframe: any) => {
 					if (!iframe.contentWindow) {
 						const stubs = createStubEnvironment(document.implementation.createHTMLDocument());
@@ -395,7 +413,7 @@ function createTest (casePath: string, blacklistReason: { [key: string]: string 
 				});
 			},
 
-			addEventListener (event: string, cb: Function) {
+			addEventListener(event: string, cb: Function) {
 				switch (event) {
 					case 'load':
 						onLoadCallbacks.push(cb);
@@ -410,7 +428,7 @@ function createTest (casePath: string, blacklistReason: { [key: string]: string 
 			},
 
 			...slimdom
-		}
+		};
 		global.window = global;
 		global.parent = global;
 		global.self = global;
@@ -432,7 +450,7 @@ function createTest (casePath: string, blacklistReason: { [key: string]: string 
 				return;
 			}
 
-			stubs.global.add_completion_callback(function (tests: any[], testStatus: any) {
+			stubs.global.add_completion_callback(function(tests: any[], testStatus: any) {
 				// TODO: Seems to be triggered by duplicate names in the createDocument tests
 				//chai.assert.equal(testStatus.status, testStatus.OK, testStatus.message);
 				tests.forEach(test => {
@@ -452,23 +470,21 @@ function createTest (casePath: string, blacklistReason: { [key: string]: string 
 					iframe.onload();
 				}
 			});
-		}
-		catch (e) {
+		} catch (e) {
 			if (e instanceof chai.AssertionError) {
 				throw e;
 			}
 
 			if (stubs.onErrorCallback) {
 				stubs.onErrorCallback(e);
-			}
-			else {
+			} else {
 				throw e;
 			}
 		}
 	});
 }
 
-function createTests (dirPath: string): void {
+function createTests(dirPath: string): void {
 	fs.readdirSync(dirPath).forEach(entry => {
 		const entryPath = path.join(dirPath, entry);
 		const relativePath = path.relative(process.env.WEB_PLATFORM_TESTS_PATH, entryPath);
@@ -489,7 +505,7 @@ function createTests (dirPath: string): void {
 		if (entry.endsWith('.html')) {
 			createTest(entryPath, blacklistReason);
 		}
-	})
+	});
 }
 
 describe('web platform DOM test suite', () => {
@@ -498,8 +514,11 @@ describe('web platform DOM test suite', () => {
 		return;
 	}
 
-	(slimdom.Document.prototype as any).getElementsByTagName = function (this: slimdom.Document, tagName: string): slimdom.Node[] {
-		return (function getElementsByTagName (node: slimdom.Node): slimdom.Node[] {
+	(slimdom.Document.prototype as any).getElementsByTagName = function(
+		this: slimdom.Document,
+		tagName: string
+	): slimdom.Node[] {
+		return (function getElementsByTagName(node: slimdom.Node): slimdom.Node[] {
 			return node.childNodes.reduce((elements, child) => {
 				if (child.nodeName === tagName) {
 					elements.push(child);
@@ -514,8 +533,11 @@ describe('web platform DOM test suite', () => {
 		})(this);
 	};
 
-	(slimdom.Document.prototype as any).getElementById = function getElementById (this: slimdom.Node, id: string): slimdom.Node | null {
-		return (function getElementById (node: slimdom.Node): slimdom.Node | null {
+	(slimdom.Document.prototype as any).getElementById = function getElementById(
+		this: slimdom.Node,
+		id: string
+	): slimdom.Node | null {
+		return (function getElementById(node: slimdom.Node): slimdom.Node | null {
 			for (let child = node.firstChild; child; child = child.nextSibling) {
 				if (child.nodeType === slimdom.Node.ELEMENT_NODE && (child as slimdom.Element).getAttribute('id') === id) {
 					return child;
@@ -557,12 +579,12 @@ describe('web platform DOM test suite', () => {
 			value: 'null'
 		},
 		body: {
-			get () {
+			get() {
 				return this.getElementsByTagName('body')[0] || null;
 			}
 		},
 		title: {
-			get () {
+			get() {
 				return getAllText(this, 'html', 'head', 'title', '#text');
 			}
 		}
@@ -576,14 +598,14 @@ describe('web platform DOM test suite', () => {
 			value: true
 		},
 		textContent: {
-			get () {
+			get() {
 				return this.nodeValue;
 			}
 		}
 	});
 	Object.defineProperties(slimdom.CharacterData.prototype, {
 		textContent: {
-			get () {
+			get() {
 				return this.nodeValue;
 			}
 		}
