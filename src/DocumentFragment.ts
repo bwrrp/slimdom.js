@@ -7,26 +7,25 @@ import { NodeType } from './util/NodeType';
 export default class DocumentFragment extends Node implements NonElementParentNode, ParentNode {
 	// Node
 
-	public get nodeType (): number {
+	public get nodeType(): number {
 		return NodeType.DOCUMENT_FRAGMENT_NODE;
 	}
 
-	public get nodeName (): string {
+	public get nodeName(): string {
 		return '#document-fragment';
 	}
 
-	public get nodeValue (): string | null {
+	public get nodeValue(): string | null {
 		return null;
 	}
 
-	public set nodeValue (newValue: string | null) {
+	public set nodeValue(newValue: string | null) {
 		// Do nothing.
 	}
 
-
 	// ParentNode
 
-	public get children (): Element[] {
+	public get children(): Element[] {
 		return getChildren(this);
 	}
 
@@ -42,7 +41,7 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 	 *
 	 * @param document (non-standard) The node document to associate with the new document fragment
 	 */
-	constructor (document: Document) {
+	constructor(document: Document) {
 		super(document);
 	}
 
@@ -53,7 +52,7 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 	 *
 	 * @return A shallow copy of the context object
 	 */
-	public _copy (document: Document): DocumentFragment {
+	public _copy(document: Document): DocumentFragment {
 		return new DocumentFragment(document);
 	}
 }

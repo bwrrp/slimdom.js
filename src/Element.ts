@@ -16,25 +16,25 @@ import { asNullableString } from './util/typeHelpers';
 export default class Element extends Node implements ParentNode, NonDocumentTypeChildNode, ChildNode {
 	// Node
 
-	public get nodeType (): number {
+	public get nodeType(): number {
 		return NodeType.ELEMENT_NODE;
 	}
 
-	public get nodeName (): string {
+	public get nodeName(): string {
 		return this.tagName;
 	}
 
-	public get nodeValue (): string | null {
+	public get nodeValue(): string | null {
 		return null;
 	}
 
-	public set nodeValue (newValue: string | null) {
+	public set nodeValue(newValue: string | null) {
 		// Do nothing.
 	}
 
 	// ParentNode
 
-	public get children (): Element[] {
+	public get children(): Element[] {
 		return getChildren(this);
 	}
 
@@ -44,11 +44,11 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 
 	// NonDocumentTypeChildNode
 
-	public get previousElementSibling (): Element | null {
+	public get previousElementSibling(): Element | null {
 		return getPreviousElementSibling(this);
 	}
 
-	public get nextElementSibling (): Element | null {
+	public get nextElementSibling(): Element | null {
 		return getNextElementSibling(this);
 	}
 
@@ -67,7 +67,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param prefix    Prefix for the element
 	 * @param localName Local name for the element
 	 */
-	constructor (document: Document, namespace: string | null, prefix: string | null, localName: string) {
+	constructor(document: Document, namespace: string | null, prefix: string | null, localName: string) {
 		super(document);
 		this.namespaceURI = namespace;
 		this.prefix = prefix;
@@ -80,7 +80,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 *
 	 * @return True if the element has attributes, otherwise false
 	 */
-	public hasAttributes (): boolean {
+	public hasAttributes(): boolean {
 		return this.attributes.length > 0;
 	}
 
@@ -98,7 +98,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 *
 	 * @return The value of the attribute, or null if no such attribute exists
 	 */
-	public getAttribute (qualifiedName: string): string | null {
+	public getAttribute(qualifiedName: string): string | null {
 		// 1. Let attr be the result of getting an attribute given qualifiedName and the context object.
 		const attr = getAttributeByName(qualifiedName, this);
 
@@ -119,7 +119,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 *
 	 * @return The value of the attribute, or null if no such attribute exists
 	 */
-	public getAttributeNS (namespace: string | null, localName: string): string | null {
+	public getAttributeNS(namespace: string | null, localName: string): string | null {
 		namespace = asNullableString(namespace);
 
 		// 1. Let attr be the result of getting an attribute given namespace, localName, and the context object.
@@ -140,7 +140,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param qualifiedName The qualified name of the attribute
 	 * @param value         The new value for the attribute
 	 */
-	public setAttribute (qualifiedName: string, value: string): void {
+	public setAttribute(qualifiedName: string, value: string): void {
 		// 1. If qualifiedName does not match the Name production in XML, then throw an InvalidCharacterError.
 		if (!matchesNameProduction(qualifiedName)) {
 			throwInvalidCharacterError('The qualified name does not match the Name production');
@@ -173,7 +173,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param qualifiedName The qualified name of the attribute
 	 * @param value         The value for the attribute
 	 */
-	public setAttributeNS (namespace: string | null, qualifiedName: string, value: string): void {
+	public setAttributeNS(namespace: string | null, qualifiedName: string, value: string): void {
 		namespace = asNullableString(namespace);
 
 		// 1. Let namespace, prefix, and localName be the result of passing namespace and qualifiedName to validate and
@@ -189,7 +189,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 *
 	 * @param qualifiedName The qualified name of the attribute
 	 */
-	public removeAttribute (qualifiedName: string): void {
+	public removeAttribute(qualifiedName: string): void {
 		removeAttributeByName(qualifiedName, this);
 	}
 
@@ -199,7 +199,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param namespace The namespace of the attribute
 	 * @param localName The local name of the attribute
 	 */
-	public removeAttributeNS (namespace: string | null, localName: string): void {
+	public removeAttributeNS(namespace: string | null, localName: string): void {
 		namespace = asNullableString(namespace);
 
 		removeAttributeByNamespaceAndLocalName(namespace, localName, this);
@@ -210,7 +210,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 *
 	 * @param qualifiedName The qualified name of the attribute
 	 */
-	public hasAttribute (qualifiedName: string): boolean {
+	public hasAttribute(qualifiedName: string): boolean {
 		// 1. If the context object is in the HTML namespace and its node document is an HTML document, then set
 		// qualifiedName to qualifiedName in ASCII lowercase.
 		// (html documents not implemented)
@@ -226,7 +226,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param namespace The namespace of the attribute
 	 * @param localName The local name of the attribute
 	 */
-	public hasAttributeNS (namespace: string | null, localName: string): boolean {
+	public hasAttributeNS(namespace: string | null, localName: string): boolean {
 		namespace = asNullableString(namespace);
 
 		// 1. If namespace is the empty string, set it to null.
@@ -243,7 +243,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 *
 	 * @return The attribute, or null if no such attribute exists
 	 */
-	public getAttributeNode (qualifiedName: string): Attr | null {
+	public getAttributeNode(qualifiedName: string): Attr | null {
 		return getAttributeByName(qualifiedName, this);
 	}
 
@@ -255,7 +255,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 *
 	 * @return The attribute, or null if no such attribute exists
 	 */
-	public getAttributeNodeNS (namespace: string | null, localName: string): Attr | null {
+	public getAttributeNodeNS(namespace: string | null, localName: string): Attr | null {
 		namespace = asNullableString(namespace);
 
 		return getAttributeByNamespaceAndLocalName(namespace, localName, this);
@@ -268,7 +268,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 *
 	 * @return The previous attribute node for the attribute
 	 */
-	public setAttributeNode (attr: Attr): Attr | null {
+	public setAttributeNode(attr: Attr): Attr | null {
 		return setAttribute(attr, this);
 	}
 
@@ -279,7 +279,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 *
 	 * @return The previous attribute node for the attribute
 	 */
-	public setAttributeNodeNS (attr: Attr): Attr | null {
+	public setAttributeNodeNS(attr: Attr): Attr | null {
 		return setAttribute(attr, this);
 	}
 
@@ -290,10 +290,10 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 *
 	 * @return The removed attribute node
 	 */
-	public removeAttributeNode (attr: Attr): Attr {
+	public removeAttributeNode(attr: Attr): Attr {
 		// 1. If context object’s attribute list does not contain attr, then throw a NotFoundError.
 		if (this.attributes.indexOf(attr) < 0) {
-			throwNotFoundError('the specified attribute does not exist')
+			throwNotFoundError('the specified attribute does not exist');
 		}
 
 		// 2. Remove attr from context object.
@@ -311,7 +311,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 *
 	 * @return A shallow copy of the node
 	 */
-	public _copy (document: Document): Element {
+	public _copy(document: Document): Element {
 		// 2.1. Let copy be the result of creating an element, given document, node’s local name, node’s namespace,
 		// node’s namespace prefix, and the value of node’s is attribute if present (or null if not). The synchronous
 		// custom elements flag should be unset.
@@ -341,7 +341,12 @@ export default class Element extends Node implements ParentNode, NonDocumentType
  *
  * @return The new element
  */
-export function createElement (document: Document, localName: string, namespace: string | null, prefix: string | null = null): Element {
+export function createElement(
+	document: Document,
+	localName: string,
+	namespace: string | null,
+	prefix: string | null = null
+): Element {
 	// 1. If prefix was not given, let prefix be null.
 	// (handled by default)
 
@@ -423,7 +428,7 @@ export function createElement (document: Document, localName: string, namespace:
  *
  * @return The first matching attribute, or null otherwise
  */
-function getAttributeByName (qualifiedName: string, element: Element): Attr | null {
+function getAttributeByName(qualifiedName: string, element: Element): Attr | null {
 	// 1. If element is in the HTML namespace and its node document is an HTML document, then set qualifiedName to
 	// qualifiedName in ASCII lowercase.
 	// (html documents not implemented)
@@ -442,7 +447,11 @@ function getAttributeByName (qualifiedName: string, element: Element): Attr | nu
  *
  * @return The first matching attribute, or null otherwise
  */
-function getAttributeByNamespaceAndLocalName (namespace: string | null, localName: string, element: Element): Attr | null {
+function getAttributeByNamespaceAndLocalName(
+	namespace: string | null,
+	localName: string,
+	element: Element
+): Attr | null {
 	// 1. If namespace is the empty string, set it to null.
 	if (namespace === '') {
 		namespace = null;
@@ -463,7 +472,7 @@ function getAttributeByNamespaceAndLocalName (namespace: string | null, localNam
  *
  * @return The value of the first matching attribute, or the empty string if no such attribute exists
  */
-function getAttributeValue (element: Element, localName: string, namespace: string | null = null): string {
+function getAttributeValue(element: Element, localName: string, namespace: string | null = null): string {
 	// 1. Let attr be the result of getting an attribute given namespace, localName, and element.
 	const attr = getAttributeByNamespaceAndLocalName(namespace, localName, element);
 
@@ -484,7 +493,7 @@ function getAttributeValue (element: Element, localName: string, namespace: stri
  *
  * @return The previous attribute with attr's namespace and local name, or null if there was no such attribute
  */
-function setAttribute (attr: Attr, element: Element): Attr | null {
+function setAttribute(attr: Attr, element: Element): Attr | null {
 	// 1. If attr’s element is neither null nor element, throw an InUseAttributeError.
 	if (attr.ownerElement !== null && attr.ownerElement !== element) {
 		throwInUseAttributeError('attribute is in use by another element');
@@ -501,9 +510,8 @@ function setAttribute (attr: Attr, element: Element): Attr | null {
 	// 4. If oldAttr is non-null, replace it by attr in element.
 	if (oldAttr !== null) {
 		replaceAttribute(oldAttr, attr, element);
-	}
-	// 5. Otherwise, append attr to element.
-	else {
+	} else {
+		// 5. Otherwise, append attr to element.
 		appendAttribute(attr, element);
 	}
 
@@ -521,7 +529,13 @@ function setAttribute (attr: Attr, element: Element): Attr | null {
  * @param prefix    Prefix of the attribute
  * @param namespace Namespace of the attribute
  */
-function setAttributeValue (element: Element, localName: string, value: string, prefix: string | null = null, namespace: string | null = null): void {
+function setAttributeValue(
+	element: Element,
+	localName: string,
+	value: string,
+	prefix: string | null = null,
+	namespace: string | null = null
+): void {
 	// 1. If prefix is not given, set it to null.
 	// 2. If namespace is not given, set it to null.
 	// (handled by default values)
@@ -550,7 +564,7 @@ function setAttributeValue (element: Element, localName: string, value: string, 
  *
  * @return The removed attribute, or null if no matching attribute exists
  */
-function removeAttributeByName (qualifiedName: string, element: Element): Attr | null {
+function removeAttributeByName(qualifiedName: string, element: Element): Attr | null {
 	// 1. Let attr be the result of getting an attribute given qualifiedName and element.
 	const attr = getAttributeByName(qualifiedName, element);
 
@@ -573,7 +587,11 @@ function removeAttributeByName (qualifiedName: string, element: Element): Attr |
  *
  * @return The removed attribute, or null if no matching attribute exists
  */
-function removeAttributeByNamespaceAndLocalName (namespace: string | null, localName: string, element: Element): Attr | null {
+function removeAttributeByNamespaceAndLocalName(
+	namespace: string | null,
+	localName: string,
+	element: Element
+): Attr | null {
 	// 1. Let attr be the result of getting an attribute given namespace, localName, and element.
 	const attr = getAttributeByNamespaceAndLocalName(namespace, localName, element);
 

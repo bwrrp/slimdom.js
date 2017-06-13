@@ -1,4 +1,4 @@
-import * as slimdom from '../src/index'
+import * as slimdom from '../src/index';
 
 import Attr from '../src/Attr';
 import Document from '../src/Document';
@@ -61,27 +61,34 @@ describe('Element', () => {
 			chai.assert.equal(element.getAttribute('noSuchAttribute'), null);
 		});
 
-		function hasAttributes (attributes: Attr[], expected: { name: string, value: string }[]): boolean {
-			return attributes.length === expected.length &&
+		function hasAttributes(attributes: Attr[], expected: { name: string; value: string }[]): boolean {
+			return (
+				attributes.length === expected.length &&
 				attributes.every(attr => expected.some(pair => pair.name === attr.name && pair.value === attr.value)) &&
-				expected.every(pair => attributes.some(attr => attr.name === pair.name && attr.value === pair.value));
+				expected.every(pair => attributes.some(attr => attr.name === pair.name && attr.value === pair.value))
+			);
 		}
 
-		it('has attributes', () => chai.assert(hasAttributes(element.attributes, [
-			{name: 'firstAttribute', value: 'first'},
-			{name: 'test', value: '123'},
-			{name: 'lastAttribute', value: 'last'}
-		])));
+		it('has attributes', () =>
+			chai.assert(
+				hasAttributes(element.attributes, [
+					{ name: 'firstAttribute', value: 'first' },
+					{ name: 'test', value: '123' },
+					{ name: 'lastAttribute', value: 'last' }
+				])
+			));
 
 		it('can overwrite the attribute', () => {
 			element.setAttribute('test', '456');
 			chai.assert(element.hasAttribute('test'), 'has the attribute');
 			chai.assert.equal(element.getAttribute('test'), '456');
-			chai.assert(hasAttributes(element.attributes, [
-				{name: 'firstAttribute', value: 'first'},
-				{name: 'test', value: '456'},
-				{name: 'lastAttribute', value: 'last'}
-			]));
+			chai.assert(
+				hasAttributes(element.attributes, [
+					{ name: 'firstAttribute', value: 'first' },
+					{ name: 'test', value: '456' },
+					{ name: 'lastAttribute', value: 'last' }
+				])
+			);
 		});
 
 		it('can remove the attribute', () => {
@@ -89,10 +96,12 @@ describe('Element', () => {
 			chai.assert(element.hasAttribute('firstAttribute'), 'has attribute firstAttribute');
 			chai.assert(!element.hasAttribute('test'), 'does not have attribute test');
 			chai.assert(element.hasAttribute('lastAttribute'), 'has attribute lastAttribute');
-			chai.assert(hasAttributes(element.attributes, [
-				{name: 'firstAttribute', value: 'first'},
-				{name: 'lastAttribute', value: 'last'}
-			]));
+			chai.assert(
+				hasAttributes(element.attributes, [
+					{ name: 'firstAttribute', value: 'first' },
+					{ name: 'lastAttribute', value: 'last' }
+				])
+			);
 		});
 
 		it('ignores removing non-existent attributes', () => {
@@ -100,11 +109,13 @@ describe('Element', () => {
 			element.removeAttribute('other');
 			chai.assert(!element.hasAttribute('other'), 'does not have attribute other');
 			chai.assert(element.hasAttribute('test'), 'has attribute test');
-			chai.assert(hasAttributes(element.attributes, [
-				{name: 'firstAttribute', value: 'first'},
-				{name: 'test', value: '123'},
-				{name: 'lastAttribute', value: 'last'}
-			]));
+			chai.assert(
+				hasAttributes(element.attributes, [
+					{ name: 'firstAttribute', value: 'first' },
+					{ name: 'test', value: '123' },
+					{ name: 'lastAttribute', value: 'last' }
+				])
+			);
 		});
 	});
 
@@ -124,7 +135,7 @@ describe('Element', () => {
 		it('has child element references', () => {
 			chai.assert.equal(element.firstElementChild, child);
 			chai.assert.equal(element.lastElementChild, child);
-			chai.assert.deepEqual(element.children, [ child ]);
+			chai.assert.deepEqual(element.children, [child]);
 			chai.assert.equal(element.childElementCount, 1);
 		});
 
@@ -157,13 +168,13 @@ describe('Element', () => {
 			it('has child node references', () => {
 				chai.assert.equal(element.firstChild, otherChild);
 				chai.assert.equal(element.lastChild, otherChild);
-				chai.assert.deepEqual(element.childNodes, [ otherChild ]);
+				chai.assert.deepEqual(element.childNodes, [otherChild]);
 			});
 
 			it('has child element references', () => {
 				chai.assert.equal(element.firstElementChild, otherChild);
 				chai.assert.equal(element.lastElementChild, otherChild);
-				chai.assert.deepEqual(element.children, [ otherChild ]);
+				chai.assert.deepEqual(element.children, [otherChild]);
 				chai.assert.equal(element.childElementCount, 1);
 			});
 		});
@@ -178,13 +189,13 @@ describe('Element', () => {
 			it('has child node references', () => {
 				chai.assert.equal(element.firstChild, otherChild);
 				chai.assert.equal(element.lastChild, child);
-				chai.assert.deepEqual(element.childNodes, [ otherChild, child ]);
+				chai.assert.deepEqual(element.childNodes, [otherChild, child]);
 			});
 
 			it('has child element references', () => {
 				chai.assert.equal(element.firstElementChild, otherChild);
 				chai.assert.equal(element.lastElementChild, child);
-				chai.assert.deepEqual(element.children, [ otherChild, child ]);
+				chai.assert.deepEqual(element.children, [otherChild, child]);
 				chai.assert.equal(element.childElementCount, 2);
 			});
 
@@ -217,7 +228,7 @@ describe('Element', () => {
 			it('has child element references', () => {
 				chai.assert.equal(element.firstElementChild, child);
 				chai.assert.equal(element.lastElementChild, otherChild);
-				chai.assert.deepEqual(element.children, [ child, otherChild ]);
+				chai.assert.deepEqual(element.children, [child, otherChild]);
 				chai.assert.equal(element.childElementCount, 2);
 			});
 
@@ -242,13 +253,13 @@ describe('Element', () => {
 			it('has child node references', () => {
 				chai.assert.equal(element.firstChild, child);
 				chai.assert.equal(element.lastChild, child);
-				chai.assert.deepEqual(element.childNodes, [ child ]);
+				chai.assert.deepEqual(element.childNodes, [child]);
 			});
 
 			it('has child element references', () => {
 				chai.assert.equal(element.firstElementChild, child);
 				chai.assert.equal(element.lastElementChild, child);
-				chai.assert.deepEqual(element.children, [ child ]);
+				chai.assert.deepEqual(element.children, [child]);
 				chai.assert.equal(element.childElementCount, 1);
 			});
 
@@ -271,7 +282,7 @@ describe('Element', () => {
 		it('has child node references', () => {
 			chai.assert.equal(element.firstChild, processingInstruction);
 			chai.assert.equal(element.lastChild, processingInstruction);
-			chai.assert.deepEqual(element.childNodes, [ processingInstruction ]);
+			chai.assert.deepEqual(element.childNodes, [processingInstruction]);
 		});
 
 		it('has no child elements', () => {
@@ -291,13 +302,13 @@ describe('Element', () => {
 			it('has child node references', () => {
 				chai.assert.equal(element.firstChild, otherChild);
 				chai.assert.equal(element.lastChild, otherChild);
-				chai.assert.deepEqual(element.childNodes, [ otherChild ]);
+				chai.assert.deepEqual(element.childNodes, [otherChild]);
 			});
 
 			it('has child element references', () => {
 				chai.assert.equal(element.firstElementChild, otherChild);
 				chai.assert.equal(element.lastElementChild, otherChild);
-				chai.assert.deepEqual(element.children, [ otherChild ]);
+				chai.assert.deepEqual(element.children, [otherChild]);
 				chai.assert.equal(element.childElementCount, 1);
 			});
 		});

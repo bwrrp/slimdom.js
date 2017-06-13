@@ -30,12 +30,12 @@ export default abstract class Node {
 	/**
 	 * Returns the type of node, represented by a number.
 	 */
-	public abstract get nodeType (): number;
+	public abstract get nodeType(): number;
 
 	/**
 	 * Returns a string appropriate for the type of node.
 	 */
-	public abstract get nodeName (): string;
+	public abstract get nodeName(): string;
 
 	/**
 	 * A reference to the Document node in which the current node resides.
@@ -50,14 +50,14 @@ export default abstract class Node {
 	/**
 	 * The parent if it is an element, or null otherwise.
 	 */
-	public get parentElement (): Element | null {
+	public get parentElement(): Element | null {
 		return this.parentNode && isNodeOfType(this.parentNode, NodeType.ELEMENT_NODE) ? this.parentNode as Element : null;
 	}
 
 	/**
 	 * Returns true if the context object has children, and false otherwise.
 	 */
-	public hasChildNodes (): boolean {
+	public hasChildNodes(): boolean {
 		return !!this.childNodes.length;
 	}
 
@@ -91,8 +91,8 @@ export default abstract class Node {
 	/**
 	 * The value of the node.
 	 */
-	public abstract get nodeValue (): string | null;
-	public abstract set nodeValue (value: string | null);
+	public abstract get nodeValue(): string | null;
+	public abstract set nodeValue(value: string | null);
 
 	/**
 	 * (non-standard) Each node has an associated list of registered observers.
@@ -104,7 +104,7 @@ export default abstract class Node {
 	 *
 	 * @param document The node document to associate with the node
 	 */
-	constructor (document: Document | null) {
+	constructor(document: Document | null) {
 		this.ownerDocument = document;
 	}
 
@@ -112,7 +112,7 @@ export default abstract class Node {
 	 * Puts the specified node and all of its subtree into a "normalized" form. In a normalized subtree, no text nodes
 	 * in the subtree are empty and there are no adjacent text nodes.
 	 */
-	public normalize (): void {
+	public normalize(): void {
 		// for each descendant exclusive Text node node of context object:
 		let node = this.firstChild;
 		let index = 0;
@@ -142,7 +142,8 @@ export default abstract class Node {
 			// itself), in tree order.
 			let data = '';
 			const siblingsToRemove = [];
-			for (let sibling = textNode.nextSibling;
+			for (
+				let sibling = textNode.nextSibling;
 				sibling && isNodeOfType(sibling, NodeType.TEXT_NODE);
 				sibling = sibling.nextSibling
 			) {
@@ -216,7 +217,7 @@ export default abstract class Node {
 	 *
 	 * @return A copy of the current node
 	 */
-	public cloneNode (deep: boolean = false): Node {
+	public cloneNode(deep: boolean = false): Node {
 		return cloneNode(this, deep);
 	}
 
@@ -228,7 +229,7 @@ export default abstract class Node {
 	 *
 	 * @return Whether childNode is an inclusive descendant of the current node
 	 */
-	public contains (other: Node | null): boolean {
+	public contains(other: Node | null): boolean {
 		while (other && other != this) {
 			other = other.parentNode;
 		}
@@ -245,7 +246,7 @@ export default abstract class Node {
 	 *
 	 * @return The node that was inserted
 	 */
-	public insertBefore (node: Node, child: Node | null): Node {
+	public insertBefore(node: Node, child: Node | null): Node {
 		expectArity(arguments, 2);
 		node = asObject(node, Node);
 		child = asNullableObject(child, Node);
@@ -262,7 +263,7 @@ export default abstract class Node {
 	 *
 	 * @return The node that was inserted
 	 */
-	public appendChild (node: Node): Node {
+	public appendChild(node: Node): Node {
 		expectArity(arguments, 1);
 		node = asObject(node, Node);
 
@@ -277,7 +278,7 @@ export default abstract class Node {
 	 *
 	 * @return The node that was removed
 	 */
-	public replaceChild (node: Node, child: Node): Node {
+	public replaceChild(node: Node, child: Node): Node {
 		expectArity(arguments, 2);
 		node = asObject(node, Node);
 		child = asObject(child, Node);
@@ -292,7 +293,7 @@ export default abstract class Node {
 	 *
 	 * @return The node that was removed
 	 */
-	public removeChild (child: Node): Node {
+	public removeChild(child: Node): Node {
 		expectArity(arguments, 1);
 		child = asObject(child, Node);
 
@@ -306,7 +307,7 @@ export default abstract class Node {
 	 *
 	 * @return A shallow copy of the context object
 	 */
-	public abstract _copy (document: Document): Node;
+	public abstract _copy(document: Document): Node;
 }
 
 (Node.prototype as any).ELEMENT_NODE = NodeType.ELEMENT_NODE;

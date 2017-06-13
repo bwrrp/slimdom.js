@@ -9,7 +9,7 @@ import queueMutationRecord from '../mutation-observer/queueMutationRecord';
  * @param element   The element that has the attribute
  * @param value     The new value for the attribute
  */
-export function changeAttribute (attribute: Attr, element: Element, value: string): void {
+export function changeAttribute(attribute: Attr, element: Element, value: string): void {
 	// 1. Queue a mutation record of "attributes" for element with name attribute’s local name, namespace attribute’s
 	// namespace, and oldValue attribute’s value.
 	queueMutationRecord('attributes', element, {
@@ -37,7 +37,7 @@ export function changeAttribute (attribute: Attr, element: Element, value: strin
  * @param attribute The attribute to append
  * @param element   The element to append attribute to
  */
-export function appendAttribute (attribute: Attr, element: Element): void {
+export function appendAttribute(attribute: Attr, element: Element): void {
 	// 1. Queue a mutation record of "attributes" for element with name attribute’s local name, namespace attribute’s
 	// namespace, and oldValue null.
 	queueMutationRecord('attributes', element, {
@@ -68,7 +68,7 @@ export function appendAttribute (attribute: Attr, element: Element): void {
  * @param attribute The attribute to remove
  * @param element   The element to remove attribute from
  */
-export function removeAttribute (attribute: Attr, element: Element): void {
+export function removeAttribute(attribute: Attr, element: Element): void {
 	// 1. Queue a mutation record of "attributes" for element with name attribute’s local name, namespace attribute’s
 	// namespace, and oldValue attribute’s value.
 	queueMutationRecord('attributes', element, {
@@ -100,7 +100,7 @@ export function removeAttribute (attribute: Attr, element: Element): void {
  * @param newAttr The attribute to replace oldAttr with
  * @param element The element on which to replace the attribute
  */
-export function replaceAttribute (oldAttr: Attr, newAttr: Attr, element: Element): void {
+export function replaceAttribute(oldAttr: Attr, newAttr: Attr, element: Element): void {
 	// 1. Queue a mutation record of "attributes" for element with name oldAttr’s local name, namespace oldAttr’s
 	// namespace, and oldValue oldAttr’s value.
 	queueMutationRecord('attributes', element, {

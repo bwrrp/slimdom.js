@@ -23,6 +23,6 @@ export const enum NodeType {
  *
  * @return Whether node.nodeType is one of the specified values
  */
-export function isNodeOfType (node: Node, ...types: NodeType[]): boolean {
+export function isNodeOfType(node: Node, ...types: NodeType[]): boolean {
 	return types.some(t => node.nodeType === t);
 }

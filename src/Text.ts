@@ -12,11 +12,11 @@ import { getNodeIndex } from './util/treeHelpers';
 export default class Text extends CharacterData {
 	// Node
 
-	public get nodeType (): number {
+	public get nodeType(): number {
 		return NodeType.TEXT_NODE;
 	}
 
-	public get nodeName (): string {
+	public get nodeName(): string {
 		return '#text';
 	}
 
@@ -31,7 +31,7 @@ export default class Text extends CharacterData {
 	 * @param document (non-standard) The node document for the new node
 	 * @param data     The data for the new text node
 	 */
-	constructor (document: Document, data: string = '') {
+	constructor(document: Document, data: string = '') {
 		super(document, data);
 	}
 
@@ -42,7 +42,7 @@ export default class Text extends CharacterData {
 	 *
 	 * @return a text node containing the second half of the split node's data
 	 */
-	public splitText (offset: number): Text {
+	public splitText(offset: number): Text {
 		return splitText(this, offset);
 	}
 
@@ -53,7 +53,7 @@ export default class Text extends CharacterData {
 	 *
 	 * @return A shallow copy of the context object
 	 */
-	public _copy (document: Document): Text {
+	public _copy(document: Document): Text {
 		// Set copy’s data, to that of node.
 		return new Text(document, this.data);
 	}
@@ -67,13 +67,13 @@ export default class Text extends CharacterData {
  *
  * @return a text node containing the second half of the split node's data
  */
-function splitText (node: Text, offset: number): Text {
+function splitText(node: Text, offset: number): Text {
 	// 1. Let length be node’s length.
 	const length = node.length;
 
 	// 2. If offset is greater than length, then throw an IndexSizeError.
 	if (offset > length) {
-		throwIndexSizeError('can not split past the node\'s length');
+		throwIndexSizeError("can not split past the node's length");
 	}
 
 	// 3. Let count be length minus offset.
@@ -120,7 +120,7 @@ function splitText (node: Text, offset: number): Text {
 			if (range.endContainer === parent && range.endOffset === indexOfNodePlusOne) {
 				range.endOffset += 1;
 			}
-		})
+		});
 	}
 
 	// 8. Replace data with node node, offset offset, count count, and data the empty string.

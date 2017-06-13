@@ -25,25 +25,25 @@ import { asNullableString } from './util/typeHelpers';
 export default class Document extends Node implements NonElementParentNode, ParentNode {
 	// Node
 
-	public get nodeType (): number {
+	public get nodeType(): number {
 		return NodeType.DOCUMENT_NODE;
 	}
 
-	public get nodeName (): string {
+	public get nodeName(): string {
 		return '#document';
 	}
 
-	public get nodeValue (): string | null {
+	public get nodeValue(): string | null {
 		return null;
 	}
 
-	public set nodeValue (newValue: string | null) {
+	public set nodeValue(newValue: string | null) {
 		// Do nothing.
 	}
 
 	// ParentNode
 
-	public get children (): Element[] {
+	public get children(): Element[] {
 		return getChildren(this);
 	}
 
@@ -85,7 +85,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 *
 	 * @return The new element
 	 */
-	public createElement (localName: string): Element {
+	public createElement(localName: string): Element {
 		localName = String(localName);
 
 		// 1. If localName does not match the Name production, then throw an InvalidCharacterError.
@@ -123,7 +123,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 *
 	 * @return The new element
 	 */
-	public createElementNS (namespace: string | null, qualifiedName: string): Element {
+	public createElementNS(namespace: string | null, qualifiedName: string): Element {
 		namespace = asNullableString(namespace);
 		qualifiedName = String(qualifiedName);
 
@@ -137,7 +137,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 *
 	 * @return The new document fragment
 	 */
-	public createDocumentFragment (): DocumentFragment {
+	public createDocumentFragment(): DocumentFragment {
 		return new DocumentFragment(this);
 	}
 
@@ -148,7 +148,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 *
 	 * @return The new text node
 	 */
-	public createTextNode (data: string): Text {
+	public createTextNode(data: string): Text {
 		data = String(data);
 
 		return new Text(this, data);
@@ -161,7 +161,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 *
 	 * @return The new CDATA section
 	 */
-	public createCDATASection (data: string): CDATASection {
+	public createCDATASection(data: string): CDATASection {
 		data = String(data);
 
 		// 1. If context object is an HTML document, then throw a NotSupportedError.
@@ -183,7 +183,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 *
 	 * @return The new comment node
 	 */
-	public createComment (data: string): Comment {
+	public createComment(data: string): Comment {
 		data = String(data);
 
 		return new Comment(this, data);
@@ -197,7 +197,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 *
 	 * @return The new processing instruction
 	 */
-	public createProcessingInstruction (target: string, data: string): ProcessingInstruction {
+	public createProcessingInstruction(target: string, data: string): ProcessingInstruction {
 		target = String(target);
 		data = String(data);
 
@@ -225,7 +225,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @param node The node to import
 	 * @param deep Whether to also import node's children
 	 */
-	public importNode (node: Node, deep: boolean = false): Node {
+	public importNode(node: Node, deep: boolean = false): Node {
 		// 1. If node is a document or shadow root, then throw a NotSupportedError.
 		if (isNodeOfType(node, NodeType.DOCUMENT_NODE)) {
 			throwNotSupportedError('importing a Document node is not supported');
@@ -241,7 +241,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 *
 	 * @param node The node to adopt
 	 */
-	public adoptNode (node: Node): Node {
+	public adoptNode(node: Node): Node {
 		// 1. If node is a document, then throw a NotSupportedError.
 		if (isNodeOfType(node, NodeType.DOCUMENT_NODE)) {
 			throwNotSupportedError('adopting a Document node is not supported');
@@ -264,7 +264,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 *
 	 * @return The new attribute node
 	 */
-	public createAttribute (localName: string): Attr {
+	public createAttribute(localName: string): Attr {
 		localName = String(localName);
 
 		// 1. If localName does not match the Name production in XML, then throw an InvalidCharacterError.
@@ -287,7 +287,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 *
 	 * @return The new attribute node
 	 */
-	public createAttributeNS (namespace: string | null, qualifiedName: string): Attr {
+	public createAttributeNS(namespace: string | null, qualifiedName: string): Attr {
 		namespace = asNullableString(namespace);
 		qualifiedName = String(qualifiedName);
 
@@ -308,7 +308,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 *
 	 * @return The new Range
 	 */
-	public createRange (): Range {
+	public createRange(): Range {
 		return new Range(this);
 	}
 
@@ -319,7 +319,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 *
 	 * @return A shallow copy of the context object
 	 */
-	public _copy (document: Document): Document {
+	public _copy(document: Document): Document {
 		// Set copy’s encoding, content type, URL, origin, type, and mode, to those of node.
 		// (properties not implemented)
 

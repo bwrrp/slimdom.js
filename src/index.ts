@@ -15,6 +15,6 @@ export { default as Text } from './Text';
 export { default as XMLDocument } from './XMLDocument';
 export { default as MutationObserver } from './mutation-observer/MutationObserver';
 
-export function createDocument (): XMLDocument {
+export function createDocument(): XMLDocument {
 	return new XMLDocument();
 }

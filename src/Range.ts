@@ -1,8 +1,19 @@
 import Document from './Document';
 import Node from './Node';
-import { throwIndexSizeError, throwInvalidNodeTypeError, throwNotSupportedError, throwWrongDocumentError } from './util/errorHelpers';
+import {
+	throwIndexSizeError,
+	throwInvalidNodeTypeError,
+	throwNotSupportedError,
+	throwWrongDocumentError
+} from './util/errorHelpers';
 import { NodeType, isNodeOfType } from './util/NodeType';
-import { determineLengthOfNode, getInclusiveAncestors, getNodeDocument, getNodeIndex, getRootOfNode } from './util/treeHelpers';
+import {
+	determineLengthOfNode,
+	getInclusiveAncestors,
+	getNodeDocument,
+	getNodeIndex,
+	getRootOfNode
+} from './util/treeHelpers';
 import { asObject, asUnsignedLong } from './util/typeHelpers';
 
 export const ranges: Range[] = [];
@@ -16,7 +27,7 @@ export default class Range {
 	public endContainer: Node;
 	public endOffset: number;
 
-	public get collapsed (): boolean {
+	public get collapsed(): boolean {
 		return this.startContainer === this.endContainer && this.startOffset === this.endOffset;
 	}
 
@@ -25,7 +36,7 @@ export default class Range {
 	 *
 	 * Note: for efficiency reasons, this implementation deviates from the algorithm given in 4.2.
 	 */
-	public get commonAncestorContainer (): Node {
+	public get commonAncestorContainer(): Node {
 		const ancestors1 = getInclusiveAncestors(this.startContainer);
 		const ancestors2 = getInclusiveAncestors(this.endContainer);
 		let commonAncestorContainer = ancestors1[0];
@@ -50,7 +61,7 @@ export default class Range {
 	 *
 	 * @param document The document in which to initialize the Range
 	 */
-	constructor (document: Document) {
+	constructor(document: Document) {
 		this.startContainer = document;
 		this.startOffset = 0;
 		this.endContainer = document;
@@ -64,7 +75,7 @@ export default class Range {
 	 * @param node   The new start container
 	 * @param offset The new start offset
 	 */
-	setStart (node: Node, offset: number): void {
+	setStart(node: Node, offset: number): void {
 		node = asObject(node, Node);
 		offset = asUnsignedLong(offset);
 
@@ -107,7 +118,7 @@ export default class Range {
 	 * @param node   The new end container
 	 * @param offset The new end offset
 	 */
-	setEnd (node: Node, offset: number): void {
+	setEnd(node: Node, offset: number): void {
 		node = asObject(node, Node);
 		offset = asUnsignedLong(offset);
 
@@ -149,7 +160,7 @@ export default class Range {
 	 *
 	 * @param node The node to set the range's start before
 	 */
-	setStartBefore (node: Node): void {
+	setStartBefore(node: Node): void {
 		node = asObject(node, Node);
 
 		// 1. Let parent be node’s parent.
@@ -169,7 +180,7 @@ export default class Range {
 	 *
 	 * @param node The node to set the range's start before
 	 */
-	setStartAfter (node: Node): void {
+	setStartAfter(node: Node): void {
 		node = asObject(node, Node);
 
 		// 1. Let parent be node’s parent.
@@ -189,7 +200,7 @@ export default class Range {
 	 *
 	 * @param node The node to set the range's end before
 	 */
-	setEndBefore (node: Node): void {
+	setEndBefore(node: Node): void {
 		node = asObject(node, Node);
 
 		// 1. Let parent be node’s parent.
@@ -204,13 +215,12 @@ export default class Range {
 		this.setEnd(parent, getNodeIndex(node));
 	}
 
-
 	/**
 	 * Sets the end boundary point of the range to the position just after the given node.
 	 *
 	 * @param node The node to set the range's end before
 	 */
-	setEndAfter (node: Node): void {
+	setEndAfter(node: Node): void {
 		node = asObject(node, Node);
 
 		// 1. Let parent be node’s parent.
@@ -225,24 +235,22 @@ export default class Range {
 		this.setEnd(parent, getNodeIndex(node) + 1);
 	}
 
-
 	/**
 	 * Sets the range's boundary points to the same position.
 	 *
 	 * @param toStart If true, set both points to the start of the range, otherwise set them to the end
 	 */
-	collapse (toStart: boolean = false): void {
+	collapse(toStart: boolean = false): void {
 		if (toStart) {
 			this.endContainer = this.startContainer;
 			this.endOffset = this.startOffset;
-		}
-		else {
+		} else {
 			this.startContainer = this.endContainer;
 			this.startOffset = this.endOffset;
 		}
 	}
 
-	selectNode (node: Node): void {
+	selectNode(node: Node): void {
 		node = asObject(node, Node);
 
 		// 1. Let parent be node’s parent.
@@ -265,7 +273,7 @@ export default class Range {
 		this.endOffset = index + 1;
 	}
 
-	selectNodeContents (node: Node): void {
+	selectNodeContents(node: Node): void {
 		node = asObject(node, Node);
 
 		// 1. If node is a doctype, throw an InvalidNodeTypeError.
@@ -290,7 +298,7 @@ export default class Range {
 	static END_TO_END = 2;
 	static END_TO_START = 3;
 
-	compareBoundaryPoints (how: number, sourceRange: Range): number {
+	compareBoundaryPoints(how: number, sourceRange: Range): number {
 		sourceRange = asObject(sourceRange, Range);
 
 		// 1. If how is not one of START_TO_START, START_TO_END, END_TO_END, and END_TO_START, then throw a
@@ -349,7 +357,7 @@ export default class Range {
 
 			// END_TO_START:
 			default:
-				// unreachable, fall through for type check
+			// unreachable, fall through for type check
 			case Range.END_TO_START:
 				// Let this point be the context object’s start. Let other point be sourceRange’s end.
 				return compareBoundaryPointPositions(
@@ -374,7 +382,7 @@ export default class Range {
 	 *
 	 * @return A copy of the context object
 	 */
-	cloneRange (): Range {
+	cloneRange(): Range {
 		const range = new Range(getNodeDocument(this.startContainer));
 		range.startContainer = this.startContainer;
 		range.startOffset = this.startOffset;
@@ -390,7 +398,7 @@ export default class Range {
 	 * garbage collection to determine when to stop updating a range for node mutations, this implementation requires
 	 * calling detach to stop such updates from affecting the range.
 	 */
-	detach (): void {
+	detach(): void {
 		const index = ranges.indexOf(this);
 		if (index >= 0) {
 			ranges.splice(index, 1);
@@ -406,7 +414,7 @@ export default class Range {
 	 *
 	 * @return Whether the point is in the range
 	 */
-	isPointInRange (node: Node, offset: number): boolean {
+	isPointInRange(node: Node, offset: number): boolean {
 		node = asObject(node, Node);
 		offset = asUnsignedLong(offset);
 
@@ -445,7 +453,7 @@ export default class Range {
 	 *
 	 * @return -1, 0 or 1 depending on whether the point is before, inside or after the range, respectively
 	 */
-	comparePoint (node: Node, offset: number): number {
+	comparePoint(node: Node, offset: number): number {
 		node = asObject(node, Node);
 		offset = asUnsignedLong(offset);
 
@@ -485,7 +493,7 @@ export default class Range {
 	 *
 	 * @return Whether the range intersects node
 	 */
-	intersectsNode (node: Node): boolean {
+	intersectsNode(node: Node): boolean {
 		node = asObject(node, Node);
 
 		// 1. If node’s root is different from the context object’s root, return false.
@@ -506,8 +514,10 @@ export default class Range {
 
 		// 5. If (parent, offset) is before end and (parent, offset + 1) is after start, return true.
 		// 6. Return false.
-		return compareBoundaryPointPositions(parent, offset, this.endContainer, this.endOffset) === POSITION_BEFORE &&
-			compareBoundaryPointPositions(parent, offset + 1, this.startContainer, this.startOffset) === POSITION_AFTER;
+		return (
+			compareBoundaryPointPositions(parent, offset, this.endContainer, this.endOffset) === POSITION_BEFORE &&
+			compareBoundaryPointPositions(parent, offset + 1, this.startContainer, this.startOffset) === POSITION_AFTER
+		);
 	}
 }
 
@@ -528,13 +538,13 @@ const POSITION_AFTER = 1;
  *
  * @return -1, 0 or 1, depending on the boundary points' relative positions
  */
-function compareBoundaryPointPositions (nodeA: Node, offsetA: number, nodeB: Node, offsetB: number): number {
+function compareBoundaryPointPositions(nodeA: Node, offsetA: number, nodeB: Node, offsetB: number): number {
 	if (nodeA !== nodeB) {
 		const ancestors1 = getInclusiveAncestors(nodeA);
 		const ancestors2 = getInclusiveAncestors(nodeB);
 		// This should not be called on nodes from different trees
 		if (ancestors1[0] !== ancestors2[0]) {
-			throw new Error('Can not compare positions of nodes from different trees.')
+			throw new Error('Can not compare positions of nodes from different trees.');
 		}
 
 		// Skip common parents
@@ -567,6 +577,6 @@ function compareBoundaryPointPositions (nodeA: Node, offsetA: number, nodeB: Nod
  *
  * @return The root of range
  */
-function getRootOfRange (range: Range): Node {
+function getRootOfRange(range: Range): Node {
 	return getRootOfNode(range.startContainer);
 }

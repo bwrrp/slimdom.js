@@ -4,14 +4,11 @@ const { main: MAIN_DEST_FILE, module: MODULE_DEST_FILE } = require('./package.js
 
 export default {
 	entry: 'lib/index.js',
-	targets: [
-		{ dest: MAIN_DEST_FILE, format: 'umd' },
-		{ dest: MODULE_DEST_FILE, format: 'es' },
-	],
+	targets: [{ dest: MAIN_DEST_FILE, format: 'umd' }, { dest: MODULE_DEST_FILE, format: 'es' }],
 	moduleName: 'slimdom',
 	exports: 'named',
 	sourceMap: true,
-	onwarn (warning) {
+	onwarn(warning) {
 		// Ignore "this is undefined" warning triggered by typescript's __extends helper
 		if (warning.code === 'THIS_IS_UNDEFINED') {
 			return;
@@ -25,4 +22,4 @@ export default {
 			sourceMap: true
 		})
 	]
-}
+};

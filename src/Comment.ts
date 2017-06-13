@@ -5,11 +5,11 @@ import { NodeType } from './util/NodeType';
 export default class Comment extends CharacterData {
 	// Node
 
-	public get nodeType (): number {
+	public get nodeType(): number {
 		return NodeType.COMMENT_NODE;
 	}
 
-	public get nodeName (): string {
+	public get nodeName(): string {
 		return '#comment';
 	}
 
@@ -24,7 +24,7 @@ export default class Comment extends CharacterData {
 	 * @param document (non-standard) The node document to associate with the new comment
 	 * @param data     The data for the new comment
 	 */
-	constructor (document: Document, data: string = '') {
+	constructor(document: Document, data: string = '') {
 		super(document, data);
 	}
 
@@ -35,7 +35,7 @@ export default class Comment extends CharacterData {
 	 *
 	 * @return A shallow copy of the context object
 	 */
-	public _copy (document: Document): Comment {
+	public _copy(document: Document): Comment {
 		// Set copy’s data, to that of node.
 		return new Comment(document, this.data);
 	}

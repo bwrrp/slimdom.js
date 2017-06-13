@@ -1,13 +1,13 @@
 import Node from '../Node';
 
 export interface MutationRecordInit {
-	name?: string,
-	namespace?: string | null,
-	oldValue?: string | null,
-	addedNodes?: Node[],
-	removedNodes?: Node[],
-	previousSibling?: Node | null,
-	nextSibling?: Node | null
+	name?: string;
+	namespace?: string | null;
+	oldValue?: string | null;
+	addedNodes?: Node[];
+	removedNodes?: Node[];
+	previousSibling?: Node | null;
+	nextSibling?: Node | null;
 }
 
 /**
@@ -75,7 +75,7 @@ export default class MutationRecord {
 	 * @param type   The value for the type property
 	 * @param target The value for the target property
 	 */
-	constructor (type: string, target: Node) {
+	constructor(type: string, target: Node) {
 		this.type = type;
 		this.target = target;
 	}

@@ -3,12 +3,12 @@ import MutationRecord from './MutationRecord';
 import { removeTransientRegisteredObserversForObserver } from './RegisteredObservers';
 
 // Declare functions without having to bring in the entire DOM lib
-declare function setImmediate (handler: (...args: any[]) => void): number;
-declare function setTimeout (handler: (...args: any[]) => void, timeout: number): number;
+declare function setImmediate(handler: (...args: any[]) => void): number
+declare function setTimeout(handler: (...args: any[]) => void, timeout: number): number
 
-const hasSetImmediate = (typeof setImmediate === 'function');
+const hasSetImmediate = typeof setImmediate === 'function';
 
-function queueCompoundMicrotask (callback: (...args: any[]) => void, thisArg: NotifyList, ...args: any[]): number {
+function queueCompoundMicrotask(callback: (...args: any[]) => void, thisArg: NotifyList, ...args: any[]): number {
 	return (hasSetImmediate ? setImmediate : setTimeout)(() => {
 		callback.apply(thisArg, args);
 	}, 0);
@@ -29,7 +29,7 @@ export default class NotifyList {
 	 * @param observer The observer for which to enqueue the record
 	 * @param record   The record to enqueue
 	 */
-	appendRecord (observer: MutationObserver, record: MutationRecord) {
+	appendRecord(observer: MutationObserver, record: MutationRecord) {
 		observer._recordQueue.push(record);
 		this._notifyList.push(observer);
 	}
@@ -37,7 +37,7 @@ export default class NotifyList {
 	/**
 	 * To queue a mutation observer compound microtask, run these steps:
 	 */
-	public queueMutationObserverCompoundMicrotask () {
+	public queueMutationObserverCompoundMicrotask() {
 		// 1. If mutation observer compound microtask queued flag is set, then return.
 		if (this._compoundMicrotaskQueued) {
 			return;
@@ -53,7 +53,7 @@ export default class NotifyList {
 	/**
 	 * To notify mutation observers, run these steps:
 	 */
-	private _notifyMutationObservers () {
+	private _notifyMutationObservers() {
 		// 1. Unset mutation observer compound microtask queued flag.
 		this._compoundMicrotaskQueued = null;
 
@@ -70,21 +70,24 @@ export default class NotifyList {
 		// 5. For each MutationObserver object mo in notify list, execute a compound microtask subtask to run these
 		// steps: [HTML]
 		notifyList.forEach(mo => {
-			queueCompoundMicrotask((mo: MutationObserver) => {
-				// 5.1. Let queue be a copy of mo’s record queue.
-				// 5.2. Empty mo’s record queue.
-				const queue = mo.takeRecords();
+			queueCompoundMicrotask(
+				(mo: MutationObserver) => {
+					// 5.1. Let queue be a copy of mo’s record queue.
+					// 5.2. Empty mo’s record queue.
+					const queue = mo.takeRecords();
 
-				// 5.3. Remove all transient registered observers whose observer is mo.
-				removeTransientRegisteredObserversForObserver(mo);
+					// 5.3. Remove all transient registered observers whose observer is mo.
+					removeTransientRegisteredObserversForObserver(mo);
 
-				// 5.4. If queue is non-empty, invoke mo’s callback with a list of arguments consisting of queue and mo,
-				// and mo as the callback this value. If this throws an exception, report the exception.
-				if (queue.length) {
-					mo._callback(queue, mo);
-				}
-
-			}, this, mo);
+					// 5.4. If queue is non-empty, invoke mo’s callback with a list of arguments consisting of queue and mo,
+					// and mo as the callback this value. If this throws an exception, report the exception.
+					if (queue.length) {
+						mo._callback(queue, mo);
+					}
+				},
+				this,
+				mo
+			);
 		});
 
 		// 6. For each slot slot in signalList, in order, fire an event named slotchange, with its bubbles
