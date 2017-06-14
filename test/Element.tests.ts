@@ -1,19 +1,11 @@
+import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
-import Attr from '../src/Attr';
-import Document from '../src/Document';
-import Element from '../src/Element';
-import Node from '../src/Node';
-import ProcessingInstruction from '../src/ProcessingInstruction';
-import Text from '../src/Text';
-
-import * as chai from 'chai';
-
 describe('Element', () => {
-	let document: Document;
-	let element: Element;
+	let document: slimdom.Document;
+	let element: slimdom.Element;
 	beforeEach(() => {
-		document = slimdom.createDocument();
+		document = new slimdom.Document();
 		element = document.createElement('root');
 	});
 
@@ -61,7 +53,7 @@ describe('Element', () => {
 			chai.assert.equal(element.getAttribute('noSuchAttribute'), null);
 		});
 
-		function hasAttributes(attributes: Attr[], expected: { name: string; value: string }[]): boolean {
+		function hasAttributes(attributes: slimdom.Attr[], expected: { name: string; value: string }[]): boolean {
 			return (
 				attributes.length === expected.length &&
 				attributes.every(attr => expected.some(pair => pair.name === attr.name && pair.value === attr.value)) &&
@@ -120,7 +112,7 @@ describe('Element', () => {
 	});
 
 	describe('after appending a child element', () => {
-		let child: Element;
+		let child: slimdom.Element;
 		beforeEach(() => {
 			child = document.createElement('child');
 			element.appendChild(child);
@@ -159,7 +151,7 @@ describe('Element', () => {
 		});
 
 		describe('after replacing the child element', () => {
-			let otherChild: Element;
+			let otherChild: slimdom.Element;
 			beforeEach(() => {
 				otherChild = document.createElement('other');
 				element.replaceChild(otherChild, child);
@@ -180,7 +172,7 @@ describe('Element', () => {
 		});
 
 		describe('after inserting an element before the child', () => {
-			let otherChild: Element;
+			let otherChild: slimdom.Element;
 			beforeEach(() => {
 				otherChild = document.createElement('other');
 				element.insertBefore(otherChild, child);
@@ -213,7 +205,7 @@ describe('Element', () => {
 		});
 
 		describe('after inserting an element after the child', () => {
-			let otherChild: Element;
+			let otherChild: slimdom.Element;
 			beforeEach(() => {
 				otherChild = document.createElement('other');
 				element.appendChild(otherChild);
@@ -273,7 +265,7 @@ describe('Element', () => {
 	});
 
 	describe('after appending a processing instruction', () => {
-		let processingInstruction: ProcessingInstruction;
+		let processingInstruction: slimdom.ProcessingInstruction;
 		beforeEach(() => {
 			processingInstruction = document.createProcessingInstruction('test', 'test');
 			element.appendChild(processingInstruction);
@@ -293,10 +285,10 @@ describe('Element', () => {
 		});
 
 		describe('after replacing with an element', () => {
-			let otherChild: Element;
+			let otherChild: slimdom.Element;
 			beforeEach(() => {
 				otherChild = document.createElement('other');
-				element.replaceChild(otherChild, element.firstChild as Node);
+				element.replaceChild(otherChild, element.firstChild!);
 			});
 
 			it('has child node references', () => {
@@ -316,7 +308,7 @@ describe('Element', () => {
 
 	describe('normalization', () => {
 		it('removes empty text nodes', () => {
-			let textNode = element.appendChild(document.createTextNode('')) as Node;
+			let textNode = element.appendChild(document.createTextNode(''));
 			element.normalize();
 			chai.assert.equal(textNode.parentNode, null);
 		});
@@ -328,8 +320,8 @@ describe('Element', () => {
 			chai.assert.equal(element.childNodes.length, 3);
 			element.normalize();
 			chai.assert.equal(element.childNodes.length, 1);
-			chai.assert.equal((element.firstChild as Text).nodeValue, 'test123abc');
-			chai.assert.equal((element.firstChild as Text).data, 'test123abc');
+			chai.assert.equal((element.firstChild as slimdom.Text).nodeValue, 'test123abc');
+			chai.assert.equal((element.firstChild as slimdom.Text).data, 'test123abc');
 		});
 	});
 });

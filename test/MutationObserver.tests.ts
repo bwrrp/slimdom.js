@@ -1,12 +1,6 @@
-import * as slimdom from '../src/index';
-
-import Document from '../src/Document';
-import Element from '../src/Element';
-import Text from '../src/Text';
-import MutationObserver from '../src/mutation-observer/MutationObserver';
-
 import * as chai from 'chai';
 import * as lolex from 'lolex';
+import * as slimdom from '../src/index';
 
 describe('MutationObserver', () => {
 	let clock: lolex.Clock;
@@ -25,17 +19,17 @@ describe('MutationObserver', () => {
 		callbackArgs.push(args);
 	}
 
-	let document: Document;
-	let element: Element;
-	let text: Text;
-	let observer: MutationObserver;
+	let document: slimdom.Document;
+	let element: slimdom.Element;
+	let text: slimdom.Text;
+	let observer: slimdom.MutationObserver;
 	beforeEach(() => {
 		callbackCalled = false;
 		callbackArgs.length = 0;
 
-		document = slimdom.createDocument();
-		element = document.appendChild(document.createElement('root')) as Element;
-		text = element.appendChild(document.createTextNode('text')) as Text;
+		document = new slimdom.Document();
+		element = document.appendChild(document.createElement('root')) as slimdom.Element;
+		text = element.appendChild(document.createTextNode('text')) as slimdom.Text;
 		observer = new slimdom.MutationObserver(callback);
 		observer.observe(element, {
 			subtree: true,
@@ -193,8 +187,8 @@ describe('MutationObserver', () => {
 
 		it('continues tracking under a removed node until javascript re-enters the event loop', () => {
 			observer.observe(element, { subtree: true, characterDataOldValue: true, childList: true });
-			const newElement = element.appendChild(document.createElement('meep')) as Element;
-			const newText = newElement.appendChild(document.createTextNode('test')) as Text;
+			const newElement = element.appendChild(document.createElement('meep')) as slimdom.Element;
+			const newText = newElement.appendChild(document.createTextNode('test')) as slimdom.Text;
 			element.appendChild(newElement);
 			observer.takeRecords();
 

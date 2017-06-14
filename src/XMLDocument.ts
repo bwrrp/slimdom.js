@@ -1,4 +1,5 @@
 import Document from './Document';
+import { getContext } from './context/Context';
 
 export default class XMLDocument extends Document {
 	/**
@@ -12,6 +13,7 @@ export default class XMLDocument extends Document {
 		// Set copy’s encoding, content type, URL, origin, type, and mode, to those of node.
 		// (properties not implemented)
 
-		return new XMLDocument();
+		const context = getContext(document);
+		return new context.XMLDocument();
 	}
 }

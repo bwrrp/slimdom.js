@@ -390,6 +390,8 @@ function createTest(casePath: string, blacklistReason: { [key: string]: string }
 	const scriptAsFunction = new Function('stubEnvironment', `with (stubEnvironment) { ${script} }`);
 	let stubs: { global: any; onLoadCallbacks: Function[]; onErrorCallback?: Function };
 
+	const { document: _, ...domInterfaces } = slimdom;
+
 	function createStubEnvironment(
 		document: slimdom.Document
 	): { global: any; onLoadCallbacks: Function[]; onErrorCallback?: Function } {
@@ -427,7 +429,7 @@ function createTest(casePath: string, blacklistReason: { [key: string]: string }
 				}
 			},
 
-			...slimdom
+			...domInterfaces
 		};
 		global.window = global;
 		global.parent = global;

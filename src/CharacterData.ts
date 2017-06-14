@@ -56,11 +56,12 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	}
 
 	/**
-	 * @param document The node document to associate with the node
-	 * @param data     The data to associate with the node
+	 * (non-standard) CharacterData should never be instantiated directly.
+	 *
+	 * @param data The data to associate with the node
 	 */
-	protected constructor(document: Document, data: string) {
-		super(document);
+	protected constructor(data: string) {
+		super();
 		this._data = data;
 	}
 

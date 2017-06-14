@@ -1,15 +1,11 @@
+import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
-import Comment from '../src/Comment';
-import Document from '../src/Document';
-
-import * as chai from 'chai';
-
 describe('Comment', () => {
-	let document: Document;
-	let comment: Comment;
+	let document: slimdom.Document;
+	let comment: slimdom.Comment;
 	beforeEach(() => {
-		document = slimdom.createDocument();
+		document = new slimdom.Document();
 		comment = document.createComment('somedata');
 	});
 
@@ -21,7 +17,7 @@ describe('Comment', () => {
 	});
 
 	it('can be cloned', () => {
-		var clone = comment.cloneNode(true) as Comment;
+		var clone = comment.cloneNode(true) as slimdom.Comment;
 		chai.assert.equal(clone.nodeType, 8);
 		chai.assert.equal(clone.nodeValue, 'somedata');
 		chai.assert.equal(clone.data, 'somedata');

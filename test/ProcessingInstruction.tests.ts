@@ -1,15 +1,11 @@
+import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
-import Document from '../src/Document';
-import ProcessingInstruction from '../src/ProcessingInstruction';
-
-import * as chai from 'chai';
-
 describe('ProcessingInstruction', () => {
-	let document: Document;
-	let processingInstruction: ProcessingInstruction;
+	let document: slimdom.Document;
+	let processingInstruction: slimdom.ProcessingInstruction;
 	beforeEach(() => {
-		document = slimdom.createDocument();
+		document = new slimdom.Document();
 		processingInstruction = document.createProcessingInstruction('sometarget', 'somedata');
 	});
 
@@ -25,7 +21,7 @@ describe('ProcessingInstruction', () => {
 	});
 
 	it('can be cloned', () => {
-		var clone = processingInstruction.cloneNode(true) as ProcessingInstruction;
+		var clone = processingInstruction.cloneNode(true) as slimdom.ProcessingInstruction;
 		chai.assert.equal(clone.nodeType, 7);
 		chai.assert.equal(clone.nodeValue, 'somedata');
 		chai.assert.equal(clone.data, 'somedata');

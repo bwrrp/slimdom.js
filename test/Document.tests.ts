@@ -1,22 +1,15 @@
+import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
-import Document from '../src/Document';
-import DOMImplementation from '../src/DOMImplementation';
-import Element from '../src/Element';
-import Node from '../src/Node';
-import ProcessingInstruction from '../src/ProcessingInstruction';
-
-import * as chai from 'chai';
-
 describe('Document', () => {
-	let document: Document;
+	let document: slimdom.Document;
 	beforeEach(() => {
-		document = slimdom.createDocument();
+		document = new slimdom.Document();
 	});
 
 	it('has nodeType 9', () => chai.assert.equal(document.nodeType, 9));
 
-	it('exposes its DOMImplementation', () => chai.assert.instanceOf(document.implementation, DOMImplementation));
+	it('exposes its DOMImplementation', () => chai.assert.instanceOf(document.implementation, slimdom.DOMImplementation));
 
 	it('initially has no doctype', () => chai.assert.equal(document.doctype, null));
 
@@ -25,7 +18,7 @@ describe('Document', () => {
 	it('initially has no childNodes', () => chai.assert.deepEqual(document.childNodes, []));
 
 	describe('after appending a child element', () => {
-		let element: Element;
+		let element: slimdom.Element;
 		beforeEach(() => {
 			element = document.createElement('test');
 			document.appendChild(element);
@@ -48,7 +41,7 @@ describe('Document', () => {
 		});
 
 		describe('after replacing the element', () => {
-			let otherElement: Element;
+			let otherElement: slimdom.Element;
 			beforeEach(() => {
 				otherElement = document.createElement('other');
 				document.replaceChild(otherElement, element);
@@ -61,7 +54,7 @@ describe('Document', () => {
 	});
 
 	describe('after appending a processing instruction', () => {
-		var processingInstruction: ProcessingInstruction;
+		var processingInstruction: slimdom.ProcessingInstruction;
 		beforeEach(() => {
 			processingInstruction = document.createProcessingInstruction('sometarget', 'somedata');
 			document.appendChild(processingInstruction);
@@ -72,7 +65,7 @@ describe('Document', () => {
 		it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [processingInstruction]));
 
 		describe('after replacing with an element', () => {
-			let otherElement: Element;
+			let otherElement: slimdom.Element;
 			beforeEach(() => {
 				otherElement = document.createElement('other');
 				document.replaceChild(otherElement, processingInstruction);
@@ -85,10 +78,10 @@ describe('Document', () => {
 	});
 
 	describe('cloning', () => {
-		var clone: Document;
+		var clone: slimdom.Document;
 		beforeEach(() => {
 			document.appendChild(document.createElement('root'));
-			clone = document.cloneNode(true) as Document;
+			clone = document.cloneNode(true) as slimdom.Document;
 		});
 
 		it('is a new document', () => {
@@ -97,8 +90,8 @@ describe('Document', () => {
 		});
 
 		it('has a new document element', () => {
-			chai.assert.equal((clone.documentElement as Node).nodeType, 1);
-			chai.assert.equal((clone.documentElement as Element).nodeName, 'root');
+			chai.assert.equal((clone.documentElement as slimdom.Node).nodeType, 1);
+			chai.assert.equal((clone.documentElement as slimdom.Element).nodeName, 'root');
 			chai.assert.notEqual(clone.documentElement, document.documentElement);
 		});
 	});

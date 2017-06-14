@@ -3,7 +3,7 @@ import { getChildren, getPreviousElementSibling, getNextElementSibling } from '.
 import Attr from './Attr';
 import Document from './Document';
 import Node from './Node';
-
+import { getContext } from './context/Context';
 import { appendAttribute, changeAttribute, removeAttribute, replaceAttribute } from './util/attrMutations';
 import { throwInUseAttributeError, throwInvalidCharacterError, throwNotFoundError } from './util/errorHelpers';
 import { matchesNameProduction, validateAndExtract } from './util/namespaceHelpers';
@@ -62,13 +62,13 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	/**
 	 * (non-standard) Use Document#createElement or Document#createElementNS to create an Element.
 	 *
-	 * @param document  Node document for the element
 	 * @param namespace Namespace for the element
 	 * @param prefix    Prefix for the element
 	 * @param localName Local name for the element
 	 */
-	constructor(document: Document, namespace: string | null, prefix: string | null, localName: string) {
-		super(document);
+	constructor(namespace: string | null, prefix: string | null, localName: string) {
+		super();
+
 		this.namespaceURI = namespace;
 		this.prefix = prefix;
 		this.localName = localName;
@@ -157,7 +157,9 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 		// 4. If attribute is null, create an attribute whose local name is qualifiedName, value is value, and node
 		// document is context object’s node document, then append this attribute to context object, and then return.
 		if (attribute === null) {
-			const attribute = new Attr(this.ownerDocument!, null, null, qualifiedName, value, this);
+			const context = getContext(this);
+			const attribute = new context.Attr(null, null, qualifiedName, value, this);
+			attribute.ownerDocument = this.ownerDocument;
 			appendAttribute(attribute, this);
 			return;
 		}
@@ -410,7 +412,9 @@ export function createElement(
 	// 7.2. Set result to a new element that implements interface, with no attributes, namespace set to namespace,
 	// namespace prefix set to prefix, local name set to localName, custom element state set to "uncustomized", custom
 	// element definition set to null, is value set to is, and node document set to document.
-	result = new Element(document, namespace, prefix, localName);
+	const context = getContext(document);
+	result = new context.Element(namespace, prefix, localName);
+	result.ownerDocument = document;
 
 	// If namespace is the HTML namespace, and either localName is a valid custom element name or is is non-null, then
 	// set result’s custom element state to "undefined".
@@ -547,7 +551,9 @@ function setAttributeValue(
 	// is localName, value is value, and node document is element’s node document, then append this attribute to
 	// element, and then return.
 	if (attribute === null) {
-		const attribute = new Attr(element.ownerDocument!, namespace, prefix, localName, value, element);
+		const context = getContext(element);
+		const attribute = new context.Attr(namespace, prefix, localName, value, element);
+		attribute.ownerDocument = element.ownerDocument;
 		appendAttribute(attribute, element);
 		return;
 	}

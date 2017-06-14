@@ -1,5 +1,6 @@
 import CharacterData from './CharacterData';
 import Document from './Document';
+import { getContext } from './context/Context';
 import { NodeType } from './util/NodeType';
 
 /**
@@ -23,11 +24,12 @@ export default class ProcessingInstruction extends CharacterData {
 	/**
 	 * (non-standard) Use Document#createProcessingInstruction to create a processing instruction.
 	 *
-	 * @param document The node document to associate with the processing instruction
-	 * @param target   The target of the processing instruction
+	 * @param target The target of the processing instruction
+	 * @param data   The data of the processing instruction
 	 */
-	constructor(document: Document, target: string, data: string) {
-		super(document, data);
+	constructor(target: string, data: string) {
+		super(data);
+
 		this.target = target;
 	}
 
@@ -40,6 +42,9 @@ export default class ProcessingInstruction extends CharacterData {
 	 */
 	public _copy(document: Document): ProcessingInstruction {
 		// Set copy’s target and data to those of node.
-		return new ProcessingInstruction(document, this.target, this.data);
+		const context = getContext(document);
+		const copy = new context.ProcessingInstruction(this.target, this.data);
+		copy.ownerDocument = document;
+		return copy;
 	}
 }

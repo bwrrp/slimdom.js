@@ -1,6 +1,7 @@
 import Document from './Document';
 import Element from './Element';
 import Node from './Node';
+import { getContext } from './context/Context';
 import { changeAttribute } from './util/attrMutations';
 import { NodeType } from './util/NodeType';
 
@@ -55,7 +56,6 @@ export default class Attr extends Node {
 	/**
 	 * (non-standard) use Document#createAttribute(NS) or Element#setAttribute(NS) to create attribute nodes
 	 *
-	 * @param document  The node document to associate with the attribute
 	 * @param namespace The namespace URI for the attribute
 	 * @param prefix    The prefix for the attribute
 	 * @param localName The local name for the attribute
@@ -63,21 +63,20 @@ export default class Attr extends Node {
 	 * @param element   The element for the attribute, or null if the attribute is not attached to an element
 	 */
 	constructor(
-		document: Document,
 		namespace: string | null,
 		prefix: string | null,
 		localName: string,
 		value: string,
 		element: Element | null
 	) {
-		super(document);
+		super();
+
 		this.namespaceURI = namespace;
 		this.prefix = prefix;
 		this.localName = localName;
 		this.name = prefix === null ? localName : `${prefix}:${localName}`;
 		this._value = value;
 		this.ownerElement = element;
-		this.ownerDocument = document;
 	}
 
 	/**
@@ -89,7 +88,10 @@ export default class Attr extends Node {
 	 */
 	public _copy(document: Document): Attr {
 		// Set copy’s namespace, namespace prefix, local name, and value, to those of node.
-		return new Attr(document, this.namespaceURI, this.prefix, this.localName, this.value, null);
+		const context = getContext(document);
+		const copy = new context.Attr(this.namespaceURI, this.prefix, this.localName, this.value, null);
+		copy.ownerDocument = document;
+		return copy;
 	}
 }
 
