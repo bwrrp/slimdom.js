@@ -1,6 +1,7 @@
 import { replaceData, substringData, default as CharacterData } from './CharacterData';
 import Document from './Document';
 import { ranges } from './Range';
+import { getContext } from './context/Context';
 import { throwIndexSizeError } from './util/errorHelpers';
 import { insertNode } from './util/mutationAlgorithms';
 import { NodeType } from './util/NodeType';
@@ -23,16 +24,15 @@ export default class Text extends CharacterData {
 	// Text
 
 	/**
-	 * Returns a new Text node whose data is data.
+	 * Returns a new Text node whose data is data and node document is current global object’s associated Document.
 	 *
-	 * Non-standard: as this implementation does not have a document associated with the global object, it is required
-	 * to pass a document to this constructor.
-	 *
-	 * @param document (non-standard) The node document for the new node
 	 * @param data     The data for the new text node
 	 */
-	constructor(document: Document, data: string = '') {
-		super(document, data);
+	constructor(data: string = '') {
+		super(data);
+
+		const context = getContext(this);
+		this.ownerDocument = context.document;
 	}
 
 	/**
@@ -55,7 +55,10 @@ export default class Text extends CharacterData {
 	 */
 	public _copy(document: Document): Text {
 		// Set copy’s data, to that of node.
-		return new Text(document, this.data);
+		const context = getContext(document);
+		const copy = new context.Text(this.data);
+		copy.ownerDocument = document;
+		return copy;
 	}
 }
 
@@ -83,7 +86,9 @@ function splitText(node: Text, offset: number): Text {
 	const newData = substringData(node, offset, count);
 
 	// 5. Let new node be a new Text node, with the same node document as node. Set new node’s data to new data.
-	const newNode = new Text(node.ownerDocument!, newData);
+	const context = getContext(node);
+	const newNode = new context.Text(newData);
+	newNode.ownerDocument = node.ownerDocument;
 
 	// 6. Let parent be node’s parent.
 	const parent = node.parentNode;

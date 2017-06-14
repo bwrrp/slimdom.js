@@ -1,6 +1,7 @@
 import Document from '../Document';
 import Node from '../Node';
 
+import { isNodeOfType, NodeType } from './NodeType';
 import { getNodeDocument } from './treeHelpers';
 
 // 3.4. Interface Node

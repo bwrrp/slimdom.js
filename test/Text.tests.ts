@@ -1,16 +1,11 @@
+import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
-import Document from '../src/Document';
-import Element from '../src/Element';
-import Text from '../src/Text';
-
-import * as chai from 'chai';
-
 describe('Text', () => {
-	let document: Document;
-	let text: Text;
+	let document: slimdom.Document;
+	let text: slimdom.Text;
 	beforeEach(() => {
-		document = slimdom.createDocument();
+		document = new slimdom.Document();
 		text = document.createTextNode('text');
 	});
 
@@ -31,7 +26,7 @@ describe('Text', () => {
 	});
 
 	it('can be cloned', () => {
-		var clone = text.cloneNode(true) as Text;
+		var clone = text.cloneNode(true) as slimdom.Text;
 		chai.assert.equal(clone.nodeType, 3);
 		chai.assert.equal(clone.nodeValue, 'text');
 		chai.assert.equal(clone.data, 'text');
@@ -143,8 +138,8 @@ describe('Text', () => {
 		});
 
 		describe('under a parent', () => {
-			let element: Element;
-			let otherHalf: Text;
+			let element: slimdom.Element;
+			let otherHalf: slimdom.Text;
 			beforeEach(() => {
 				element = document.createElement('parent');
 				element.appendChild(text);

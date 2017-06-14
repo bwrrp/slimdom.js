@@ -1,5 +1,6 @@
 import Document from './Document';
 import Text from './Text';
+import { getContext } from './context/Context';
 import { NodeType } from './util/NodeType';
 
 export default class CDATASection extends Text {
@@ -18,11 +19,10 @@ export default class CDATASection extends Text {
 	/**
 	 * (non-standard) use Document#createCDATASection to create a CDATA section.
 	 *
-	 * @param document (non-standard) The node document to associate with the node
-	 * @param data     The data for the node
+	 * @param data The data for the node
 	 */
-	constructor(document: Document, data: string) {
-		super(document, data);
+	constructor(data: string) {
+		super(data);
 	}
 
 	/**
@@ -34,6 +34,9 @@ export default class CDATASection extends Text {
 	 */
 	public _copy(document: Document): CDATASection {
 		// Set copy’s data, to that of node.
-		return new CDATASection(document, this.data);
+		const context = getContext(document);
+		const copy = new context.CDATASection(this.data);
+		copy.ownerDocument = document;
+		return copy;
 	}
 }

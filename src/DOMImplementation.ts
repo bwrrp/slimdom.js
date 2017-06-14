@@ -2,7 +2,7 @@ import Document from './Document';
 import DocumentType from './DocumentType';
 import { createElement } from './Element';
 import XMLDocument from './XMLDocument';
-
+import { getContext } from './context/Context';
 import createElementNS from './util/createElementNS';
 import { expectArity } from './util/errorHelpers';
 import { validateQualifiedName } from './util/namespaceHelpers';
@@ -37,7 +37,10 @@ export default class DOMImplementation {
 
 		// 2. Return a new doctype, with qualifiedName as its name, publicId as its public ID, and systemId as its
 		// system ID, and with its node document set to the associated document of the context object.
-		return new DocumentType(this._document, qualifiedName, publicId, systemId);
+		const context = getContext(this._document);
+		const doctype = new context.DocumentType(qualifiedName, publicId, systemId);
+		doctype.ownerDocument = this._document;
+		return doctype;
 	}
 
 	/**
@@ -62,7 +65,8 @@ export default class DOMImplementation {
 		doctype = asNullableObject(doctype, DocumentType);
 
 		// 1. Let document be a new XMLDocument.
-		const document = new XMLDocument();
+		const context = getContext(this._document);
+		const document = new context.XMLDocument();
 
 		// 2. Let element be null.
 		let element = null;
@@ -107,13 +111,16 @@ export default class DOMImplementation {
 		title = asNullableString(title);
 
 		// 1. Let doc be a new document that is an HTML document.
-		const doc = new Document();
+		const context = getContext(this._document);
+		const doc = new context.Document();
 
 		// 2. Set doc’s content type to "text/html".
 		// (content type not implemented)
 
 		// 3. Append a new doctype, with "html" as its name and with its node document set to doc, to doc.
-		doc.appendChild(new DocumentType(doc, 'html'));
+		const doctype = new context.DocumentType('html');
+		doctype.ownerDocument = doc;
+		doc.appendChild(doctype);
 
 		// 4. Append the result of creating an element given doc, html, and the HTML namespace, to doc.
 		const htmlElement = createElement(doc, 'html', HTML_NAMESPACE);

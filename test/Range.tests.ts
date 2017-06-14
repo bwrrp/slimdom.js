@@ -1,22 +1,15 @@
+import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
-import Document from '../src/Document';
-import Element from '../src/Element';
-import Node from '../src/Node';
-import Text from '../src/Text';
-import Range from '../src/Range';
-
-import * as chai from 'chai';
-
 describe('Range', () => {
-	let document: Document;
-	let element: Element;
-	let text: Text;
-	let range: Range;
+	let document: slimdom.Document;
+	let element: slimdom.Element;
+	let text: slimdom.Text;
+	let range: slimdom.Range;
 	beforeEach(() => {
-		document = slimdom.createDocument();
-		element = document.appendChild(document.createElement('root')) as Element;
-		text = element.appendChild(document.createTextNode('text')) as Text;
+		document = new slimdom.Document();
+		element = document.appendChild(document.createElement('root')) as slimdom.Element;
+		text = element.appendChild(document.createTextNode('text')) as slimdom.Text;
 		range = document.createRange();
 	});
 
@@ -114,7 +107,7 @@ describe('Range', () => {
 			});
 
 			it('moves positions beyond a remove', () => {
-				element.removeChild(element.firstChild as Node);
+				element.removeChild(element.firstChild!);
 				chai.assert.equal(range.startContainer, element);
 				chai.assert.equal(range.startOffset, 0);
 				chai.assert.equal(range.endContainer, element);
@@ -221,7 +214,7 @@ describe('Range', () => {
 			});
 
 			it('moves with text node merges during normalization', () => {
-				const otherText = element.appendChild(document.createTextNode('more')) as Node;
+				const otherText = element.appendChild(document.createTextNode('more'));
 				range.setStartBefore(otherText);
 				range.setEnd(otherText, 2);
 				element.normalize();

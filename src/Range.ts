@@ -1,5 +1,6 @@
 import Document from './Document';
 import Node from './Node';
+import { getContext } from './context/Context';
 import {
 	throwIndexSizeError,
 	throwInvalidNodeTypeError,
@@ -54,17 +55,14 @@ export default class Range {
 	}
 
 	/**
-	 * (non-standard) Use Document#createRange instead.
-	 *
-	 * Note: the spec defines a constructor with no arguments. This implementation can not implement that version, as
-	 * we don't associate any Document with the current global object.
-	 *
-	 * @param document The document in which to initialize the Range
+	 * The Range() constructor, when invoked, must return a new range with (current global object’s associated Document,
+	 * 0) as its start and end.
 	 */
-	constructor(document: Document) {
-		this.startContainer = document;
+	constructor() {
+		const context = getContext(this);
+		this.startContainer = context.document;
 		this.startOffset = 0;
-		this.endContainer = document;
+		this.endContainer = context.document;
 		this.endOffset = 0;
 		ranges.push(this);
 	}
@@ -383,7 +381,8 @@ export default class Range {
 	 * @return A copy of the context object
 	 */
 	cloneRange(): Range {
-		const range = new Range(getNodeDocument(this.startContainer));
+		const context = getContext(this);
+		const range = new context.Range();
 		range.startContainer = this.startContainer;
 		range.startOffset = this.startOffset;
 		range.endContainer = this.endContainer;

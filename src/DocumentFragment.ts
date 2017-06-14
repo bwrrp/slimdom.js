@@ -2,6 +2,7 @@ import { NonElementParentNode, ParentNode, getChildren } from './mixins';
 import Document from './Document';
 import Element from './Element';
 import Node from './Node';
+import { getContext } from './context/Context';
 import { NodeType } from './util/NodeType';
 
 export default class DocumentFragment extends Node implements NonElementParentNode, ParentNode {
@@ -34,15 +35,13 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 	public childElementCount: number = 0;
 
 	/**
-	 * Creates a new DocumentFragment.
-	 *
-	 * Non-standard: as this implementation does not have a document associated with the global object, it is required
-	 * to pass a document to this constructor.
-	 *
-	 * @param document (non-standard) The node document to associate with the new document fragment
+	 * Return a new DocumentFragment node whose node document is current global object’s associated Document.
 	 */
-	constructor(document: Document) {
-		super(document);
+	constructor() {
+		super();
+
+		const context = getContext(this);
+		this.ownerDocument = context.document;
 	}
 
 	/**
@@ -53,6 +52,9 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 	 * @return A shallow copy of the context object
 	 */
 	public _copy(document: Document): DocumentFragment {
-		return new DocumentFragment(document);
+		const context = getContext(document);
+		const copy = new context.DocumentFragment();
+		copy.ownerDocument = document;
+		return copy;
 	}
 }

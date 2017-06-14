@@ -10,7 +10,7 @@ import Node from './Node';
 import ProcessingInstruction from './ProcessingInstruction';
 import Text from './Text';
 import Range from './Range';
-
+import { getContext } from './context/Context';
 import cloneNode from './util/cloneNode';
 import createElementNS from './util/createElementNS';
 import { throwInvalidCharacterError, throwNotSupportedError } from './util/errorHelpers';
@@ -75,7 +75,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * document (Document object).
 	 */
 	constructor() {
-		super(null);
+		super();
 	}
 
 	/**
@@ -133,16 +133,19 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	}
 
 	/**
-	 * Creates a new DocumentFragment node.
+	 * Returns a new DocumentFragment node with its node document set to the context object.
 	 *
 	 * @return The new document fragment
 	 */
 	public createDocumentFragment(): DocumentFragment {
-		return new DocumentFragment(this);
+		const context = getContext(this);
+		const documentFragment = new context.DocumentFragment();
+		documentFragment.ownerDocument = this;
+		return documentFragment;
 	}
 
 	/**
-	 * Creates a new text node with the given data.
+	 * Returns a new Text node with its data set to data and node document set to the context object.
 	 *
 	 * @param data Data for the new text node
 	 *
@@ -151,11 +154,14 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	public createTextNode(data: string): Text {
 		data = String(data);
 
-		return new Text(this, data);
+		const context = getContext(this);
+		const text = new context.Text(data);
+		text.ownerDocument = this;
+		return text;
 	}
 
 	/**
-	 * Creates a new CDATA section with the given data.
+	 * Returns a new CDATA section with the given data and node document set to the context object.
 	 *
 	 * @param data Data for the new CDATA section
 	 *
@@ -173,11 +179,14 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		}
 
 		// 3. Return a new CDATASection node with its data set to data and node document set to the context object.
-		return new CDATASection(this, data);
+		const context = getContext(this);
+		const cdataSection = new context.CDATASection(data);
+		cdataSection.ownerDocument = this;
+		return cdataSection;
 	}
 
 	/**
-	 * Creates a new comment node with the given data.
+	 * Returns a new Comment node with its data set to data and node document set to the context object.
 	 *
 	 * @param data Data for the new comment
 	 *
@@ -186,11 +195,15 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	public createComment(data: string): Comment {
 		data = String(data);
 
-		return new Comment(this, data);
+		const context = getContext(this);
+		const comment = new context.Comment(data);
+		comment.ownerDocument = this;
+		return comment;
 	}
 
 	/**
-	 * Creates a new processing instruction.
+	 * Creates a new processing instruction node, with target set to target, data set to data, and node document set to
+	 * the context object.
 	 *
 	 * @param target Target for the new processing instruction
 	 * @param data   Data for the new processing instruction
@@ -213,7 +226,10 @@ export default class Document extends Node implements NonElementParentNode, Pare
 
 		// 3. Return a new ProcessingInstruction node, with target set to target, data set to data, and node document
 		// set to the context object.
-		return new ProcessingInstruction(this, target, data);
+		const context = getContext(this);
+		const pi = new context.ProcessingInstruction(target, data);
+		pi.ownerDocument = this;
+		return pi;
 
 		// Note: No check is performed that target contains "xml" or ":", or that data contains characters that match
 		// the Char production.
@@ -276,7 +292,10 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		// (html documents not implemented)
 
 		// 3. Return a new attribute whose local name is localName and node document is context object.
-		return new Attr(this, null, null, localName, '', null);
+		const context = getContext(this);
+		const attr = new context.Attr(null, null, localName, '', null);
+		attr.ownerDocument = this;
+		return attr;
 	}
 
 	/**
@@ -297,7 +316,10 @@ export default class Document extends Node implements NonElementParentNode, Pare
 
 		// 2. Return a new attribute whose namespace is namespace, namespace prefix is prefix, local name is localName,
 		// and node document is context object.
-		return new Attr(this, validatedNamespace, prefix, localName, '', null);
+		const context = getContext(this);
+		const attr = new context.Attr(validatedNamespace, prefix, localName, '', null);
+		attr.ownerDocument = this;
+		return attr;
 	}
 
 	/**
@@ -309,7 +331,13 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new Range
 	 */
 	public createRange(): Range {
-		return new Range(this);
+		const context = getContext(this);
+		const range = new context.Range();
+		range.startContainer = this;
+		range.startOffset = 0;
+		range.endContainer = this;
+		range.endOffset = 0;
+		return range;
 	}
 
 	/**
@@ -323,6 +351,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		// Set copy’s encoding, content type, URL, origin, type, and mode, to those of node.
 		// (properties not implemented)
 
-		return new Document();
+		const context = getContext(document);
+		return new context.Document();
 	}
 }

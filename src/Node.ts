@@ -100,15 +100,6 @@ export default abstract class Node {
 	public _registeredObservers: RegisteredObservers = new RegisteredObservers(this);
 
 	/**
-	 * (non-standard) Node should never be instantiated directly.
-	 *
-	 * @param document The node document to associate with the node
-	 */
-	constructor(document: Document | null) {
-		this.ownerDocument = document;
-	}
-
-	/**
 	 * Puts the specified node and all of its subtree into a "normalized" form. In a normalized subtree, no text nodes
 	 * in the subtree are empty and there are no adjacent text nodes.
 	 */

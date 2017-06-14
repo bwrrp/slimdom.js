@@ -1,6 +1,7 @@
 import { ChildNode } from './mixins';
 import Document from './Document';
 import Node from './Node';
+import { getContext } from './context/Context';
 import { NodeType } from './util/NodeType';
 
 export default class DocumentType extends Node implements ChildNode {
@@ -46,8 +47,8 @@ export default class DocumentType extends Node implements ChildNode {
 	 * @param publicId The public ID of the doctype
 	 * @param systemId The system ID of the doctype
 	 */
-	constructor(document: Document, name: string, publicId: string = '', systemId: string = '') {
-		super(document);
+	constructor(name: string, publicId: string = '', systemId: string = '') {
+		super();
 
 		this.name = name;
 		this.publicId = publicId;
@@ -63,6 +64,9 @@ export default class DocumentType extends Node implements ChildNode {
 	 */
 	public _copy(document: Document): DocumentType {
 		// Set copy’s name, public ID, and system ID, to those of node.
-		return new DocumentType(document, this.name, this.publicId, this.systemId);
+		const context = getContext(document);
+		const copy = new context.DocumentType(this.name, this.publicId, this.systemId);
+		copy.ownerDocument = document;
+		return copy;
 	}
 }

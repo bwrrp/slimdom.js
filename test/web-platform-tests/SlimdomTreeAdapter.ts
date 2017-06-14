@@ -36,13 +36,13 @@ export default class SlimdomTreeAdapter implements parse5.AST.TreeAdapter {
 		attrs.forEach(attr => {
 			// Create Attr node without validation, as per HTML parser spec
 			const attribute = new Attr(
-				this._globalDocument,
 				undefinedAsNull(attr.namespace),
 				undefinedAsNull(attr.prefix),
 				attr.name,
 				attr.value,
 				element
 			);
+			attribute.ownerDocument = this._globalDocument;
 			appendAttribute(attribute, element);
 		});
 		return element;
