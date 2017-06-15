@@ -1,9 +1,11 @@
+import Element from '../Element';
+import Node from '../Node';
 import { throwInvalidCharacterError, throwNamespaceError } from './errorHelpers';
 
 // 1.5. Namespaces
 
 const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
-const XMLNS_NAMESPACE = 'http://www.w3.org/2000/xmlns/';
+export const XMLNS_NAMESPACE = 'http://www.w3.org/2000/xmlns/';
 
 /*
 // NAME_REGEX_XML_1_0_FOURTH_EDITION generated using regenerate:
@@ -176,4 +178,33 @@ export function validateAndExtract(
 
 	// 10. Return namespace, prefix, and localName.
 	return { namespace, prefix, localName };
+}
+
+/**
+ * To locate a namespace prefix for an element using namespace, run these steps:
+ *
+ * @param element    The element at which to start the lookup
+ * @param namespace  Namespace for which to look up the prefix
+ *
+ * @return The prefix, or null if there isn't one
+ */
+export function locateNamespacePrefix(element: Element, namespace: string | null): string | null {
+	// 1. If element’s namespace is namespace and its namespace prefix is not null, then return its namespace prefix.
+	if (element.namespaceURI === namespace && element.prefix !== null) {
+		return element.prefix;
+	}
+
+	// 2. If element has an attribute whose namespace prefix is "xmlns" and value is namespace, then return element’s first such attribute’s local name.
+	const attr = Array.from(element.attributes).find(attr => attr.prefix === 'xmlns' && attr.value === namespace);
+	if (attr) {
+		return attr.localName;
+	}
+
+	// 3. If element’s parent element is not null, then return the result of running locate a namespace prefix on that element using namespace.
+	if (element.parentElement !== null) {
+		return locateNamespacePrefix(element.parentElement, namespace);
+	}
+
+	// 4. Return null.
+	return null;
 }

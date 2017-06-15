@@ -41,6 +41,40 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		// Do nothing.
 	}
 
+	public lookupPrefix(namespace: string | null): string | null {
+		namespace = asNullableString(namespace);
+
+		// 1. If namespace is null or the empty string, then return null.
+		if (namespace === null || namespace === '') {
+			return null;
+		}
+
+		// 2. Switch on the context object:
+		// Document - Return the result of locating a namespace prefix for its document element, if its document element
+		// is non-null, and null otherwise.
+		if (this.documentElement !== null) {
+			return this.documentElement.lookupPrefix(namespace);
+		}
+
+		return null;
+	}
+
+	public lookupNamespaceURI(prefix: string | null): string | null {
+		// 1. If prefix is the empty string, then set it to null.
+		// (not necessary due to recursion)
+
+		// 2. Return the result of running locate a namespace for the context object using prefix.
+
+		// To locate a namespace for a node using prefix, switch on node: Document
+		// 1. If its document element is null, then return null.
+		if (this.documentElement === null) {
+			return null;
+		}
+
+		// 2. Return the result of running locate a namespace on its document element using prefix.
+		return this.documentElement.lookupNamespaceURI(prefix);
+	}
+
 	// ParentNode
 
 	public get children(): Element[] {

@@ -5,7 +5,7 @@ import Node from './Node';
 import { ranges } from './Range';
 import queueMutationRecord from './mutation-observer/queueMutationRecord';
 import { expectArity, throwIndexSizeError } from './util/errorHelpers';
-import { asUnsignedLong, treatNullAsEmptyString } from './util/typeHelpers';
+import { asNullableString, asUnsignedLong, treatNullAsEmptyString } from './util/typeHelpers';
 
 /**
  * 3.10. Interface CharacterData
@@ -25,6 +25,42 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 
 		// Set an existing attribute value with context object and new value.
 		replaceData(this, 0, this.length, newValue);
+	}
+
+	public lookupPrefix(namespace: string | null): string | null {
+		namespace = asNullableString(namespace);
+
+		// 1. If namespace is null or the empty string, then return null.
+		if (namespace === null || namespace === '') {
+			return null;
+		}
+
+		// 2. Switch on the context object:
+		// Any other node - Return the result of locating a namespace prefix for its parent element, if its parent
+		// element is non-null, and null otherwise.
+		const parentElement = this.parentElement;
+		if (parentElement !== null) {
+			return parentElement.lookupPrefix(namespace);
+		}
+
+		return null;
+	}
+
+	public lookupNamespaceURI(prefix: string | null): string | null {
+		// 1. If prefix is the empty string, then set it to null.
+		// (not necessary due to recursion)
+
+		// 2. Return the result of running locate a namespace for the context object using prefix.
+
+		// To locate a namespace for a node using prefix, switch on node: Any other node
+		// 1. If its parent element is null, then return null.
+		const parentElement = this.parentElement;
+		if (parentElement === null) {
+			return null;
+		}
+
+		// 2. Return the result of running locate a namespace on its parent element using prefix.
+		return parentElement.lookupNamespaceURI(prefix);
 	}
 
 	// NonDocumentTypeChildNode
