@@ -24,6 +24,26 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 		// Do nothing.
 	}
 
+	public lookupPrefix(namespace: string | null): string | null {
+		// 1. If namespace is null or the empty string, then return null.
+		// (not necessary due to return value)
+
+		// 2. Switch on the context object:
+		// DocumentFragment - Return null
+		return null;
+	}
+
+	public lookupNamespaceURI(prefix: string | null): string | null {
+		// 1. If prefix is the empty string, then set it to null.
+		// (not necessary due to return value)
+
+		// 2. Return the result of running locate a namespace for the context object using prefix.
+
+		// To locate a namespace for a node using prefix, switch on node: DocumentFragment
+		// Return null.
+		return null;
+	}
+
 	// ParentNode
 
 	public get children(): Element[] {

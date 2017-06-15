@@ -297,8 +297,6 @@ const TEST_BLACKLIST: { [key: string]: (string | { [key: string]: string }) } = 
 	'dom/nodes/Node-isEqualNode-iframe2.html': 'Node#isEqualNode not implemented',
 	'dom/nodes/Node-isSameNode.html': 'Node#isSameNode not implemented',
 	'dom/nodes/NodeList-Iterable.html': 'NodeList not implemented',
-	'dom/nodes/Node-lookupNamespaceURI.html': 'Node#lookupNamespaceURI not implemented',
-	'dom/nodes/Node-lookupPrefix.html': 'Node#lookupPrefix not implemented',
 	'dom/nodes/Node-nodeName.html': {
 		'For Element nodes, nodeName should return the same as tagName.': 'HTML tagName uppercasing not implemented'
 	},

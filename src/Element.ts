@@ -6,7 +6,12 @@ import Node from './Node';
 import { getContext } from './context/Context';
 import { appendAttribute, changeAttribute, removeAttribute, replaceAttribute } from './util/attrMutations';
 import { throwInUseAttributeError, throwInvalidCharacterError, throwNotFoundError } from './util/errorHelpers';
-import { matchesNameProduction, validateAndExtract } from './util/namespaceHelpers';
+import {
+	matchesNameProduction,
+	validateAndExtract,
+	locateNamespacePrefix,
+	XMLNS_NAMESPACE
+} from './util/namespaceHelpers';
 import { NodeType } from './util/NodeType';
 import { asNullableString } from './util/typeHelpers';
 
@@ -30,6 +35,65 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 
 	public set nodeValue(newValue: string | null) {
 		// Do nothing.
+	}
+
+	public lookupPrefix(namespace: string | null): string | null {
+		namespace = asNullableString(namespace);
+
+		// 1. If namespace is null or the empty string, then return null.
+		if (namespace === null || namespace === '') {
+			return null;
+		}
+
+		// 2. Switch on the context object:
+		// Element - Return the result of locating a namespace prefix for it using namespace.
+		return locateNamespacePrefix(this, namespace);
+	}
+
+	public lookupNamespaceURI(prefix: string | null): string | null {
+		prefix = asNullableString(prefix);
+
+		// 1. If prefix is the empty string, then set it to null.
+		if (prefix === '') {
+			prefix = null;
+		}
+
+		// 2. Return the result of running locate a namespace for the context object using prefix.
+
+		// To locate a namespace for a node using prefix, switch on node: Element
+		// 1. If its namespace is not null and its namespace prefix is prefix, then return namespace.
+		if (this.namespaceURI !== null && this.prefix === prefix) {
+			return this.namespaceURI;
+		}
+
+		// 2. If it has an attribute whose namespace is the XMLNS namespace, namespace prefix is "xmlns", and local name
+		// is prefix, or if prefix is null and it has an attribute whose namespace is the XMLNS namespace, namespace
+		// prefix is null, and local name is "xmlns", then return its value if it is not the empty string, and null
+		// otherwise.
+		let ns = null;
+		if (prefix !== null) {
+			const attr = this.getAttributeNodeNS(XMLNS_NAMESPACE, prefix);
+			if (attr && attr.prefix === 'xmlns') {
+				ns = attr.value;
+			}
+		} else {
+			const attr = this.getAttributeNodeNS(XMLNS_NAMESPACE, 'xmlns');
+			if (attr && attr.prefix === null) {
+				ns = attr.value;
+			}
+		}
+		if (ns !== null) {
+			return ns !== '' ? ns : null;
+		}
+
+		// 3. If its parent element is null, then return null.
+		const parentElement = this.parentElement;
+		if (parentElement === null) {
+			return null;
+		}
+
+		// 4. Return the result of running locate a namespace on its parent element using prefix.
+		return parentElement.lookupNamespaceURI(prefix);
 	}
 
 	// ParentNode

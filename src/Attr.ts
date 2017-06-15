@@ -4,6 +4,7 @@ import Node from './Node';
 import { getContext } from './context/Context';
 import { changeAttribute } from './util/attrMutations';
 import { NodeType } from './util/NodeType';
+import { asNullableString } from './util/typeHelpers';
 
 /**
  * 3.9.2. Interface Attr
@@ -32,6 +33,40 @@ export default class Attr extends Node {
 
 		// Set an existing attribute value with context object and new value.
 		setExistingAttributeValue(this, newValue);
+	}
+
+	public lookupPrefix(namespace: string | null): string | null {
+		namespace = asNullableString(namespace);
+
+		// 1. If namespace is null or the empty string, then return null.
+		if (namespace === null || namespace === '') {
+			return null;
+		}
+
+		// 2. Switch on the context object:
+		// Attr - Return the result of locating a namespace prefix for its element, if its element is non-null, and null
+		// otherwise.
+		if (this.ownerElement !== null) {
+			return this.ownerElement.lookupPrefix(namespace);
+		}
+
+		return null;
+	}
+
+	public lookupNamespaceURI(prefix: string | null): string | null {
+		// 1. If prefix is the empty string, then set it to null.
+		// (not necessary due to recursion)
+
+		// 2. Return the result of running locate a namespace for the context object using prefix.
+
+		// To locate a namespace for a node using prefix, switch on node: Attr
+		// 1. If its element is null, then return null.
+		if (this.ownerElement === null) {
+			return null;
+		}
+
+		// 2. Return the result of running locate a namespace on its element using prefix.
+		return this.ownerElement.lookupNamespaceURI(prefix);
 	}
 
 	// Attr

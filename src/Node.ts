@@ -8,7 +8,7 @@ import { expectArity } from './util/errorHelpers';
 import { preInsertNode, appendNode, replaceChildWithNode, preRemoveChild, removeNode } from './util/mutationAlgorithms';
 import { NodeType, isNodeOfType } from './util/NodeType';
 import { getNodeDocument } from './util/treeHelpers';
-import { asNullableObject, asObject } from './util/typeHelpers';
+import { asNullableObject, asNullableString, asObject } from './util/typeHelpers';
 
 /**
  * 3.4. Interface Node
@@ -225,6 +225,46 @@ export default abstract class Node {
 			other = other.parentNode;
 		}
 		return other === this;
+	}
+
+	/**
+	 *
+	 *
+	 * @param namespace The namespace to look up
+	 *
+	 * @return The prefix for the given namespace, or null if none was found
+	 */
+	public abstract lookupPrefix(namespace: string | null): string | null;
+
+	/**
+	 * Returns the namespace for the given prefix.
+	 *
+	 * @param prefix The prefix to look up
+	 *
+	 * @return The namespace for the given prefix, or null if the prefix is not defined
+	 */
+	public abstract lookupNamespaceURI(prefix: string | null): string | null;
+
+	/**
+	 * Return true if defaultNamespace is the same as namespace, and false otherwise.
+	 *
+	 * @param namespace The namespace to check
+	 *
+	 * @return Whether namespace is the default namespace
+	 */
+	public isDefaultNamespace(namespace: string | null): boolean {
+		namespace = asNullableString(namespace);
+
+		// 1. If namespace is the empty string, then set it to null.
+		if (namespace === '') {
+			namespace = null;
+		}
+
+		// 2. Let defaultNamespace be the result of running locate a namespace for context object using null.
+		const defaultNamespace = this.lookupNamespaceURI(null);
+
+		// 3. Return true if defaultNamespace is the same as namespace, and false otherwise.
+		return defaultNamespace === namespace;
 	}
 
 	/**
