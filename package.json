@@ -17,7 +17,7 @@
     "build:bundle": "rimraf dist && rimraf lib && tsc && rollup -c",
     "docs": "typedoc --out docs --excludePrivate --excludeNotExported src/index.ts",
     "prepare": "npm run build:bundle",
-    "test": "rimraf test/bin && tsc -P test && mocha --timeout 20000 --recursive test/bin/test"
+    "test": "rimraf lib && tsc -P tsconfig.test.json && nyc --reporter html --reporter text --exclude lib/test mocha --timeout 20000 --recursive lib/test"
   },
   "files": [
     "dist"
@@ -33,6 +33,7 @@
     "chai": "^3.5.0",
     "lolex": "^1.6.0",
     "mocha": "^3.3.0",
+    "nyc": "^11.0.2",
     "parse5": "^3.0.2",
     "prettier": "^1.4.4",
     "rimraf": "^2.6.1",
