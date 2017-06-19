@@ -9,6 +9,8 @@ declare function setTimeout(handler: (...args: any[]) => void, timeout: number):
 const hasSetImmediate = typeof setImmediate === 'function';
 
 function queueCompoundMicrotask(callback: (...args: any[]) => void, thisArg: NotifyList, ...args: any[]): number {
+	// Branch taken is platform dependent and constant
+	/* istanbul ignore next */
 	return (hasSetImmediate ? setImmediate : setTimeout)(() => {
 		callback.apply(thisArg, args);
 	}, 0);
