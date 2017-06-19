@@ -11,13 +11,14 @@
   "main": "dist/slimdom.js",
   "module": "dist/slimdom.mjs",
   "scripts": {
-    "build:amd": "rimraf lib && tsc --module amd",
-    "build:commonjs": "rimraf lib && tsc --module commonjs",
-    "build:es": "rimraf lib && tsc --module es6",
-    "build:bundle": "rimraf dist && rimraf lib && tsc && rollup -c",
+    "build:amd": "rimraf lib && tsc -P tsconfig.build.json --module amd",
+    "build:commonjs": "rimraf lib && tsc -P tsconfig.build.json --module commonjs",
+    "build:es": "rimraf lib && tsc -P tsconfig.build.json --module es6",
+    "build:bundle": "rimraf dist && rimraf lib && tsc -P tsconfig.build.json && rollup -c",
     "docs": "typedoc --out docs --excludePrivate --excludeNotExported src/index.ts",
     "prepare": "npm run build:bundle",
-    "test": "rimraf lib && tsc -P tsconfig.test.json && nyc --reporter html --reporter text --exclude lib/test mocha --timeout 20000 --recursive lib/test"
+    "test": "rimraf lib && tsc -P tsconfig.json && nyc --reporter html --reporter text --exclude lib/test mocha --timeout 20000 --recursive lib/test",
+    "test:debug": "rimraf lib && tsc -P tsconfig.json && mocha --timeout 20000 --recursive lib/test --inspect --debug-brk"
   },
   "files": [
     "dist"
