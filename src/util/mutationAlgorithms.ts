@@ -39,6 +39,7 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
 			NodeType.DOCUMENT_TYPE_NODE,
 			NodeType.ELEMENT_NODE,
 			NodeType.TEXT_NODE,
+			NodeType.CDATA_SECTION_NODE,
 			NodeType.PROCESSING_INSTRUCTION_NODE,
 			NodeType.COMMENT_NODE
 		)
@@ -282,6 +283,7 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
 			NodeType.DOCUMENT_TYPE_NODE,
 			NodeType.ELEMENT_NODE,
 			NodeType.TEXT_NODE,
+			NodeType.CDATA_SECTION_NODE,
 			NodeType.PROCESSING_INSTRUCTION_NODE,
 			NodeType.COMMENT_NODE
 		)
@@ -548,6 +550,7 @@ export function adoptNode(node: Node, document: Document): void {
 		// 3.1.1. Set inclusiveDescendant’s node document to document.
 		// (calling code ensures that node is never a Document)
 		node.ownerDocument = document;
+
 		// 3.1.2. If inclusiveDescendant is an element, then set the node document of each attribute in
 		// inclusiveDescendant’s attribute list to document.
 		if (isNodeOfType(node, NodeType.ELEMENT_NODE)) {
