@@ -41,4 +41,33 @@ describe('DOMImplementation', () => {
 			chai.assert.equal((document.documentElement as slimdom.Element).nodeName, 'someRootElementName');
 		});
 	});
+
+	describe('.createHTMLDocument()', () => {
+		it('can create a document without a title', () => {
+			const document = domImplementation.createHTMLDocument(null);
+			const html = document.documentElement!;
+			chai.assert.equal(html.namespaceURI, 'http://www.w3.org/1999/xhtml');
+			chai.assert.equal(html.localName, 'html');
+			const head = html.firstElementChild!;
+			chai.assert.equal(head.localName, 'head');
+			const body = html.lastElementChild!;
+			chai.assert.equal(body.localName, 'body');
+			const title = head.firstElementChild;
+			chai.assert.equal(title, null);
+		});
+
+		it('can create a document with a title', () => {
+			const document = domImplementation.createHTMLDocument('some title');
+			const html = document.documentElement!;
+			chai.assert.equal(html.namespaceURI, 'http://www.w3.org/1999/xhtml');
+			chai.assert.equal(html.localName, 'html');
+			const head = html.firstElementChild!;
+			chai.assert.equal(head.localName, 'head');
+			const body = html.lastElementChild!;
+			chai.assert.equal(body.localName, 'body');
+			const title = head.firstElementChild!;
+			chai.assert.equal(title.localName, 'title');
+			chai.assert.equal((title.firstChild as slimdom.Text).data, 'some title');
+		});
+	});
 });
