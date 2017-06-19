@@ -1,4 +1,4 @@
-import { NonDocumentTypeChildNode, ChildNode } from './mixins';
+import { NonDocumentTypeChildNode, ChildNode, getNextElementSibling, getPreviousElementSibling } from './mixins';
 import Document from './Document';
 import Element from './Element';
 import Node from './Node';
@@ -65,8 +65,13 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 
 	// NonDocumentTypeChildNode
 
-	previousElementSibling: Element | null = null;
-	nextElementSibling: Element | null = null;
+	public get previousElementSibling(): Element | null {
+		return getPreviousElementSibling(this);
+	}
+
+	public get nextElementSibling(): Element | null {
+		return getNextElementSibling(this);
+	}
 
 	// CharacterData
 
