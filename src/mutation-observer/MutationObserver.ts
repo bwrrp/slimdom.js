@@ -2,6 +2,8 @@ import MutationRecord from './MutationRecord';
 import NotifyList from './NotifyList';
 import RegisteredObserver from './RegisteredObserver';
 import Node from '../Node';
+import { expectArity } from '../util/errorHelpers';
+import { asObject } from '../util/typeHelpers';
 
 export interface MutationObserverInit {
 	/**
@@ -79,6 +81,9 @@ export default class MutationObserver {
 	 * @param callback Function called after mutations have been observed.
 	 */
 	constructor(callback: MutationCallback) {
+		expectArity(arguments, 1);
+		callback = asObject(callback, Function, 'Function');
+
 		// create a new MutationObserver object with callback set to callback
 		this._callback = callback;
 
@@ -100,6 +105,9 @@ export default class MutationObserver {
 	 * @param options Determines which types of mutations to observe
 	 */
 	observe(target: Node, options: MutationObserverInit) {
+		expectArity(arguments, 2);
+		target = asObject(target, Node, 'Node');
+
 		// Defaults from IDL
 		options.childList = !!options.childList;
 		options.subtree = !!options.subtree;

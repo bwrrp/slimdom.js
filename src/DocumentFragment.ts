@@ -3,6 +3,7 @@ import Document from './Document';
 import Element from './Element';
 import Node from './Node';
 import { getContext } from './context/Context';
+import { expectArity } from './util/errorHelpers';
 import { NodeType } from './util/NodeType';
 
 export default class DocumentFragment extends Node implements NonElementParentNode, ParentNode {
@@ -25,6 +26,8 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 	}
 
 	public lookupPrefix(namespace: string | null): string | null {
+		expectArity(arguments, 1);
+
 		// 1. If namespace is null or the empty string, then return null.
 		// (not necessary due to return value)
 
@@ -34,6 +37,8 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 	}
 
 	public lookupNamespaceURI(prefix: string | null): string | null {
+		expectArity(arguments, 1);
+
 		// 1. If prefix is the empty string, then set it to null.
 		// (not necessary due to return value)
 

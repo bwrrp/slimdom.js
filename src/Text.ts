@@ -2,10 +2,11 @@ import { replaceData, substringData, default as CharacterData } from './Characte
 import Document from './Document';
 import { ranges } from './Range';
 import { getContext } from './context/Context';
-import { throwIndexSizeError } from './util/errorHelpers';
+import { expectArity, throwIndexSizeError } from './util/errorHelpers';
 import { insertNode } from './util/mutationAlgorithms';
 import { NodeType } from './util/NodeType';
 import { getNodeIndex } from './util/treeHelpers';
+import { asUnsignedLong } from './util/typeHelpers';
 
 /**
  * 3.11. Interface Text
@@ -43,6 +44,9 @@ export default class Text extends CharacterData {
 	 * @return a text node containing the second half of the split node's data
 	 */
 	public splitText(offset: number): Text {
+		expectArity(arguments, 1);
+		offset = asUnsignedLong(offset);
+
 		return splitText(this, offset);
 	}
 

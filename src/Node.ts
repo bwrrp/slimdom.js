@@ -221,6 +221,7 @@ export default abstract class Node {
 	 * @return Whether childNode is an inclusive descendant of the current node
 	 */
 	public contains(other: Node | null): boolean {
+		expectArity(arguments, 1);
 		other = asNullableObject(other, Node, 'Node');
 
 		while (other && other != this) {
@@ -255,6 +256,7 @@ export default abstract class Node {
 	 * @return Whether namespace is the default namespace
 	 */
 	public isDefaultNamespace(namespace: string | null): boolean {
+		expectArity(arguments, 1);
 		namespace = asNullableString(namespace);
 
 		// 1. If namespace is the empty string, then set it to null.

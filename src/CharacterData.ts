@@ -18,16 +18,15 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	}
 
 	public set nodeValue(newValue: string | null) {
-		// if the new value is null, act as if it was the empty string instead
-		if (newValue === null) {
-			newValue = '';
-		}
+		newValue = treatNullAsEmptyString(newValue);
 
 		// Set an existing attribute value with context object and new value.
 		replaceData(this, 0, this.length, newValue);
 	}
 
 	public lookupPrefix(namespace: string | null): string | null {
+		expectArity(arguments, 1);
+
 		// 1. If namespace is null or the empty string, then return null.
 		// (not necessary due to recursion)
 
@@ -43,6 +42,8 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	}
 
 	public lookupNamespaceURI(prefix: string | null): string | null {
+		expectArity(arguments, 1);
+
 		// 1. If prefix is the empty string, then set it to null.
 		// (not necessary due to recursion)
 
@@ -99,7 +100,7 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	 */
 	protected constructor(data: string) {
 		super();
-		this._data = data;
+		this._data = String(data);
 	}
 
 	/**

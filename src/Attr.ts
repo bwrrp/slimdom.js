@@ -3,8 +3,9 @@ import Element from './Element';
 import Node from './Node';
 import { getContext } from './context/Context';
 import { changeAttribute } from './util/attrMutations';
+import { expectArity } from './util/errorHelpers';
 import { NodeType } from './util/NodeType';
-import { asNullableString } from './util/typeHelpers';
+import { treatNullAsEmptyString } from './util/typeHelpers';
 
 /**
  * 3.9.2. Interface Attr
@@ -26,16 +27,15 @@ export default class Attr extends Node {
 	}
 
 	public set nodeValue(newValue: string | null) {
-		// if the new value is null, act as if it was the empty string instead
-		if (newValue === null) {
-			newValue = '';
-		}
+		newValue = treatNullAsEmptyString(newValue);
 
 		// Set an existing attribute value with context object and new value.
 		setExistingAttributeValue(this, newValue);
 	}
 
 	public lookupPrefix(namespace: string | null): string | null {
+		expectArity(arguments, 1);
+
 		// 1. If namespace is null or the empty string, then return null.
 		// (not necessary due to recursion)
 
@@ -50,6 +50,8 @@ export default class Attr extends Node {
 	}
 
 	public lookupNamespaceURI(prefix: string | null): string | null {
+		expectArity(arguments, 1);
+
 		// 1. If prefix is the empty string, then set it to null.
 		// (not necessary due to recursion)
 

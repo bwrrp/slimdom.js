@@ -196,6 +196,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	public getAttributeNS(namespace: string | null, localName: string): string | null {
 		expectArity(arguments, 2);
 		namespace = asNullableString(namespace);
+		localName = String(localName);
 
 		// 1. Let attr be the result of getting an attribute given namespace, localName, and the context object.
 		const attr = getAttributeByNamespaceAndLocalName(namespace, localName, this);
