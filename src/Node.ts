@@ -221,6 +221,8 @@ export default abstract class Node {
 	 * @return Whether childNode is an inclusive descendant of the current node
 	 */
 	public contains(other: Node | null): boolean {
+		other = asNullableObject(other, Node, 'Node');
+
 		while (other && other != this) {
 			other = other.parentNode;
 		}
@@ -279,8 +281,8 @@ export default abstract class Node {
 	 */
 	public insertBefore(node: Node, child: Node | null): Node {
 		expectArity(arguments, 2);
-		node = asObject(node, Node);
-		child = asNullableObject(child, Node);
+		node = asObject(node, Node, 'Node');
+		child = asNullableObject(child, Node, 'Node');
 
 		return preInsertNode(node, this, child);
 	}
@@ -296,7 +298,7 @@ export default abstract class Node {
 	 */
 	public appendChild(node: Node): Node {
 		expectArity(arguments, 1);
-		node = asObject(node, Node);
+		node = asObject(node, Node, 'Node');
 
 		return appendNode(node, this);
 	}
@@ -311,8 +313,8 @@ export default abstract class Node {
 	 */
 	public replaceChild(node: Node, child: Node): Node {
 		expectArity(arguments, 2);
-		node = asObject(node, Node);
-		child = asObject(child, Node);
+		node = asObject(node, Node, 'Node');
+		child = asObject(child, Node, 'Node');
 
 		return replaceChildWithNode(child, node, this);
 	}
@@ -326,7 +328,7 @@ export default abstract class Node {
 	 */
 	public removeChild(child: Node): Node {
 		expectArity(arguments, 1);
-		child = asObject(child, Node);
+		child = asObject(child, Node, 'Node');
 
 		return preRemoveChild(child, this);
 	}
