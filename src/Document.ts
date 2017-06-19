@@ -42,6 +42,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	}
 
 	public lookupPrefix(namespace: string | null): string | null {
+		expectArity(arguments, 1);
+
 		// 1. If namespace is null or the empty string, then return null.
 		// (not necessary due to recursion)
 
@@ -56,6 +58,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	}
 
 	public lookupNamespaceURI(prefix: string | null): string | null {
+		expectArity(arguments, 1);
+
 		// 1. If prefix is the empty string, then set it to null.
 		// (not necessary due to recursion)
 

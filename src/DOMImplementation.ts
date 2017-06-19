@@ -32,6 +32,11 @@ export default class DOMImplementation {
 	 * @return The new doctype node
 	 */
 	createDocumentType(qualifiedName: string, publicId: string, systemId: string): DocumentType {
+		expectArity(arguments, 3);
+		qualifiedName = String(qualifiedName);
+		publicId = String(publicId);
+		systemId = String(systemId);
+
 		// 1. Validate qualifiedName.
 		validateQualifiedName(qualifiedName);
 

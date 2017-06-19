@@ -2,6 +2,7 @@ import { ChildNode } from './mixins';
 import Document from './Document';
 import Node from './Node';
 import { getContext } from './context/Context';
+import { expectArity } from './util/errorHelpers';
 import { NodeType } from './util/NodeType';
 
 export default class DocumentType extends Node implements ChildNode {
@@ -24,6 +25,8 @@ export default class DocumentType extends Node implements ChildNode {
 	}
 
 	public lookupPrefix(namespace: string | null): string | null {
+		expectArity(arguments, 1);
+
 		// 1. If namespace is null or the empty string, then return null.
 		// (not necessary due to return value)
 
@@ -33,6 +36,8 @@ export default class DocumentType extends Node implements ChildNode {
 	}
 
 	public lookupNamespaceURI(prefix: string | null): string | null {
+		expectArity(arguments, 1);
+
 		// 1. If prefix is the empty string, then set it to null.
 		// (not necessary due to return value)
 
