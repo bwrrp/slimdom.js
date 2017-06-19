@@ -13,11 +13,11 @@ import Range from './Range';
 import { getContext } from './context/Context';
 import cloneNode from './util/cloneNode';
 import createElementNS from './util/createElementNS';
-import { throwInvalidCharacterError, throwNotSupportedError } from './util/errorHelpers';
+import { expectArity, throwInvalidCharacterError, throwNotSupportedError } from './util/errorHelpers';
 import { adoptNode } from './util/mutationAlgorithms';
 import { NodeType, isNodeOfType } from './util/NodeType';
 import { matchesNameProduction, validateAndExtract } from './util/namespaceHelpers';
-import { asNullableString } from './util/typeHelpers';
+import { asNullableString, asObject } from './util/typeHelpers';
 
 /**
  * 3.5. Interface Document
@@ -116,6 +116,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new element
 	 */
 	public createElement(localName: string): Element {
+		expectArity(arguments, 1);
 		localName = String(localName);
 
 		// 1. If localName does not match the Name production, then throw an InvalidCharacterError.
@@ -154,6 +155,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new element
 	 */
 	public createElementNS(namespace: string | null, qualifiedName: string): Element {
+		expectArity(arguments, 2);
 		namespace = asNullableString(namespace);
 		qualifiedName = String(qualifiedName);
 
@@ -182,6 +184,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new text node
 	 */
 	public createTextNode(data: string): Text {
+		expectArity(arguments, 1);
 		data = String(data);
 
 		const context = getContext(this);
@@ -198,6 +201,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new CDATA section
 	 */
 	public createCDATASection(data: string): CDATASection {
+		expectArity(arguments, 1);
 		data = String(data);
 
 		// 1. If context object is an HTML document, then throw a NotSupportedError.
@@ -223,6 +227,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new comment node
 	 */
 	public createComment(data: string): Comment {
+		expectArity(arguments, 1);
 		data = String(data);
 
 		const context = getContext(this);
@@ -241,6 +246,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new processing instruction
 	 */
 	public createProcessingInstruction(target: string, data: string): ProcessingInstruction {
+		expectArity(arguments, 2);
 		target = String(target);
 		data = String(data);
 
@@ -272,6 +278,9 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @param deep Whether to also import node's children
 	 */
 	public importNode(node: Node, deep: boolean = false): Node {
+		expectArity(arguments, 1);
+		node = asObject(node, Node);
+
 		// 1. If node is a document or shadow root, then throw a NotSupportedError.
 		if (isNodeOfType(node, NodeType.DOCUMENT_NODE)) {
 			throwNotSupportedError('importing a Document node is not supported');
@@ -288,6 +297,9 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @param node The node to adopt
 	 */
 	public adoptNode(node: Node): Node {
+		expectArity(arguments, 1);
+		node = asObject(node, Node);
+
 		// 1. If node is a document, then throw a NotSupportedError.
 		if (isNodeOfType(node, NodeType.DOCUMENT_NODE)) {
 			throwNotSupportedError('adopting a Document node is not supported');
@@ -311,6 +323,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new attribute node
 	 */
 	public createAttribute(localName: string): Attr {
+		expectArity(arguments, 1);
 		localName = String(localName);
 
 		// 1. If localName does not match the Name production in XML, then throw an InvalidCharacterError.
@@ -337,6 +350,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @return The new attribute node
 	 */
 	public createAttributeNS(namespace: string | null, qualifiedName: string): Attr {
+		expectArity(arguments, 2);
 		namespace = asNullableString(namespace);
 		qualifiedName = String(qualifiedName);
 

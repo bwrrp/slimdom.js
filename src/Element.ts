@@ -5,7 +5,12 @@ import Document from './Document';
 import Node from './Node';
 import { getContext } from './context/Context';
 import { appendAttribute, changeAttribute, removeAttribute, replaceAttribute } from './util/attrMutations';
-import { throwInUseAttributeError, throwInvalidCharacterError, throwNotFoundError } from './util/errorHelpers';
+import {
+	expectArity,
+	throwInUseAttributeError,
+	throwInvalidCharacterError,
+	throwNotFoundError
+} from './util/errorHelpers';
 import {
 	matchesNameProduction,
 	validateAndExtract,
@@ -13,7 +18,7 @@ import {
 	XMLNS_NAMESPACE
 } from './util/namespaceHelpers';
 import { NodeType } from './util/NodeType';
-import { asNullableString } from './util/typeHelpers';
+import { asNullableString, asObject } from './util/typeHelpers';
 
 /**
  * 3.9. Interface Element
@@ -38,6 +43,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	}
 
 	public lookupPrefix(namespace: string | null): string | null {
+		expectArity(arguments, 1);
 		namespace = asNullableString(namespace);
 
 		// 1. If namespace is null or the empty string, then return null.
@@ -51,6 +57,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	}
 
 	public lookupNamespaceURI(prefix: string | null): string | null {
+		expectArity(arguments, 1);
 		prefix = asNullableString(prefix);
 
 		// 1. If prefix is the empty string, then set it to null.
@@ -163,6 +170,9 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @return The value of the attribute, or null if no such attribute exists
 	 */
 	public getAttribute(qualifiedName: string): string | null {
+		expectArity(arguments, 1);
+		qualifiedName = String(qualifiedName);
+
 		// 1. Let attr be the result of getting an attribute given qualifiedName and the context object.
 		const attr = getAttributeByName(qualifiedName, this);
 
@@ -184,6 +194,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @return The value of the attribute, or null if no such attribute exists
 	 */
 	public getAttributeNS(namespace: string | null, localName: string): string | null {
+		expectArity(arguments, 2);
 		namespace = asNullableString(namespace);
 
 		// 1. Let attr be the result of getting an attribute given namespace, localName, and the context object.
@@ -205,6 +216,10 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param value         The new value for the attribute
 	 */
 	public setAttribute(qualifiedName: string, value: string): void {
+		expectArity(arguments, 2);
+		qualifiedName = String(qualifiedName);
+		value = String(value);
+
 		// 1. If qualifiedName does not match the Name production in XML, then throw an InvalidCharacterError.
 		if (!matchesNameProduction(qualifiedName)) {
 			throwInvalidCharacterError('The qualified name does not match the Name production');
@@ -240,7 +255,10 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param value         The value for the attribute
 	 */
 	public setAttributeNS(namespace: string | null, qualifiedName: string, value: string): void {
+		expectArity(arguments, 3);
 		namespace = asNullableString(namespace);
+		qualifiedName = String(qualifiedName);
+		value = String(value);
 
 		// 1. Let namespace, prefix, and localName be the result of passing namespace and qualifiedName to validate and
 		// extract.
@@ -256,6 +274,9 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param qualifiedName The qualified name of the attribute
 	 */
 	public removeAttribute(qualifiedName: string): void {
+		expectArity(arguments, 1);
+		qualifiedName = String(qualifiedName);
+
 		removeAttributeByName(qualifiedName, this);
 	}
 
@@ -266,7 +287,9 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param localName The local name of the attribute
 	 */
 	public removeAttributeNS(namespace: string | null, localName: string): void {
+		expectArity(arguments, 2);
 		namespace = asNullableString(namespace);
+		localName = String(localName);
 
 		removeAttributeByNamespaceAndLocalName(namespace, localName, this);
 	}
@@ -277,6 +300,9 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param qualifiedName The qualified name of the attribute
 	 */
 	public hasAttribute(qualifiedName: string): boolean {
+		expectArity(arguments, 1);
+		qualifiedName = String(qualifiedName);
+
 		// 1. If the context object is in the HTML namespace and its node document is an HTML document, then set
 		// qualifiedName to qualifiedName in ASCII lowercase.
 		// (html documents not implemented)
@@ -293,7 +319,9 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @param localName The local name of the attribute
 	 */
 	public hasAttributeNS(namespace: string | null, localName: string): boolean {
+		expectArity(arguments, 2);
 		namespace = asNullableString(namespace);
+		localName = String(localName);
 
 		// 1. If namespace is the empty string, set it to null.
 		// (handled by getAttributeByNamespaceAndLocalName, called below)
@@ -310,6 +338,9 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @return The attribute, or null if no such attribute exists
 	 */
 	public getAttributeNode(qualifiedName: string): Attr | null {
+		expectArity(arguments, 1);
+		qualifiedName = String(qualifiedName);
+
 		return getAttributeByName(qualifiedName, this);
 	}
 
@@ -322,7 +353,9 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @return The attribute, or null if no such attribute exists
 	 */
 	public getAttributeNodeNS(namespace: string | null, localName: string): Attr | null {
+		expectArity(arguments, 2);
 		namespace = asNullableString(namespace);
+		localName = String(localName);
 
 		return getAttributeByNamespaceAndLocalName(namespace, localName, this);
 	}
@@ -335,6 +368,9 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @return The previous attribute node for the attribute
 	 */
 	public setAttributeNode(attr: Attr): Attr | null {
+		expectArity(arguments, 1);
+		attr = asObject(attr, Attr);
+
 		return setAttribute(attr, this);
 	}
 
@@ -346,6 +382,9 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @return The previous attribute node for the attribute
 	 */
 	public setAttributeNodeNS(attr: Attr): Attr | null {
+		expectArity(arguments, 1);
+		attr = asObject(attr, Attr);
+
 		return setAttribute(attr, this);
 	}
 
@@ -357,6 +396,9 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 * @return The removed attribute node
 	 */
 	public removeAttributeNode(attr: Attr): Attr {
+		expectArity(arguments, 1);
+		attr = asObject(attr, Attr);
+
 		// 1. If context object’s attribute list does not contain attr, then throw a NotFoundError.
 		if (this.attributes.indexOf(attr) < 0) {
 			throwNotFoundError('the specified attribute does not exist');
