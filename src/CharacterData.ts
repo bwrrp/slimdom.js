@@ -28,12 +28,8 @@ export default abstract class CharacterData extends Node implements NonDocumentT
 	}
 
 	public lookupPrefix(namespace: string | null): string | null {
-		namespace = asNullableString(namespace);
-
 		// 1. If namespace is null or the empty string, then return null.
-		if (namespace === null || namespace === '') {
-			return null;
-		}
+		// (not necessary due to recursion)
 
 		// 2. Switch on the context object:
 		// Any other node - Return the result of locating a namespace prefix for its parent element, if its parent

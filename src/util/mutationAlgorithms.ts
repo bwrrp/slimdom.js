@@ -546,9 +546,8 @@ export function adoptNode(node: Node, document: Document): void {
 	// 3.1. For each inclusiveDescendant in node’s shadow-including inclusive descendants:
 	forEachInclusiveDescendant(node, node => {
 		// 3.1.1. Set inclusiveDescendant’s node document to document.
-		if (!isNodeOfType(node, NodeType.DOCUMENT_NODE)) {
-			node.ownerDocument = document;
-		}
+		// (calling code ensures that node is never a Document)
+		node.ownerDocument = document;
 		// 3.1.2. If inclusiveDescendant is an element, then set the node document of each attribute in
 		// inclusiveDescendant’s attribute list to document.
 		if (isNodeOfType(node, NodeType.ELEMENT_NODE)) {

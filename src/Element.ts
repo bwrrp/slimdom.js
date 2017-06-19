@@ -531,29 +531,6 @@ function getAttributeByNamespaceAndLocalName(
 }
 
 /**
- * To get an attribute value given an element element, localName, and optionally a namespace (null unless stated
- * otherwise), run these steps:
- *
- * @param element   The element to get the attribute on
- * @param localName The local name of the attribute
- * @param namespace The namespace of the attribute
- *
- * @return The value of the first matching attribute, or the empty string if no such attribute exists
- */
-function getAttributeValue(element: Element, localName: string, namespace: string | null = null): string {
-	// 1. Let attr be the result of getting an attribute given namespace, localName, and element.
-	const attr = getAttributeByNamespaceAndLocalName(namespace, localName, element);
-
-	// 2. If attr is null, then return the empty string.
-	if (attr === null) {
-		return '';
-	}
-
-	// 3. Return attr’s value.
-	return attr.value;
-}
-
-/**
  * To set an attribute given an attr and element, run these steps:
  *
  * @param attr    The new attribute to set
@@ -601,8 +578,8 @@ function setAttributeValue(
 	element: Element,
 	localName: string,
 	value: string,
-	prefix: string | null = null,
-	namespace: string | null = null
+	prefix: string | null,
+	namespace: string | null
 ): void {
 	// 1. If prefix is not given, set it to null.
 	// 2. If namespace is not given, set it to null.

@@ -42,12 +42,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	}
 
 	public lookupPrefix(namespace: string | null): string | null {
-		namespace = asNullableString(namespace);
-
 		// 1. If namespace is null or the empty string, then return null.
-		if (namespace === null || namespace === '') {
-			return null;
-		}
+		// (not necessary due to recursion)
 
 		// 2. Switch on the context object:
 		// Document - Return the result of locating a namespace prefix for its document element, if its document element

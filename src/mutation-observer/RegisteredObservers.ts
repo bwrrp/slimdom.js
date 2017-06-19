@@ -52,25 +52,23 @@ export default class RegisteredObservers {
 		// registered.
 		if (!hasRegisteredObserverForObserver) {
 			this._registeredObservers.push(new RegisteredObserver(observer, this._node, options));
-			if (observer._nodes.indexOf(this._node) < 0) {
-				observer._nodes.push(this._node);
-			}
+			// No registered observer for this observer at the current node means that node can't exist in the
+			// observer's list of nodes either.
+			observer._nodes.push(this._node);
 		}
 	}
 
 	/**
-	 * Removes the given registered observer.
-
-	 * It is the caller's responsibility to remove the associated node from the observer's list of nodes, where
-	 * appropriate.
+	 * Removes the given transient registered observer.
 	 *
-	 * @param registeredObserver The registered observer to remove
+	 * Transient registered observers never have a corresponding entry in the observer's list of nodes. They are
+	 * guaranteed to be present in the array, as MutationObserver#_transients and
+	 * RegisteredObservers#_registeredObservers are kept in sync.
+	 *
+	 * @param transientRegisteredObserver The registered observer to remove
 	 */
-	public remove(registeredObserver: RegisteredObserver): void {
-		const index = this._registeredObservers.indexOf(registeredObserver);
-		if (index >= 0) {
-			this._registeredObservers.splice(index, 1);
-		}
+	public removeTransientRegisteredObserver(transientRegisteredObserver: RegisteredObserver): void {
+		this._registeredObservers.splice(this._registeredObservers.indexOf(transientRegisteredObserver), 1);
 	}
 
 	/**
@@ -153,7 +151,9 @@ export default class RegisteredObservers {
  */
 export function removeTransientRegisteredObserversForObserver(observer: MutationObserver): void {
 	observer._transients.forEach(transientRegisteredObserver => {
-		transientRegisteredObserver.node._registeredObservers.remove(transientRegisteredObserver);
+		transientRegisteredObserver.node._registeredObservers.removeTransientRegisteredObserver(
+			transientRegisteredObserver
+		);
 	});
 	observer._transients.length = 0;
 }
@@ -170,7 +170,9 @@ export function removeTransientRegisteredObserversForSource(source: RegisteredOb
 			return;
 		}
 
-		transientRegisteredObserver.node._registeredObservers.remove(transientRegisteredObserver);
+		transientRegisteredObserver.node._registeredObservers.removeTransientRegisteredObserver(
+			transientRegisteredObserver
+		);
 		source.observer._transients.splice(i, 1);
 	}
 }
