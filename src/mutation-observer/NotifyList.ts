@@ -15,9 +15,7 @@ function queueCompoundMicrotask(callback: (...args: any[]) => void, thisArg: Not
 }
 
 /**
- * A helper class which is responsible for scheduling the queued MutationRecord objects for reporting by their
- * observer. Reporting means the callback of the observer (a MutationObserver object) gets called with the
- * relevant MutationRecord objects.
+ * Tracks MutationObserver instances which have a non-empty record queue and schedules their callbacks to be called.
  */
 export default class NotifyList {
 	private _notifyList: MutationObserver[] = [];
