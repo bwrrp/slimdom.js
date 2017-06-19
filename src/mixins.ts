@@ -28,10 +28,13 @@ export interface ParentNode {
 // Element implements ParentNode;
 
 export function asParentNode(node: Node): ParentNode | null {
+	// This is only called from treeMutations.js, where node can never be anything other than these
+	/* istanbul ignore else */
 	if (isNodeOfType(node, NodeType.ELEMENT_NODE, NodeType.DOCUMENT_NODE, NodeType.DOCUMENT_FRAGMENT_NODE)) {
 		return node as Element | Document | DocumentFragment;
 	}
 
+	/* istanbul ignore next */
 	return null;
 }
 

@@ -39,6 +39,8 @@ export function insertIntoChildren(node: Node, parent: Node, referenceChild: Nod
 	if (isNodeOfType(node, NodeType.ELEMENT_NODE)) {
 		const element = node as Element;
 		const parentNode = asParentNode(parent);
+		// Functions calling this will ensure parent is always a ParentNode
+		/* istanbul ignore else */
 		if (parentNode) {
 			let previousElementSibling: Element | null = null;
 			for (let sibling = previousSibling; sibling; sibling = sibling.previousSibling) {
@@ -60,6 +62,8 @@ export function insertIntoChildren(node: Node, parent: Node, referenceChild: Nod
 					break;
 				}
 				const siblingNonDocumentTypeChildNode = asNonDocumentTypeChildNode(sibling);
+				// An element can never be inserted before a doctype
+				/* istanbul ignore else */
 				if (siblingNonDocumentTypeChildNode) {
 					nextElementSibling = siblingNonDocumentTypeChildNode.nextElementSibling;
 					break;
@@ -121,6 +125,8 @@ export function removeFromChildren(node: Node, parent: Node) {
 	// ParentNode
 	if (isElement) {
 		const parentNode = asParentNode(parent);
+		// Functions calling this will ensure parent is always a ParentNode
+		/* istanbul ignore else */
 		if (parentNode) {
 			if (parentNode.firstElementChild === node) {
 				parentNode.firstElementChild = nextElementSibling;
