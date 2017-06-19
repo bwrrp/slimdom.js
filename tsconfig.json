@@ -3,15 +3,20 @@
 		"outDir": "lib",
 		"sourceMap": true,
 		"strict": true,
-		"module": "es6",
-		"target": "es5",
-		"declaration": true,
+		"module": "commonjs",
+		"target": "es6",
 		"lib": [
 			"es2015"
 		],
-		"types": []
+		"types": [
+			"chai",
+			"mocha",
+			"node"
+		],
+		"moduleResolution": "node"
 	},
 	"include": [
-		"src/**/*"
+		"src/**/*",
+		"test/**/*"
 	]
 }
