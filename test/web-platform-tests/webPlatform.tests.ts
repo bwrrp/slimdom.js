@@ -368,9 +368,16 @@ function getAllScripts(doc: slimdom.Document, casePath: string) {
 		.reduce((scripts: string[], el: slimdom.Element) => {
 			const src = el.attributes.find(a => a.name === 'src');
 			if (src) {
-				const resolvedPath = src.value.startsWith('/')
-					? path.resolve(process.env.WEB_PLATFORM_TESTS_PATH, src.value.substring(1))
-					: path.resolve(path.dirname(casePath), src.value);
+				let resolvedPath: string;
+				if (src.value === '/resources/WebIDLParser.js') {
+					// Historical alias, unfortunately not an actual file
+					// https://github.com/w3c/web-platform-tests/issues/5608
+					resolvedPath = path.resolve(process.env.WEB_PLATFORM_TESTS_PATH, 'resources/webidl2/lib/webidl2.js');
+				} else {
+					resolvedPath = src.value.startsWith('/')
+						? path.resolve(process.env.WEB_PLATFORM_TESTS_PATH, src.value.substring(1))
+						: path.resolve(path.dirname(casePath), src.value);
+				}
 				return scripts.concat([fs.readFileSync(resolvedPath, 'utf-8')]);
 			}
 
