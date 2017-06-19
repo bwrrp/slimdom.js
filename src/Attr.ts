@@ -36,12 +36,8 @@ export default class Attr extends Node {
 	}
 
 	public lookupPrefix(namespace: string | null): string | null {
-		namespace = asNullableString(namespace);
-
 		// 1. If namespace is null or the empty string, then return null.
-		if (namespace === null || namespace === '') {
-			return null;
-		}
+		// (not necessary due to recursion)
 
 		// 2. Switch on the context object:
 		// Attr - Return the result of locating a namespace prefix for its element, if its element is non-null, and null

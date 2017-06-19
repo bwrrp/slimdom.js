@@ -355,8 +355,6 @@ export default class Range {
 
 			// END_TO_START:
 			default:
-			// unreachable, fall through for type check
-			case Range.END_TO_START:
 				// Let this point be the context object’s start. Let other point be sourceRange’s end.
 				return compareBoundaryPointPositions(
 					// this point
@@ -530,6 +528,8 @@ const POSITION_AFTER = 1;
  *
  * Note: for efficiency reasons, this implementation deviates from the algorithm given in 4.2.
  *
+ * This implementation assumes it is called on nodes under the same root.
+ *
  * @param nodeA   First boundary point's node
  * @param offsetA First boundary point's offset
  * @param nodeB   Second boundary point's node
@@ -541,10 +541,6 @@ function compareBoundaryPointPositions(nodeA: Node, offsetA: number, nodeB: Node
 	if (nodeA !== nodeB) {
 		const ancestors1 = getInclusiveAncestors(nodeA);
 		const ancestors2 = getInclusiveAncestors(nodeB);
-		// This should not be called on nodes from different trees
-		if (ancestors1[0] !== ancestors2[0]) {
-			throw new Error('Can not compare positions of nodes from different trees.');
-		}
 
 		// Skip common parents
 		while (ancestors1[0] && ancestors2[0] && ancestors1[0] === ancestors2[0]) {

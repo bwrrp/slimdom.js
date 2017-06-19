@@ -13,8 +13,7 @@ import { NodeType, isNodeOfType } from './NodeType';
 export function determineLengthOfNode(node: Node): number {
 	switch (node.nodeType) {
 		// DocumentType: Zero.
-		case NodeType.DOCUMENT_TYPE_NODE:
-			return 0;
+		// (not necessary, as doctypes never have children)
 
 		// Text, ProcessingInstruction, Comment: The number of code units in its data.
 		case NodeType.TEXT_NODE:
