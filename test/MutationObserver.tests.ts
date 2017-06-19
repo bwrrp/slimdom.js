@@ -12,222 +12,478 @@ describe('MutationObserver', () => {
 		clock.uninstall();
 	});
 
+	let document: slimdom.Document;
+	let observer: slimdom.MutationObserver;
+	let calls: { records: slimdom.MutationRecord[]; observer: slimdom.MutationObserver }[];
 	let callbackCalled: boolean;
-	let callbackArgs: any[] = [];
-	function callback(...args: any[]) {
+	function callback(records: slimdom.MutationRecord[], observer: slimdom.MutationObserver) {
 		callbackCalled = true;
-		callbackArgs.push(args);
+		calls.push({ records, observer });
 	}
 
-	let document: slimdom.Document;
-	let element: slimdom.Element;
-	let text: slimdom.Text;
-	let observer: slimdom.MutationObserver;
 	beforeEach(() => {
-		callbackCalled = false;
-		callbackArgs.length = 0;
-
 		document = new slimdom.Document();
-		element = document.appendChild(document.createElement('root')) as slimdom.Element;
-		text = element.appendChild(document.createTextNode('text')) as slimdom.Text;
 		observer = new slimdom.MutationObserver(callback);
-		observer.observe(element, {
-			subtree: true,
-			characterData: true,
-			childList: true,
-			attributes: true
-		});
+		calls = [];
+		callbackCalled = false;
 	});
 
 	afterEach(() => {
 		observer.disconnect();
 	});
 
-	describe('synchronous usage', () => {
-		it('responds to text changes', () => {
-			text.data = 'meep';
+	interface ExpectedRecord {
+		type?: string;
+		target?: slimdom.Node;
+		oldValue?: string | null;
+		attributeName?: string;
+		attributeNamespace?: string | null;
+		addedNodes?: slimdom.Node[];
+		removedNodes?: slimdom.Node[];
+		previousSibling?: slimdom.Node | null;
+		nextSibling?: slimdom.Node | null;
+	}
 
-			const queue = observer.takeRecords();
-			chai.assert.equal(queue[0].type, 'characterData');
-			chai.assert.equal(queue[0].oldValue, null);
-			chai.assert.equal(queue[0].target, text);
+	function assertRecords(records: slimdom.MutationRecord[], expected: ExpectedRecord[]): void {
+		chai.assert.equal(records.length, expected.length);
+		expected.forEach((expectedRecord, i) => {
+			const actualRecord = records[i];
+			Object.keys(expectedRecord).forEach(key => {
+				const expectedValue = (expectedRecord as any)[key];
+				const actualValue = (actualRecord as any)[key];
+				if (Array.isArray(expectedValue)) {
+					chai.assert.deepEqual(actualValue, expectedValue, `property ${key} of record ${i}`);
+				} else {
+					chai.assert.equal(
+						actualValue,
+						expectedValue,
+						`property ${key} of record ${i} is ${actualValue}, expected ${expectedValue}`
+					);
+				}
+			});
+		});
+	}
 
-			clock.tick(100);
-			chai.assert(!callbackCalled, 'callback was not called');
+	describe('.observe', () => {
+		it("throws if options doesn't specify the types of mutation to observe", () => {
+			const observer = new slimdom.MutationObserver(() => {});
+			chai.assert.throws(() => observer.observe(document, {}), TypeError);
 		});
 
-		it('records previous text values', () => {
+		it('throws if asking for the old value of attributes without observing them', () => {
+			const observer = new slimdom.MutationObserver(() => {});
+			chai.assert.throws(
+				() => observer.observe(document, { attributes: false, attributeOldValue: true, childList: true }),
+				TypeError
+			);
+		});
+
+		it('throws if asking for the old value of character data without observing them', () => {
+			const observer = new slimdom.MutationObserver(() => {});
+			chai.assert.throws(
+				() => observer.observe(document, { characterData: false, characterDataOldValue: true, childList: true }),
+				TypeError
+			);
+		});
+	});
+
+	type TestCase = (observer: slimdom.MutationObserver) => ExpectedRecord[] | null;
+	const cases: { [description: string]: TestCase } = {
+		'responds to text changes': observer => {
+			const element = document.createElement('test');
+			const text = element.appendChild(document.createTextNode('text')) as slimdom.Text;
+			observer.observe(element, { subtree: true, characterData: true });
+
+			text.data = 'meep';
+
+			return [{ type: 'characterData', oldValue: null, target: text }];
+		},
+
+		'records previous text values': observer => {
+			const element = document.createElement('test');
+			const text = element.appendChild(document.createTextNode('text')) as slimdom.Text;
 			observer.observe(element, { subtree: true, characterDataOldValue: true });
 
 			text.data = 'meep';
-			const queue = observer.takeRecords();
-			chai.assert.equal(queue[0].type, 'characterData');
-			chai.assert.equal(queue[0].oldValue, 'text');
-			chai.assert.equal(queue[0].target, text);
 
-			clock.tick(100);
-			chai.assert(!callbackCalled, 'callback was not called');
-		});
+			return [{ type: 'characterData', oldValue: 'text', target: text }];
+		},
 
-		it('responds to attribute changes', () => {
-			element.setAttribute('test', 'meep');
+		'responds to attribute changes': observer => {
+			const element = document.createElement('test');
+			element.setAttribute('attr', 'value');
+			observer.observe(element, { attributes: true });
 
-			const queue = observer.takeRecords();
-			chai.assert.equal(queue[0].type, 'attributes');
-			chai.assert.equal(queue[0].attributeName, 'test');
-			chai.assert.equal(queue[0].oldValue, null);
-			chai.assert.equal(queue[0].target, element);
+			// Even same-value changes generate records
+			element.setAttribute('attr', 'value');
+			element.setAttributeNS('http://www.example.com/ns', 'prf:attr', 'value');
 
-			clock.tick(100);
-			chai.assert(!callbackCalled, 'callback was not called');
-		});
+			return [
+				{
+					type: 'attributes',
+					target: element,
+					attributeName: 'attr',
+					attributeNamespace: null,
+					oldValue: null
+				},
+				{
+					type: 'attributes',
+					target: element,
+					attributeName: 'attr',
+					attributeNamespace: 'http://www.example.com/ns',
+					oldValue: null
+				}
+			];
+		},
 
-		it('does not ignore same-value attribute changes', () => {
-			element.setAttribute('test', 'meep');
-			let queue = observer.takeRecords();
-
+		'records previous attribute values': observer => {
+			const element = document.createElement('test');
+			element.setAttribute('attr', 'value');
 			observer.observe(element, { attributeOldValue: true });
 
-			element.setAttribute('test', 'meep');
+			// Even same-value changes generate records
+			element.setAttribute('attr', 'value');
+			element.setAttributeNS('http://www.example.com/ns', 'prf:attr', 'value');
 
-			queue = observer.takeRecords();
-			chai.assert.equal(queue[0].type, 'attributes');
-			chai.assert.equal(queue[0].oldValue, 'meep');
-			chai.assert.equal(queue[0].target, element);
+			return [
+				{
+					type: 'attributes',
+					target: element,
+					attributeName: 'attr',
+					attributeNamespace: null,
+					oldValue: 'value'
+				},
+				{
+					type: 'attributes',
+					target: element,
+					attributeName: 'attr',
+					attributeNamespace: 'http://www.example.com/ns',
+					oldValue: null
+				}
+			];
+		},
 
-			clock.tick(100);
-			chai.assert(!callbackCalled, 'callback was not called');
-		});
+		'responds to insertions (appendChild)': observer => {
+			const comment = document.appendChild(document.createComment('test'));
+			const element = document.createElement('child');
+			observer.observe(document, { childList: true });
 
-		it('records previous attribute values', () => {
-			element.setAttribute('test', 'meep');
-			let queue = observer.takeRecords();
+			document.appendChild(element);
 
-			observer.observe(element, { attributeOldValue: true });
+			return [
+				{
+					type: 'childList',
+					target: document,
+					addedNodes: [element],
+					removedNodes: [],
+					previousSibling: comment,
+					nextSibling: null
+				}
+			];
+		},
 
-			element.setAttribute('test', 'maap');
+		'responds to insertions (replaceChild)': observer => {
+			const parent = document.appendChild(document.createElement('parent'));
+			const oldChild = parent.appendChild(document.createElement('old'));
+			const newChild = document.createElement('new');
+			observer.observe(document, { childList: true, subtree: true });
+			parent.replaceChild(newChild, oldChild);
 
-			queue = observer.takeRecords();
-			chai.assert.equal(queue[0].type, 'attributes');
-			chai.assert.equal(queue[0].attributeName, 'test');
-			chai.assert.equal(queue[0].oldValue, 'meep');
-			chai.assert.equal(queue[0].target, element);
+			return [
+				{
+					type: 'childList',
+					target: parent,
+					addedNodes: [newChild],
+					removedNodes: [oldChild],
+					nextSibling: null,
+					previousSibling: null
+				}
+			];
+		},
 
-			clock.tick(100);
-			chai.assert(!callbackCalled, 'callback was not called');
-		});
+		'responds to moves (insertBefore)': observer => {
+			const comment = document.appendChild(document.createComment('comment'));
+			const element = document.appendChild(document.createElement('element'));
+			const text = element.appendChild(document.createTextNode('text'));
+			observer.observe(document, { childList: true, subtree: true });
 
-		it('responds to insertions (appendChild)', () => {
-			const newElement = document.createElement('meep');
-			element.appendChild(newElement);
+			element.insertBefore(comment, text);
 
-			const queue = observer.takeRecords();
-			chai.assert.equal(queue[0].type, 'childList');
-			chai.assert.deepEqual(queue[0].addedNodes, [newElement]);
-			chai.assert.deepEqual(queue[0].removedNodes, []);
-			chai.assert.equal(queue[0].previousSibling, text);
-			chai.assert.equal(queue[0].nextSibling, null);
-		});
+			return [
+				{
+					type: 'childList',
+					target: document,
+					addedNodes: [],
+					removedNodes: [comment],
+					nextSibling: element,
+					previousSibling: null
+				},
+				{
+					type: 'childList',
+					target: element,
+					addedNodes: [comment],
+					removedNodes: [],
+					nextSibling: text,
+					previousSibling: null
+				}
+			];
+		},
 
-		it('responds to insertions (replaceChild)', () => {
-			const newElement = document.createElement('meep');
-			element.replaceChild(newElement, text);
+		'does not respond to attribute changes if the attributes option is not set': observer => {
+			const element = document.createElement('test');
+			observer.observe(element, { attributes: false, childList: true });
+			element.setAttribute('test', 'value');
 
-			const queue = observer.takeRecords();
-			chai.assert.equal(queue[0].type, 'childList');
-			chai.assert.deepEqual(queue[0].addedNodes, [newElement]);
-			chai.assert.deepEqual(queue[0].removedNodes, [text]);
-			chai.assert.equal(queue[0].previousSibling, null);
-			chai.assert.equal(queue[0].nextSibling, null);
-		});
+			return null;
+		},
 
-		it('responds to moves (insertBefore)', () => {
-			const newElement = document.createElement('meep');
-			element.appendChild(newElement);
-			observer.takeRecords();
+		'does not respond to character data changes if the characterData option is not set': observer => {
+			const text = document.createTextNode('test');
+			observer.observe(text, { childList: true, characterData: false });
+			text.nodeValue = 'prrrt';
 
-			element.insertBefore(newElement, text);
+			return null;
+		},
 
-			const queue = observer.takeRecords();
-			chai.assert.equal(queue[0].type, 'childList');
-			chai.assert.deepEqual(queue[0].addedNodes, []);
-			chai.assert.deepEqual(queue[0].removedNodes, [newElement]);
-			chai.assert.equal(queue[0].previousSibling, text);
-			chai.assert.equal(queue[0].nextSibling, null);
+		'does not respond to childList changes if the childList option is not set': observer => {
+			const element = document.createElement('test');
+			observer.observe(element, { attributes: true, childList: false });
+			element.appendChild(document.createElement('child'));
 
-			chai.assert.equal(queue[1].type, 'childList');
-			chai.assert.deepEqual(queue[1].addedNodes, [newElement]);
-			chai.assert.deepEqual(queue[1].removedNodes, []);
-			chai.assert.equal(queue[1].previousSibling, null);
-			chai.assert.equal(queue[1].nextSibling, text);
-		});
+			return null;
+		},
 
-		it('responds to moves (replaceChild)', () => {
-			const newElement = document.createElement('meep');
-			element.appendChild(newElement);
-			observer.takeRecords();
+		'does not respond to subtree mutations if the subtree option is not set': observer => {
+			const element = document.appendChild(document.createElement('test')) as slimdom.Element;
+			observer.observe(document, { attributes: true, childList: true });
+			element.appendChild(document.createElement('child'));
+			element.setAttribute('test', 'value');
 
-			element.replaceChild(newElement, text);
+			return null;
+		},
 
-			const queue = observer.takeRecords();
-			chai.assert.equal(queue[0].type, 'childList');
-			chai.assert.equal(queue[0].target, element);
-			chai.assert.deepEqual(queue[0].addedNodes, []);
-			chai.assert.deepEqual(queue[0].removedNodes, [newElement]);
-			chai.assert.equal(queue[0].previousSibling, text);
-			chai.assert.equal(queue[0].nextSibling, null);
+		'only responds once to subtree mutations, even when observing multiple ancestors': observer => {
+			const element = document.appendChild(document.createElement('element'));
+			observer.observe(document, { childList: true, subtree: true });
+			observer.observe(element, { childList: true, subtree: true });
+			const comment = element.appendChild(document.createComment('test'));
 
-			chai.assert.equal(queue[1].type, 'childList');
-			chai.assert.equal(queue[1].target, element);
-			chai.assert.deepEqual(queue[1].addedNodes, [newElement]);
-			chai.assert.deepEqual(queue[1].removedNodes, [text]);
-			chai.assert.equal(queue[1].previousSibling, null);
-			chai.assert.equal(queue[1].nextSibling, null);
-		});
+			return [
+				{
+					type: 'childList',
+					target: element,
+					addedNodes: [comment],
+					removedNodes: [],
+					previousSibling: null,
+					nextSibling: null
+				}
+			];
+		},
 
-		it('continues tracking under a removed node until javascript re-enters the event loop', () => {
-			observer.observe(element, { subtree: true, characterDataOldValue: true, childList: true });
-			const newElement = element.appendChild(document.createElement('meep')) as slimdom.Element;
-			const newText = newElement.appendChild(document.createTextNode('test')) as slimdom.Text;
-			element.appendChild(newElement);
-			observer.takeRecords();
+		'continues tracking under a removed node until javascript re-enters the event loop': observer => {
+			const parent = document.appendChild(document.createElement('parent'));
+			const child = parent.appendChild(document.createElement('child'));
+			const text = child.appendChild(document.createTextNode('text')) as slimdom.Text;
+			observer.observe(document, { childList: true, characterDataOldValue: true, subtree: true });
+			document.removeChild(parent);
+			parent.removeChild(child);
+			text.data = 'test';
 
-			element.removeChild(newElement);
-			observer.takeRecords();
+			return [
+				{
+					type: 'childList',
+					target: document,
+					removedNodes: [parent]
+				},
+				{
+					type: 'childList',
+					target: parent,
+					removedNodes: [child]
+				},
+				{
+					type: 'characterData',
+					target: text,
+					oldValue: 'text'
+				}
+			];
+		},
 
-			newText.replaceData(0, text.length, 'meep');
-			let queue = observer.takeRecords();
-			chai.assert.equal(queue.length, 1);
-			chai.assert.equal(queue[0].type, 'characterData');
-			chai.assert.equal(queue[0].oldValue, 'test');
-			chai.assert.equal(queue[0].target, newText);
+		'does not add transient registered observers for non-subtree observers': observer => {
+			const parent = document.appendChild(document.createElement('parent'));
+			const child = parent.appendChild(document.createElement('child'));
+			const text = child.appendChild(document.createTextNode('text')) as slimdom.Text;
+			observer.observe(document, { childList: true, characterDataOldValue: true, subtree: false });
+			document.removeChild(parent);
+			parent.removeChild(child);
+			text.data = 'test';
 
-			newElement.removeChild(newText);
-			queue = observer.takeRecords();
-			chai.assert.equal(queue.length, 1);
-			chai.assert.equal(queue[0].type, 'childList');
-			chai.assert.equal(queue[0].target, newElement);
-			chai.assert.equal(queue[0].removedNodes[0], newText);
+			return [
+				{
+					type: 'childList',
+					target: document,
+					removedNodes: [parent]
+				}
+			];
+		},
 
-			clock.tick(100);
+		'removes transient observers when observe is called for the same observer': observer => {
+			const parent = document.appendChild(document.createElement('parent'));
+			const child = parent.appendChild(document.createElement('child'));
+			const text = child.appendChild(document.createTextNode('text')) as slimdom.Text;
+			observer.observe(document, { childList: true, characterDataOldValue: true, subtree: true });
+			document.removeChild(parent);
+			observer.observe(document, { childList: true, characterDataOldValue: true, subtree: true });
+			parent.removeChild(child);
+			text.data = 'test';
 
-			newElement.appendChild(newText);
-			queue = observer.takeRecords();
-			chai.assert.deepEqual(queue, []);
+			return [
+				{
+					type: 'childList',
+					target: document,
+					removedNodes: [parent]
+				}
+			];
+		},
+
+		'does not remove transient observers when observe is called for a different observer': observer => {
+			const parent = document.appendChild(document.createElement('parent'));
+			const child = parent.appendChild(document.createElement('child'));
+			const text = child.appendChild(document.createTextNode('text')) as slimdom.Text;
+			observer.observe(document, { childList: true, characterDataOldValue: true, subtree: true });
+			const otherObserver = new slimdom.MutationObserver(callback);
+			otherObserver.observe(document, { childList: true, characterDataOldValue: true, subtree: true });
+			document.removeChild(parent);
+			otherObserver.observe(document, { childList: true, characterDataOldValue: true, subtree: true });
+			parent.removeChild(child);
+			text.data = 'test';
+
+			assertRecords(otherObserver.takeRecords(), [
+				{
+					type: 'childList',
+					target: document,
+					removedNodes: [parent]
+				}
+			]);
+
+			return [
+				{
+					type: 'childList',
+					target: document,
+					removedNodes: [parent]
+				},
+				{
+					type: 'childList',
+					target: parent,
+					removedNodes: [child]
+				},
+				{
+					type: 'characterData',
+					target: text,
+					oldValue: 'text'
+				}
+			];
+		},
+
+		'does not remove transient observers when observe is called for a different subtree': observer => {
+			const parent = document.appendChild(document.createElement('parent'));
+			const child1 = parent.appendChild(document.createElement('child1'));
+			const child2 = parent.appendChild(document.createElement('child2'));
+			observer.observe(parent, { childList: true, subtree: true });
+			observer.observe(child1, { childList: true, subtree: true });
+			observer.observe(child2, { childList: true, subtree: true });
+			parent.removeChild(child1);
+			observer.observe(child2, { childList: true, subtree: true });
+			const comment1 = child1.appendChild(document.createComment('test'));
+			const comment2 = child2.appendChild(document.createComment('test'));
+
+			return [
+				{
+					type: 'childList',
+					target: parent,
+					removedNodes: [child1]
+				},
+				{
+					type: 'childList',
+					target: child1,
+					addedNodes: [comment1]
+				},
+				{
+					type: 'childList',
+					target: child2,
+					addedNodes: [comment2]
+				}
+			];
+		},
+
+		'does not observe after being disconnected': observer => {
+			observer.observe(document, { childList: true });
+			observer.disconnect();
+			document.appendChild(document.createComment('test'));
+
+			return null;
+		},
+
+		'does not affect other observers when disconnected': observer => {
+			const otherObserver = new slimdom.MutationObserver(callback);
+			otherObserver.observe(document, { childList: true, subtree: true });
+			observer.observe(document, { childList: true });
+			observer.disconnect();
+			const comment = document.appendChild(document.createComment('test'));
+
+			assertRecords(otherObserver.takeRecords(), [
+				{
+					type: 'childList',
+					target: document,
+					addedNodes: [comment]
+				}
+			]);
+
+			return null;
+		}
+	};
+
+	describe('synchronous usage', () => {
+		Object.keys(cases).forEach(description => {
+			const testCase = cases[description];
+			it(description, () => {
+				const expected = testCase(observer) || [];
+
+				const records = observer.takeRecords();
+				assertRecords(records, expected);
+
+				clock.tick(100);
+
+				chai.assert(!callbackCalled, 'callback was not called');
+			});
 		});
 	});
 
 	describe('asynchronous usage', () => {
-		it('responds to text changes', () => {
-			observer.observe(element, { subtree: true, characterDataOldValue: true });
+		let observer: slimdom.MutationObserver;
+		beforeEach(() => {
+			observer = new slimdom.MutationObserver(callback);
+		});
 
-			text.data = 'meep';
+		afterEach(() => {
+			observer.disconnect();
+		});
 
-			clock.tick(100);
-			chai.assert(callbackCalled, 'callback was called');
-			chai.assert.equal(callbackArgs[0][0][0].type, 'characterData');
-			chai.assert.equal(callbackArgs[0][0][0].oldValue, 'text');
-			chai.assert.equal(callbackArgs[0][0][0].target, text);
+		Object.keys(cases).forEach(description => {
+			const testCase = cases[description];
+			it(description, () => {
+				const expected = testCase(observer);
+
+				clock.tick(100);
+
+				if (expected !== null) {
+					chai.assert(callbackCalled, 'callback was called');
+					chai.assert.equal(calls.length, 1);
+					chai.assert.equal(calls[0].observer, observer);
+					assertRecords(calls[0].records, expected);
+				} else {
+					chai.assert(!callbackCalled, 'callback was not called');
+				}
+			});
 		});
 	});
 });
