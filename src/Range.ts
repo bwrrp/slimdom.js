@@ -503,7 +503,7 @@ export default class Range {
 
 		// 3. If parent is null, return true.
 		if (parent === null) {
-			return false;
+			return true;
 		}
 
 		// 4. Let offset be node’s index.
