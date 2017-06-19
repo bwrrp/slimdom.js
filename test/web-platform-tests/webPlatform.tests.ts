@@ -495,7 +495,7 @@ function createTests(dirPath: string): void {
 	fs.readdirSync(dirPath).forEach(entry => {
 		const entryPath = path.join(dirPath, entry);
 		const relativePath = path.relative(process.env.WEB_PLATFORM_TESTS_PATH, entryPath);
-		const blacklistReason = TEST_BLACKLIST[relativePath];
+		const blacklistReason = TEST_BLACKLIST[relativePath.replace(/\\/g, '/')];
 		if (typeof blacklistReason === 'string') {
 			// Create a pending test
 			it(`${entry}: ${blacklistReason}`);
