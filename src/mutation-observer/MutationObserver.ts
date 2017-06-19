@@ -90,11 +90,11 @@ export default class MutationObserver {
 	 * Instructs the user agent to observe a given target (a node) and report any mutations based on the criteria given
 	 * by options (an object).
 	 *
-	 * NOTE: Adding an observer to an element is just like addEventListener, if you observe the element multiple
-	 * times it does not make a difference. Meaning if you observe element twice, the observe callback does not fire
-	 * twice, nor will you have to run disconnect() twice. In other words, once an element is observed, observing it
-	 * again with the same will do nothing. However if the callback object is different it will of course add
-	 * another observer to it.
+	 * NOTE: Adding an observer to an element is just like addEventListener, if you observe the element multiple times
+	 * it does not make a difference. Meaning if you observe element twice, the observe callback does not fire twice,
+	 * nor will you have to run disconnect() twice. In other words, once an element is observed, observing it again with
+	 * the same will do nothing. However if the callback object is different it will of course add another observer to
+	 * it.
 	 *
 	 * @param target  Node (or root of subtree) to observe
 	 * @param options Determines which types of mutations to observe
