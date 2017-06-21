@@ -14,6 +14,15 @@ describe('DocumentFragment', () => {
 		chai.assert.equal(df.nodeType, 11);
 		chai.assert.equal(df.nodeName, '#document-fragment');
 		chai.assert.equal(df.nodeValue, null);
+		chai.assert.equal(df.ownerDocument, document);
+	});
+
+	it('can be created using its constructor', () => {
+		const df = new slimdom.DocumentFragment();
+		chai.assert.equal(df.nodeType, 11);
+		chai.assert.equal(df.nodeName, '#document-fragment');
+		chai.assert.equal(df.nodeValue, null);
+		chai.assert.equal(df.ownerDocument, slimdom.document);
 	});
 
 	it('can not change its nodeValue', () => {
