@@ -19,6 +19,25 @@ export default {
 	plugins: [
 		babili({
 			comments: false,
+			mangle: {
+				blacklist: [
+					'Attr',
+					'CDATASection',
+					'CharacterData',
+					'Comment',
+					'Document',
+					'DocumentFragment',
+					'DocumentType',
+					'DOMImplementation',
+					'Element',
+					'Node',
+					'MutationObserver',
+					'ProcessingInstruction',
+					'Range',
+					'Text',
+					'XMLDocument'
+				]
+			},
 			sourceMap: true
 		})
 	]

@@ -370,7 +370,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 */
 	public setAttributeNode(attr: Attr): Attr | null {
 		expectArity(arguments, 1);
-		attr = asObject(attr, Attr, 'Attr');
+		attr = asObject(attr, Attr);
 
 		return setAttribute(attr, this);
 	}
@@ -384,7 +384,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 */
 	public setAttributeNodeNS(attr: Attr): Attr | null {
 		expectArity(arguments, 1);
-		attr = asObject(attr, Attr, 'Attr');
+		attr = asObject(attr, Attr);
 
 		return setAttribute(attr, this);
 	}
@@ -398,7 +398,7 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 	 */
 	public removeAttributeNode(attr: Attr): Attr {
 		expectArity(arguments, 1);
-		attr = asObject(attr, Attr, 'Attr');
+		attr = asObject(attr, Attr);
 
 		// 1. If context object’s attribute list does not contain attr, then throw a NotFoundError.
 		if (this.attributes.indexOf(attr) < 0) {

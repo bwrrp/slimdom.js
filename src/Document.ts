@@ -283,7 +283,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 */
 	public importNode(node: Node, deep: boolean = false): Node {
 		expectArity(arguments, 1);
-		node = asObject(node, Node, 'Node');
+		node = asObject(node, Node);
 
 		// 1. If node is a document or shadow root, then throw a NotSupportedError.
 		if (isNodeOfType(node, NodeType.DOCUMENT_NODE)) {
@@ -302,7 +302,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 */
 	public adoptNode(node: Node): Node {
 		expectArity(arguments, 1);
-		node = asObject(node, Node, 'Node');
+		node = asObject(node, Node);
 
 		// 1. If node is a document, then throw a NotSupportedError.
 		if (isNodeOfType(node, NodeType.DOCUMENT_NODE)) {

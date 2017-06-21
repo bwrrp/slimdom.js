@@ -67,7 +67,7 @@ export default class DOMImplementation {
 		namespace = asNullableString(namespace);
 		// [TreatNullAs=EmptyString] for qualifiedName
 		qualifiedName = treatNullAsEmptyString(qualifiedName);
-		doctype = asNullableObject(doctype, DocumentType, 'DocumentType');
+		doctype = asNullableObject(doctype, DocumentType);
 
 		// 1. Let document be a new XMLDocument.
 		const context = getContext(this._document);

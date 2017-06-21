@@ -14,18 +14,18 @@ export function treatNullAsEmptyString(value: string | null): string {
 	return String(value);
 }
 
-export function asObject<T>(value: T, Constructor: any, typeName: string): T {
-	expectObject(value, Constructor, typeName);
+export function asObject<T>(value: T, Constructor: any): T {
+	expectObject(value, Constructor);
 
 	return value;
 }
 
-export function asNullableObject<T>(value: T | null | undefined, Constructor: any, typeName: string): T | null {
+export function asNullableObject<T>(value: T | null | undefined, Constructor: any): T | null {
 	if (value === undefined || value === null) {
 		return null;
 	}
 
-	return asObject(value, Constructor, typeName);
+	return asObject(value, Constructor);
 }
 
 export function asNullableString(value: string | null | undefined): string | null {

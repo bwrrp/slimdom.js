@@ -76,7 +76,7 @@ export default class Range {
 	 */
 	setStart(node: Node, offset: number): void {
 		expectArity(arguments, 2);
-		node = asObject(node, Node, 'Node');
+		node = asObject(node, Node);
 		offset = asUnsignedLong(offset);
 
 		// 1. If node is a doctype, then throw an InvalidNodeTypeError.
@@ -120,7 +120,7 @@ export default class Range {
 	 */
 	setEnd(node: Node, offset: number): void {
 		expectArity(arguments, 2);
-		node = asObject(node, Node, 'Node');
+		node = asObject(node, Node);
 		offset = asUnsignedLong(offset);
 
 		// 1. If node is a doctype, then throw an InvalidNodeTypeError.
@@ -163,7 +163,7 @@ export default class Range {
 	 */
 	setStartBefore(node: Node): void {
 		expectArity(arguments, 1);
-		node = asObject(node, Node, 'Node');
+		node = asObject(node, Node);
 
 		// 1. Let parent be node’s parent.
 		const parent = node.parentNode;
@@ -184,7 +184,7 @@ export default class Range {
 	 */
 	setStartAfter(node: Node): void {
 		expectArity(arguments, 1);
-		node = asObject(node, Node, 'Node');
+		node = asObject(node, Node);
 
 		// 1. Let parent be node’s parent.
 		const parent = node.parentNode;
@@ -205,7 +205,7 @@ export default class Range {
 	 */
 	setEndBefore(node: Node): void {
 		expectArity(arguments, 1);
-		node = asObject(node, Node, 'Node');
+		node = asObject(node, Node);
 
 		// 1. Let parent be node’s parent.
 		const parent = node.parentNode;
@@ -226,7 +226,7 @@ export default class Range {
 	 */
 	setEndAfter(node: Node): void {
 		expectArity(arguments, 1);
-		node = asObject(node, Node, 'Node');
+		node = asObject(node, Node);
 
 		// 1. Let parent be node’s parent.
 		const parent = node.parentNode;
@@ -257,7 +257,7 @@ export default class Range {
 
 	selectNode(node: Node): void {
 		expectArity(arguments, 1);
-		node = asObject(node, Node, 'Node');
+		node = asObject(node, Node);
 
 		// 1. Let parent be node’s parent.
 		let parent = node.parentNode;
@@ -281,7 +281,7 @@ export default class Range {
 
 	selectNodeContents(node: Node): void {
 		expectArity(arguments, 1);
-		node = asObject(node, Node, 'Node');
+		node = asObject(node, Node);
 
 		// 1. If node is a doctype, throw an InvalidNodeTypeError.
 		if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE)) {
@@ -307,7 +307,7 @@ export default class Range {
 
 	compareBoundaryPoints(how: number, sourceRange: Range): number {
 		expectArity(arguments, 2);
-		sourceRange = asObject(sourceRange, Range, 'Range');
+		sourceRange = asObject(sourceRange, Range);
 
 		// 1. If how is not one of START_TO_START, START_TO_END, END_TO_END, and END_TO_START, then throw a
 		// NotSupportedError.
@@ -423,7 +423,7 @@ export default class Range {
 	 */
 	isPointInRange(node: Node, offset: number): boolean {
 		expectArity(arguments, 2);
-		node = asObject(node, Node, 'Node');
+		node = asObject(node, Node);
 		offset = asUnsignedLong(offset);
 
 		// 1. If node’s root is different from the context object’s root, return false.
@@ -463,7 +463,7 @@ export default class Range {
 	 */
 	comparePoint(node: Node, offset: number): number {
 		expectArity(arguments, 2);
-		node = asObject(node, Node, 'Node');
+		node = asObject(node, Node);
 		offset = asUnsignedLong(offset);
 
 		// 1. If node’s root is different from the context object’s root, then throw a WrongDocumentError.
@@ -504,7 +504,7 @@ export default class Range {
 	 */
 	intersectsNode(node: Node): boolean {
 		expectArity(arguments, 1);
-		node = asObject(node, Node, 'Node');
+		node = asObject(node, Node);
 
 		// 1. If node’s root is different from the context object’s root, return false.
 		if (getRootOfNode(node) !== getRootOfRange(this)) {

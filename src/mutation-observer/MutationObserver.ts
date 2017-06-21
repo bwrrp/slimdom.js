@@ -82,7 +82,7 @@ export default class MutationObserver {
 	 */
 	constructor(callback: MutationCallback) {
 		expectArity(arguments, 1);
-		callback = asObject(callback, Function, 'Function');
+		callback = asObject(callback, Function);
 
 		// create a new MutationObserver object with callback set to callback
 		this._callback = callback;
@@ -106,7 +106,7 @@ export default class MutationObserver {
 	 */
 	observe(target: Node, options: MutationObserverInit) {
 		expectArity(arguments, 2);
-		target = asObject(target, Node, 'Node');
+		target = asObject(target, Node);
 
 		// Defaults from IDL
 		options.childList = !!options.childList;
