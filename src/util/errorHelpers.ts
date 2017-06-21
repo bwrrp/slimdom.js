@@ -5,9 +5,9 @@ export function expectArity(args: IArguments, minArity: number): void {
 	}
 }
 
-export function expectObject<T>(value: T, Constructor: any, typeName: string): void {
+export function expectObject<T>(value: T, Constructor: Function): void {
 	if (!(value instanceof Constructor)) {
-		throw new TypeError(`Value should be an instance of ${typeName}`);
+		throw new TypeError(`Value should be an instance of ${Constructor.name}`);
 	}
 }
 
