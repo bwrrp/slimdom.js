@@ -146,7 +146,7 @@ export default class Range {
 		const rootOfRange = getRootOfRange(this);
 		if (
 			rootOfNode !== rootOfRange ||
-			compareBoundaryPointPositions(node, offset, this.endContainer, this.endOffset) === POSITION_BEFORE
+			compareBoundaryPointPositions(node, offset, this.startContainer, this.startOffset) === POSITION_BEFORE
 		) {
 			this.startContainer = node;
 			this.startOffset = offset;
