@@ -34,9 +34,19 @@ describe('Range', () => {
 		});
 
 		it('end after start is ok', () => {
+			// Move end forward
 			range.setEnd(element, 1);
 			chai.assert.equal(range.endContainer, element);
 			chai.assert.equal(range.endOffset, 1);
+			chai.assert.equal(range.startContainer, document);
+			chai.assert.equal(range.startOffset, 0);
+			chai.assert.equal(range.collapsed, false);
+			chai.assert.equal(range.commonAncestorContainer, document);
+
+			// Move end back
+			range.setEnd(element, 0);
+			chai.assert.equal(range.endContainer, element);
+			chai.assert.equal(range.endOffset, 0);
 			chai.assert.equal(range.startContainer, document);
 			chai.assert.equal(range.startOffset, 0);
 			chai.assert.equal(range.collapsed, false);
@@ -52,6 +62,28 @@ describe('Range', () => {
 			chai.assert.equal(range.startOffset, 0);
 			chai.assert.equal(range.collapsed, true);
 			chai.assert.equal(range.commonAncestorContainer, element);
+		});
+
+		it('start before end is ok', () => {
+			range.setEnd(document, 1);
+
+			// Move start forward
+			range.setStart(element, 1);
+			chai.assert.equal(range.startContainer, element);
+			chai.assert.equal(range.startOffset, 1);
+			chai.assert.equal(range.endContainer, document);
+			chai.assert.equal(range.endOffset, 1);
+			chai.assert.equal(range.collapsed, false);
+			chai.assert.equal(range.commonAncestorContainer, document);
+
+			// Move start back
+			range.setStart(element, 0);
+			chai.assert.equal(range.startContainer, element);
+			chai.assert.equal(range.startOffset, 0);
+			chai.assert.equal(range.endContainer, document);
+			chai.assert.equal(range.endOffset, 1);
+			chai.assert.equal(range.collapsed, false);
+			chai.assert.equal(range.commonAncestorContainer, document);
 		});
 
 		it('throws if the container is a doctype', () => {
