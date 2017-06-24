@@ -5,10 +5,8 @@ import XMLDocument from './XMLDocument';
 import { getContext } from './context/Context';
 import createElementNS from './util/createElementNS';
 import { expectArity } from './util/errorHelpers';
-import { validateQualifiedName } from './util/namespaceHelpers';
+import { HTML_NAMESPACE, validateQualifiedName } from './util/namespaceHelpers';
 import { asNullableObject, asNullableString, treatNullAsEmptyString } from './util/typeHelpers';
-
-const HTML_NAMESPACE = 'http://www.w3.org/1999/xhtml';
 
 export default class DOMImplementation {
 	private _document: Document;

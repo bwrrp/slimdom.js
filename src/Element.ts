@@ -4,6 +4,7 @@ import Attr from './Attr';
 import Document from './Document';
 import Node from './Node';
 import { getContext } from './context/Context';
+import { serializeFragment } from './dom-parsing/serializationAlgorithms';
 import { appendAttribute, changeAttribute, removeAttribute, replaceAttribute } from './util/attrMutations';
 import {
 	expectArity,
@@ -436,6 +437,27 @@ export default class Element extends Node implements ParentNode, NonDocumentType
 		}
 
 		return copyElement;
+	}
+
+	// From the DOM Parsing and Serialization spec
+
+	/**
+	 * Returns a fragment of HTML or XML that represents the element's contents.
+	 */
+	public get innerHTML() {
+		// Return the result of invoking the fragment serializing algorithm on the context object providing true for the
+		// require well-formed flag (this might throw an exception instead of returning a string).
+		return serializeFragment(this, true);
+	}
+
+	/**
+	 * Returns a fragment of HTML or XML that represents the element and its contents.
+	 */
+	public get outerHTML() {
+		// Return the result of invoking the fragment serializing algorithm on a fictional node whose only child is the
+		// context object providing true for the require well-formed flag (this might throw an exception instead of
+		// returning a string).
+		return serializeFragment(this, true, true);
 	}
 }
 
