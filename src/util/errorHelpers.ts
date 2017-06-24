@@ -38,6 +38,10 @@ export function throwInvalidNodeTypeError(message: string): never {
 	throw createDOMException('InvalidNodeTypeError', 24, message);
 }
 
+export function throwInvalidStateError(message: string): never {
+	throw createDOMException('InvalidStateError', 11, message);
+}
+
 export function throwNamespaceError(message: string): never {
 	throw createDOMException('NamespaceError', 14, message);
 }

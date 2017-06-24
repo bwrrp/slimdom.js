@@ -12,8 +12,12 @@ export { default as ProcessingInstruction } from './ProcessingInstruction';
 export { default as Range } from './Range';
 export { default as Text } from './Text';
 export { default as XMLDocument } from './XMLDocument';
+export { default as XMLSerializer } from './dom-parsing/XMLSerializer';
 export { default as MutationObserver } from './mutation-observer/MutationObserver';
 export { default as MutationRecord } from './mutation-observer/MutationRecord';
+
+// Standard DOM does not expose a way to serialize arbitrary nodes as well-formed XML
+export { serializeToWellFormedString } from './dom-parsing/XMLSerializer';
 
 // To avoid cyclic dependencies and enable multiple contexts with their own constructors later, inject all constructors
 // as well as the global document into the default context (i.e., global object) here.
