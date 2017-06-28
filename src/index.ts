@@ -13,6 +13,7 @@ export { default as Range } from './Range';
 export { StaticRange } from './Range';
 export { default as Text } from './Text';
 export { default as XMLDocument } from './XMLDocument';
+export { default as DOMParser } from './dom-parsing/DOMParser';
 export { default as XMLSerializer } from './dom-parsing/XMLSerializer';
 export { default as MutationObserver } from './mutation-observer/MutationObserver';
 export { default as MutationRecord } from './mutation-observer/MutationRecord';

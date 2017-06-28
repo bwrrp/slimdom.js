@@ -987,6 +987,9 @@ function streamingOptional<T>(parser: StreamingParser<T>): StreamingParser<T> {
 function streamingComplete<T>(parser: StreamingParser<T>): StreamingParser<T> {
 	return function* (input: string, offset: number) {
 		const res = yield* parser(input, offset);
+		if (!res.success) {
+			return res;
+		}
 		return end(input, res.offset);
 	};
 }
