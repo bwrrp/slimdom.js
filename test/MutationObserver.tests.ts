@@ -229,6 +229,64 @@ describe('MutationObserver', () => {
 			];
 		},
 
+		'responds to non-moves (insertBefore itself)': observer => {
+			const parent = document.createElement('parent');
+			const previousSibling = parent.appendChild(document.createElement('previousSibling'));
+			const element = parent.appendChild(document.createElement('element'));
+			const nextSibling = parent.appendChild(document.createElement('nextSibling'));
+			observer.observe(parent, { childList: true });
+
+			parent.insertBefore(element, element);
+
+			return [
+				{
+					type: 'childList',
+					target: parent,
+					addedNodes: [],
+					removedNodes: [element],
+					nextSibling: nextSibling,
+					previousSibling: previousSibling
+				},
+				{
+					type: 'childList',
+					target: parent,
+					addedNodes: [element],
+					removedNodes: [],
+					nextSibling: nextSibling,
+					previousSibling: previousSibling
+				}
+			];
+		},
+
+		'responds to non-moves (insertBefore its next sibling)': observer => {
+			const parent = document.createElement('parent');
+			const previousSibling = parent.appendChild(document.createElement('previousSibling'));
+			const element = parent.appendChild(document.createElement('element'));
+			const nextSibling = parent.appendChild(document.createElement('nextSibling'));
+			observer.observe(parent, { childList: true });
+
+			parent.insertBefore(element, nextSibling);
+
+			return [
+				{
+					type: 'childList',
+					target: parent,
+					addedNodes: [],
+					removedNodes: [element],
+					nextSibling: nextSibling,
+					previousSibling: previousSibling
+				},
+				{
+					type: 'childList',
+					target: parent,
+					addedNodes: [element],
+					removedNodes: [],
+					nextSibling: nextSibling,
+					previousSibling: previousSibling
+				}
+			];
+		},
+
 		'does not respond to attribute changes if the attributes option is not set': observer => {
 			const element = document.createElement('test');
 			observer.observe(element, { attributes: false, childList: true });
