@@ -157,15 +157,20 @@ describe('XMLSerializer', () => {
 		chai.assert.equal(serializer.serializeToString(el), '<xml:test/>');
 	});
 
-	it('always generates a new prefix for namespaced attributes', () => {
-		// TODO: this sounds like it is not intended behavior, but does follow the algorithm
-		// (see XML serialization of the attributes or an Element, 3.5.3.1.)
+	it("doesn't generate a new prefix for namespaced attributes", () => {
+		// TODO: this depends on a deviation from the spec (see https://github.com/w3c/DOM-Parsing/issues/29)
 		const el = document.createElement('test');
 		el.setAttributeNS('http://www.example.com/ns', 'prf:test', 'value');
 		chai.assert.equal(
 			serializer.serializeToString(el),
-			'<test xmlns:ns1="http://www.example.com/ns" ns1:test="value"/>'
+			'<test xmlns:prf="http://www.example.com/ns" prf:test="value"/>'
 		);
+	});
+
+	it('always uses prefix xml for the xml namespace, for attributes', () => {
+		const el = document.createElementNS(XML_NAMESPACE, 'test');
+		el.setAttributeNS(XML_NAMESPACE, 'prf:id', 'value');
+		chai.assert.equal(serializer.serializeToString(el), '<xml:test xml:id="value"/>');
 	});
 
 	it('always uses prefix xml for the xml namespace, even if declared as default', () => {

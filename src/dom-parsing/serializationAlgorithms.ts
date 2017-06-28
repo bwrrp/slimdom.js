@@ -515,7 +515,7 @@ function serializeAttributes(
 	requireWellFormed: boolean
 ): string[] {
 	// 1. Let result be the empty string.
-	const result = [];
+	const result: string[] = [];
 
 	// 2. Let localname set be a new empty namespace localname set. This localname set will contain tuples of unique
 	// attribute namespaceURI and localName pairs, and is populated as each attr is processed. This set is used to
@@ -545,7 +545,7 @@ function serializeAttributes(
 		const attributeNamespace = attr.namespaceURI;
 
 		// 3.4. Let candidate prefix be null.
-		let candidatePrefix = null;
+		let candidatePrefix: string | null = null;
 
 		// 3.5. If attribute namespace is not null, then run these sub-steps:
 		if (attributeNamespace !== null) {
@@ -617,25 +617,34 @@ function serializeAttributes(
 				}
 			} else {
 				// 3.5.3. Otherwise, the attribute namespace in not the XMLNS namespace. Run these steps:
-				// 3.5.3.1. Let candidate prefix be the result of generating a prefix providing map, attribute
-				// namespace, and prefix index as input.
-				candidatePrefix = generatePrefix(map, attributeNamespace, prefixIndex);
 
-				// 3.5.3.2. Append the following to result, in the order listed:
-				// 3.5.3.2.1. " " (U+0020 SPACE);
-				// 3.5.3.2.2. The string "xmlns:";
-				// 3.5.3.2.3. The value of candidate prefix;
-				// 3.5.3.2.4. "="" (U+003D EQUALS SIGN, U+0022 QUOTATION MARK);
-				// 3.5.3.2.5. The result of serializing an attribute value given attribute namespace and the require
-				// well-formed flag as input;
-				// 3.5.3.2.7. """ (U+0022 QUOTATION MARK).
-				result.push(
-					' xmlns:',
-					candidatePrefix,
-					'="',
-					serializeAttributeValue(attributeNamespace, requireWellFormed),
-					'"'
-				);
+				// Note: we deviate from the spec here, as implementing as specified would generate prefixes for all
+				// namespaced attributes.
+				if (candidatePrefix === null) {
+					if (attr.prefix === null || attr.prefix in localPrefixesMap) {
+						// 3.5.3.1. Let candidate prefix be the result of generating a prefix providing map, attribute
+						// namespace, and prefix index as input.
+						candidatePrefix = generatePrefix(map, attributeNamespace, prefixIndex);
+					} else {
+						candidatePrefix = attr.prefix;
+					}
+
+					// 3.5.3.2. Append the following to result, in the order listed:
+					// 3.5.3.2.1. " " (U+0020 SPACE);
+					// 3.5.3.2.2. The string "xmlns:";
+					// 3.5.3.2.3. The value of candidate prefix;
+					// 3.5.3.2.4. "="" (U+003D EQUALS SIGN, U+0022 QUOTATION MARK);
+					// 3.5.3.2.5. The result of serializing an attribute value given attribute namespace and the require
+					// well-formed flag as input;
+					// 3.5.3.2.7. """ (U+0022 QUOTATION MARK).
+					result.push(
+						' xmlns:',
+						candidatePrefix,
+						'="',
+						serializeAttributeValue(attributeNamespace, requireWellFormed),
+						'"'
+					);
+				}
 			}
 		}
 		// 3.6. Append a " " (U+0020 SPACE) to result.
