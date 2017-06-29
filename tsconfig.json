@@ -5,18 +5,9 @@
 		"strict": true,
 		"module": "commonjs",
 		"target": "es6",
-		"lib": [
-			"es2015"
-		],
-		"types": [
-			"chai",
-			"mocha",
-			"node"
-		],
+		"lib": ["es2015"],
+		"types": ["node", "jest"],
 		"moduleResolution": "node"
 	},
-	"include": [
-		"src/**/*",
-		"test/**/*"
-	]
+	"include": ["src/**/*", "test/**/*"]
 }

@@ -1,4 +1,3 @@
-import * as chai from 'chai';
 import * as slimdom from '../../src/index';
 
 describe('Element#innerHTML', () => {
@@ -13,6 +12,6 @@ describe('Element#innerHTML', () => {
 		el.appendChild(document.createTextNode('test'));
 		const child = el.appendChild(document.createElement('child')) as slimdom.Element;
 		child.setAttribute('childAttr', 'childValue');
-		chai.assert.equal(el.innerHTML, 'test<child childAttr="childValue"/>');
+		expect(el.innerHTML).toBe('test<child childAttr="childValue"/>');
 	});
 });

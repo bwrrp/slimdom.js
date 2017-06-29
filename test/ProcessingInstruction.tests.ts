@@ -1,4 +1,3 @@
-import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
 describe('ProcessingInstruction', () => {
@@ -9,23 +8,23 @@ describe('ProcessingInstruction', () => {
 
 	it('can be created using Document#createProcessingInstruction()', () => {
 		const pi = document.createProcessingInstruction('sometarget', 'some data');
-		chai.assert.equal(pi.nodeType, 7);
-		chai.assert.equal(pi.nodeName, 'sometarget');
-		chai.assert.equal(pi.nodeValue, 'some data');
-		chai.assert.equal(pi.target, 'sometarget');
-		chai.assert.equal(pi.data, 'some data');
-		chai.assert.equal(pi.ownerDocument, document);
+		expect(pi.nodeType).toBe(7);
+		expect(pi.nodeName).toBe('sometarget');
+		expect(pi.nodeValue).toBe('some data');
+		expect(pi.target).toBe('sometarget');
+		expect(pi.data).toBe('some data');
+		expect(pi.ownerDocument).toBe(document);
 	});
 
 	it('can be cloned', () => {
 		const pi = document.createProcessingInstruction('sometarget', 'some data');
 		var copy = pi.cloneNode() as slimdom.ProcessingInstruction;
-		chai.assert.equal(copy.nodeType, 7);
-		chai.assert.equal(copy.nodeName, 'sometarget');
-		chai.assert.equal(copy.nodeValue, 'some data');
-		chai.assert.equal(copy.target, 'sometarget');
-		chai.assert.equal(copy.data, 'some data');
-		chai.assert.equal(copy.ownerDocument, document);
-		chai.assert.notEqual(copy, pi);
+		expect(copy.nodeType).toBe(7);
+		expect(copy.nodeName).toBe('sometarget');
+		expect(copy.nodeValue).toBe('some data');
+		expect(copy.target).toBe('sometarget');
+		expect(copy.data).toBe('some data');
+		expect(copy.ownerDocument).toBe(document);
+		expect(copy).not.toBe(pi);
 	});
 });

@@ -1,15 +1,12 @@
-import * as chai from 'chai';
-import * as lolex from 'lolex';
 import * as slimdom from '../src/index';
 
 describe('MutationObserver', () => {
-	let clock: lolex.Clock;
-	before(() => {
-		clock = lolex.install();
+	beforeAll(() => {
+		jest.useFakeTimers();
 	});
 
-	after(() => {
-		clock.uninstall();
+	afterAll(() => {
+		jest.useRealTimers();
 	});
 
 	let document: slimdom.Document;
@@ -45,24 +42,16 @@ describe('MutationObserver', () => {
 	}
 
 	function assertRecords(records: slimdom.MutationRecord[], expected: ExpectedRecord[]): void {
-		chai.assert.equal(records.length, expected.length);
+		expect(records.length).toBe(expected.length);
 		expected.forEach((expectedRecord, i) => {
 			const actualRecord = records[i];
 			Object.keys(expectedRecord).forEach(key => {
 				const expectedValue = (expectedRecord as any)[key];
 				const actualValue = (actualRecord as any)[key];
 				if (Array.isArray(expectedValue)) {
-					chai.assert.deepEqual(
-						actualValue,
-						expectedValue,
-						`property ${key} of record ${i}`
-					);
+					expect(actualValue).toEqual(expectedValue);
 				} else {
-					chai.assert.equal(
-						actualValue,
-						expectedValue,
-						`property ${key} of record ${i} is ${actualValue}, expected ${expectedValue}`
-					);
+					expect(actualValue).toBe(expectedValue);
 				}
 			});
 		});
@@ -71,33 +60,29 @@ describe('MutationObserver', () => {
 	describe('.observe', () => {
 		it("throws if options doesn't specify the types of mutation to observe", () => {
 			const observer = new slimdom.MutationObserver(() => {});
-			chai.assert.throws(() => observer.observe(document, {}), TypeError);
+			expect(() => observer.observe(document, {})).toThrow(TypeError);
 		});
 
 		it('throws if asking for the old value of attributes without observing them', () => {
 			const observer = new slimdom.MutationObserver(() => {});
-			chai.assert.throws(
-				() =>
-					observer.observe(document, {
-						attributes: false,
-						attributeOldValue: true,
-						childList: true
-					}),
-				TypeError
-			);
+			expect(() =>
+				observer.observe(document, {
+					attributes: false,
+					attributeOldValue: true,
+					childList: true
+				})
+			).toThrow(TypeError);
 		});
 
 		it('throws if asking for the old value of character data without observing them', () => {
 			const observer = new slimdom.MutationObserver(() => {});
-			chai.assert.throws(
-				() =>
-					observer.observe(document, {
-						characterData: false,
-						characterDataOldValue: true,
-						childList: true
-					}),
-				TypeError
-			);
+			expect(() =>
+				observer.observe(document, {
+					characterData: false,
+					characterDataOldValue: true,
+					childList: true
+				})
+			).toThrow(TypeError);
 		});
 	});
 
@@ -551,9 +536,9 @@ describe('MutationObserver', () => {
 				const records = observer.takeRecords();
 				assertRecords(records, expected);
 
-				clock.tick(100);
+				jest.runAllTimers();
 
-				chai.assert(!callbackCalled, 'callback was not called');
+				expect(callbackCalled).toBe(false);
 			});
 		});
 	});
@@ -573,15 +558,15 @@ describe('MutationObserver', () => {
 			it(description, () => {
 				const expected = testCase(observer);
 
-				clock.tick(100);
+				jest.runAllTimers();
 
 				if (expected !== null) {
-					chai.assert(callbackCalled, 'callback was called');
-					chai.assert.equal(calls.length, 1);
-					chai.assert.equal(calls[0].observer, observer);
+					expect(callbackCalled).toBe(true);
+					expect(calls.length).toBe(1);
+					expect(calls[0].observer).toBe(observer);
 					assertRecords(calls[0].records, expected);
 				} else {
-					chai.assert(!callbackCalled, 'callback was not called');
+					expect(callbackCalled).toBe(false);
 				}
 			});
 		});

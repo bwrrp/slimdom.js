@@ -1,4 +1,3 @@
-import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
 describe('CDATASection', () => {
@@ -9,19 +8,19 @@ describe('CDATASection', () => {
 
 	it('can be created', () => {
 		const cs = document.createCDATASection('some content');
-		chai.assert.equal(cs.nodeType, 4);
-		chai.assert.equal(cs.nodeName, '#cdata-section');
-		chai.assert.equal(cs.nodeValue, 'some content');
-		chai.assert.equal(cs.data, 'some content');
+		expect(cs.nodeType).toBe(4);
+		expect(cs.nodeName).toBe('#cdata-section');
+		expect(cs.nodeValue).toBe('some content');
+		expect(cs.data).toBe('some content');
 	});
 
 	it('can be cloned', () => {
 		const cs = document.createCDATASection('some content');
 		const copy = cs.cloneNode() as slimdom.CDATASection;
-		chai.assert.equal(copy.nodeType, 4);
-		chai.assert.equal(copy.nodeName, '#cdata-section');
-		chai.assert.equal(copy.nodeValue, 'some content');
-		chai.assert.equal(copy.data, 'some content');
-		chai.assert.notEqual(copy, cs);
+		expect(copy.nodeType).toBe(4);
+		expect(copy.nodeName).toBe('#cdata-section');
+		expect(copy.nodeValue).toBe('some content');
+		expect(copy.data).toBe('some content');
+		expect(copy).not.toBe(cs);
 	});
 });

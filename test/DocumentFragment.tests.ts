@@ -1,4 +1,3 @@
-import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
 describe('DocumentFragment', () => {
@@ -11,34 +10,34 @@ describe('DocumentFragment', () => {
 
 	it('can be created using Document#createDocumentFragment()', () => {
 		const df = document.createDocumentFragment();
-		chai.assert.equal(df.nodeType, 11);
-		chai.assert.equal(df.nodeName, '#document-fragment');
-		chai.assert.equal(df.nodeValue, null);
-		chai.assert.equal(df.ownerDocument, document);
+		expect(df.nodeType).toBe(11);
+		expect(df.nodeName).toBe('#document-fragment');
+		expect(df.nodeValue).toBe(null);
+		expect(df.ownerDocument).toBe(document);
 	});
 
 	it('can be created using its constructor', () => {
 		const df = new slimdom.DocumentFragment();
-		chai.assert.equal(df.nodeType, 11);
-		chai.assert.equal(df.nodeName, '#document-fragment');
-		chai.assert.equal(df.nodeValue, null);
-		chai.assert.equal(df.ownerDocument, slimdom.document);
+		expect(df.nodeType).toBe(11);
+		expect(df.nodeName).toBe('#document-fragment');
+		expect(df.nodeValue).toBe(null);
+		expect(df.ownerDocument).toBe(slimdom.document);
 	});
 
 	it('can not change its nodeValue', () => {
 		fragment.nodeValue = 'test';
-		chai.assert.equal(fragment.nodeValue, null);
+		expect(fragment.nodeValue).toBe(null);
 	});
 
 	it('can not lookup namespaces or prefixes', () => {
 		fragment.appendChild(document.createElementNS('http://www.example.com/ns', 'prf:test'));
-		chai.assert.equal(fragment.lookupNamespaceURI('prf'), null);
-		chai.assert.equal(fragment.lookupPrefix('http://www.example.com/ns'), null);
+		expect(fragment.lookupNamespaceURI('prf')).toBe(null);
+		expect(fragment.lookupPrefix('http://www.example.com/ns')).toBe(null);
 	});
 
-	it('initially has no childNodes', () => chai.assert.deepEqual(fragment.childNodes, []));
+	it('initially has no childNodes', () => expect(fragment.childNodes).toEqual([]));
 
-	it('initially has no children', () => chai.assert.deepEqual(fragment.children, []));
+	it('initially has no children', () => expect(fragment.children).toEqual([]));
 
 	it('correctly updates its relation properties when children are added', () => {
 		const child1 = fragment.appendChild(document.createElement('child1')) as slimdom.Element;
@@ -46,19 +45,19 @@ describe('DocumentFragment', () => {
 		const child2 = fragment.appendChild(document.createElement('child2')) as slimdom.Element;
 		const pi = fragment.appendChild(document.createProcessingInstruction('target', 'data'));
 		const child3 = fragment.appendChild(document.createElement('child3')) as slimdom.Element;
-		chai.assert.deepEqual(fragment.childNodes, [child1, text, child2, pi, child3]);
-		chai.assert.deepEqual(fragment.children, [child1, child2, child3]);
-		chai.assert.equal(fragment.firstElementChild, child1);
-		chai.assert.equal(fragment.firstElementChild!.nextElementSibling, child2);
-		chai.assert.equal(fragment.lastElementChild!.previousElementSibling, child2);
-		chai.assert.equal(fragment.lastElementChild, child3);
+		expect(fragment.childNodes).toEqual([child1, text, child2, pi, child3]);
+		expect(fragment.children).toEqual([child1, child2, child3]);
+		expect(fragment.firstElementChild).toBe(child1);
+		expect(fragment.firstElementChild!.nextElementSibling).toBe(child2);
+		expect(fragment.lastElementChild!.previousElementSibling).toBe(child2);
+		expect(fragment.lastElementChild).toBe(child3);
 		fragment.removeChild(child2);
-		chai.assert.deepEqual(fragment.childNodes, [child1, text, pi, child3]);
-		chai.assert.deepEqual(fragment.children, [child1, child3]);
-		chai.assert.equal(fragment.firstElementChild, child1);
-		chai.assert.equal(fragment.firstElementChild!.nextElementSibling, child3);
-		chai.assert.equal(fragment.lastElementChild!.previousElementSibling, child1);
-		chai.assert.equal(fragment.lastElementChild, child3);
+		expect(fragment.childNodes).toEqual([child1, text, pi, child3]);
+		expect(fragment.children).toEqual([child1, child3]);
+		expect(fragment.firstElementChild).toBe(child1);
+		expect(fragment.firstElementChild!.nextElementSibling).toBe(child3);
+		expect(fragment.lastElementChild!.previousElementSibling).toBe(child1);
+		expect(fragment.lastElementChild).toBe(child3);
 	});
 
 	it('inserts its children if inserted under another node', () => {
@@ -70,12 +69,12 @@ describe('DocumentFragment', () => {
 		const parent = document.createElement('parent');
 		const existingChild = parent.appendChild(document.createComment('test'));
 		parent.insertBefore(fragment, existingChild);
-		chai.assert.deepEqual(parent.childNodes, [child1, text, child2, pi, child3, existingChild]);
-		chai.assert.deepEqual(parent.children, [child1, child2, child3]);
-		chai.assert.equal(parent.firstElementChild, child1);
-		chai.assert.equal(parent.firstElementChild!.nextElementSibling, child2);
-		chai.assert.equal(parent.lastElementChild!.previousElementSibling, child2);
-		chai.assert.equal(parent.lastElementChild, child3);
+		expect(parent.childNodes).toEqual([child1, text, child2, pi, child3, existingChild]);
+		expect(parent.children).toEqual([child1, child2, child3]);
+		expect(parent.firstElementChild).toBe(child1);
+		expect(parent.firstElementChild!.nextElementSibling).toBe(child2);
+		expect(parent.lastElementChild!.previousElementSibling).toBe(child2);
+		expect(parent.lastElementChild).toBe(child3);
 	});
 
 	describe('.cloneNode', () => {
@@ -86,26 +85,26 @@ describe('DocumentFragment', () => {
 		it('can be cloned (shallow)', () => {
 			const copy = fragment.cloneNode() as slimdom.DocumentFragment;
 
-			chai.assert.equal(copy.nodeType, 11);
-			chai.assert.equal(copy.nodeName, '#document-fragment');
-			chai.assert.equal(copy.nodeValue, null);
+			expect(copy.nodeType).toBe(11);
+			expect(copy.nodeName).toBe('#document-fragment');
+			expect(copy.nodeValue).toBe(null);
 
-			chai.assert.equal(copy.firstChild, null);
+			expect(copy.firstChild).toBe(null);
 
-			chai.assert.notEqual(copy, fragment);
+			expect(copy).not.toBe(fragment);
 		});
 
 		it('can be cloned (deep)', () => {
 			const copy = fragment.cloneNode(true) as slimdom.DocumentFragment;
 
-			chai.assert.equal(copy.nodeType, 11);
-			chai.assert.equal(copy.nodeName, '#document-fragment');
-			chai.assert.equal(copy.nodeValue, null);
+			expect(copy.nodeType).toBe(11);
+			expect(copy.nodeName).toBe('#document-fragment');
+			expect(copy.nodeValue).toBe(null);
 
-			chai.assert.equal(copy.firstChild!.nodeName, 'root');
+			expect(copy.firstChild!.nodeName).toBe('root');
 
-			chai.assert.notEqual(copy, document);
-			chai.assert.notEqual(copy.firstChild, fragment.firstChild);
+			expect(copy).not.toBe(document);
+			expect(copy.firstChild).not.toBe(fragment.firstChild);
 		});
 	});
 });

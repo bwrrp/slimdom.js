@@ -1,4 +1,3 @@
-import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
 describe('Document', () => {
@@ -9,33 +8,33 @@ describe('Document', () => {
 
 	it('can be created using its constructor', () => {
 		const document = new slimdom.Document();
-		chai.assert.equal(document.nodeType, 9);
-		chai.assert.equal(document.nodeName, '#document');
-		chai.assert.equal(document.nodeValue, null);
+		expect(document.nodeType).toBe(9);
+		expect(document.nodeName).toBe('#document');
+		expect(document.nodeValue).toBe(null);
 	});
 
 	it('can not change its nodeValue', () => {
 		document.nodeValue = 'test';
-		chai.assert.equal(document.nodeValue, null);
+		expect(document.nodeValue).toBe(null);
 	});
 
 	it('exposes its DOMImplementation', () =>
-		chai.assert.instanceOf(document.implementation, slimdom.DOMImplementation));
+		expect(document.implementation).toBeInstanceOf(slimdom.DOMImplementation));
 
 	it('has a doctype property that reflects the presence of a doctype child', () => {
-		chai.assert.equal(document.doctype, null);
+		expect(document.doctype).toBe(null);
 		const doctype = document.implementation.createDocumentType('html', '', '');
 		document.appendChild(doctype);
-		chai.assert.equal(document.doctype, doctype);
+		expect(document.doctype).toBe(doctype);
 		document.removeChild(doctype);
-		chai.assert.equal(document.doctype, null);
+		expect(document.doctype).toBe(null);
 	});
 
-	it('initially has no documentElement', () => chai.assert.equal(document.documentElement, null));
+	it('initially has no documentElement', () => expect(document.documentElement).toBe(null));
 
-	it('initially has no childNodes', () => chai.assert.deepEqual(document.childNodes, []));
+	it('initially has no childNodes', () => expect(document.childNodes).toEqual([]));
 
-	it('initially has no children', () => chai.assert.deepEqual(document.children, []));
+	it('initially has no children', () => expect(document.children).toEqual([]));
 
 	describe('after appending a child element', () => {
 		let element: slimdom.Element;
@@ -44,30 +43,30 @@ describe('Document', () => {
 			document.appendChild(element);
 		});
 
-		it('has a documentElement', () => chai.assert.equal(document.documentElement, element));
+		it('has a documentElement', () => expect(document.documentElement).toBe(element));
 
-		it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [element]));
+		it('has childNodes', () => expect(document.childNodes).toEqual([element]));
 
-		it('has children', () => chai.assert.deepEqual(document.children, [element]));
+		it('has children', () => expect(document.children).toEqual([element]));
 
 		it('has a first and last element child', () => {
-			chai.assert.equal(document.firstElementChild, element);
-			chai.assert.equal(document.lastElementChild, element);
+			expect(document.firstElementChild).toBe(element);
+			expect(document.lastElementChild).toBe(element);
 		});
 
 		it('the child element is adopted into the document', () =>
-			chai.assert.equal(element.ownerDocument, document));
+			expect(element.ownerDocument).toBe(document));
 
 		describe('after removing the element', () => {
 			beforeEach(() => {
 				document.removeChild(element);
 			});
 
-			it('has no documentElement', () => chai.assert.equal(document.documentElement, null));
+			it('has no documentElement', () => expect(document.documentElement).toBe(null));
 
-			it('has no childNodes', () => chai.assert.deepEqual(document.childNodes, []));
+			it('has no childNodes', () => expect(document.childNodes).toEqual([]));
 
-			it('has no children', () => chai.assert.deepEqual(document.children, []));
+			it('has no children', () => expect(document.children).toEqual([]));
 		});
 
 		describe('after replacing the element', () => {
@@ -78,11 +77,11 @@ describe('Document', () => {
 			});
 
 			it('has the other element as documentElement', () =>
-				chai.assert.equal(document.documentElement, otherElement));
+				expect(document.documentElement).toBe(otherElement));
 
-			it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [otherElement]));
+			it('has childNodes', () => expect(document.childNodes).toEqual([otherElement]));
 
-			it('has children', () => chai.assert.deepEqual(document.children, [otherElement]));
+			it('has children', () => expect(document.children).toEqual([otherElement]));
 		});
 	});
 
@@ -93,12 +92,11 @@ describe('Document', () => {
 			document.appendChild(processingInstruction);
 		});
 
-		it('has no documentElement', () => chai.assert.equal(document.documentElement, null));
+		it('has no documentElement', () => expect(document.documentElement).toBe(null));
 
-		it('has childNodes', () =>
-			chai.assert.deepEqual(document.childNodes, [processingInstruction]));
+		it('has childNodes', () => expect(document.childNodes).toEqual([processingInstruction]));
 
-		it('has no children', () => chai.assert.deepEqual(document.children, []));
+		it('has no children', () => expect(document.children).toEqual([]));
 
 		describe('after replacing with an element', () => {
 			let otherElement: slimdom.Element;
@@ -108,11 +106,11 @@ describe('Document', () => {
 			});
 
 			it('has the other element as documentElement', () =>
-				chai.assert.equal(document.documentElement, otherElement));
+				expect(document.documentElement).toBe(otherElement));
 
-			it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [otherElement]));
+			it('has childNodes', () => expect(document.childNodes).toEqual([otherElement]));
 
-			it('has children', () => chai.assert.deepEqual(document.children, [otherElement]));
+			it('has children', () => expect(document.children).toEqual([otherElement]));
 		});
 	});
 
@@ -124,47 +122,46 @@ describe('Document', () => {
 		it('can be cloned (shallow)', () => {
 			const copy = document.cloneNode() as slimdom.Document;
 
-			chai.assert.equal(copy.nodeType, 9);
-			chai.assert.equal(copy.nodeName, '#document');
-			chai.assert.equal(copy.nodeValue, null);
+			expect(copy.nodeType).toBe(9);
+			expect(copy.nodeName).toBe('#document');
+			expect(copy.nodeValue).toBe(null);
 
-			chai.assert.equal(copy.documentElement, null);
+			expect(copy.documentElement).toBe(null);
 
-			chai.assert.notEqual(copy, document);
+			expect(copy).not.toBe(document);
 		});
 
 		it('can be cloned (deep)', () => {
 			const copy = document.cloneNode(true) as slimdom.Document;
 
-			chai.assert.equal(copy.nodeType, 9);
-			chai.assert.equal(copy.nodeName, '#document');
-			chai.assert.equal(copy.nodeValue, null);
+			expect(copy.nodeType).toBe(9);
+			expect(copy.nodeName).toBe('#document');
+			expect(copy.nodeValue).toBe(null);
 
-			chai.assert.equal(copy.documentElement!.nodeName, 'root');
+			expect(copy.documentElement!.nodeName).toBe('root');
 
-			chai.assert.notEqual(copy, document);
-			chai.assert.notEqual(copy.documentElement, document.documentElement);
+			expect(copy).not.toBe(document);
+			expect(copy.documentElement).not.toBe(document.documentElement);
 		});
 	});
 
 	it('can lookup a prefix or namespace on its document element', () => {
-		chai.assert.equal(document.lookupNamespaceURI('prf'), null);
-		chai.assert.equal(document.lookupPrefix('http://www.example.com/ns'), null);
+		expect(document.lookupNamespaceURI('prf')).toBe(null);
+		expect(document.lookupPrefix('http://www.example.com/ns')).toBe(null);
 
 		const element = document.createElementNS('http://www.example.com/ns', 'prf:test');
 		document.appendChild(element);
-		chai.assert.equal(document.lookupNamespaceURI('prf'), 'http://www.example.com/ns');
-		chai.assert.equal(document.lookupPrefix('http://www.example.com/ns'), 'prf');
+		expect(document.lookupNamespaceURI('prf')).toBe('http://www.example.com/ns');
+		expect(document.lookupPrefix('http://www.example.com/ns')).toBe('prf');
 	});
 
 	describe('.createElement', () => {
 		it('throws if not given a name', () => {
-			chai.assert.throws(() => (document as any).createElement(), TypeError);
+			expect(() => (document as any).createElement()).toThrow(TypeError);
 		});
 
 		it('throws if given an invalid name', () => {
-			chai.assert.throws(
-				() => document.createElement(String.fromCodePoint(0x200b)),
+			expect(() => document.createElement(String.fromCodePoint(0x200b))).toThrow(
 				'InvalidCharacterError'
 			);
 		});
@@ -172,35 +169,32 @@ describe('Document', () => {
 
 	describe('.createElementNS', () => {
 		it('throws if given an invalid name', () => {
-			chai.assert.throws(
-				() => document.createElementNS(null, String.fromCodePoint(0x200b)),
+			expect(() => document.createElementNS(null, String.fromCodePoint(0x200b))).toThrow(
 				'InvalidCharacterError'
 			);
-			chai.assert.throws(
-				() => document.createElementNS(null, 'a:b:c'),
-				'InvalidCharacterError'
-			);
+			expect(() => document.createElementNS(null, 'a:b:c')).toThrow('InvalidCharacterError');
 		});
 
 		it('throws if given a prefixed name without a namespace', () => {
-			chai.assert.throws(() => document.createElementNS('', 'prf:test'), 'NamespaceError');
+			expect(() => document.createElementNS('', 'prf:test')).toThrow('NamespaceError');
 		});
 
 		it('throws if given an invalid use of a reserved prefix', () => {
-			chai.assert.throws(() => document.createElementNS('not the xml namespace', 'xml:test'));
-			chai.assert.throws(() =>
-				document.createElementNS('not the xmlns namespace', 'xmlns:test')
+			expect(() => document.createElementNS('not the xml namespace', 'xml:test')).toThrow(
+				'NamespaceError'
 			);
-			chai.assert.throws(() =>
+			expect(() => document.createElementNS('not the xmlns namespace', 'xmlns:test')).toThrow(
+				'NamespaceError'
+			);
+			expect(() =>
 				document.createElementNS('http://www.w3.org/2000/xmlns/', 'pre:test')
-			);
+			).toThrow('NamespaceError');
 		});
 	});
 
 	describe('.createCDATASection', () => {
 		it('throws if data contains "]]>"', () => {
-			chai.assert.throws(
-				() => document.createCDATASection('meep]]>maap'),
+			expect(() => document.createCDATASection('meep]]>maap')).toThrow(
 				'InvalidCharacterError'
 			);
 		});
@@ -208,16 +202,13 @@ describe('Document', () => {
 
 	describe('.createProcessingInstruction', () => {
 		it('throws if given an invalid target', () => {
-			chai.assert.throws(
-				() =>
-					document.createProcessingInstruction(String.fromCodePoint(0x200b), 'some data'),
-				'InvalidCharacterError'
-			);
+			expect(() =>
+				document.createProcessingInstruction(String.fromCodePoint(0x200b), 'some data')
+			).toThrow('InvalidCharacterError');
 		});
 
 		it('throws if data contains "?>"', () => {
-			chai.assert.throws(
-				() => document.createProcessingInstruction('target', 'some ?> data'),
+			expect(() => document.createProcessingInstruction('target', 'some ?> data')).toThrow(
 				'InvalidCharacterError'
 			);
 		});
@@ -231,12 +222,12 @@ describe('Document', () => {
 
 		it('returns a clone with the document as node document', () => {
 			const element = otherDocument.createElement('test');
-			chai.assert.equal(element.ownerDocument, otherDocument);
+			expect(element.ownerDocument).toBe(otherDocument);
 			const copy = document.importNode(element);
-			chai.assert.equal(copy.ownerDocument, document);
-			chai.assert.equal(copy.nodeName, element.nodeName);
-			chai.assert.notEqual(copy, element);
-			chai.assert.deepEqual(copy.childNodes, []);
+			expect(copy.ownerDocument).toBe(document);
+			expect(copy.nodeName).toBe(element.nodeName);
+			expect(copy).not.toBe(element);
+			expect(copy.childNodes).toEqual([]);
 		});
 
 		it('can clone descendants', () => {
@@ -244,27 +235,27 @@ describe('Document', () => {
 			element
 				.appendChild(otherDocument.createElement('child'))
 				.appendChild(otherDocument.createTextNode('content'));
-			chai.assert.equal(element.ownerDocument, otherDocument);
+			expect(element.ownerDocument).toBe(otherDocument);
 			const copy = document.importNode(element, true) as slimdom.Element;
-			chai.assert.equal(copy.ownerDocument, document);
-			chai.assert.equal(copy.nodeName, element.nodeName);
-			chai.assert.notEqual(copy, element);
+			expect(copy.ownerDocument).toBe(document);
+			expect(copy.nodeName).toBe(element.nodeName);
+			expect(copy).not.toBe(element);
 
 			const child = copy.firstElementChild!;
-			chai.assert.equal(child.nodeName, 'child');
-			chai.assert.equal(child.ownerDocument, document);
-			chai.assert.notEqual(child, element.firstElementChild);
+			expect(child.nodeName).toBe('child');
+			expect(child.ownerDocument).toBe(document);
+			expect(child).not.toBe(element.firstElementChild);
 
-			chai.assert.equal(child.firstChild!.ownerDocument, document);
-			chai.assert.equal((child.firstChild as slimdom.Text).data, 'content');
+			expect(child.firstChild!.ownerDocument).toBe(document);
+			expect((child.firstChild as slimdom.Text).data).toBe('content');
 		});
 
 		it('throws if given a document node', () => {
-			chai.assert.throws(() => document.importNode(otherDocument, true), 'NotSupportedError');
+			expect(() => document.importNode(otherDocument, true)).toThrow('NotSupportedError');
 		});
 
 		it('throws if given something other than a node', () => {
-			chai.assert.throws(() => (document as any).importNode('not a node'), TypeError);
+			expect(() => (document as any).importNode('not a node')).toThrow(TypeError);
 		});
 	});
 
@@ -276,11 +267,11 @@ describe('Document', () => {
 
 		it('modifies the node to set the document as its node document', () => {
 			const element = otherDocument.createElement('test');
-			chai.assert.equal(element.ownerDocument, otherDocument);
+			expect(element.ownerDocument).toBe(otherDocument);
 			const adopted = document.adoptNode(element);
-			chai.assert.equal(adopted.ownerDocument, document);
-			chai.assert.equal(adopted.nodeName, element.nodeName);
-			chai.assert.equal(adopted, element);
+			expect(adopted.ownerDocument).toBe(document);
+			expect(adopted.nodeName).toBe(element.nodeName);
+			expect(adopted).toBe(element);
 		});
 
 		it('also adopts descendants and attributes', () => {
@@ -289,29 +280,28 @@ describe('Document', () => {
 				.appendChild(otherDocument.createElement('child'))
 				.appendChild(otherDocument.createTextNode('content'));
 			element.setAttribute('test', 'value');
-			chai.assert.equal(element.ownerDocument, otherDocument);
+			expect(element.ownerDocument).toBe(otherDocument);
 			const adopted = document.adoptNode(element) as slimdom.Element;
-			chai.assert.equal(adopted.ownerDocument, document);
-			chai.assert.equal(adopted.nodeName, element.nodeName);
-			chai.assert.equal(adopted, element);
+			expect(adopted.ownerDocument).toBe(document);
+			expect(adopted.nodeName).toBe(element.nodeName);
+			expect(adopted).toBe(element);
 
 			const child = adopted.firstElementChild!;
-			chai.assert.equal(child.ownerDocument, document);
-			chai.assert.equal(child.firstChild!.ownerDocument, document);
+			expect(child.ownerDocument).toBe(document);
+			expect(child.firstChild!.ownerDocument).toBe(document);
 
 			const attr = adopted.getAttributeNode('test');
-			chai.assert.equal(attr!.ownerDocument, document);
+			expect(attr!.ownerDocument).toBe(document);
 		});
 
 		it('throws if given a document node', () => {
-			chai.assert.throws(() => document.adoptNode(otherDocument), 'NotSupportedError');
+			expect(() => document.adoptNode(otherDocument)).toThrow('NotSupportedError');
 		});
 	});
 
 	describe('.createAttribute', () => {
 		it('throws if given an invalid name', () => {
-			chai.assert.throws(
-				() => document.createAttribute(String.fromCodePoint(0x200b)),
+			expect(() => document.createAttribute(String.fromCodePoint(0x200b))).toThrow(
 				'InvalidCharacterError'
 			);
 		});

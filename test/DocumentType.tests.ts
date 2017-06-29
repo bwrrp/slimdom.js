@@ -1,4 +1,3 @@
-import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
 describe('DocumentType', () => {
@@ -19,34 +18,34 @@ describe('DocumentType', () => {
 			'-//W3C//DTD HTML 4.01//EN',
 			'http://www.w3.org/TR/html4/strict.dtd'
 		);
-		chai.assert.equal(doctype.nodeType, 10);
-		chai.assert.equal(doctype.nodeName, 'HTML');
-		chai.assert.equal(doctype.nodeValue, null);
-		chai.assert.equal(doctype.name, 'HTML');
-		chai.assert.equal(doctype.publicId, '-//W3C//DTD HTML 4.01//EN');
-		chai.assert.equal(doctype.systemId, 'http://www.w3.org/TR/html4/strict.dtd');
-		chai.assert.equal(doctype.ownerDocument, document);
+		expect(doctype.nodeType).toBe(10);
+		expect(doctype.nodeName).toBe('HTML');
+		expect(doctype.nodeValue).toBe(null);
+		expect(doctype.name).toBe('HTML');
+		expect(doctype.publicId).toBe('-//W3C//DTD HTML 4.01//EN');
+		expect(doctype.systemId).toBe('http://www.w3.org/TR/html4/strict.dtd');
+		expect(doctype.ownerDocument).toBe(document);
 	});
 
 	it('can not change its nodeValue', () => {
 		doctype.nodeValue = 'test';
-		chai.assert.equal(document.nodeValue, null);
+		expect(document.nodeValue).toBe(null);
 	});
 
 	it('can be cloned', () => {
 		const copy = doctype.cloneNode(true) as slimdom.DocumentType;
-		chai.assert.equal(copy.nodeType, 10);
-		chai.assert.equal(copy.name, 'somename');
-		chai.assert.equal(copy.publicId, 'somePublicId');
-		chai.assert.equal(copy.systemId, 'someSystemId');
-		chai.assert.equal(copy.ownerDocument, document);
-		chai.assert.notEqual(copy, doctype);
+		expect(copy.nodeType).toBe(10);
+		expect(copy.name).toBe('somename');
+		expect(copy.publicId).toBe('somePublicId');
+		expect(copy.systemId).toBe('someSystemId');
+		expect(copy.ownerDocument).toBe(document);
+		expect(copy).not.toBe(doctype);
 	});
 
 	it('can not lookup namespaces or prefixes', () => {
 		document.appendChild(doctype);
 		document.appendChild(document.createElementNS('http://www.example.com/ns', 'prf:test'));
-		chai.assert.equal(doctype.lookupNamespaceURI('prf'), null);
-		chai.assert.equal(doctype.lookupPrefix('http://www.example.com/ns'), null);
+		expect(doctype.lookupNamespaceURI('prf')).toBe(null);
+		expect(doctype.lookupPrefix('http://www.example.com/ns')).toBe(null);
 	});
 });

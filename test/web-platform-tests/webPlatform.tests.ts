@@ -1,4 +1,3 @@
-import * as chai from 'chai';
 import * as fs from 'fs';
 import * as parse5 from 'parse5';
 import * as path from 'path';
@@ -525,15 +524,14 @@ function createTest(casePath: string, blacklistReason: { [key: string]: string }
 
 			stubs.global.add_completion_callback(function(tests: any[], testStatus: any) {
 				// TODO: Seems to be triggered by duplicate names in the createDocument tests
-				//chai.assert.equal(testStatus.status, testStatus.OK, testStatus.message);
+				//expect(testStatus.status).toBe(testStatus.OK);
 				tests.forEach(test => {
 					// Ignore results of blacklisted tests
 					if (!blacklistReason[test.name]) {
-						chai.assert.equal(
-							test.status,
-							testStatus.OK,
-							`${test.name}: ${test.message}`
-						);
+						if (test.status !== testStatus.OK) {
+							console.log(`${test.name}: ${test.message}`);
+						}
+						expect(test.status).toBe(testStatus.OK);
 					}
 				});
 				done();
@@ -548,10 +546,6 @@ function createTest(casePath: string, blacklistReason: { [key: string]: string }
 				}
 			});
 		} catch (e) {
-			if (e instanceof chai.AssertionError) {
-				throw e;
-			}
-
 			if (stubs.onErrorCallback) {
 				stubs.onErrorCallback(e);
 			} else {
@@ -590,6 +584,10 @@ describe('web platform DOM test suite', () => {
 		it('requires the WEB_PLATFORM_TESTS_PATH environment variable to be set');
 		return;
 	}
+
+	// Some web platform tests are a bit slow
+	// TODO: change to jest.setTimeout(20000); when jest 21 is released
+	jasmine.DEFAULT_TIMEOUT_INTERVAL = 20000;
 
 	(slimdom.Document.prototype as any).getElementsByTagName = function(
 		this: slimdom.Document,

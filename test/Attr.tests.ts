@@ -1,4 +1,3 @@
-import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
 describe('Attr', () => {
@@ -9,56 +8,56 @@ describe('Attr', () => {
 
 	it('can be created using Document#createAttribute()', () => {
 		const attr = document.createAttribute('test');
-		chai.assert.equal(attr.nodeType, 2);
-		chai.assert.equal(attr.nodeName, 'test');
-		chai.assert.equal(attr.nodeValue, '');
+		expect(attr.nodeType).toBe(2);
+		expect(attr.nodeName).toBe('test');
+		expect(attr.nodeValue).toBe('');
 
-		chai.assert.equal(attr.namespaceURI, null);
-		chai.assert.equal(attr.prefix, null);
-		chai.assert.equal(attr.localName, 'test');
-		chai.assert.equal(attr.name, 'test');
-		chai.assert.equal(attr.value, '');
+		expect(attr.namespaceURI).toBe(null);
+		expect(attr.prefix).toBe(null);
+		expect(attr.localName).toBe('test');
+		expect(attr.name).toBe('test');
+		expect(attr.value).toBe('');
 	});
 
 	it('can be created using Document#createAttributeNS()', () => {
 		const attr = document.createAttributeNS('http://www.example.com/ns', 'ns:test');
-		chai.assert.equal(attr.nodeType, 2);
-		chai.assert.equal(attr.nodeName, 'ns:test');
-		chai.assert.equal(attr.nodeValue, '');
+		expect(attr.nodeType).toBe(2);
+		expect(attr.nodeName).toBe('ns:test');
+		expect(attr.nodeValue).toBe('');
 
-		chai.assert.equal(attr.namespaceURI, 'http://www.example.com/ns');
-		chai.assert.equal(attr.prefix, 'ns');
-		chai.assert.equal(attr.localName, 'test');
-		chai.assert.equal(attr.name, 'ns:test');
-		chai.assert.equal(attr.value, '');
+		expect(attr.namespaceURI).toBe('http://www.example.com/ns');
+		expect(attr.prefix).toBe('ns');
+		expect(attr.localName).toBe('test');
+		expect(attr.name).toBe('ns:test');
+		expect(attr.value).toBe('');
 	});
 
 	it('can set its value using nodeValue', () => {
 		const attr = document.createAttribute('test');
 		attr.nodeValue = 'value';
-		chai.assert.equal(attr.nodeValue, 'value');
-		chai.assert.equal(attr.value, 'value');
+		expect(attr.nodeValue).toBe('value');
+		expect(attr.value).toBe('value');
 
 		attr.nodeValue = null;
-		chai.assert.equal(attr.nodeValue, '');
-		chai.assert.equal(attr.value, '');
+		expect(attr.nodeValue).toBe('');
+		expect(attr.value).toBe('');
 	});
 
 	it('can set its value using value', () => {
 		const attr = document.createAttribute('test');
 		attr.value = 'value';
-		chai.assert.equal(attr.nodeValue, 'value');
-		chai.assert.equal(attr.value, 'value');
+		expect(attr.nodeValue).toBe('value');
+		expect(attr.value).toBe('value');
 	});
 
 	it('can set its value when part of an element', () => {
 		const element = document.createElement('test');
 		element.setAttribute('attr', 'value');
 		const attr = element.getAttributeNode('attr')!;
-		chai.assert.equal(attr.value, 'value');
+		expect(attr.value).toBe('value');
 
 		attr.value = 'new value';
-		chai.assert.equal(element.getAttribute('attr'), 'new value');
+		expect(element.getAttribute('attr')).toBe('new value');
 	});
 
 	it('can be cloned', () => {
@@ -66,27 +65,27 @@ describe('Attr', () => {
 		attr.value = 'some value';
 
 		const copy = attr.cloneNode() as slimdom.Attr;
-		chai.assert.equal(copy.nodeType, 2);
-		chai.assert.equal(copy.nodeName, 'ns:test');
-		chai.assert.equal(copy.nodeValue, 'some value');
+		expect(copy.nodeType).toBe(2);
+		expect(copy.nodeName).toBe('ns:test');
+		expect(copy.nodeValue).toBe('some value');
 
-		chai.assert.equal(copy.namespaceURI, 'http://www.example.com/ns');
-		chai.assert.equal(copy.prefix, 'ns');
-		chai.assert.equal(copy.localName, 'test');
-		chai.assert.equal(copy.name, 'ns:test');
-		chai.assert.equal(copy.value, 'some value');
+		expect(copy.namespaceURI).toBe('http://www.example.com/ns');
+		expect(copy.prefix).toBe('ns');
+		expect(copy.localName).toBe('test');
+		expect(copy.name).toBe('ns:test');
+		expect(copy.value).toBe('some value');
 
-		chai.assert.notEqual(copy, attr);
+		expect(copy).not.toBe(attr);
 	});
 
 	it('can lookup a prefix or namespace on its owner element', () => {
 		const attr = document.createAttribute('attr');
-		chai.assert.equal(attr.lookupNamespaceURI('prf'), null);
-		chai.assert.equal(attr.lookupPrefix('http://www.example.com/ns'), null);
+		expect(attr.lookupNamespaceURI('prf')).toBe(null);
+		expect(attr.lookupPrefix('http://www.example.com/ns')).toBe(null);
 
 		const element = document.createElementNS('http://www.example.com/ns', 'prf:test');
 		element.setAttributeNode(attr);
-		chai.assert.equal(attr.lookupNamespaceURI('prf'), 'http://www.example.com/ns');
-		chai.assert.equal(attr.lookupPrefix('http://www.example.com/ns'), 'prf');
+		expect(attr.lookupNamespaceURI('prf')).toBe('http://www.example.com/ns');
+		expect(attr.lookupPrefix('http://www.example.com/ns')).toBe('prf');
 	});
 });

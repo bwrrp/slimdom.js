@@ -1,4 +1,3 @@
-import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
 describe('DOMImplementation', () => {
@@ -15,18 +14,18 @@ describe('DOMImplementation', () => {
 				'somePublicId',
 				'someSystemId'
 			);
-			chai.assert.equal(doctype.nodeType, 10);
-			chai.assert.equal(doctype.name, 'someName');
-			chai.assert.equal(doctype.publicId, 'somePublicId');
-			chai.assert.equal(doctype.systemId, 'someSystemId');
+			expect(doctype.nodeType).toBe(10);
+			expect(doctype.name).toBe('someName');
+			expect(doctype.publicId).toBe('somePublicId');
+			expect(doctype.systemId).toBe('someSystemId');
 		});
 	});
 
 	describe('.createDocument()', () => {
 		it('can create a blank document', () => {
 			const document = domImplementation.createDocument(null, '');
-			chai.assert.equal(document.nodeType, 9);
-			chai.assert.equal(document.firstChild, null);
+			expect(document.nodeType).toBe(9);
+			expect(document.firstChild).toBe(null);
 		});
 
 		it('can create a document with a given document type', () => {
@@ -36,18 +35,17 @@ describe('DOMImplementation', () => {
 				'someSystemId'
 			);
 			const document = domImplementation.createDocument(null, '', doctype);
-			chai.assert.equal(document.nodeType, 9);
-			chai.assert.equal(document.firstChild, document.doctype);
-			chai.assert.equal(document.doctype, doctype);
-			chai.assert.equal(document.documentElement, null);
+			expect(document.nodeType).toBe(9);
+			expect(document.firstChild).toBe(document.doctype);
+			expect(document.doctype).toBe(doctype);
+			expect(document.documentElement).toBe(null);
 		});
 
 		it('can create a document with a given root element', () => {
 			const document = domImplementation.createDocument(null, 'someRootElementName');
-			chai.assert.equal(document.nodeType, 9);
-			chai.assert.equal(document.firstChild, document.documentElement);
-			chai.assert.equal(
-				(document.documentElement as slimdom.Element).nodeName,
+			expect(document.nodeType).toBe(9);
+			expect(document.firstChild).toBe(document.documentElement);
+			expect((document.documentElement as slimdom.Element).nodeName).toBe(
 				'someRootElementName'
 			);
 		});
@@ -57,28 +55,28 @@ describe('DOMImplementation', () => {
 		it('can create a document without a title', () => {
 			const document = domImplementation.createHTMLDocument(null);
 			const html = document.documentElement!;
-			chai.assert.equal(html.namespaceURI, 'http://www.w3.org/1999/xhtml');
-			chai.assert.equal(html.localName, 'html');
+			expect(html.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
+			expect(html.localName).toBe('html');
 			const head = html.firstElementChild!;
-			chai.assert.equal(head.localName, 'head');
+			expect(head.localName).toBe('head');
 			const body = html.lastElementChild!;
-			chai.assert.equal(body.localName, 'body');
+			expect(body.localName).toBe('body');
 			const title = head.firstElementChild;
-			chai.assert.equal(title, null);
+			expect(title).toBe(null);
 		});
 
 		it('can create a document with a title', () => {
 			const document = domImplementation.createHTMLDocument('some title');
 			const html = document.documentElement!;
-			chai.assert.equal(html.namespaceURI, 'http://www.w3.org/1999/xhtml');
-			chai.assert.equal(html.localName, 'html');
+			expect(html.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
+			expect(html.localName).toBe('html');
 			const head = html.firstElementChild!;
-			chai.assert.equal(head.localName, 'head');
+			expect(head.localName).toBe('head');
 			const body = html.lastElementChild!;
-			chai.assert.equal(body.localName, 'body');
+			expect(body.localName).toBe('body');
 			const title = head.firstElementChild!;
-			chai.assert.equal(title.localName, 'title');
-			chai.assert.equal((title.firstChild as slimdom.Text).data, 'some title');
+			expect(title.localName).toBe('title');
+			expect((title.firstChild as slimdom.Text).data).toBe('some title');
 		});
 	});
 });

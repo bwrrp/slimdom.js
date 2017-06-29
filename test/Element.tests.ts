@@ -1,4 +1,3 @@
-import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
 describe('Element', () => {
@@ -11,36 +10,36 @@ describe('Element', () => {
 
 	it('can be created using Document#createElement', () => {
 		const element = document.createElement('test');
-		chai.assert.equal(element.nodeType, 1);
-		chai.assert.equal(element.nodeName, 'test');
-		chai.assert.equal(element.nodeValue, null);
-		chai.assert.equal(element.ownerDocument, document);
-		chai.assert.equal(element.namespaceURI, null);
-		chai.assert.equal(element.localName, 'test');
-		chai.assert.equal(element.prefix, null);
+		expect(element.nodeType).toBe(1);
+		expect(element.nodeName).toBe('test');
+		expect(element.nodeValue).toBe(null);
+		expect(element.ownerDocument).toBe(document);
+		expect(element.namespaceURI).toBe(null);
+		expect(element.localName).toBe('test');
+		expect(element.prefix).toBe(null);
 	});
 
 	it('can be created using Document#createElementNS', () => {
 		const element = document.createElementNS('http://www.example.com/ns', 'prf:test');
-		chai.assert.equal(element.nodeType, 1);
-		chai.assert.equal(element.nodeName, 'prf:test');
-		chai.assert.equal(element.nodeValue, null);
-		chai.assert.equal(element.ownerDocument, document);
-		chai.assert.equal(element.namespaceURI, 'http://www.example.com/ns');
-		chai.assert.equal(element.localName, 'test');
-		chai.assert.equal(element.prefix, 'prf');
+		expect(element.nodeType).toBe(1);
+		expect(element.nodeName).toBe('prf:test');
+		expect(element.nodeValue).toBe(null);
+		expect(element.ownerDocument).toBe(document);
+		expect(element.namespaceURI).toBe('http://www.example.com/ns');
+		expect(element.localName).toBe('test');
+		expect(element.prefix).toBe('prf');
 	});
 
 	it('can not change its nodeValue', () => {
 		element.nodeValue = 'test';
-		chai.assert.equal(element.nodeValue, null);
+		expect(element.nodeValue).toBe(null);
 	});
 
 	it('can lookup its own prefix or namespace', () => {
-		chai.assert.equal(element.lookupPrefix(null), null);
-		chai.assert.equal(element.lookupNamespaceURI(''), null);
-		chai.assert.equal(element.lookupNamespaceURI('svg'), 'http://www.w3.org/2000/svg');
-		chai.assert.equal(element.lookupPrefix('http://www.w3.org/2000/svg'), 'svg');
+		expect(element.lookupPrefix(null)).toBe(null);
+		expect(element.lookupNamespaceURI('')).toBe(null);
+		expect(element.lookupNamespaceURI('svg')).toBe('http://www.w3.org/2000/svg');
+		expect(element.lookupPrefix('http://www.w3.org/2000/svg')).toBe('svg');
 	});
 
 	it('can lookup a prefix or namespace declared on itself', () => {
@@ -54,15 +53,12 @@ describe('Element', () => {
 			'xmlns:prf',
 			'http://www.example.com/ns'
 		);
-		chai.assert.equal(element.lookupPrefix(null), null);
-		chai.assert.equal(element.lookupNamespaceURI('prf'), 'http://www.example.com/ns');
-		chai.assert.equal(element.lookupPrefix('http://www.example.com/ns'), 'prf');
-		chai.assert.equal(element.lookupNamespaceURI(null), 'http://www.w3.org/2000/svg');
-		chai.assert.equal(
-			(element as any).lookupNamespaceURI(undefined),
-			'http://www.w3.org/2000/svg'
-		);
-		chai.assert.equal(element.lookupPrefix('http://www.w3.org/2000/svg'), 'svg');
+		expect(element.lookupPrefix(null)).toBe(null);
+		expect(element.lookupNamespaceURI('prf')).toBe('http://www.example.com/ns');
+		expect(element.lookupPrefix('http://www.example.com/ns')).toBe('prf');
+		expect(element.lookupNamespaceURI(null)).toBe('http://www.w3.org/2000/svg');
+		expect((element as any).lookupNamespaceURI(undefined)).toBe('http://www.w3.org/2000/svg');
+		expect(element.lookupPrefix('http://www.w3.org/2000/svg')).toBe('svg');
 	});
 
 	it('can lookup a prefix or namespace declared on an ancestor', () => {
@@ -74,38 +70,38 @@ describe('Element', () => {
 			'xmlns:prf',
 			'http://www.example.com/ns'
 		);
-		chai.assert.equal(element.lookupPrefix(null), null);
-		chai.assert.equal(element.lookupNamespaceURI(null), null);
-		chai.assert.equal(element.lookupNamespaceURI('prf'), 'http://www.example.com/ns');
-		chai.assert.equal(element.lookupPrefix('http://www.example.com/ns'), 'prf');
-		chai.assert.equal(element.lookupPrefix('unknown'), null);
-		chai.assert.equal(element.lookupNamespaceURI('unknown'), null);
+		expect(element.lookupPrefix(null)).toBe(null);
+		expect(element.lookupNamespaceURI(null)).toBe(null);
+		expect(element.lookupNamespaceURI('prf')).toBe('http://www.example.com/ns');
+		expect(element.lookupPrefix('http://www.example.com/ns')).toBe('prf');
+		expect(element.lookupPrefix('unknown')).toBe(null);
+		expect(element.lookupNamespaceURI('unknown')).toBe(null);
 	});
 
 	it('can check the default namespace', () => {
 		const element = document.createElementNS('http://www.w3.org/1999/xhtml', 'html');
-		chai.assert(!element.isDefaultNamespace('http://www.w3.org/2000/svg'));
-		chai.assert(element.isDefaultNamespace('http://www.w3.org/1999/xhtml'));
-		chai.assert(document.createElement('test').isDefaultNamespace(''));
+		expect(element.isDefaultNamespace('http://www.w3.org/2000/svg')).toBe(false);
+		expect(element.isDefaultNamespace('http://www.w3.org/1999/xhtml')).toBe(true);
+		expect(document.createElement('test').isDefaultNamespace('')).toBe(true);
 	});
 
 	it('initially has no childNodes', () => {
-		chai.assert.equal(element.firstChild, null);
-		chai.assert.equal(element.lastChild, null);
-		chai.assert(!element.hasChildNodes());
-		chai.assert.deepEqual(element.childNodes, []);
+		expect(element.firstChild).toBe(null);
+		expect(element.lastChild).toBe(null);
+		expect(element.hasChildNodes()).toBe(false);
+		expect(element.childNodes).toEqual([]);
 	});
 
 	it('initially has no children', () => {
-		chai.assert.equal(element.firstElementChild, null);
-		chai.assert.equal(element.lastElementChild, null);
-		chai.assert.deepEqual(element.children, []);
-		chai.assert.equal(element.childElementCount, 0);
+		expect(element.firstElementChild).toBe(null);
+		expect(element.lastElementChild).toBe(null);
+		expect(element.children).toEqual([]);
+		expect(element.childElementCount).toBe(0);
 	});
 
 	it('initially has no attributes', () => {
-		chai.assert.equal(element.hasAttributes(), false);
-		chai.assert.deepEqual(Array.from(element.attributes), []);
+		expect(element.hasAttributes()).toBe(false);
+		expect(Array.from(element.attributes)).toEqual([]);
 	});
 
 	describe('setting attributes', () => {
@@ -116,45 +112,34 @@ describe('Element', () => {
 		});
 
 		it('throws if the attribute name is invalid', () => {
-			chai.assert.throws(() => element.setAttribute(String.fromCodePoint(0x200b), 'value'));
+			expect(() => element.setAttribute(String.fromCodePoint(0x200b), 'value')).toThrow(
+				'InvalidCharacterError'
+			);
 		});
 
 		it('has the attributes', () => {
-			chai.assert(element.hasAttributes());
-			chai.assert(element.hasAttribute('firstAttribute'), 'has attribute firstAttribute');
-			chai.assert(
-				element.hasAttributeNS(null, 'firstAttribute'),
-				'has attribute firstAttribute'
-			);
-			chai.assert(element.hasAttribute('test'), 'has attribute test');
-			chai.assert(element.hasAttributeNS(null, 'test'), 'has attribute test');
-			chai.assert(element.hasAttribute('prf:lastAttribute'), 'has attribute lastAttribute');
-			chai.assert(
-				element.hasAttributeNS('http://www.example.com/ns', 'lastAttribute'),
-				'has attribute lastAttribute'
-			);
-			chai.assert(
-				!element.hasAttribute('noSuchAttribute'),
-				'does not have attribute noSuchAttribute'
-			);
-			chai.assert(
-				!element.hasAttributeNS(null, 'prf:lastAttribute'),
-				'does not have attribute prf:lastAttribute without namespace'
-			);
+			expect(element.hasAttributes()).toBe(true);
+			expect(element.hasAttribute('firstAttribute')).toBe(true);
+			expect(element.hasAttributeNS(null, 'firstAttribute')).toBe(true);
+			expect(element.hasAttribute('test')).toBe(true);
+			expect(element.hasAttributeNS(null, 'test')).toBe(true);
+			expect(element.hasAttribute('prf:lastAttribute')).toBe(true);
+			expect(element.hasAttributeNS('http://www.example.com/ns', 'lastAttribute')).toBe(true);
+			expect(element.hasAttribute('noSuchAttribute')).toBe(false);
+			expect(element.hasAttributeNS(null, 'prf:lastAttribute')).toBe(false);
 		});
 
 		it('returns the attribute value', () => {
-			chai.assert.equal(element.getAttribute('firstAttribute'), 'first');
-			chai.assert.equal(element.getAttributeNS('', 'firstAttribute'), 'first');
-			chai.assert.equal(element.getAttribute('test'), '123');
-			chai.assert.equal(element.getAttributeNS(null, 'test'), '123');
-			chai.assert.equal(element.getAttribute('prf:lastAttribute'), 'last');
-			chai.assert.equal(
-				element.getAttributeNS('http://www.example.com/ns', 'lastAttribute'),
+			expect(element.getAttribute('firstAttribute')).toBe('first');
+			expect(element.getAttributeNS('', 'firstAttribute')).toBe('first');
+			expect(element.getAttribute('test')).toBe('123');
+			expect(element.getAttributeNS(null, 'test')).toBe('123');
+			expect(element.getAttribute('prf:lastAttribute')).toBe('last');
+			expect(element.getAttributeNS('http://www.example.com/ns', 'lastAttribute')).toBe(
 				'last'
 			);
-			chai.assert.equal(element.getAttribute('noSuchAttribute'), null);
-			chai.assert.equal(element.getAttributeNS(null, 'prf:noSuchAttribute'), null);
+			expect(element.getAttribute('noSuchAttribute')).toBe(null);
+			expect(element.getAttributeNS(null, 'prf:noSuchAttribute')).toBe(null);
 		});
 
 		function hasAttributes(
@@ -172,91 +157,88 @@ describe('Element', () => {
 			);
 		}
 
-		it('has attributes', () =>
-			chai.assert(
+		it('has attributes', () => {
+			expect(
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
 					{ name: 'test', value: '123' },
 					{ name: 'prf:lastAttribute', value: 'last' }
 				])
-			));
+			).toBe(true);
+		});
 
 		it('can overwrite the attribute', () => {
 			element.setAttribute('test', '456');
-			chai.assert(element.hasAttribute('test'), 'has the attribute');
-			chai.assert.equal(element.getAttribute('test'), '456');
-			chai.assert(
+			expect(element.hasAttribute('test')).toBe(true);
+			expect(element.getAttribute('test')).toBe('456');
+			expect(
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
 					{ name: 'test', value: '456' },
 					{ name: 'prf:lastAttribute', value: 'last' }
 				])
-			);
+			).toBe(true);
 
 			element.setAttributeNS('http://www.example.com/ns', 'prf:lastAttribute', 'new value');
-			chai.assert(
-				element.hasAttributeNS('http://www.example.com/ns', 'lastAttribute'),
-				'has the attribute'
-			);
-			chai.assert.equal(
-				element.getAttributeNS('http://www.example.com/ns', 'lastAttribute'),
+			expect(element.hasAttributeNS('http://www.example.com/ns', 'lastAttribute')).toBe(true);
+			expect(element.getAttributeNS('http://www.example.com/ns', 'lastAttribute')).toBe(
 				'new value'
 			);
-			chai.assert(
+			expect(
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
 					{ name: 'test', value: '456' },
 					{ name: 'prf:lastAttribute', value: 'new value' }
 				])
-			);
+			).toBe(true);
 		});
 
 		it('can remove the attribute', () => {
 			element.removeAttribute('test');
-			chai.assert(element.hasAttribute('firstAttribute'), 'has attribute firstAttribute');
-			chai.assert(!element.hasAttribute('test'), 'does not have attribute test');
-			chai.assert(element.hasAttribute('prf:lastAttribute'), 'has attribute lastAttribute');
-			chai.assert(
+			expect(element.hasAttribute('firstAttribute')).toBe(true);
+			expect(element.hasAttribute('test')).toBe(false);
+			expect(element.hasAttribute('prf:lastAttribute')).toBe(true);
+			expect(
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
 					{ name: 'prf:lastAttribute', value: 'last' }
 				])
-			);
+			).toBe(true);
 			element.removeAttributeNS('http://www.example.com/ns', 'lastAttribute');
-			chai.assert(
+			expect(
 				hasAttributes(element.attributes, [{ name: 'firstAttribute', value: 'first' }])
-			);
+			).toBe(true);
 			// Removing something that doesn't exist does nothing
 			element.removeAttributeNS('http://www.example.com/ns', 'missingAttribute');
-			chai.assert(
+			expect(
 				hasAttributes(element.attributes, [{ name: 'firstAttribute', value: 'first' }])
-			);
+			).toBe(true);
 		});
 
 		it('ignores removing non-existent attributes', () => {
-			chai.assert(!element.hasAttribute('other'), 'does not have attribute other');
+			expect(element.hasAttribute('other')).toBe(false);
 			element.removeAttribute('other');
-			chai.assert(!element.hasAttribute('other'), 'does not have attribute other');
-			chai.assert(element.hasAttribute('test'), 'has attribute test');
-			chai.assert(
+			expect(element.hasAttribute('other')).toBe(false);
+			expect(element.hasAttribute('test')).toBe(true);
+			expect(
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
 					{ name: 'test', value: '123' },
 					{ name: 'prf:lastAttribute', value: 'last' }
 				])
-			);
+			).toBe(true);
 		});
 
 		it('can set attributes using their nodes', () => {
 			const attr = document.createAttribute('attr');
 			attr.value = 'some value';
-			chai.assert.equal(element.setAttributeNodeNS(attr), null);
+			expect(element.setAttributeNodeNS(attr)).toBe(null);
 			const namespacedAttr = document.createAttributeNS(
 				'http://www.example.com/ns',
 				'prf:aaa'
 			);
 			element.setAttributeNode(namespacedAttr);
-			chai.assert(
+			expect(
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
 					{ name: 'test', value: '123' },
@@ -264,28 +246,27 @@ describe('Element', () => {
 					{ name: 'attr', value: 'some value' },
 					{ name: 'prf:aaa', value: '' }
 				])
-			);
+			).toBe(true);
 
 			// It returns the previous attribute node
-			chai.assert.equal(element.setAttributeNode(attr), attr);
-			chai.assert.equal(element.setAttributeNode(document.createAttribute('attr')), attr);
+			expect(element.setAttributeNode(attr)).toBe(attr);
+			expect(element.setAttributeNode(document.createAttribute('attr'))).toBe(attr);
 
 			const otherElement = document.createElement('test');
-			chai.assert.throws(
-				() => otherElement.setAttributeNode(namespacedAttr),
+			expect(() => otherElement.setAttributeNode(namespacedAttr)).toThrow(
 				'InUseAttributeError'
 			);
 		});
 
 		it('can remove attributes using their nodes', () => {
 			const attr = element.removeAttributeNode(element.attributes[1]);
-			chai.assert(
+			expect(
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
 					{ name: 'prf:lastAttribute', value: 'last' }
 				])
-			);
-			chai.assert.throws(() => element.removeAttributeNode(attr), 'NotFoundError');
+			).toBe(true);
+			expect(() => element.removeAttributeNode(attr)).toThrow('NotFoundError');
 		});
 	});
 
@@ -297,16 +278,16 @@ describe('Element', () => {
 		});
 
 		it('has child node references', () => {
-			chai.assert.equal(element.firstChild, child);
-			chai.assert.equal(element.lastChild, child);
-			chai.assert.deepEqual(element.childNodes, [child]);
+			expect(element.firstChild).toBe(child);
+			expect(element.lastChild).toBe(child);
+			expect(element.childNodes).toEqual([child]);
 		});
 
 		it('has child element references', () => {
-			chai.assert.equal(element.firstElementChild, child);
-			chai.assert.equal(element.lastElementChild, child);
-			chai.assert.deepEqual(element.children, [child]);
-			chai.assert.equal(element.childElementCount, 1);
+			expect(element.firstElementChild).toBe(child);
+			expect(element.lastElementChild).toBe(child);
+			expect(element.children).toEqual([child]);
+			expect(element.childElementCount).toBe(1);
 		});
 
 		describe('after removing the child element', () => {
@@ -315,16 +296,16 @@ describe('Element', () => {
 			});
 
 			it('has no child nodes', () => {
-				chai.assert.equal(element.firstChild, null);
-				chai.assert.equal(element.lastChild, null);
-				chai.assert.deepEqual(element.childNodes, []);
+				expect(element.firstChild).toBe(null);
+				expect(element.lastChild).toBe(null);
+				expect(element.childNodes).toEqual([]);
 			});
 
 			it('has no child elements', () => {
-				chai.assert.equal(element.firstElementChild, null);
-				chai.assert.equal(element.lastElementChild, null);
-				chai.assert.deepEqual(element.children, []);
-				chai.assert.equal(element.childElementCount, 0);
+				expect(element.firstElementChild).toBe(null);
+				expect(element.lastElementChild).toBe(null);
+				expect(element.children).toEqual([]);
+				expect(element.childElementCount).toBe(0);
 			});
 		});
 
@@ -336,16 +317,16 @@ describe('Element', () => {
 			});
 
 			it('has child node references', () => {
-				chai.assert.equal(element.firstChild, otherChild);
-				chai.assert.equal(element.lastChild, otherChild);
-				chai.assert.deepEqual(element.childNodes, [otherChild]);
+				expect(element.firstChild).toBe(otherChild);
+				expect(element.lastChild).toBe(otherChild);
+				expect(element.childNodes).toEqual([otherChild]);
 			});
 
 			it('has child element references', () => {
-				chai.assert.equal(element.firstElementChild, otherChild);
-				chai.assert.equal(element.lastElementChild, otherChild);
-				chai.assert.deepEqual(element.children, [otherChild]);
-				chai.assert.equal(element.childElementCount, 1);
+				expect(element.firstElementChild).toBe(otherChild);
+				expect(element.lastElementChild).toBe(otherChild);
+				expect(element.children).toEqual([otherChild]);
+				expect(element.childElementCount).toBe(1);
 			});
 		});
 
@@ -357,28 +338,28 @@ describe('Element', () => {
 			});
 
 			it('has child node references', () => {
-				chai.assert.equal(element.firstChild, otherChild);
-				chai.assert.equal(element.lastChild, child);
-				chai.assert.deepEqual(element.childNodes, [otherChild, child]);
+				expect(element.firstChild).toBe(otherChild);
+				expect(element.lastChild).toBe(child);
+				expect(element.childNodes).toEqual([otherChild, child]);
 			});
 
 			it('has child element references', () => {
-				chai.assert.equal(element.firstElementChild, otherChild);
-				chai.assert.equal(element.lastElementChild, child);
-				chai.assert.deepEqual(element.children, [otherChild, child]);
-				chai.assert.equal(element.childElementCount, 2);
+				expect(element.firstElementChild).toBe(otherChild);
+				expect(element.lastElementChild).toBe(child);
+				expect(element.children).toEqual([otherChild, child]);
+				expect(element.childElementCount).toBe(2);
 			});
 
 			it('has correct siblings on the children', () => {
-				chai.assert.equal(child.nextSibling, null);
-				chai.assert.equal(child.previousSibling, otherChild);
-				chai.assert.equal(child.nextElementSibling, null);
-				chai.assert.equal(child.previousElementSibling, otherChild);
+				expect(child.nextSibling).toBe(null);
+				expect(child.previousSibling).toBe(otherChild);
+				expect(child.nextElementSibling).toBe(null);
+				expect(child.previousElementSibling).toBe(otherChild);
 
-				chai.assert.equal(otherChild.nextSibling, child);
-				chai.assert.equal(otherChild.previousSibling, null);
-				chai.assert.equal(otherChild.nextElementSibling, child);
-				chai.assert.equal(otherChild.previousElementSibling, null);
+				expect(otherChild.nextSibling).toBe(child);
+				expect(otherChild.previousSibling).toBe(null);
+				expect(otherChild.nextElementSibling).toBe(child);
+				expect(otherChild.previousElementSibling).toBe(null);
 			});
 		});
 
@@ -390,28 +371,28 @@ describe('Element', () => {
 			});
 
 			it('has child node references', () => {
-				chai.assert.equal(element.firstChild, child);
-				chai.assert.equal(element.lastChild, otherChild);
-				chai.assert.deepEqual(element.childNodes, [child, otherChild]);
+				expect(element.firstChild).toBe(child);
+				expect(element.lastChild).toBe(otherChild);
+				expect(element.childNodes).toEqual([child, otherChild]);
 			});
 
 			it('has child element references', () => {
-				chai.assert.equal(element.firstElementChild, child);
-				chai.assert.equal(element.lastElementChild, otherChild);
-				chai.assert.deepEqual(element.children, [child, otherChild]);
-				chai.assert.equal(element.childElementCount, 2);
+				expect(element.firstElementChild).toBe(child);
+				expect(element.lastElementChild).toBe(otherChild);
+				expect(element.children).toEqual([child, otherChild]);
+				expect(element.childElementCount).toBe(2);
 			});
 
 			it('has correct siblings on the children', () => {
-				chai.assert.equal(child.nextSibling, otherChild);
-				chai.assert.equal(child.previousSibling, null);
-				chai.assert.equal(child.nextElementSibling, otherChild);
-				chai.assert.equal(child.previousElementSibling, null);
+				expect(child.nextSibling).toBe(otherChild);
+				expect(child.previousSibling).toBe(null);
+				expect(child.nextElementSibling).toBe(otherChild);
+				expect(child.previousElementSibling).toBe(null);
 
-				chai.assert.equal(otherChild.nextSibling, null);
-				chai.assert.equal(otherChild.previousSibling, child);
-				chai.assert.equal(otherChild.nextElementSibling, null);
-				chai.assert.equal(otherChild.previousElementSibling, child);
+				expect(otherChild.nextSibling).toBe(null);
+				expect(otherChild.previousSibling).toBe(child);
+				expect(otherChild.nextElementSibling).toBe(null);
+				expect(otherChild.previousElementSibling).toBe(child);
 			});
 		});
 
@@ -421,23 +402,23 @@ describe('Element', () => {
 			});
 
 			it('has child node references', () => {
-				chai.assert.equal(element.firstChild, child);
-				chai.assert.equal(element.lastChild, child);
-				chai.assert.deepEqual(element.childNodes, [child]);
+				expect(element.firstChild).toBe(child);
+				expect(element.lastChild).toBe(child);
+				expect(element.childNodes).toEqual([child]);
 			});
 
 			it('has child element references', () => {
-				chai.assert.equal(element.firstElementChild, child);
-				chai.assert.equal(element.lastElementChild, child);
-				chai.assert.deepEqual(element.children, [child]);
-				chai.assert.equal(element.childElementCount, 1);
+				expect(element.firstElementChild).toBe(child);
+				expect(element.lastElementChild).toBe(child);
+				expect(element.children).toEqual([child]);
+				expect(element.childElementCount).toBe(1);
 			});
 
 			it('has no siblings on child', () => {
-				chai.assert.equal(child.nextSibling, null);
-				chai.assert.equal(child.previousSibling, null);
-				chai.assert.equal(child.nextElementSibling, null);
-				chai.assert.equal(child.previousElementSibling, null);
+				expect(child.nextSibling).toBe(null);
+				expect(child.previousSibling).toBe(null);
+				expect(child.nextElementSibling).toBe(null);
+				expect(child.previousElementSibling).toBe(null);
 			});
 		});
 	});
@@ -450,16 +431,16 @@ describe('Element', () => {
 		});
 
 		it('has child node references', () => {
-			chai.assert.equal(element.firstChild, processingInstruction);
-			chai.assert.equal(element.lastChild, processingInstruction);
-			chai.assert.deepEqual(element.childNodes, [processingInstruction]);
+			expect(element.firstChild).toBe(processingInstruction);
+			expect(element.lastChild).toBe(processingInstruction);
+			expect(element.childNodes).toEqual([processingInstruction]);
 		});
 
 		it('has no child elements', () => {
-			chai.assert.equal(element.firstElementChild, null);
-			chai.assert.equal(element.lastElementChild, null);
-			chai.assert.deepEqual(element.children, []);
-			chai.assert.equal(element.childElementCount, 0);
+			expect(element.firstElementChild).toBe(null);
+			expect(element.lastElementChild).toBe(null);
+			expect(element.children).toEqual([]);
+			expect(element.childElementCount).toBe(0);
 		});
 
 		describe('after replacing with an element', () => {
@@ -470,16 +451,16 @@ describe('Element', () => {
 			});
 
 			it('has child node references', () => {
-				chai.assert.equal(element.firstChild, otherChild);
-				chai.assert.equal(element.lastChild, otherChild);
-				chai.assert.deepEqual(element.childNodes, [otherChild]);
+				expect(element.firstChild).toBe(otherChild);
+				expect(element.lastChild).toBe(otherChild);
+				expect(element.childNodes).toEqual([otherChild]);
 			});
 
 			it('has child element references', () => {
-				chai.assert.equal(element.firstElementChild, otherChild);
-				chai.assert.equal(element.lastElementChild, otherChild);
-				chai.assert.deepEqual(element.children, [otherChild]);
-				chai.assert.equal(element.childElementCount, 1);
+				expect(element.firstElementChild).toBe(otherChild);
+				expect(element.lastElementChild).toBe(otherChild);
+				expect(element.children).toEqual([otherChild]);
+				expect(element.childElementCount).toBe(1);
 			});
 		});
 	});
@@ -488,18 +469,18 @@ describe('Element', () => {
 		it('removes empty text nodes', () => {
 			let textNode = element.appendChild(document.createTextNode(''));
 			element.normalize();
-			chai.assert.equal(textNode.parentNode, null);
+			expect(textNode.parentNode).toBe(null);
 		});
 
 		it('combines adjacent text nodes', () => {
 			element.appendChild(document.createTextNode('test'));
 			element.appendChild(document.createTextNode('123'));
 			element.appendChild(document.createTextNode('abc'));
-			chai.assert.equal(element.childNodes.length, 3);
+			expect(element.childNodes.length).toBe(3);
 			element.normalize();
-			chai.assert.equal(element.childNodes.length, 1);
-			chai.assert.equal((element.firstChild as slimdom.Text).nodeValue, 'test123abc');
-			chai.assert.equal((element.firstChild as slimdom.Text).data, 'test123abc');
+			expect(element.childNodes.length).toBe(1);
+			expect((element.firstChild as slimdom.Text).nodeValue).toBe('test123abc');
+			expect((element.firstChild as slimdom.Text).data).toBe('test123abc');
 		});
 
 		it('recursively normalizes the entire subtree', () => {
@@ -515,12 +496,12 @@ describe('Element', () => {
 			otherChild.appendChild(document.createTextNode(''));
 			otherChild.appendChild(document.createTextNode(''));
 			element.normalize();
-			chai.assert.equal(element.childNodes.length, 3);
-			chai.assert.equal((element.firstChild as slimdom.Text).nodeValue, 'test123abc');
-			chai.assert.equal(child.childNodes.length, 1);
-			chai.assert.equal((child.firstChild as slimdom.Text).data, 'childcontent');
-			chai.assert.equal(otherChild.childNodes.length, 1);
-			chai.assert.equal((otherChild.firstChild as slimdom.Text).data, 'text');
+			expect(element.childNodes.length).toBe(3);
+			expect((element.firstChild as slimdom.Text).nodeValue).toBe('test123abc');
+			expect(child.childNodes.length).toBe(1);
+			expect((child.firstChild as slimdom.Text).data).toBe('childcontent');
+			expect(otherChild.childNodes.length).toBe(1);
+			expect((otherChild.firstChild as slimdom.Text).data).toBe('text');
 		});
 
 		it('adjusts ranges appropriately', () => {
@@ -534,14 +515,14 @@ describe('Element', () => {
 			range2.setStart(element, 1);
 			range2.setEnd(element.lastChild!, 0);
 			element.normalize();
-			chai.assert.equal(range1.startContainer, element.firstChild);
-			chai.assert.equal(range1.startOffset, 4);
-			chai.assert.equal(range1.endContainer, element.firstChild);
-			chai.assert.equal(range1.endOffset, 7);
-			chai.assert.equal(range2.startContainer, element.firstChild);
-			chai.assert.equal(range2.startOffset, 4);
-			chai.assert.equal(range2.endContainer, element.firstChild);
-			chai.assert.equal(range2.endOffset, 7);
+			expect(range1.startContainer).toBe(element.firstChild);
+			expect(range1.startOffset).toBe(4);
+			expect(range1.endContainer).toBe(element.firstChild);
+			expect(range1.endOffset).toBe(7);
+			expect(range2.startContainer).toBe(element.firstChild);
+			expect(range2.startOffset).toBe(4);
+			expect(range2.endContainer).toBe(element.firstChild);
+			expect(range2.endOffset).toBe(7);
 			range1.detach();
 			range2.detach();
 		});
@@ -557,38 +538,38 @@ describe('Element', () => {
 		it('can be cloned (shallow)', () => {
 			const copy = element.cloneNode() as slimdom.Element;
 
-			chai.assert.equal(copy.nodeType, 1);
-			chai.assert.equal(copy.nodeName, 'svg:g');
-			chai.assert.equal(copy.nodeValue, null);
-			chai.assert.equal(copy.ownerDocument, document);
-			chai.assert.equal(copy.namespaceURI, 'http://www.w3.org/2000/svg');
-			chai.assert.equal(copy.localName, 'g');
-			chai.assert.equal(copy.prefix, 'svg');
-			chai.assert.equal(copy.ownerDocument, document);
-			chai.assert.equal(copy.firstChild, null);
-			chai.assert.notEqual(copy, element);
+			expect(copy.nodeType).toBe(1);
+			expect(copy.nodeName).toBe('svg:g');
+			expect(copy.nodeValue).toBe(null);
+			expect(copy.ownerDocument).toBe(document);
+			expect(copy.namespaceURI).toBe('http://www.w3.org/2000/svg');
+			expect(copy.localName).toBe('g');
+			expect(copy.prefix).toBe('svg');
+			expect(copy.ownerDocument).toBe(document);
+			expect(copy.firstChild).toBe(null);
+			expect(copy).not.toBe(element);
 
-			chai.assert.equal(copy.getAttributeNS('http://www.example.com/ns', 'test'), 'value');
+			expect(copy.getAttributeNS('http://www.example.com/ns', 'test')).toBe('value');
 		});
 
 		it('can be cloned (deep)', () => {
 			const copy = element.cloneNode(true) as slimdom.Element;
 
-			chai.assert.equal(copy.nodeType, 1);
-			chai.assert.equal(copy.nodeName, 'svg:g');
-			chai.assert.equal(copy.nodeValue, null);
-			chai.assert.equal(copy.ownerDocument, document);
-			chai.assert.equal(copy.namespaceURI, 'http://www.w3.org/2000/svg');
-			chai.assert.equal(copy.localName, 'g');
-			chai.assert.equal(copy.prefix, 'svg');
-			chai.assert.equal(copy.ownerDocument, document);
-			chai.assert.notEqual(copy, element);
+			expect(copy.nodeType).toBe(1);
+			expect(copy.nodeName).toBe('svg:g');
+			expect(copy.nodeValue).toBe(null);
+			expect(copy.ownerDocument).toBe(document);
+			expect(copy.namespaceURI).toBe('http://www.w3.org/2000/svg');
+			expect(copy.localName).toBe('g');
+			expect(copy.prefix).toBe('svg');
+			expect(copy.ownerDocument).toBe(document);
+			expect(copy).not.toBe(element);
 
-			chai.assert.equal(copy.getAttributeNS('http://www.example.com/ns', 'test'), 'value');
+			expect(copy.getAttributeNS('http://www.example.com/ns', 'test')).toBe('value');
 
 			const child = copy.firstChild!;
-			chai.assert.equal(child.nodeName, 'child');
-			chai.assert.notEqual(child, element.firstChild);
+			expect(child.nodeName).toBe('child');
+			expect(child).not.toBe(element.firstChild);
 		});
 	});
 });

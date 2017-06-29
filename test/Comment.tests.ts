@@ -1,4 +1,3 @@
-import * as chai from 'chai';
 import * as slimdom from '../src/index';
 
 describe('Comment', () => {
@@ -9,71 +8,71 @@ describe('Comment', () => {
 
 	it('can be created using Document#createComment()', () => {
 		const comment = document.createComment('some data');
-		chai.assert.equal(comment.nodeType, 8);
-		chai.assert.equal(comment.nodeName, '#comment');
-		chai.assert.equal(comment.nodeValue, 'some data');
-		chai.assert.equal(comment.data, 'some data');
+		expect(comment.nodeType).toBe(8);
+		expect(comment.nodeName).toBe('#comment');
+		expect(comment.nodeValue).toBe('some data');
+		expect(comment.data).toBe('some data');
 	});
 
 	it('can be created using its constructor (with data)', () => {
 		const comment = new slimdom.Comment('some data');
-		chai.assert.equal(comment.nodeType, 8);
-		chai.assert.equal(comment.nodeName, '#comment');
-		chai.assert.equal(comment.nodeValue, 'some data');
-		chai.assert.equal(comment.data, 'some data');
+		expect(comment.nodeType).toBe(8);
+		expect(comment.nodeName).toBe('#comment');
+		expect(comment.nodeValue).toBe('some data');
+		expect(comment.data).toBe('some data');
 
-		chai.assert.equal(comment.ownerDocument, slimdom.document);
+		expect(comment.ownerDocument).toBe(slimdom.document);
 	});
 
 	it('can be created using its constructor (without arguments)', () => {
 		const comment = new slimdom.Comment();
-		chai.assert.equal(comment.nodeType, 8);
-		chai.assert.equal(comment.nodeName, '#comment');
-		chai.assert.equal(comment.nodeValue, '');
-		chai.assert.equal(comment.data, '');
+		expect(comment.nodeType).toBe(8);
+		expect(comment.nodeName).toBe('#comment');
+		expect(comment.nodeValue).toBe('');
+		expect(comment.data).toBe('');
 
-		chai.assert.equal(comment.ownerDocument, slimdom.document);
+		expect(comment.ownerDocument).toBe(slimdom.document);
 	});
 
 	it('can set its data using nodeValue', () => {
 		const comment = document.createComment('some data');
 		comment.nodeValue = 'other data';
-		chai.assert.equal(comment.nodeValue, 'other data');
-		chai.assert.equal(comment.data, 'other data');
+		expect(comment.nodeValue).toBe('other data');
+		expect(comment.data).toBe('other data');
 
 		comment.nodeValue = null;
-		chai.assert.equal(comment.nodeValue, '');
-		chai.assert.equal(comment.data, '');
+		expect(comment.nodeValue).toBe('');
+		expect(comment.data).toBe('');
 	});
 
 	it('can set its data using data', () => {
 		const comment = document.createComment('some data');
 		comment.data = 'other data';
-		chai.assert.equal(comment.nodeValue, 'other data');
-		chai.assert.equal(comment.data, 'other data');
+		expect(comment.nodeValue).toBe('other data');
+		expect(comment.data).toBe('other data');
 		(comment as any).data = null;
-		chai.assert.equal(comment.nodeValue, '');
-		chai.assert.equal(comment.data, '');
+		expect(comment.nodeValue).toBe('');
+		expect(comment.data).toBe('');
 	});
 
 	it('can be cloned', () => {
 		const comment = document.createComment('some data');
 		var copy = comment.cloneNode() as slimdom.Comment;
-		chai.assert.equal(copy.nodeType, 8);
-		chai.assert.equal(copy.nodeName, '#comment');
-		chai.assert.equal(copy.nodeValue, 'some data');
-		chai.assert.equal(copy.data, 'some data');
-		chai.assert.notEqual(copy, comment);
+		expect(copy.nodeType).toBe(8);
+		expect(copy.nodeName).toBe('#comment');
+		expect(copy.nodeValue).toBe('some data');
+		expect(copy.data).toBe('some data');
+		expect(copy).not.toBe(comment);
 	});
 
 	it('can lookup a prefix or namespace on its parent element', () => {
 		const comment = document.createComment('some data');
-		chai.assert.equal(comment.lookupNamespaceURI('prf'), null);
-		chai.assert.equal(comment.lookupPrefix('http://www.example.com/ns'), null);
+		expect(comment.lookupNamespaceURI('prf')).toBe(null);
+		expect(comment.lookupPrefix('http://www.example.com/ns')).toBe(null);
 
 		const element = document.createElementNS('http://www.example.com/ns', 'prf:test');
 		element.appendChild(comment);
-		chai.assert.equal(comment.lookupNamespaceURI('prf'), 'http://www.example.com/ns');
-		chai.assert.equal(comment.lookupPrefix('http://www.example.com/ns'), 'prf');
+		expect(comment.lookupNamespaceURI('prf')).toBe('http://www.example.com/ns');
+		expect(comment.lookupPrefix('http://www.example.com/ns')).toBe('prf');
 	});
 });

@@ -84,6 +84,6 @@ To work on the slimdom library itself, clone [the repository](https://github.com
 
 The slimdom library and tests are developed in [TypeScript](https://www.typescriptlang.org/), using [prettier](https://github.com/prettier/prettier) to automate formatting.
 
-This repository includes a full suite of tests based on [mocha](http://mochajs.org/) and [chai](http://chaijs.com/), with coverage computed using [istanbul and nyc](https://istanbul.js.org/). Run `npm test` to run the tests, or `npm run test:debug` to debug the tests and code by disabling coverage and enabling the node inspector (see [chrome://inspect](chrome://inspect) in Chrome).
+This repository includes a full suite of tests based on [jest](https://facebook.github.io/jest/). Run `npm test` to run the tests, or `npm run test:debug` to debug the tests and code by disabling coverage and enabling the node inspector (see [chrome://inspect](chrome://inspect) in Chrome).
 
 An experimental runner for the W3C [web platform tests](http://web-platform-tests.org/) is included in the `test/web-platform-tests` directory. To use it, clone the [web platform tests repository](https://github.com/w3c/web-platform-tests) somewhere and set the `WEB_PLATFORM_TESTS_PATH` environment variable to the corresponding path. Then run `npm test` as normal. The `webPlatform.tests.ts` file contains a blacklist of tests that don't currently run due to missing features.
