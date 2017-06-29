@@ -1,0 +1,17 @@
+{
+	"version": "0.2.0",
+	"configurations": [
+		{
+			"name": "Debug Tests",
+			"type": "node",
+			"request": "launch",
+			"program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
+			"stopOnEntry": false,
+			"args": ["--runInBand"],
+			"runtimeArgs": ["--inspect=:9070"],
+			"sourceMaps": true,
+			"port": 9070,
+			"protocol": "inspector"
+		}
+	]
+}
