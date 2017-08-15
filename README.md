@@ -42,6 +42,7 @@ This library implements:
 * All node types: `Attr`, `CDATASection`, `Comment`, `Document`, `DocumentFragment`, `DocumentType`, `Element`, `ProcessingInstruction`, `Text` and `XMLDocument`.
 * `Range`, which correctly updates under mutations
 * `MutationObserver`
+* `XMLSerializer`, and read-only versions of `innerHTML` / `outerHTML` on `Element`
 
 ## Limitations
 
@@ -65,7 +66,8 @@ The following features are not (yet) implemented:
 * No HTML documents, including `HTMLElement` and its subclasses. This also includes HTML casing behavior for attributes and tagNames.
 * No shadow DOM, `Slotable` / `ShadowRoot`, no `slot` / `attachShadow` / `shadowRoot` on `Element`
 * No custom elements
-* No XML or HTML parsing / serialization, but see `test/SlimdomTreeAdapter.ts` for an example on how to connect the parse5 HTML parser.
+* No XML parsing
+* No HTML parsing / serialization, but see `test/SlimdomTreeAdapter.ts` for an example on how to connect the parse5 HTML parser.
 
 Do not rely on the behavior or presence of any methods and properties not specified in the DOM standard. For example, do not use JavaScript array methods exposed on properties that should expose a NodeList and do not use Element as a constructor. This behavior is *not* considered public API and may change without warning in a future release.
 
