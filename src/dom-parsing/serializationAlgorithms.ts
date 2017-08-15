@@ -583,9 +583,12 @@ function serializeAttributes(
 					// prefix map given the namespace consisting of the attr's value (the current namespace prefix
 					// definition was exactly defined previously--on an ancestor element not the current element whose
 					// attributes are being processed).
-					if (map.checkIfFound(attr.localName, attr.value)) {
-						continue;
-					}
+					// (the only ways that this xmlns:* attribute can be omitted from the localPrefixesMap is if it is
+					// either the XML namespace (control flow would not reach this point), or if it was defined on an
+					// ancestor (and is therefore certainly in the map). This last condition seems to be a duplicate
+					// attempt to prevent repeated declarations in the spec, which is already prevented by the check in
+					// recordNamespaceInformation.)
+					continue;
 				}
 
 				// 3.5.2.2. If the require well-formed flag is set (its value is true), and the value of attr's value

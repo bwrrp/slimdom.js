@@ -157,12 +157,23 @@ describe('XMLSerializer', () => {
 		);
 	});
 
-	it('correctly handles conflicting prefixes', () => {
+	it('correctly handles conflicting prefixes on elements', () => {
 		const el = document.createElementNS('http://www.example.com/ns', 'prf:test');
 		el.setAttributeNS(XMLNS_NAMESPACE, 'xmlns:prf', 'http://www.example.com/ns2');
 		chai.assert.equal(
 			serializer.serializeToString(el),
 			'<ns1:test xmlns:ns1="http://www.example.com/ns" xmlns:prf="http://www.example.com/ns2"/>'
+		);
+	});
+
+	it('correctly handles conflicting prefixes on attributes', () => {
+		const el = document.createElement('test');
+		el.setAttributeNS(XMLNS_NAMESPACE, 'xmlns:prf', 'http://www.example.com/ns');
+		el.setAttributeNS('http://www.example.com/ns2', 'prf:attr', 'value');
+
+		chai.assert.equal(
+			serializer.serializeToString(el),
+			'<test xmlns:prf="http://www.example.com/ns" xmlns:ns1="http://www.example.com/ns2" ns1:attr="value"/>'
 		);
 	});
 
