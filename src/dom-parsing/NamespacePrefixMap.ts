@@ -25,7 +25,8 @@ export class NamespacePrefixMap {
 	 */
 	public copy(): NamespacePrefixMap {
 		const copy = new NamespacePrefixMap();
-		for (const [namespace, prefixes] of this._map.entries()) {
+		// Array.from needed to allow compilation to ES5 targets
+		for (const [namespace, prefixes] of Array.from(this._map.entries())) {
 			copy._map.set(namespace, prefixes.concat());
 		}
 		return copy;
