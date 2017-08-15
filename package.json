@@ -1,6 +1,6 @@
 {
   "name": "slimdom",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "description": "Fast, tiny DOM implementation in pure JS",
   "author": "Stef Busking",
   "license": "MIT",
