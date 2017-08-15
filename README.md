@@ -2,9 +2,10 @@
 
 Fast, tiny DOM implementation for node and the browser.
 
-This is a (partial) implementation of the [DOM living standard][DOMSTANDARD], as last updated 15 June 2017. See the 'Features' and 'Limitations' sections below for details on what's included and what's not.
+This is a (partial) implementation of the [DOM living standard][DOMSTANDARD], as last updated 15 June 2017, and the [DOM Parsing and Serialization W3C Editor's Draft][DOMPARSING]. See the 'Features' and 'Limitations' sections below for details on what's included and what's not.
 
 [DOMSTANDARD]: https://dom.spec.whatwg.org/
+[DOMPARSING]: https://w3c.github.io/DOM-Parsing/
 
 ## Installation
 
