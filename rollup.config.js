@@ -1,4 +1,4 @@
-import babili from 'rollup-plugin-babili';
+import minify from 'rollup-plugin-babel-minify';
 
 const { main: MAIN_DEST_FILE, module: MODULE_DEST_FILE } = require('./package.json');
 
@@ -17,7 +17,7 @@ export default {
 		console.error(warning.message);
 	},
 	plugins: [
-		babili({
+		minify({
 			comments: false,
 			mangle: {
 				blacklist: [
