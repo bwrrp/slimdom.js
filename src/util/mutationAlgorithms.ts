@@ -178,9 +178,6 @@ export function insertNode(node: Node, parent: Node, child: Node | null, suppres
 		});
 	}
 
-	// (see note at 7.)
-	const oldPreviousSibling = child === null ? parent.lastChild : child.previousSibling;
-
 	// 3. Let nodes be node’s children if node is a DocumentFragment node, and a list containing solely node otherwise.
 	const nodes = isDocumentFragment ? Array.from(node.childNodes) : [node];
 
@@ -197,41 +194,47 @@ export function insertNode(node: Node, parent: Node, child: Node | null, suppres
 		});
 	}
 
-	// 6. For each node in nodes, in tree order:
+	// 6. Let previousSibling be child’s previous sibling or parent’s last child if child is null.
+	const previousSibling = child === null ? parent.lastChild : child.previousSibling;
+
+	// 7. For each node in nodes, in tree order:
 	nodes.forEach(node => {
-		// 6.1. If child is null, then append node to parent’s children.
-		// 6.2. Otherwise, insert node into parent’s children before child’s index.
+		// 7.1. If child is null, then append node to parent’s children.
+		// 7.2. Otherwise, insert node into parent’s children before child’s index.
 		insertIntoChildren(node, parent, child);
 
-		// 6.3. If parent is a shadow host and node is a slotable, then assign a slot for node.
-		// 6.4. If parent is a slot whose assigned nodes is the empty list, then run signal a slot change for parent.
-		// 6.5. Run assign slotables for a tree with node’s tree and a set containing each inclusive descendant of node
-		// that is a slot.
+		// 7.3. If parent is a shadow host and node is a slotable, then assign a slot for node.
 		// (shadow dom not implemented)
 
-		// 6.6. For each shadow-including inclusive descendant inclusiveDescendant of node, in shadow-including tree
+		// 7.4. If node is a Text node, run the child text content change steps for parent.
+		// (child text content change steps not implemented)
+
+		// 7.5. If parent's root is a shadow root, and parent is a slot whose assigned nodes is the empty list, then run
+		// signal a slot change for parent.
+		// 7.6. Run assign slotables for a tree with node’s tree.
+		// (shadow dom not implemented)
+
+		// 7.7. For each shadow-including inclusive descendant inclusiveDescendant of node, in shadow-including tree
 		// order:
-		// 6.6.1. Run the insertion steps with inclusiveDescendant.
+		// 7.7.1. Run the insertion steps with inclusiveDescendant.
 		// (insertion steps not implemented)
 
-		// 6.6.2. If inclusiveDescendant is connected, then:
-		// 6.6.2.1. If inclusiveDescendant is custom, then enqueue a custom element callback reaction with
+		// 7.7.2. If inclusiveDescendant is connected, then:
+		// 7.7.2.1. If inclusiveDescendant is custom, then enqueue a custom element callback reaction with
 		// inclusiveDescendant, callback name "connectedCallback", and an empty argument list.
-		// 6.6.2.2. Otherwise, try to upgrade inclusiveDescendant.
+		// 7.7.2.2. Otherwise, try to upgrade inclusiveDescendant.
 		// If this successfully upgrades inclusiveDescendant, its connectedCallback will be enqueued automatically
 		// during the upgrade an element algorithm.
 		// (custom elements not implemented)
 	});
 
-	// 7. If suppress observers flag is unset, queue a mutation record of "childList" for parent with addedNodes nodes,
-	// nextSibling child, and previousSibling child’s previous sibling or parent’s last child if child is null.
-	// Note: if implemented as stated in the spec, previous sibling would be determined after insertion, and would
-	// therefore always be the last of nodes.
+	// 8. If suppress observers flag is unset, queue a mutation record of "childList" for parent with addedNodes nodes,
+	// nextSibling child, and previousSibling previousSibling.
 	if (!suppressObservers) {
 		queueMutationRecord('childList', parent, {
 			addedNodes: nodes,
 			nextSibling: child,
-			previousSibling: oldPreviousSibling
+			previousSibling: previousSibling
 		});
 	}
 }
@@ -474,13 +477,13 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 	// 10. If node is assigned, then run assign slotables for node’s assigned slot.
 	// (shadow dom not implemented)
 
-	// 11. If parent is a slot whose assigned nodes is the empty list, then run signal a slot change for parent.
+	// 11. If parent's root is a shadow root, and parent is a slot whose assigned nodes is the empty list, then run
+	// signal a slot change for parent.
 	// (shadow dom not implemented)
 
 	// 12. If node has an inclusive descendant that is a slot, then:
 	// 12.1. Run assign slotables for a tree with parent’s tree.
-	// 12.2. Run assign slotables for a tree with node’s tree and a set containing each inclusive descendant of node
-	// that is a slot.
+	// 12.2. Run assign slotables for a tree with node’s tree.
 	// (shadow dom not implemented)
 
 	// 13. Run the removing steps with node and parent.
@@ -521,6 +524,9 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 			previousSibling: oldPreviousSibling
 		});
 	}
+
+	// 18. If node is a Text node, run the child text content change steps for parent.
+	// (child text content change steps not implemented)
 }
 
 /**

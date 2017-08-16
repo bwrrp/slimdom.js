@@ -224,6 +224,9 @@ export function replaceData(node: CharacterData, offset: number, count: number, 
 			range.endOffset = range.endOffset + data.length - count;
 		}
 	});
+
+	// 12. If node is a Text node and its parent is not null, run the child text content change steps for node’s parent.
+	// (child text content change steps not implemented)
 }
 
 /**
