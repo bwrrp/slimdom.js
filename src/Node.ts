@@ -199,6 +199,9 @@ export default abstract class Node {
 			node = node.nextSibling;
 			++index;
 		}
+
+		// Note: normalize() does not need to run any child text content change steps, since although it messes with
+		// Text nodes extensively, it does so specifically in a way that preserves the child text content.
 	}
 
 	/**
