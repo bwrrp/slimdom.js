@@ -73,7 +73,12 @@ describe('MutationObserver', () => {
 		it('throws if asking for the old value of attributes without observing them', () => {
 			const observer = new slimdom.MutationObserver(() => {});
 			chai.assert.throws(
-				() => observer.observe(document, { attributes: false, attributeOldValue: true, childList: true }),
+				() =>
+					observer.observe(document, {
+						attributes: false,
+						attributeOldValue: true,
+						childList: true
+					}),
 				TypeError
 			);
 		});
@@ -81,7 +86,12 @@ describe('MutationObserver', () => {
 		it('throws if asking for the old value of character data without observing them', () => {
 			const observer = new slimdom.MutationObserver(() => {});
 			chai.assert.throws(
-				() => observer.observe(document, { characterData: false, characterDataOldValue: true, childList: true }),
+				() =>
+					observer.observe(document, {
+						characterData: false,
+						characterDataOldValue: true,
+						childList: true
+					}),
 				TypeError
 			);
 		});
@@ -342,7 +352,11 @@ describe('MutationObserver', () => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const child = parent.appendChild(document.createElement('child'));
 			const text = child.appendChild(document.createTextNode('text')) as slimdom.Text;
-			observer.observe(document, { childList: true, characterDataOldValue: true, subtree: true });
+			observer.observe(document, {
+				childList: true,
+				characterDataOldValue: true,
+				subtree: true
+			});
 			document.removeChild(parent);
 			parent.removeChild(child);
 			text.data = 'test';
@@ -370,7 +384,11 @@ describe('MutationObserver', () => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const child = parent.appendChild(document.createElement('child'));
 			const text = child.appendChild(document.createTextNode('text')) as slimdom.Text;
-			observer.observe(document, { childList: true, characterDataOldValue: true, subtree: false });
+			observer.observe(document, {
+				childList: true,
+				characterDataOldValue: true,
+				subtree: false
+			});
 			document.removeChild(parent);
 			parent.removeChild(child);
 			text.data = 'test';
@@ -388,9 +406,17 @@ describe('MutationObserver', () => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const child = parent.appendChild(document.createElement('child'));
 			const text = child.appendChild(document.createTextNode('text')) as slimdom.Text;
-			observer.observe(document, { childList: true, characterDataOldValue: true, subtree: true });
+			observer.observe(document, {
+				childList: true,
+				characterDataOldValue: true,
+				subtree: true
+			});
 			document.removeChild(parent);
-			observer.observe(document, { childList: true, characterDataOldValue: true, subtree: true });
+			observer.observe(document, {
+				childList: true,
+				characterDataOldValue: true,
+				subtree: true
+			});
 			parent.removeChild(child);
 			text.data = 'test';
 
@@ -407,11 +433,23 @@ describe('MutationObserver', () => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const child = parent.appendChild(document.createElement('child'));
 			const text = child.appendChild(document.createTextNode('text')) as slimdom.Text;
-			observer.observe(document, { childList: true, characterDataOldValue: true, subtree: true });
+			observer.observe(document, {
+				childList: true,
+				characterDataOldValue: true,
+				subtree: true
+			});
 			const otherObserver = new slimdom.MutationObserver(callback);
-			otherObserver.observe(document, { childList: true, characterDataOldValue: true, subtree: true });
+			otherObserver.observe(document, {
+				childList: true,
+				characterDataOldValue: true,
+				subtree: true
+			});
 			document.removeChild(parent);
-			otherObserver.observe(document, { childList: true, characterDataOldValue: true, subtree: true });
+			otherObserver.observe(document, {
+				childList: true,
+				characterDataOldValue: true,
+				subtree: true
+			});
 			parent.removeChild(child);
 			text.data = 'test';
 

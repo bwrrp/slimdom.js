@@ -111,7 +111,10 @@ describe('Element', () => {
 			chai.assert(element.hasAttribute('test'), 'has attribute test');
 			chai.assert(element.hasAttributeNS(null, 'test'), 'has attribute test');
 			chai.assert(element.hasAttribute('prf:lastAttribute'), 'has attribute lastAttribute');
-			chai.assert(element.hasAttributeNS('http://www.example.com/ns', 'lastAttribute'), 'has attribute lastAttribute');
+			chai.assert(
+				element.hasAttributeNS('http://www.example.com/ns', 'lastAttribute'),
+				'has attribute lastAttribute'
+			);
 			chai.assert(!element.hasAttribute('noSuchAttribute'), 'does not have attribute noSuchAttribute');
 			chai.assert(
 				!element.hasAttributeNS(null, 'prf:lastAttribute'),

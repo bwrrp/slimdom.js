@@ -3,8 +3,8 @@ import MutationRecord from './MutationRecord';
 import { removeTransientRegisteredObserversForObserver } from './RegisteredObservers';
 
 // Declare functions without having to bring in the entire DOM lib
-declare function setImmediate(handler: (...args: any[]) => void): number
-declare function setTimeout(handler: (...args: any[]) => void, timeout: number): number
+declare function setImmediate(handler: (...args: any[]) => void): number;
+declare function setTimeout(handler: (...args: any[]) => void, timeout: number): number;
 
 const hasSetImmediate = typeof setImmediate === 'function';
 

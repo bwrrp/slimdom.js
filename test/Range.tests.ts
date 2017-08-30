@@ -171,7 +171,9 @@ describe('Range', () => {
 		});
 
 		it('can compute the common ancestor', () => {
-			const child = element.appendChild(document.createElement('child')).appendChild(document.createTextNode('test'));
+			const child = element
+				.appendChild(document.createElement('child'))
+				.appendChild(document.createTextNode('test'));
 			range.setStart(text, 0);
 			range.setEnd(child, 0);
 			chai.assert.equal(range.commonAncestorContainer, element);

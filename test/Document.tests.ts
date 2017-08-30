@@ -19,7 +19,8 @@ describe('Document', () => {
 		chai.assert.equal(document.nodeValue, null);
 	});
 
-	it('exposes its DOMImplementation', () => chai.assert.instanceOf(document.implementation, slimdom.DOMImplementation));
+	it('exposes its DOMImplementation', () =>
+		chai.assert.instanceOf(document.implementation, slimdom.DOMImplementation));
 
 	it('has a doctype property that reflects the presence of a doctype child', () => {
 		chai.assert.equal(document.doctype, null);
@@ -75,7 +76,8 @@ describe('Document', () => {
 				document.replaceChild(otherElement, element);
 			});
 
-			it('has the other element as documentElement', () => chai.assert.equal(document.documentElement, otherElement));
+			it('has the other element as documentElement', () =>
+				chai.assert.equal(document.documentElement, otherElement));
 
 			it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [otherElement]));
 
@@ -103,7 +105,8 @@ describe('Document', () => {
 				document.replaceChild(otherElement, processingInstruction);
 			});
 
-			it('has the other element as documentElement', () => chai.assert.equal(document.documentElement, otherElement));
+			it('has the other element as documentElement', () =>
+				chai.assert.equal(document.documentElement, otherElement));
 
 			it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [otherElement]));
 
@@ -164,7 +167,10 @@ describe('Document', () => {
 
 	describe('.createElementNS', () => {
 		it('throws if given an invalid name', () => {
-			chai.assert.throws(() => document.createElementNS(null, String.fromCodePoint(0x200b)), 'InvalidCharacterError');
+			chai.assert.throws(
+				() => document.createElementNS(null, String.fromCodePoint(0x200b)),
+				'InvalidCharacterError'
+			);
 			chai.assert.throws(() => document.createElementNS(null, 'a:b:c'), 'InvalidCharacterError');
 		});
 
@@ -194,7 +200,10 @@ describe('Document', () => {
 		});
 
 		it('throws if data contains "?>"', () => {
-			chai.assert.throws(() => document.createProcessingInstruction('target', 'some ?> data'), 'InvalidCharacterError');
+			chai.assert.throws(
+				() => document.createProcessingInstruction('target', 'some ?> data'),
+				'InvalidCharacterError'
+			);
 		});
 	});
 
@@ -216,7 +225,9 @@ describe('Document', () => {
 
 		it('can clone descendants', () => {
 			const element = otherDocument.createElement('test');
-			element.appendChild(otherDocument.createElement('child')).appendChild(otherDocument.createTextNode('content'));
+			element
+				.appendChild(otherDocument.createElement('child'))
+				.appendChild(otherDocument.createTextNode('content'));
 			chai.assert.equal(element.ownerDocument, otherDocument);
 			const copy = document.importNode(element, true) as slimdom.Element;
 			chai.assert.equal(copy.ownerDocument, document);
@@ -258,7 +269,9 @@ describe('Document', () => {
 
 		it('also adopts descendants and attributes', () => {
 			const element = otherDocument.createElement('test');
-			element.appendChild(otherDocument.createElement('child')).appendChild(otherDocument.createTextNode('content'));
+			element
+				.appendChild(otherDocument.createElement('child'))
+				.appendChild(otherDocument.createTextNode('content'));
 			element.setAttribute('test', 'value');
 			chai.assert.equal(element.ownerDocument, otherDocument);
 			const adopted = document.adoptNode(element) as slimdom.Element;

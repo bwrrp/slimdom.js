@@ -311,7 +311,9 @@ function serializeElementNode(
 			// 12.3.1. If the require well-formed flag is set, then throw an error. An Element with prefix "xmlns" will
 			// not legally round-trip in a conforming XML parser.
 			if (requireWellFormed) {
-				throw new Error('An Element with prefix "xmlns" will not legally round-trip in a conforming XML parser');
+				throw new Error(
+					'An Element with prefix "xmlns" will not legally round-trip in a conforming XML parser'
+				);
 			}
 
 			// 12.3.2. Let candidate prefix be the value of prefix.

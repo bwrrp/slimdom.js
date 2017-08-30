@@ -14,9 +14,13 @@ import XMLDocument from '../XMLDocument';
 
 import { NodeType } from '../util/NodeType';
 
-export type AttrConstructor = new (namespace: string | null, prefix:
-	| string
-	| null, localName: string, value: string, element: Element | null) => Attr;
+export type AttrConstructor = new (
+	namespace: string | null,
+	prefix: string | null,
+	localName: string,
+	value: string,
+	element: Element | null
+) => Attr;
 export type CDATASectionConstructor = new (data: string) => CDATASection;
 export type CommentConstructor = new (data: string) => Comment;
 export type DocumentConstructor = new () => Document;

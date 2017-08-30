@@ -81,7 +81,9 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
 						(child && isNodeOfType(child, NodeType.DOCUMENT_TYPE_NODE)) ||
 						(child && parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype)))
 				) {
-					throwHierarchyRequestError('Document should contain at most one doctype, followed by at most one element');
+					throwHierarchyRequestError(
+						'Document should contain at most one doctype, followed by at most one element'
+					);
 				}
 				break;
 
@@ -94,7 +96,9 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
 					(child && isNodeOfType(child, NodeType.DOCUMENT_TYPE_NODE)) ||
 					(child && parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype))
 				) {
-					throwHierarchyRequestError('Document should contain at most one doctype, followed by at most one element');
+					throwHierarchyRequestError(
+						'Document should contain at most one doctype, followed by at most one element'
+					);
 				}
 				break;
 
@@ -109,7 +113,9 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
 						getNodeIndex(parentDocument.documentElement) < getNodeIndex(child)) ||
 					(!child && parentDocument.documentElement)
 				) {
-					throwHierarchyRequestError('Document should contain at most one doctype, followed by at most one element');
+					throwHierarchyRequestError(
+						'Document should contain at most one doctype, followed by at most one element'
+					);
 				}
 				break;
 		}
@@ -328,7 +334,9 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
 					((parentDocument.documentElement && parentDocument.documentElement !== child) ||
 						(child && parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype)))
 				) {
-					throwHierarchyRequestError('Document should contain at most one doctype, followed by at most one element');
+					throwHierarchyRequestError(
+						'Document should contain at most one doctype, followed by at most one element'
+					);
 				}
 				break;
 
@@ -339,7 +347,9 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
 					(parentDocument.documentElement && parentDocument.documentElement !== child) ||
 					(parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype))
 				) {
-					throwHierarchyRequestError('Document should contain at most one doctype, followed by at most one element');
+					throwHierarchyRequestError(
+						'Document should contain at most one doctype, followed by at most one element'
+					);
 				}
 				break;
 
@@ -348,9 +358,12 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
 				// parent has a doctype child that is not child, or an element is preceding child.
 				if (
 					(parentDocument.doctype && parentDocument.doctype !== child) ||
-					(parentDocument.documentElement && getNodeIndex(parentDocument.documentElement) < getNodeIndex(child))
+					(parentDocument.documentElement &&
+						getNodeIndex(parentDocument.documentElement) < getNodeIndex(child))
 				) {
-					throwHierarchyRequestError('Document should contain at most one doctype, followed by at most one element');
+					throwHierarchyRequestError(
+						'Document should contain at most one doctype, followed by at most one element'
+					);
 				}
 				break;
 		}

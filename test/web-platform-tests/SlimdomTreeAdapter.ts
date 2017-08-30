@@ -110,7 +110,10 @@ export default class SlimdomTreeAdapter implements parse5.AST.TreeAdapter {
 			return;
 		}
 
-		(parentNode as slimdom.Node).insertBefore(this._globalDocument.createTextNode(text), referenceNode as slimdom.Node);
+		(parentNode as slimdom.Node).insertBefore(
+			this._globalDocument.createTextNode(text),
+			referenceNode as slimdom.Node
+		);
 	}
 
 	adoptAttributes(recipient: parse5.AST.Element, attrs: parse5.AST.Default.Attribute[]): void {

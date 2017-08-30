@@ -82,7 +82,7 @@ Pull requests for missing features or tests, bug reports, questions and other fe
 
 To work on the slimdom library itself, clone [the repository](https://github.com/bwrrp/slimdom.js) and run `npm install` to install its dependencies.
 
-The slimdom library and tests are developed in [TypeScript](https://www.typescriptlang.org/), using [prettier](https://github.com/prettier/prettier) to automate formatting. Settings for the vscode [vscode-prettier extension](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode) are included. If you use prettier from another editor, please use options equivalent to the command line `--print-width 120 --use-tabs --single-quote`.
+The slimdom library and tests are developed in [TypeScript](https://www.typescriptlang.org/), using [prettier](https://github.com/prettier/prettier) to automate formatting.
 
 This repository includes a full suite of tests based on [mocha](http://mochajs.org/) and [chai](http://chaijs.com/), with coverage computed using [istanbul and nyc](https://istanbul.js.org/). Run `npm test` to run the tests, or `npm run test:debug` to debug the tests and code by disabling coverage and enabling the node inspector (see [chrome://inspect](chrome://inspect) in Chrome).
 

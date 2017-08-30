@@ -1,46 +1,52 @@
 {
-  "name": "slimdom",
-  "version": "2.1.0",
-  "description": "Fast, tiny DOM implementation in pure JS",
-  "author": "Stef Busking",
-  "license": "MIT",
-  "keywords": [
-    "dom",
-    "xml"
-  ],
-  "main": "dist/slimdom.js",
-  "module": "dist/slimdom.mjs",
-  "scripts": {
-    "build:amd": "rimraf lib && tsc -P tsconfig.build.json --module amd",
-    "build:commonjs": "rimraf lib && tsc -P tsconfig.build.json --module commonjs",
-    "build:es": "rimraf lib && tsc -P tsconfig.build.json --module es6",
-    "build:bundle": "rimraf dist && rimraf lib && tsc -P tsconfig.build.json && rollup -c",
-    "docs": "typedoc --out docs --excludePrivate --excludeNotExported src/index.ts",
-    "prepare": "npm run build:bundle",
-    "test": "rimraf lib && tsc -P tsconfig.json && nyc --reporter html --reporter text --exclude lib/test mocha --timeout 20000 --recursive lib/test",
-    "test:debug": "rimraf lib && tsc -P tsconfig.json && mocha --timeout 20000 --recursive lib/test --inspect --debug-brk"
-  },
-  "files": [
-    "dist"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/bwrrp/slimdom.js.git"
-  },
-  "devDependencies": {
-    "@types/chai": "^3.5.2",
-    "@types/lolex": "^1.5.31",
-    "@types/mocha": "^2.2.41",
-    "chai": "^3.5.0",
-    "lolex": "^1.6.0",
-    "mocha": "^3.3.0",
-    "nyc": "^11.0.2",
-    "parse5": "^3.0.2",
-    "prettier": "^1.5.3",
-    "rimraf": "^2.6.1",
-    "rollup": "^0.41.6",
-    "rollup-plugin-babel-minify": "^3.1.2",
-    "typedoc": "^0.6.0",
-    "typescript": "^2.4.2"
-  }
+	"name": "slimdom",
+	"version": "2.1.0",
+	"description": "Fast, tiny DOM implementation in pure JS",
+	"author": "Stef Busking",
+	"license": "MIT",
+	"keywords": [
+		"dom",
+		"xml"
+	],
+	"main": "dist/slimdom.js",
+	"module": "dist/slimdom.mjs",
+	"scripts": {
+		"build:amd": "rimraf lib && tsc -P tsconfig.build.json --module amd",
+		"build:commonjs": "rimraf lib && tsc -P tsconfig.build.json --module commonjs",
+		"build:es": "rimraf lib && tsc -P tsconfig.build.json --module es6",
+		"build:bundle": "rimraf dist && rimraf lib && tsc -P tsconfig.build.json && rollup -c",
+		"docs": "typedoc --out docs --excludePrivate --excludeNotExported src/index.ts",
+		"prepare": "npm run build:bundle",
+		"test": "rimraf lib && tsc -P tsconfig.json && nyc --reporter html --reporter text --exclude lib/test mocha --timeout 20000 --recursive lib/test",
+		"test:debug": "rimraf lib && tsc -P tsconfig.json && mocha --timeout 20000 --recursive lib/test --inspect --debug-brk"
+	},
+	"files": [
+		"dist"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git://github.com/bwrrp/slimdom.js.git"
+	},
+	"devDependencies": {
+		"@types/chai": "^3.5.2",
+		"@types/lolex": "^1.5.31",
+		"@types/mocha": "^2.2.43",
+		"chai": "^3.5.0",
+		"lolex": "^1.6.0",
+		"mocha": "^3.5.3",
+		"nyc": "^11.2.1",
+		"parse5": "^3.0.2",
+		"prettier": "^1.7.0",
+		"rimraf": "^2.6.2",
+		"rollup": "^0.41.6",
+		"rollup-plugin-babel-minify": "^3.1.2",
+		"typedoc": "^0.6.0",
+		"typescript": "^2.5.2"
+	},
+	"prettier": {
+		"printWidth": 120,
+		"singleQuote": true,
+		"tabWidth": 4,
+		"useTabs": true
+	}
 }

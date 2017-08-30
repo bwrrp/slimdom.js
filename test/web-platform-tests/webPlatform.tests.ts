@@ -7,7 +7,7 @@ import * as slimdom from '../../src/index';
 
 import SlimdomTreeAdapter from './SlimdomTreeAdapter';
 
-const TEST_BLACKLIST: { [key: string]: (string | { [key: string]: string }) } = {
+const TEST_BLACKLIST: { [key: string]: string | { [key: string]: string } } = {
 	'dom/historical.html': 'WebIDL parsing not implemented',
 	'dom/interface-objects.html': 'window not implemented',
 	'dom/interfaces.html': 'WebIDL parsing not implemented',
@@ -133,9 +133,11 @@ const TEST_BLACKLIST: { [key: string]: (string | { [key: string]: string }) } = 
 	},
 	'dom/nodes/MutationObserver-characterData.html': {
 		'characterData Range.deleteContents: child and data removal mutation': 'Range#deleteContents not implemented',
-		'characterData Range.deleteContents: child and data removal mutation (2)': 'Range#deleteContents not implemented',
+		'characterData Range.deleteContents: child and data removal mutation (2)':
+			'Range#deleteContents not implemented',
 		'characterData Range.extractContents: child and data removal mutation': 'Range#extractContents not implemented',
-		'characterData Range.extractContents: child and data removal mutation (2)': 'Range#extractContents not implemented'
+		'characterData Range.extractContents: child and data removal mutation (2)':
+			'Range#extractContents not implemented'
 	},
 	'dom/nodes/MutationObserver-childList.html': {
 		'childList Node.textContent: replace content mutation': 'Element#textContent setter not implemented',
@@ -148,7 +150,8 @@ const TEST_BLACKLIST: { [key: string]: (string | { [key: string]: string }) } = 
 		'childList Range.extractContents: child and data removal mutation': 'Range#extractContents not implemented',
 		'childList Range.insertNode: child insertion mutation': 'Range#insertNode not implemented',
 		'childList Range.insertNode: children insertion mutation': 'Range#insertNode not implemented',
-		'childList Range.surroundContents: children removal and addition mutation': 'Range#surroundContents not implemented'
+		'childList Range.surroundContents: children removal and addition mutation':
+			'Range#surroundContents not implemented'
 	},
 	'dom/nodes/MutationObserver-disconnect.html': 'Element#id not implemented',
 	'dom/nodes/MutationObserver-document.html': 'Running script during parsing not implemented',
@@ -285,8 +288,10 @@ const TEST_BLACKLIST: { [key: string]: (string | { [key: string]: string }) } = 
 	},
 	'dom/nodes/Node-compareDocumentPosition.html': 'Node#compareDocumentPosition not implemented',
 	'dom/nodes/Node-constants.html': {
-		'Constants for createDocumentPosition on Node interface object.': 'Node#compareDocumentPosition not implemented',
-		'Constants for createDocumentPosition on Node prototype object.': 'Node#compareDocumentPosition not implemented',
+		'Constants for createDocumentPosition on Node interface object.':
+			'Node#compareDocumentPosition not implemented',
+		'Constants for createDocumentPosition on Node prototype object.':
+			'Node#compareDocumentPosition not implemented',
 		'Constants for createDocumentPosition on Element object.': 'Node#compareDocumentPosition not implemented',
 		'Constants for createDocumentPosition on Text object.': 'Node#compareDocumentPosition not implemented'
 	},
@@ -359,7 +364,9 @@ function getNodes(root: slimdom.Node, ...path: string[]): slimdom.Node[] {
 }
 
 function getAllText(root: slimdom.Node, ...path: string[]): string {
-	return getNodes(root, ...path).map(n => (n as slimdom.Text).data).join('');
+	return getNodes(root, ...path)
+		.map(n => (n as slimdom.Text).data)
+		.join('');
 }
 
 function getAllScripts(doc: slimdom.Document, casePath: string) {
@@ -372,7 +379,10 @@ function getAllScripts(doc: slimdom.Document, casePath: string) {
 				if (src.value === '/resources/WebIDLParser.js') {
 					// Historical alias, unfortunately not an actual file
 					// https://github.com/w3c/web-platform-tests/issues/5608
-					resolvedPath = path.resolve(process.env.WEB_PLATFORM_TESTS_PATH, 'resources/webidl2/lib/webidl2.js');
+					resolvedPath = path.resolve(
+						process.env.WEB_PLATFORM_TESTS_PATH,
+						'resources/webidl2/lib/webidl2.js'
+					);
 				} else {
 					resolvedPath = src.value.startsWith('/')
 						? path.resolve(process.env.WEB_PLATFORM_TESTS_PATH, src.value.substring(1))
@@ -526,17 +536,20 @@ describe('web platform DOM test suite', () => {
 		tagName: string
 	): slimdom.Node[] {
 		return (function getElementsByTagName(node: slimdom.Node): slimdom.Node[] {
-			return node.childNodes.reduce((elements, child) => {
-				if (child.nodeName === tagName) {
-					elements.push(child);
-				}
+			return node.childNodes.reduce(
+				(elements, child) => {
+					if (child.nodeName === tagName) {
+						elements.push(child);
+					}
 
-				if (child.nodeType === slimdom.Node.ELEMENT_NODE) {
-					elements = elements.concat(getElementsByTagName(child));
-				}
+					if (child.nodeType === slimdom.Node.ELEMENT_NODE) {
+						elements = elements.concat(getElementsByTagName(child));
+					}
 
-				return elements;
-			}, [] as slimdom.Node[]);
+					return elements;
+				},
+				[] as slimdom.Node[]
+			);
 		})(this);
 	};
 
@@ -546,7 +559,10 @@ describe('web platform DOM test suite', () => {
 	): slimdom.Node | null {
 		return (function getElementById(node: slimdom.Node): slimdom.Node | null {
 			for (let child = node.firstChild; child; child = child.nextSibling) {
-				if (child.nodeType === slimdom.Node.ELEMENT_NODE && (child as slimdom.Element).getAttribute('id') === id) {
+				if (
+					child.nodeType === slimdom.Node.ELEMENT_NODE &&
+					(child as slimdom.Element).getAttribute('id') === id
+				) {
 					return child;
 				}
 				const descendant = getElementById(child);

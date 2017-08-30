@@ -51,7 +51,9 @@ export default abstract class Node {
 	 * The parent if it is an element, or null otherwise.
 	 */
 	public get parentElement(): Element | null {
-		return this.parentNode && isNodeOfType(this.parentNode, NodeType.ELEMENT_NODE) ? this.parentNode as Element : null;
+		return this.parentNode && isNodeOfType(this.parentNode, NodeType.ELEMENT_NODE)
+			? this.parentNode as Element
+			: null;
 	}
 
 	/**
