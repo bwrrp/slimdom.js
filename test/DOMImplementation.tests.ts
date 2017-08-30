@@ -10,7 +10,11 @@ describe('DOMImplementation', () => {
 
 	describe('.createDocumentType()', () => {
 		it('can create a document type', () => {
-			const doctype = domImplementation.createDocumentType('someName', 'somePublicId', 'someSystemId');
+			const doctype = domImplementation.createDocumentType(
+				'someName',
+				'somePublicId',
+				'someSystemId'
+			);
 			chai.assert.equal(doctype.nodeType, 10);
 			chai.assert.equal(doctype.name, 'someName');
 			chai.assert.equal(doctype.publicId, 'somePublicId');
@@ -26,7 +30,11 @@ describe('DOMImplementation', () => {
 		});
 
 		it('can create a document with a given document type', () => {
-			const doctype = domImplementation.createDocumentType('someName', 'somePublicId', 'someSystemId');
+			const doctype = domImplementation.createDocumentType(
+				'someName',
+				'somePublicId',
+				'someSystemId'
+			);
 			const document = domImplementation.createDocument(null, '', doctype);
 			chai.assert.equal(document.nodeType, 9);
 			chai.assert.equal(document.firstChild, document.doctype);
@@ -38,7 +46,10 @@ describe('DOMImplementation', () => {
 			const document = domImplementation.createDocument(null, 'someRootElementName');
 			chai.assert.equal(document.nodeType, 9);
 			chai.assert.equal(document.firstChild, document.documentElement);
-			chai.assert.equal((document.documentElement as slimdom.Element).nodeName, 'someRootElementName');
+			chai.assert.equal(
+				(document.documentElement as slimdom.Element).nodeName,
+				'someRootElementName'
+			);
 		});
 	});
 

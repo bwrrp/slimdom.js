@@ -30,7 +30,14 @@ export interface ParentNode {
 export function asParentNode(node: Node): ParentNode | null {
 	// This is only called from treeMutations.js, where node can never be anything other than these
 	/* istanbul ignore else */
-	if (isNodeOfType(node, NodeType.ELEMENT_NODE, NodeType.DOCUMENT_NODE, NodeType.DOCUMENT_FRAGMENT_NODE)) {
+	if (
+		isNodeOfType(
+			node,
+			NodeType.ELEMENT_NODE,
+			NodeType.DOCUMENT_NODE,
+			NodeType.DOCUMENT_FRAGMENT_NODE
+		)
+	) {
 		return node as Element | Document | DocumentFragment;
 	}
 
@@ -41,8 +48,8 @@ export function asParentNode(node: Node): ParentNode | null {
 /**
  * Returns the element children of node.
  *
- * (Non-standard) According to the spec, the children getter should return a live HTMLCollection. This implementation
- * returns a static array instead.
+ * (Non-standard) According to the spec, the children getter should return a live HTMLCollection.
+ * This implementation returns a static array instead.
  *
  * @param node The node to get element children of
  *

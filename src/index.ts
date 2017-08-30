@@ -19,8 +19,9 @@ export { default as MutationRecord } from './mutation-observer/MutationRecord';
 // Standard DOM does not expose a way to serialize arbitrary nodes as well-formed XML
 export { serializeToWellFormedString } from './dom-parsing/XMLSerializer';
 
-// To avoid cyclic dependencies and enable multiple contexts with their own constructors later, inject all constructors
-// as well as the global document into the default context (i.e., global object) here.
+// To avoid cyclic dependencies and enable multiple contexts with their own constructors later,
+// inject all constructors as well as the global document into the default context (i.e., global
+// object) here.
 import { defaultContext } from './context/Context';
 
 import Attr from './Attr';

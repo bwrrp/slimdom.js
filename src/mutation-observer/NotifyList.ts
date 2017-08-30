@@ -8,7 +8,11 @@ declare function setTimeout(handler: (...args: any[]) => void, timeout: number):
 
 const hasSetImmediate = typeof setImmediate === 'function';
 
-function queueCompoundMicrotask(callback: (...args: any[]) => void, thisArg: NotifyList, ...args: any[]): number {
+function queueCompoundMicrotask(
+	callback: (...args: any[]) => void,
+	thisArg: NotifyList,
+	...args: any[]
+): number {
 	// Branch taken is platform dependent and constant
 	/* istanbul ignore next */
 	return (hasSetImmediate ? setImmediate : setTimeout)(() => {
@@ -17,14 +21,16 @@ function queueCompoundMicrotask(callback: (...args: any[]) => void, thisArg: Not
 }
 
 /**
- * Tracks MutationObserver instances which have a non-empty record queue and schedules their callbacks to be called.
+ * Tracks MutationObserver instances which have a non-empty record queue and schedules their
+ * callbacks to be called.
  */
 export default class NotifyList {
 	private _notifyList: MutationObserver[] = [];
 	private _compoundMicrotaskQueued: number | null = null;
 
 	/**
-	 * Appends a given MutationRecord to the recordQueue of the given MutationObserver and schedules it for reporting.
+	 * Appends a given MutationRecord to the recordQueue of the given MutationObserver and schedules
+	 * it for reporting.
 	 *
 	 * @param observer The observer for which to enqueue the record
 	 * @param record   The record to enqueue
@@ -57,18 +63,20 @@ export default class NotifyList {
 		// 1. Unset mutation observer compound microtask queued flag.
 		this._compoundMicrotaskQueued = null;
 
-		// 2. Let notify list be a copy of unit of related similar-origin browsing contexts' list of MutationObserver
-		// objects.
+		// 2. Let notify list be a copy of unit of related similar-origin browsing contexts' list of
+		// MutationObserver objects.
 		const notifyList = this._notifyList.concat();
-		// Clear the notify list - for efficiency this list only tracks observers that have a non-empty queue
+		// Clear the notify list - for efficiency this list only tracks observers that have a
+		// non-empty queue
 		this._notifyList.length = 0;
 
-		// 3. Let signalList be a copy of unit of related similar-origin browsing contexts' signal slot list.
-		// 4. Empty unit of related similar-origin browsing contexts' signal slot list.
-		// (shadow dom not implemented)
+		// 3. Let signalList be a copy of unit of related similar-origin browsing contexts' signal
+		// slot list.
+		// 4. Empty unit of related similar-origin browsing contexts' signal slot list. (shadow dom
+		// not implemented)
 
-		// 5. For each MutationObserver object mo in notify list, execute a compound microtask subtask to run these
-		// steps: [HTML]
+		// 5. For each MutationObserver object mo in notify list, execute a compound microtask
+		// subtask to run these steps: [HTML]
 		notifyList.forEach(mo => {
 			queueCompoundMicrotask(
 				(mo: MutationObserver) => {
@@ -79,8 +87,9 @@ export default class NotifyList {
 					// 5.3. Remove all transient registered observers whose observer is mo.
 					removeTransientRegisteredObserversForObserver(mo);
 
-					// 5.4. If queue is non-empty, invoke mo’s callback with a list of arguments consisting of queue and mo,
-					// and mo as the callback this value. If this throws an exception, report the exception.
+					// 5.4. If queue is non-empty, invoke mo’s callback with a list of arguments
+					// consisting of queue and mo, and mo as the callback this value. If this throws
+					// an exception, report the exception.
 					if (queue.length) {
 						mo._callback(queue, mo);
 					}
@@ -90,8 +99,8 @@ export default class NotifyList {
 			);
 		});
 
-		// 6. For each slot slot in signalList, in order, fire an event named slotchange, with its bubbles
-		// attribute set to true, at slot.
+		// 6. For each slot slot in signalList, in order, fire an event named slotchange, with its
+		// bubbles attribute set to true, at slot.
 		// (shadow dom not implemented)
 	}
 }

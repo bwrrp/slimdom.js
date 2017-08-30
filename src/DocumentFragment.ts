@@ -60,7 +60,8 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 	public childElementCount: number = 0;
 
 	/**
-	 * Return a new DocumentFragment node whose node document is current global object’s associated Document.
+	 * Return a new DocumentFragment node whose node document is current global object’s associated
+	 * Document.
 	 */
 	constructor() {
 		super();

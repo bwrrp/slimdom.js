@@ -5,7 +5,13 @@ import { ranges } from './Range';
 import RegisteredObservers from './mutation-observer/RegisteredObservers';
 import cloneNode from './util/cloneNode';
 import { expectArity } from './util/errorHelpers';
-import { preInsertNode, appendNode, replaceChildWithNode, preRemoveChild, removeNode } from './util/mutationAlgorithms';
+import {
+	preInsertNode,
+	appendNode,
+	replaceChildWithNode,
+	preRemoveChild,
+	removeNode
+} from './util/mutationAlgorithms';
 import { NodeType, isNodeOfType } from './util/NodeType';
 import { getNodeDocument } from './util/treeHelpers';
 import { asNullableObject, asNullableString, asObject } from './util/typeHelpers';
@@ -102,8 +108,8 @@ export default abstract class Node {
 	public _registeredObservers: RegisteredObservers = new RegisteredObservers(this);
 
 	/**
-	 * Puts the specified node and all of its subtree into a "normalized" form. In a normalized subtree, no text nodes
-	 * in the subtree are empty and there are no adjacent text nodes.
+	 * Puts the specified node and all of its subtree into a "normalized" form. In a normalized
+	 * subtree, no text nodes in the subtree are empty and there are no adjacent text nodes.
 	 */
 	public normalize(): void {
 		// for each descendant exclusive Text node node of context object:
@@ -123,7 +129,8 @@ export default abstract class Node {
 			// 1. Let length be node’s length.
 			let length = textNode.length;
 
-			// 2. If length is zero, then remove node and continue with the next exclusive Text node, if any.
+			// 2. If length is zero, then remove node and continue with the next exclusive Text
+			// node, if any.
 			if (length === 0) {
 				removeNode(node, this);
 				--index;
@@ -131,8 +138,8 @@ export default abstract class Node {
 				continue;
 			}
 
-			// 3. Let data be the concatenation of the data of node’s contiguous exclusive Text nodes (excluding
-			// itself), in tree order.
+			// 3. Let data be the concatenation of the data of node’s contiguous exclusive Text
+			// nodes (excluding itself), in tree order.
 			let data = '';
 			const siblingsToRemove = [];
 			for (
@@ -156,29 +163,30 @@ export default abstract class Node {
 				const currentNodeIndex = index + i + 1;
 
 				ranges.forEach(range => {
-					// 6.1. For each range whose start node is currentNode, add length to its start offset and set its
-					// start node to node.
+					// 6.1. For each range whose start node is currentNode, add length to its start
+					// offset and set its start node to node.
 					if (range.startContainer === currentNode) {
 						range.startOffset += length;
 						range.startContainer = textNode;
 					}
 
-					// 6.2. For each range whose end node is currentNode, add length to its end offset and set its end
-					// node to node.
+					// 6.2. For each range whose end node is currentNode, add length to its end
+					// offset and set its end node to node.
 					if (range.endContainer === currentNode) {
 						range.endOffset += length;
 						range.endContainer = textNode;
 					}
 
-					// 6.3. For each range whose start node is currentNode’s parent and start offset is currentNode’s
-					// index, set its start node to node and its start offset to length.
+					// 6.3. For each range whose start node is currentNode’s parent and start offset
+					// is currentNode’s index, set its start node to node and its start offset to
+					// length.
 					if (range.startContainer === this && range.startOffset === currentNodeIndex) {
 						range.startContainer = textNode;
 						range.startOffset = length;
 					}
 
-					// 6.4. For each range whose end node is currentNode’s parent and end offset is currentNode’s index,
-					// set its end node to node and its end offset to length.
+					// 6.4. For each range whose end node is currentNode’s parent and end offset is
+					// currentNode’s index, set its end node to node and its end offset to length.
 					if (range.endContainer === this && range.endOffset === currentNodeIndex) {
 						range.endContainer = textNode;
 						range.endOffset = length;
@@ -202,8 +210,9 @@ export default abstract class Node {
 			++index;
 		}
 
-		// Note: normalize() does not need to run any child text content change steps, since although it messes with
-		// Text nodes extensively, it does so specifically in a way that preserves the child text content.
+		// Note: normalize() does not need to run any child text content change steps, since
+		// although it messes with Text nodes extensively, it does so specifically in a way that
+		// preserves the child text content.
 	}
 
 	/**
@@ -218,8 +227,8 @@ export default abstract class Node {
 	}
 
 	/**
-	 * Returns true if other is an inclusive descendant of context object, and false otherwise (including when other is
-	 * null).
+	 * Returns true if other is an inclusive descendant of context object, and false otherwise
+	 * (including when other is null).
 	 *
 	 * @param childNode Node to check
 	 *
@@ -269,7 +278,8 @@ export default abstract class Node {
 			namespace = null;
 		}
 
-		// 2. Let defaultNamespace be the result of running locate a namespace for context object using null.
+		// 2. Let defaultNamespace be the result of running locate a namespace for context object
+		// using null.
 		const defaultNamespace = this.lookupNamespaceURI(null);
 
 		// 3. Return true if defaultNamespace is the same as namespace, and false otherwise.
@@ -282,7 +292,8 @@ export default abstract class Node {
 	 * If child is null, the new node is appended after the last child node of the current node.
 	 *
 	 * @param node  Node to insert
-	 * @param child Childnode of the current node before which to insert, or null to append newNode at the end
+	 * @param child Childnode of the current node before which to insert, or null to append newNode
+	 *              at the end
 	 *
 	 * @return The node that was inserted
 	 */

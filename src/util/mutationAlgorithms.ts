@@ -1,6 +1,11 @@
 import { throwHierarchyRequestError, throwNotFoundError } from './errorHelpers';
 import { NodeType, isNodeOfType } from './NodeType';
-import { determineLengthOfNode, getNodeDocument, getNodeIndex, forEachInclusiveDescendant } from './treeHelpers';
+import {
+	determineLengthOfNode,
+	getNodeDocument,
+	getNodeIndex,
+	forEachInclusiveDescendant
+} from './treeHelpers';
 import { insertIntoChildren, removeFromChildren } from './treeMutations';
 import Document from '../Document';
 import DocumentFragment from '../DocumentFragment';
@@ -15,8 +20,16 @@ import queueMutationRecord from '../mutation-observer/queueMutationRecord';
  * To ensure pre-insertion validity of a node into a parent before a child, run these steps:
  */
 function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null): void {
-	// 1. If parent is not a Document, DocumentFragment, or Element node, throw a HierarchyRequestError.
-	if (!isNodeOfType(parent, NodeType.DOCUMENT_NODE, NodeType.DOCUMENT_FRAGMENT_NODE, NodeType.ELEMENT_NODE)) {
+	// 1. If parent is not a Document, DocumentFragment, or Element node, throw a
+	// HierarchyRequestError.
+	if (
+		!isNodeOfType(
+			parent,
+			NodeType.DOCUMENT_NODE,
+			NodeType.DOCUMENT_FRAGMENT_NODE,
+			NodeType.ELEMENT_NODE
+		)
+	) {
 		throwHierarchyRequestError('parent must be a Document, DocumentFragment or Element node');
 	}
 
@@ -30,8 +43,8 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
 		throwNotFoundError('child is not a child of parent');
 	}
 
-	// 4. If node is not a DocumentFragment, DocumentType, Element, Text, ProcessingInstruction, or Comment node, throw
-	// a HierarchyRequestError.
+	// 4. If node is not a DocumentFragment, DocumentType, Element, Text, ProcessingInstruction, or
+	// Comment node, throw a HierarchyRequestError.
 	if (
 		!isNodeOfType(
 			node,
@@ -45,21 +58,25 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
 		)
 	) {
 		throwHierarchyRequestError(
-			'node must be a DocumentFragment, DocumentType, Element, Text, ProcessingInstruction or Comment node'
+			'node must be a DocumentFragment, DocumentType, Element, Text, ProcessingInstruction ' +
+				'or Comment node'
 		);
 	}
 
-	// 5. If either node is a Text node and parent is a document, or node is a doctype and parent is not a document,
-	// throw a HierarchyRequestError.
+	// 5. If either node is a Text node and parent is a document, or node is a doctype and parent is
+	// not a document, throw a HierarchyRequestError.
 	if (isNodeOfType(node, NodeType.TEXT_NODE) && isNodeOfType(parent, NodeType.DOCUMENT_NODE)) {
 		throwHierarchyRequestError('can not insert a Text node under a Document');
 	}
-	if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE) && !isNodeOfType(parent, NodeType.DOCUMENT_NODE)) {
+	if (
+		isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE) &&
+		!isNodeOfType(parent, NodeType.DOCUMENT_NODE)
+	) {
 		throwHierarchyRequestError('can only insert a DocumentType node under a Document');
 	}
 
-	// 6. If parent is a document, and any of the statements below, switched on node, are true, throw a
-	// HierarchyRequestError.
+	// 6. If parent is a document, and any of the statements below, switched on node, are true,
+	// throw a HierarchyRequestError.
 	if (isNodeOfType(parent, NodeType.DOCUMENT_NODE)) {
 		const parentDocument = parent as Document;
 		switch (node.nodeType) {
@@ -68,44 +85,56 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
 				// If node has more than one element child or has a Text node child.
 				const fragment = node as DocumentFragment;
 				if (fragment.firstElementChild !== fragment.lastElementChild) {
-					throwHierarchyRequestError('can not insert more than one element under a Document');
+					throwHierarchyRequestError(
+						'can not insert more than one element under a Document'
+					);
 				}
-				if (Array.from(fragment.childNodes).some(child => isNodeOfType(child, NodeType.TEXT_NODE))) {
+				if (
+					Array.from(fragment.childNodes).some(child =>
+						isNodeOfType(child, NodeType.TEXT_NODE)
+					)
+				) {
 					throwHierarchyRequestError('can not insert a Text node under a Document');
 				}
-				// Otherwise, if node has one element child and either parent has an element child, child is a doctype,
-				// or child is not null and a doctype is following child.
+				// Otherwise, if node has one element child and either parent has an element child,
+				// child is a doctype, or child is not null and a doctype is following child.
 				if (
 					fragment.firstElementChild &&
 					(parentDocument.documentElement ||
 						(child && isNodeOfType(child, NodeType.DOCUMENT_TYPE_NODE)) ||
-						(child && parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype)))
+						(child &&
+							parentDocument.doctype &&
+							getNodeIndex(child) < getNodeIndex(parentDocument.doctype)))
 				) {
 					throwHierarchyRequestError(
-						'Document should contain at most one doctype, followed by at most one element'
+						'Document should contain at most one doctype, followed by at most one ' +
+							'element'
 					);
 				}
 				break;
 
 			// element
 			case NodeType.ELEMENT_NODE:
-				// parent has an element child, child is a doctype, or child is not null and a doctype is following
-				// child.
+				// parent has an element child, child is a doctype, or child is not null and a
+				// doctype is following child.
 				if (
 					parentDocument.documentElement ||
 					(child && isNodeOfType(child, NodeType.DOCUMENT_TYPE_NODE)) ||
-					(child && parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype))
+					(child &&
+						parentDocument.doctype &&
+						getNodeIndex(child) < getNodeIndex(parentDocument.doctype))
 				) {
 					throwHierarchyRequestError(
-						'Document should contain at most one doctype, followed by at most one element'
+						'Document should contain at most one doctype, followed by at most one ' +
+							'element'
 					);
 				}
 				break;
 
 			// doctype
 			case NodeType.DOCUMENT_TYPE_NODE:
-				// parent has a doctype child, child is non-null and an element is preceding child, or child is null and
-				// parent has an element child.
+				// parent has a doctype child, child is non-null and an element is preceding child,
+				// or child is null and parent has an element child.
 				if (
 					parentDocument.doctype ||
 					(child &&
@@ -114,7 +143,8 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
 					(!child && parentDocument.documentElement)
 				) {
 					throwHierarchyRequestError(
-						'Document should contain at most one doctype, followed by at most one element'
+						'Document should contain at most one doctype, followed by at most one ' +
+							'element'
 					);
 				}
 				break;
@@ -154,15 +184,22 @@ export function preInsertNode(node: Node, parent: Node, child: Node | null): Nod
 }
 
 /**
- * To insert a node into a parent before a child, with an optional suppress observers flag, run these steps:
+ * To insert a node into a parent before a child, with an optional suppress observers flag, run
+ * these steps:
  *
  * @param node              Node to insert
  * @param parent            Parent to insert under
  * @param child             Child to insert before, or null to insert at end of parent
  * @param suppressObservers Whether to skip enqueueing a mutation record for this mutation
  */
-export function insertNode(node: Node, parent: Node, child: Node | null, suppressObservers: boolean = false): void {
-	// 1. Let count be the number of children of node if it is a DocumentFragment node, and one otherwise.
+export function insertNode(
+	node: Node,
+	parent: Node,
+	child: Node | null,
+	suppressObservers: boolean = false
+): void {
+	// 1. Let count be the number of children of node if it is a DocumentFragment node, and one
+	// otherwise.
 	const isDocumentFragment = isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE);
 	const count = isDocumentFragment ? determineLengthOfNode(node) : 1;
 
@@ -170,30 +207,33 @@ export function insertNode(node: Node, parent: Node, child: Node | null, suppres
 	if (child !== null) {
 		const childIndex = getNodeIndex(child);
 		ranges.forEach(range => {
-			// 2.1. For each range whose start node is parent and start offset is greater than child’s index, increase
-			// its start offset by count.
+			// 2.1. For each range whose start node is parent and start offset is greater than
+			// child’s index, increase its start offset by count.
 			if (range.startContainer === parent && range.startOffset > childIndex) {
 				range.startOffset += count;
 			}
 
-			// 2.2. For each range whose end node is parent and end offset is greater than child’s index, increase its
-			// end offset by count.
+			// 2.2. For each range whose end node is parent and end offset is greater than child’s
+			// index, increase its end offset by count.
 			if (range.endContainer === parent && range.endOffset > childIndex) {
 				range.endOffset += count;
 			}
 		});
 	}
 
-	// 3. Let nodes be node’s children if node is a DocumentFragment node, and a list containing solely node otherwise.
+	// 3. Let nodes be node’s children if node is a DocumentFragment node, and a list containing
+	// solely node otherwise.
 	const nodes = isDocumentFragment ? Array.from(node.childNodes) : [node];
 
-	// 4. If node is a DocumentFragment node, remove its children with the suppress observers flag set.
+	// 4. If node is a DocumentFragment node, remove its children with the suppress observers flag
+	// set.
 	if (isDocumentFragment) {
 		nodes.forEach(n => removeNode(n, node, true));
 	}
 
-	// 5. If node is a DocumentFragment node, queue a mutation record of "childList" for node with removedNodes nodes.
-	// This step intentionally does not pay attention to the suppress observers flag.
+	// 5. If node is a DocumentFragment node, queue a mutation record of "childList" for node with
+	// removedNodes nodes. This step intentionally does not pay attention to the suppress observers
+	// flag.
 	if (isDocumentFragment) {
 		queueMutationRecord('childList', node, {
 			removedNodes: nodes
@@ -215,27 +255,28 @@ export function insertNode(node: Node, parent: Node, child: Node | null, suppres
 		// 7.4. If node is a Text node, run the child text content change steps for parent.
 		// (child text content change steps not implemented)
 
-		// 7.5. If parent's root is a shadow root, and parent is a slot whose assigned nodes is the empty list, then run
-		// signal a slot change for parent.
+		// 7.5. If parent's root is a shadow root, and parent is a slot whose assigned nodes is the
+		// empty list, then run signal a slot change for parent.
 		// 7.6. Run assign slotables for a tree with node’s tree.
 		// (shadow dom not implemented)
 
-		// 7.7. For each shadow-including inclusive descendant inclusiveDescendant of node, in shadow-including tree
-		// order:
+		// 7.7. For each shadow-including inclusive descendant inclusiveDescendant of node, in
+		// shadow-including tree order:
 		// 7.7.1. Run the insertion steps with inclusiveDescendant.
 		// (insertion steps not implemented)
 
 		// 7.7.2. If inclusiveDescendant is connected, then:
-		// 7.7.2.1. If inclusiveDescendant is custom, then enqueue a custom element callback reaction with
-		// inclusiveDescendant, callback name "connectedCallback", and an empty argument list.
-		// 7.7.2.2. Otherwise, try to upgrade inclusiveDescendant.
-		// If this successfully upgrades inclusiveDescendant, its connectedCallback will be enqueued automatically
-		// during the upgrade an element algorithm.
+		// 7.7.2.1. If inclusiveDescendant is custom, then enqueue a custom element callback
+		// reaction with inclusiveDescendant, callback name "connectedCallback", and an empty
+		// argument list.
+		// 7.7.2.2. Otherwise, try to upgrade inclusiveDescendant. If this successfully upgrades
+		// inclusiveDescendant, its connectedCallback will be enqueued automatically during the
+		// upgrade an element algorithm.
 		// (custom elements not implemented)
 	});
 
-	// 8. If suppress observers flag is unset, queue a mutation record of "childList" for parent with addedNodes nodes,
-	// nextSibling child, and previousSibling previousSibling.
+	// 8. If suppress observers flag is unset, queue a mutation record of "childList" for parent
+	// with addedNodes nodes, nextSibling child, and previousSibling previousSibling.
 	if (!suppressObservers) {
 		queueMutationRecord('childList', parent, {
 			addedNodes: nodes,
@@ -268,8 +309,16 @@ export function appendNode(node: Node, parent: Node): Node {
  * @return The old child node
  */
 export function replaceChildWithNode(child: Node, node: Node, parent: Node): Node {
-	// 1. If parent is not a Document, DocumentFragment, or Element node, throw a HierarchyRequestError.
-	if (!isNodeOfType(parent, NodeType.DOCUMENT_NODE, NodeType.DOCUMENT_FRAGMENT_NODE, NodeType.ELEMENT_NODE)) {
+	// 1. If parent is not a Document, DocumentFragment, or Element node, throw a
+	// HierarchyRequestError.
+	if (
+		!isNodeOfType(
+			parent,
+			NodeType.DOCUMENT_NODE,
+			NodeType.DOCUMENT_FRAGMENT_NODE,
+			NodeType.ELEMENT_NODE
+		)
+	) {
 		throwHierarchyRequestError('Can not replace under a non-parent node');
 	}
 
@@ -283,8 +332,8 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
 		throwNotFoundError('child is not a child of parent');
 	}
 
-	// 4. If node is not a DocumentFragment, DocumentType, Element, Text, ProcessingInstruction, or Comment node, throw
-	// a HierarchyRequestError.
+	// 4. If node is not a DocumentFragment, DocumentType, Element, Text, ProcessingInstruction, or
+	// Comment node, throw a HierarchyRequestError.
 	if (
 		!isNodeOfType(
 			node,
@@ -303,17 +352,20 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
 		);
 	}
 
-	// 5. If either node is a Text node and parent is a document, or node is a doctype and parent is not a document,
-	// throw a HierarchyRequestError.
+	// 5. If either node is a Text node and parent is a document, or node is a doctype and parent is
+	// not a document, throw a HierarchyRequestError.
 	if (isNodeOfType(node, NodeType.TEXT_NODE) && isNodeOfType(parent, NodeType.DOCUMENT_NODE)) {
 		throwHierarchyRequestError('can not insert a Text node under a Document');
 	}
-	if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE) && !isNodeOfType(parent, NodeType.DOCUMENT_NODE)) {
+	if (
+		isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE) &&
+		!isNodeOfType(parent, NodeType.DOCUMENT_NODE)
+	) {
 		throwHierarchyRequestError('can only insert a DocumentType node under a Document');
 	}
 
-	// 6. If parent is a document, and any of the statements below, switched on node, are true, throw a
-	// HierarchyRequestError.
+	// 6. If parent is a document, and any of the statements below, switched on node, are true,
+	// throw a HierarchyRequestError.
 	if (isNodeOfType(parent, NodeType.DOCUMENT_NODE)) {
 		const parentDocument = parent as Document;
 		switch (node.nodeType) {
@@ -322,20 +374,29 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
 				// If node has more than one element child or has a Text node child.
 				const fragment = node as DocumentFragment;
 				if (fragment.firstElementChild !== fragment.lastElementChild) {
-					throwHierarchyRequestError('can not insert more than one element under a Document');
+					throwHierarchyRequestError(
+						'can not insert more than one element under a Document'
+					);
 				}
-				if (Array.from(fragment.childNodes).some(child => isNodeOfType(child, NodeType.TEXT_NODE))) {
+				if (
+					Array.from(fragment.childNodes).some(child =>
+						isNodeOfType(child, NodeType.TEXT_NODE)
+					)
+				) {
 					throwHierarchyRequestError('can not insert a Text node under a Document');
 				}
-				// Otherwise, if node has one element child and either parent has an element child that is not child or
-				// a doctype is following child.
+				// Otherwise, if node has one element child and either parent has an element child
+				// that is not child or a doctype is following child.
 				if (
 					fragment.firstElementChild &&
 					((parentDocument.documentElement && parentDocument.documentElement !== child) ||
-						(child && parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype)))
+						(child &&
+							parentDocument.doctype &&
+							getNodeIndex(child) < getNodeIndex(parentDocument.doctype)))
 				) {
 					throwHierarchyRequestError(
-						'Document should contain at most one doctype, followed by at most one element'
+						'Document should contain at most one doctype, followed by at most one ' +
+							'element'
 					);
 				}
 				break;
@@ -345,10 +406,12 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
 				// parent has an element child that is not child or a doctype is following child.
 				if (
 					(parentDocument.documentElement && parentDocument.documentElement !== child) ||
-					(parentDocument.doctype && getNodeIndex(child) < getNodeIndex(parentDocument.doctype))
+					(parentDocument.doctype &&
+						getNodeIndex(child) < getNodeIndex(parentDocument.doctype))
 				) {
 					throwHierarchyRequestError(
-						'Document should contain at most one doctype, followed by at most one element'
+						'Document should contain at most one doctype, followed by at most one ' +
+							'element'
 					);
 				}
 				break;
@@ -362,7 +425,8 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
 						getNodeIndex(parentDocument.documentElement) < getNodeIndex(child))
 				) {
 					throwHierarchyRequestError(
-						'Document should contain at most one doctype, followed by at most one element'
+						'Document should contain at most one doctype, followed by at most one ' +
+							'element'
 					);
 				}
 				break;
@@ -397,14 +461,17 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
 	}
 	// The above can only be false if child is node.
 
-	// 13. Let nodes be node’s children if node is a DocumentFragment node, and a list containing solely node otherwise.
-	const nodes = isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE) ? Array.from(node.childNodes) : [node];
+	// 13. Let nodes be node’s children if node is a DocumentFragment node, and a list containing
+	// solely node otherwise.
+	const nodes = isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE)
+		? Array.from(node.childNodes)
+		: [node];
 
 	// 14. Insert node into parent before reference child with the suppress observers flag set.
 	insertNode(node, parent, referenceChild, true);
 
-	// 15. Queue a mutation record of "childList" for target parent with addedNodes nodes, removedNodes removedNodes,
-	// nextSibling reference child, and previousSibling previousSibling.
+	// 15. Queue a mutation record of "childList" for target parent with addedNodes nodes,
+	// removedNodes removedNodes, nextSibling reference child, and previousSibling previousSibling.
 	queueMutationRecord('childList', parent, {
 		addedNodes: nodes,
 		removedNodes: removedNodes,
@@ -449,33 +516,35 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 	const index = getNodeIndex(node);
 
 	ranges.forEach(range => {
-		// 2. For each range whose start node is an inclusive descendant of node, set its start to (parent, index).
+		// 2. For each range whose start node is an inclusive descendant of node, set its start to
+		// (parent, index).
 		if (node.contains(range.startContainer)) {
 			range.startContainer = parent;
 			range.startOffset = index;
 		}
 
-		// 3. For each range whose end node is an inclusive descendant of node, set its end to (parent, index).
+		// 3. For each range whose end node is an inclusive descendant of node, set its end to
+		// (parent, index).
 		if (node.contains(range.endContainer)) {
 			range.endContainer = parent;
 			range.endOffset = index;
 		}
 
-		// 4. For each range whose start node is parent and start offset is greater than index, decrease its start
-		// offset by one.
+		// 4. For each range whose start node is parent and start offset is greater than index,
+		// decrease its start offset by one.
 		if (range.startContainer === parent && range.startOffset > index) {
 			range.startOffset -= 1;
 		}
 
-		// 5. For each range whose end node is parent and end offset is greater than index, decrease its end offset by
-		// one.
+		// 5. For each range whose end node is parent and end offset is greater than index, decrease
+		// its end offset by one.
 		if (range.endContainer === parent && range.endOffset > index) {
 			range.endOffset -= 1;
 		}
 	});
 
-	// 6. For each NodeIterator object iterator whose root’s node document is node’s node document, run the NodeIterator
-	// pre-removing steps given node and iterator.
+	// 6. For each NodeIterator object iterator whose root’s node document is node’s node document,
+	// run the NodeIterator pre-removing steps given node and iterator.
 	// (NodeIterator not implemented)
 
 	// 7. Let oldPreviousSibling be node’s previous sibling.
@@ -490,8 +559,8 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 	// 10. If node is assigned, then run assign slotables for node’s assigned slot.
 	// (shadow dom not implemented)
 
-	// 11. If parent's root is a shadow root, and parent is a slot whose assigned nodes is the empty list, then run
-	// signal a slot change for parent.
+	// 11. If parent's root is a shadow root, and parent is a slot whose assigned nodes is the empty
+	// list, then run signal a slot change for parent.
 	// (shadow dom not implemented)
 
 	// 12. If node has an inclusive descendant that is a slot, then:
@@ -502,24 +571,25 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 	// 13. Run the removing steps with node and parent.
 	// (removing steps not implemented)
 
-	// 14. If node is custom, then enqueue a custom element callback reaction with node, callback name
-	// "disconnectedCallback", and an empty argument list.
-	// It is intentional for now that custom elements do not get parent passed. This might change in the future if there
-	// is a need.
+	// 14. If node is custom, then enqueue a custom element callback reaction with node, callback
+	// name "disconnectedCallback", and an empty argument list.
+	// It is intentional for now that custom elements do not get parent passed. This might change in
+	// the future if there is a need.
 	// (custom elements not implemented)
 
-	// 15. For each shadow-including descendant descendant of node, in shadow-including tree order, then:
+	// 15. For each shadow-including descendant descendant of node, in shadow-including tree order,
+	// then:
 	// 15.1. Run the removing steps with descendant.
 	// (shadow dom not implemented)
 
-	// 15.2. If descendant is custom, then enqueue a custom element callback reaction with descendant, callback name
-	// "disconnectedCallback", and an empty argument list.
+	// 15.2. If descendant is custom, then enqueue a custom element callback reaction with
+	// descendant, callback name "disconnectedCallback", and an empty argument list.
 	// (custom elements not implemented)
 
-	// 16. For each inclusive ancestor inclusiveAncestor of parent, if inclusiveAncestor has any registered observers
-	// whose options' subtree is true, then for each such registered observer registered, append a transient registered
-	// observer whose observer and options are identical to those of registered and source which is registered to node’s
-	// list of registered observers.
+	// 16. For each inclusive ancestor inclusiveAncestor of parent, if inclusiveAncestor has any
+	// registered observers whose options' subtree is true, then for each such registered observer
+	// registered, append a transient registered observer whose observer and options are identical
+	// to those of registered and source which is registered to node’s list of registered observers.
 	for (
 		let inclusiveAncestor: Node | null = parent;
 		inclusiveAncestor;
@@ -528,8 +598,9 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 		inclusiveAncestor._registeredObservers.appendTransientRegisteredObservers(node);
 	}
 
-	// 17. If suppress observers flag is unset, queue a mutation record of "childList" for parent with removedNodes a
-	// list solely containing node, nextSibling oldNextSibling, and previousSibling oldPreviousSibling.
+	// 17. If suppress observers flag is unset, queue a mutation record of "childList" for parent
+	// with removedNodes a list solely containing node, nextSibling oldNextSibling, and
+	// previousSibling oldPreviousSibling.
 	if (!suppressObservers) {
 		queueMutationRecord('childList', parent, {
 			removedNodes: [node],
@@ -570,8 +641,8 @@ export function adoptNode(node: Node, document: Document): void {
 		// (calling code ensures that node is never a Document)
 		node.ownerDocument = document;
 
-		// 3.1.2. If inclusiveDescendant is an element, then set the node document of each attribute in
-		// inclusiveDescendant’s attribute list to document.
+		// 3.1.2. If inclusiveDescendant is an element, then set the node document of each attribute
+		// in inclusiveDescendant’s attribute list to document.
 		if (isNodeOfType(node, NodeType.ELEMENT_NODE)) {
 			for (const attr of (node as Element).attributes) {
 				attr.ownerDocument = document;
@@ -579,12 +650,12 @@ export function adoptNode(node: Node, document: Document): void {
 		}
 	});
 
-	// 3.2. For each inclusiveDescendant in node’s shadow-including inclusive descendants that is custom, enqueue a
-	// custom element callback reaction with inclusiveDescendant, callback name "adoptedCallback", and an argument list
-	// containing oldDocument and document.
+	// 3.2. For each inclusiveDescendant in node’s shadow-including inclusive descendants that is
+	// custom, enqueue a custom element callback reaction with inclusiveDescendant, callback name
+	// "adoptedCallback", and an argument list containing oldDocument and document.
 	// (custom element support has not been implemented)
 
-	// 3.3. For each inclusiveDescendant in node’s shadow-including inclusive descendants, in shadow-including tree
-	// order, run the adopting steps with inclusiveDescendant and oldDocument.
+	// 3.3. For each inclusiveDescendant in node’s shadow-including inclusive descendants, in
+	// shadow-including tree order, run the adopting steps with inclusiveDescendant and oldDocument.
 	// (adopting steps not implemented)
 }

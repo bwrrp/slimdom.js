@@ -201,7 +201,10 @@ describe('Range', () => {
 			range2.setEnd(document, 1);
 			chai.assert.throws(() => range.compareBoundaryPoints(98, range2), 'NotSupportedError');
 
-			chai.assert.equal(range.compareBoundaryPoints(slimdom.Range.START_TO_START, range2), -1);
+			chai.assert.equal(
+				range.compareBoundaryPoints(slimdom.Range.START_TO_START, range2),
+				-1
+			);
 			chai.assert.equal(range.compareBoundaryPoints(slimdom.Range.START_TO_END, range2), 0);
 			chai.assert.equal(range2.compareBoundaryPoints(slimdom.Range.END_TO_END, range), 1);
 			chai.assert.equal(range.compareBoundaryPoints(slimdom.Range.END_TO_START, range2), -1);
@@ -210,7 +213,9 @@ describe('Range', () => {
 
 		it('can not compare boundary points if the ranges are in different documents', () => {
 			const range2 = new slimdom.Range();
-			chai.assert.throws(() => range.compareBoundaryPoints(slimdom.Range.START_TO_START, range2));
+			chai.assert.throws(() =>
+				range.compareBoundaryPoints(slimdom.Range.START_TO_START, range2)
+			);
 			range2.detach();
 			range2.detach();
 		});

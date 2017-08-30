@@ -20,7 +20,8 @@ const TEST_BLACKLIST: { [key: string]: string | { [key: string]: string } } = {
 			'HTML attribute lowercasing not implemented',
 		'setAttribute should lowercase its name argument (mixed case attribute)':
 			'HTML attribute lowercasing not implemented',
-		'Attributes should work in document fragments.': 'Element#attributes not implemented as NamedNodeMap',
+		'Attributes should work in document fragments.':
+			'Element#attributes not implemented as NamedNodeMap',
 		'Only lowercase attributes are returned on HTML elements (upper case attribute)':
 			'HTML attribute lowercasing not implemented',
 		'Only lowercase attributes are returned on HTML elements (mixed case attribute)':
@@ -28,7 +29,8 @@ const TEST_BLACKLIST: { [key: string]: string | { [key: string]: string } } = {
 		'setAttributeNode, if it fires mutation events, should fire one with the new node when resetting an existing attribute (outer shell)':
 			'Mutation events not implemented',
 		'getAttributeNames tests': 'Element#getAttributeNames not implemented',
-		'Own property correctness with basic attributes': 'Element#attributes not implemented as NamedNodeMap',
+		'Own property correctness with basic attributes':
+			'Element#attributes not implemented as NamedNodeMap',
 		'Own property correctness with non-namespaced attribute before same-name namespaced one':
 			'Element#attributes not implemented as NamedNodeMap',
 		'Own property correctness with namespaced attribute before same-name non-namespaced one':
@@ -58,72 +60,99 @@ const TEST_BLACKLIST: { [key: string]: string | { [key: string]: string } } = {
 	},
 	'dom/nodes/Document-createElement.html': 'Document load using iframe not implemented',
 	'dom/nodes/Document-createElement-namespace.html': 'DOMParser / contentType not implemented',
-	'dom/nodes/Document-createElement-namespace-tests': 'Document load using iframe not implemented',
+	'dom/nodes/Document-createElement-namespace-tests':
+		'Document load using iframe not implemented',
 	'dom/nodes/Document-createElementNS.html': 'Document load using iframe not implemented',
 	'dom/nodes/Document-createEvent.html': 'Document#createEvent not implemented',
 	'dom/nodes/Document-createTreeWalker.html': 'Document#createTreeWalker not implemented',
 	'dom/nodes/Document-getElementById.html': 'Document#getElementById not implemented',
 	'dom/nodes/Document-getElementsByTagName.html': 'Document#getElementsByTagName not implemented',
-	'dom/nodes/Document-getElementsByTagNameNS.html': 'Document#getElementsByTagNameNS not implemented',
+	'dom/nodes/Document-getElementsByTagNameNS.html':
+		'Document#getElementsByTagNameNS not implemented',
 	'dom/nodes/Document-URL.sub.html': 'Document#URL not implemented',
 	'dom/nodes/DocumentType-literal.html': 'Depends on HTML parsing',
 	'dom/nodes/DocumentType-remove.html': 'ChildNode#remove not implemented',
 	'dom/nodes/DOMImplementation-createDocument.html': {
-		'createDocument test: metadata for "http://www.w3.org/1999/xhtml","",null': 'HTML contentType not implemented',
-		'createDocument test: metadata for "http://www.w3.org/2000/svg","",null': 'SVG contentType not implemented'
+		'createDocument test: metadata for "http://www.w3.org/1999/xhtml","",null':
+			'HTML contentType not implemented',
+		'createDocument test: metadata for "http://www.w3.org/2000/svg","",null':
+			'SVG contentType not implemented'
 	},
-	'dom/nodes/DOMImplementation-createDocumentType.html': 'DocumentType#ownerDocument not implemented per spec',
-	'dom/nodes/DOMImplementation-createHTMLDocument.html': 'HTML*Element interfaces not implemented',
+	'dom/nodes/DOMImplementation-createDocumentType.html':
+		'DocumentType#ownerDocument not implemented per spec',
+	'dom/nodes/DOMImplementation-createHTMLDocument.html':
+		'HTML*Element interfaces not implemented',
 	'dom/nodes/DOMImplementation-hasFeature.html': 'DOMImplementation#hasFeature not implemented',
 	'dom/nodes/Element-children.html': 'Element#children not implemented as HTMLCollection',
 	'dom/nodes/Element-classlist.html': 'Element#classList not implemented',
 	'dom/nodes/Element-closest.html': 'Element#closest not implemented',
-	'dom/nodes/Element-getElementsByClassName.html': 'Element#getElementsByClassName not implemented',
+	'dom/nodes/Element-getElementsByClassName.html':
+		'Element#getElementsByClassName not implemented',
 	'dom/nodes/Element-getElementsByTagName-change-document-HTMLNess.html':
 		'Element#getElementsByTagName not implemented',
 	'dom/nodes/Element-getElementsByTagName-change-document-HTMLNess-iframe.html':
 		'Element#getElementsByTagName not implemented',
 	'dom/nodes/Element-getElementsByTagName.html': 'Element#getElementsByTagName not implemented',
-	'dom/nodes/Element-getElementsByTagNameNS.html': 'Element#getElementsByTagNameNS not implemented',
+	'dom/nodes/Element-getElementsByTagNameNS.html':
+		'Element#getElementsByTagNameNS not implemented',
 	'dom/nodes/Element-insertAdjacentElement.html': 'Element#insertAdjacentElement not implemented',
 	'dom/nodes/Element-insertAdjacentText.html': 'Element#insertAdjacentText not implemented',
 	'dom/nodes/Element-matches.html': 'Element#matches not implemented',
 	'dom/nodes/Element-remove.html': 'ChildNode#remove not implemented',
 	'dom/nodes/Element-tagName.html': 'HTML tagName uppercasing not implemented',
 	'dom/nodes/Element-webkitMatchesSelector.html': 'Element#webkitMatchesSelector not implemented',
-	'dom/nodes/insert-adjacent.html': 'Element#insertAdjacentElement / Element#insertAdjacentText not implemented',
+	'dom/nodes/insert-adjacent.html':
+		'Element#insertAdjacentElement / Element#insertAdjacentText not implemented',
 	'dom/nodes/MutationObserver-attributes.html': {
 		'attributes Element.id: update, no oldValue, mutation': 'Element#id not implemented',
 		'attributes Element.id: update mutation': 'Element#id not implemented',
 		'attributes Element.id: empty string update mutation': 'Element#id not implemented',
 		'attributes Element.id: same value mutation': 'Element#id not implemented',
 		'attributes Element.unknown: IDL attribute no mutation': 'Element#id not implemented',
-		'attributes HTMLInputElement.type: type update mutation': 'HTMLInputElement not implemented',
+		'attributes HTMLInputElement.type: type update mutation':
+			'HTMLInputElement not implemented',
 		'attributes Element.className: new value mutation': 'Element#className not implemented',
-		'attributes Element.className: empty string update mutation': 'Element#className not implemented',
+		'attributes Element.className: empty string update mutation':
+			'Element#className not implemented',
 		'attributes Element.className: same value mutation': 'Element#className not implemented',
-		'attributes Element.className: same multiple values mutation': 'Element#className not implemented',
-		'attributes Element.classList.add: single token addition mutation': 'Element#classList not implemented',
-		'attributes Element.classList.add: multiple tokens addition mutation': 'Element#classList not implemented',
-		'attributes Element.classList.add: syntax err/no mutation': 'Element#classList not implemented',
-		'attributes Element.classList.add: invalid character/no mutation': 'Element#classList not implemented',
-		'attributes Element.classList.add: same value mutation': 'Element#classList not implemented',
-		'attributes Element.classList.remove: single token removal mutation': 'Element#classList not implemented',
-		'attributes Element.classList.remove: multiple tokens removal mutation': 'Element#classList not implemented',
-		'attributes Element.classList.remove: missing token removal mutation': 'Element#classList not implemented',
-		'attributes Element.classList.toggle: token removal mutation': 'Element#classList not implemented',
-		'attributes Element.classList.toggle: token addition mutation': 'Element#classList not implemented',
-		'attributes Element.classList.toggle: forced token removal mutation': 'Element#classList not implemented',
+		'attributes Element.className: same multiple values mutation':
+			'Element#className not implemented',
+		'attributes Element.classList.add: single token addition mutation':
+			'Element#classList not implemented',
+		'attributes Element.classList.add: multiple tokens addition mutation':
+			'Element#classList not implemented',
+		'attributes Element.classList.add: syntax err/no mutation':
+			'Element#classList not implemented',
+		'attributes Element.classList.add: invalid character/no mutation':
+			'Element#classList not implemented',
+		'attributes Element.classList.add: same value mutation':
+			'Element#classList not implemented',
+		'attributes Element.classList.remove: single token removal mutation':
+			'Element#classList not implemented',
+		'attributes Element.classList.remove: multiple tokens removal mutation':
+			'Element#classList not implemented',
+		'attributes Element.classList.remove: missing token removal mutation':
+			'Element#classList not implemented',
+		'attributes Element.classList.toggle: token removal mutation':
+			'Element#classList not implemented',
+		'attributes Element.classList.toggle: token addition mutation':
+			'Element#classList not implemented',
+		'attributes Element.classList.toggle: forced token removal mutation':
+			'Element#classList not implemented',
 		'attributes Element.classList.toggle: forced missing token removal no mutation':
 			'Element#classList not implemented',
 		'attributes Element.classList.toggle: forced existing token addition no mutation':
 			'Element#classList not implemented',
-		'attributes Element.classList.toggle: forced token addition mutation': 'Element#classList not implemented',
+		'attributes Element.classList.toggle: forced token addition mutation':
+			'Element#classList not implemented',
 		'attributes Element.removeAttribute: removal no mutation': 'Element#id not implemented',
-		'childList HTMLInputElement.removeAttribute: type removal mutation': 'Element#id not implemented',
+		'childList HTMLInputElement.removeAttribute: type removal mutation':
+			'Element#id not implemented',
 		'attributes Element.removeAttributeNS: removal no mutation': 'Element#id not implemented',
-		'attributes Element.removeAttributeNS: prefixed attribute removal no mutation': 'Element#id not implemented',
-		'attributes/attributeFilter Element.id/Element.className: update mutation': 'attributeFilter not implemented',
+		'attributes Element.removeAttributeNS: prefixed attribute removal no mutation':
+			'Element#id not implemented',
+		'attributes/attributeFilter Element.id/Element.className: update mutation':
+			'attributeFilter not implemented',
 		'attributes/attributeFilter Element.id/Element.className: multiple filter update mutation':
 			'attributeFilter not implemented',
 		'attributeOldValue alone Element.id: update mutation': 'Element#id not implemented',
@@ -132,30 +161,42 @@ const TEST_BLACKLIST: { [key: string]: string | { [key: string]: string } } = {
 		'childList false: no childList mutation': 'Element#textContent setter not implemented'
 	},
 	'dom/nodes/MutationObserver-characterData.html': {
-		'characterData Range.deleteContents: child and data removal mutation': 'Range#deleteContents not implemented',
+		'characterData Range.deleteContents: child and data removal mutation':
+			'Range#deleteContents not implemented',
 		'characterData Range.deleteContents: child and data removal mutation (2)':
 			'Range#deleteContents not implemented',
-		'characterData Range.extractContents: child and data removal mutation': 'Range#extractContents not implemented',
+		'characterData Range.extractContents: child and data removal mutation':
+			'Range#extractContents not implemented',
 		'characterData Range.extractContents: child and data removal mutation (2)':
 			'Range#extractContents not implemented'
 	},
 	'dom/nodes/MutationObserver-childList.html': {
-		'childList Node.textContent: replace content mutation': 'Element#textContent setter not implemented',
-		'childList Node.textContent: no previous content mutation': 'Element#textContent setter not implemented',
-		'childList Node.textContent: textContent no mutation': 'Element#textContent setter not implemented',
-		'childList Node.textContent: empty string mutation': 'Element#textContent setter not implemented',
-		'childList Range.deleteContents: child removal mutation': 'Range#deleteContents not implemented',
-		'childList Range.deleteContents: child and data removal mutation': 'Range#deleteContents not implemented',
-		'childList Range.extractContents: child removal mutation': 'Range#extractContents not implemented',
-		'childList Range.extractContents: child and data removal mutation': 'Range#extractContents not implemented',
+		'childList Node.textContent: replace content mutation':
+			'Element#textContent setter not implemented',
+		'childList Node.textContent: no previous content mutation':
+			'Element#textContent setter not implemented',
+		'childList Node.textContent: textContent no mutation':
+			'Element#textContent setter not implemented',
+		'childList Node.textContent: empty string mutation':
+			'Element#textContent setter not implemented',
+		'childList Range.deleteContents: child removal mutation':
+			'Range#deleteContents not implemented',
+		'childList Range.deleteContents: child and data removal mutation':
+			'Range#deleteContents not implemented',
+		'childList Range.extractContents: child removal mutation':
+			'Range#extractContents not implemented',
+		'childList Range.extractContents: child and data removal mutation':
+			'Range#extractContents not implemented',
 		'childList Range.insertNode: child insertion mutation': 'Range#insertNode not implemented',
-		'childList Range.insertNode: children insertion mutation': 'Range#insertNode not implemented',
+		'childList Range.insertNode: children insertion mutation':
+			'Range#insertNode not implemented',
 		'childList Range.surroundContents: children removal and addition mutation':
 			'Range#surroundContents not implemented'
 	},
 	'dom/nodes/MutationObserver-disconnect.html': 'Element#id not implemented',
 	'dom/nodes/MutationObserver-document.html': 'Running script during parsing not implemented',
-	'dom/nodes/MutationObserver-inner-outer.html': 'Element#innerHTML / Element#outerHTML not implemented',
+	'dom/nodes/MutationObserver-inner-outer.html':
+		'Element#innerHTML / Element#outerHTML not implemented',
 	'dom/nodes/MutationObserver-subtree.html': 'Element#id not implemented',
 	'dom/nodes/MutationObserver-takeRecords.html': 'Element#textContent setter not implemented',
 	'dom/nodes/Node-baseURI.html': 'Node#baseURI not implemented',
@@ -292,8 +333,10 @@ const TEST_BLACKLIST: { [key: string]: string | { [key: string]: string } } = {
 			'Node#compareDocumentPosition not implemented',
 		'Constants for createDocumentPosition on Node prototype object.':
 			'Node#compareDocumentPosition not implemented',
-		'Constants for createDocumentPosition on Element object.': 'Node#compareDocumentPosition not implemented',
-		'Constants for createDocumentPosition on Text object.': 'Node#compareDocumentPosition not implemented'
+		'Constants for createDocumentPosition on Element object.':
+			'Node#compareDocumentPosition not implemented',
+		'Constants for createDocumentPosition on Text object.':
+			'Node#compareDocumentPosition not implemented'
 	},
 	'dom/nodes/Node-contains.html': 'Element#textContent setter not implemented',
 	'dom/nodes/Node-isConnected.html': 'Node#isConnected not implemented',
@@ -303,7 +346,8 @@ const TEST_BLACKLIST: { [key: string]: string | { [key: string]: string } } = {
 	'dom/nodes/Node-isSameNode.html': 'Node#isSameNode not implemented',
 	'dom/nodes/NodeList-Iterable.html': 'NodeList not implemented',
 	'dom/nodes/Node-nodeName.html': {
-		'For Element nodes, nodeName should return the same as tagName.': 'HTML tagName uppercasing not implemented'
+		'For Element nodes, nodeName should return the same as tagName.':
+			'HTML tagName uppercasing not implemented'
 	},
 	'dom/nodes/Node-normalize.html': {
 		'Node.normalize()': 'Element#textContent not implemented'
@@ -313,12 +357,14 @@ const TEST_BLACKLIST: { [key: string]: string | { [key: string]: string } } = {
 	},
 	'dom/nodes/Node-properties.html': 'Element#textContent not implemented',
 	'dom/nodes/Node-replaceChild.html': {
-		'replaceChild should work in the presence of mutation events.': 'Mutation events not implemented'
+		'replaceChild should work in the presence of mutation events.':
+			'Mutation events not implemented'
 	},
 	'dom/nodes/Node-textContent.html': 'Node#textContent not implemented',
 	'dom/nodes/ParentNode-append.html': 'ParentNode#append not implemented',
 	'dom/nodes/ParentNode-prepend.html': 'ParentNode#prepend not implemented',
-	'dom/nodes/ParentNode-querySelector-All-content.html': 'ParentNode#querySelectorAll not implemented',
+	'dom/nodes/ParentNode-querySelector-All-content.html':
+		'ParentNode#querySelectorAll not implemented',
 	'dom/nodes/ParentNode-querySelector-All.html': 'ParentNode#querySelectorAll not implemented',
 	'dom/nodes/prepend-on-Document.html': 'ParentNode#prepend not implemented',
 	'dom/nodes/remove-unscopable.html': 'Methods not implemented',
@@ -359,8 +405,13 @@ function getNodes(root: slimdom.Node, ...path: string[]): slimdom.Node[] {
 	}
 
 	const [nodeName, ...remainder] = path;
-	const matchingChildren = Array.from((root as slimdom.Element).childNodes).filter(n => n.nodeName === nodeName);
-	return matchingChildren.reduce((nodes, child) => nodes.concat(getNodes(child, ...remainder)), [] as slimdom.Node[]);
+	const matchingChildren = Array.from((root as slimdom.Element).childNodes).filter(
+		n => n.nodeName === nodeName
+	);
+	return matchingChildren.reduce(
+		(nodes, child) => nodes.concat(getNodes(child, ...remainder)),
+		[] as slimdom.Node[]
+	);
 }
 
 function getAllText(root: slimdom.Node, ...path: string[]): string {
@@ -402,7 +453,10 @@ function createTest(casePath: string, blacklistReason: { [key: string]: string }
 	}) as slimdom.Document;
 	const title = getAllText(document, 'html', 'head', 'title', '#text') || path.basename(casePath);
 	const script = getAllScripts(document, casePath);
-	const scriptAsFunction = new Function('stubEnvironment', `with (stubEnvironment) { ${script} }`);
+	const scriptAsFunction = new Function(
+		'stubEnvironment',
+		`with (stubEnvironment) { ${script} }`
+	);
 	let stubs: { global: any; onLoadCallbacks: Function[]; onErrorCallback?: Function };
 
 	const { document: _, ...domInterfaces } = slimdom;
@@ -420,7 +474,9 @@ function createTest(casePath: string, blacklistReason: { [key: string]: string }
 			get frames() {
 				return (document as any).getElementsByTagName('iframe').map((iframe: any) => {
 					if (!iframe.contentWindow) {
-						const stubs = createStubEnvironment(document.implementation.createHTMLDocument());
+						const stubs = createStubEnvironment(
+							document.implementation.createHTMLDocument()
+						);
 						iframe.contentWindow = stubs.global.window;
 						iframe.contentDocument = stubs.global.document;
 						iframe.document = stubs.global.document;
@@ -473,7 +529,11 @@ function createTest(casePath: string, blacklistReason: { [key: string]: string }
 				tests.forEach(test => {
 					// Ignore results of blacklisted tests
 					if (!blacklistReason[test.name]) {
-						chai.assert.equal(test.status, testStatus.OK, `${test.name}: ${test.message}`);
+						chai.assert.equal(
+							test.status,
+							testStatus.OK,
+							`${test.name}: ${test.message}`
+						);
 					}
 				});
 				done();

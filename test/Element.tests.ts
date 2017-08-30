@@ -44,13 +44,24 @@ describe('Element', () => {
 	});
 
 	it('can lookup a prefix or namespace declared on itself', () => {
-		element.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', 'http://www.w3.org/2000/svg');
-		element.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:prf', 'http://www.example.com/ns');
+		element.setAttributeNS(
+			'http://www.w3.org/2000/xmlns/',
+			'xmlns',
+			'http://www.w3.org/2000/svg'
+		);
+		element.setAttributeNS(
+			'http://www.w3.org/2000/xmlns/',
+			'xmlns:prf',
+			'http://www.example.com/ns'
+		);
 		chai.assert.equal(element.lookupPrefix(null), null);
 		chai.assert.equal(element.lookupNamespaceURI('prf'), 'http://www.example.com/ns');
 		chai.assert.equal(element.lookupPrefix('http://www.example.com/ns'), 'prf');
 		chai.assert.equal(element.lookupNamespaceURI(null), 'http://www.w3.org/2000/svg');
-		chai.assert.equal((element as any).lookupNamespaceURI(undefined), 'http://www.w3.org/2000/svg');
+		chai.assert.equal(
+			(element as any).lookupNamespaceURI(undefined),
+			'http://www.w3.org/2000/svg'
+		);
 		chai.assert.equal(element.lookupPrefix('http://www.w3.org/2000/svg'), 'svg');
 	});
 
@@ -58,7 +69,11 @@ describe('Element', () => {
 		const parent = document.createElement('svg');
 		parent.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns', '');
 		parent.appendChild(element);
-		parent.setAttributeNS('http://www.w3.org/2000/xmlns/', 'xmlns:prf', 'http://www.example.com/ns');
+		parent.setAttributeNS(
+			'http://www.w3.org/2000/xmlns/',
+			'xmlns:prf',
+			'http://www.example.com/ns'
+		);
 		chai.assert.equal(element.lookupPrefix(null), null);
 		chai.assert.equal(element.lookupNamespaceURI(null), null);
 		chai.assert.equal(element.lookupNamespaceURI('prf'), 'http://www.example.com/ns');
@@ -107,7 +122,10 @@ describe('Element', () => {
 		it('has the attributes', () => {
 			chai.assert(element.hasAttributes());
 			chai.assert(element.hasAttribute('firstAttribute'), 'has attribute firstAttribute');
-			chai.assert(element.hasAttributeNS(null, 'firstAttribute'), 'has attribute firstAttribute');
+			chai.assert(
+				element.hasAttributeNS(null, 'firstAttribute'),
+				'has attribute firstAttribute'
+			);
 			chai.assert(element.hasAttribute('test'), 'has attribute test');
 			chai.assert(element.hasAttributeNS(null, 'test'), 'has attribute test');
 			chai.assert(element.hasAttribute('prf:lastAttribute'), 'has attribute lastAttribute');
@@ -115,7 +133,10 @@ describe('Element', () => {
 				element.hasAttributeNS('http://www.example.com/ns', 'lastAttribute'),
 				'has attribute lastAttribute'
 			);
-			chai.assert(!element.hasAttribute('noSuchAttribute'), 'does not have attribute noSuchAttribute');
+			chai.assert(
+				!element.hasAttribute('noSuchAttribute'),
+				'does not have attribute noSuchAttribute'
+			);
 			chai.assert(
 				!element.hasAttributeNS(null, 'prf:lastAttribute'),
 				'does not have attribute prf:lastAttribute without namespace'
@@ -128,16 +149,26 @@ describe('Element', () => {
 			chai.assert.equal(element.getAttribute('test'), '123');
 			chai.assert.equal(element.getAttributeNS(null, 'test'), '123');
 			chai.assert.equal(element.getAttribute('prf:lastAttribute'), 'last');
-			chai.assert.equal(element.getAttributeNS('http://www.example.com/ns', 'lastAttribute'), 'last');
+			chai.assert.equal(
+				element.getAttributeNS('http://www.example.com/ns', 'lastAttribute'),
+				'last'
+			);
 			chai.assert.equal(element.getAttribute('noSuchAttribute'), null);
 			chai.assert.equal(element.getAttributeNS(null, 'prf:noSuchAttribute'), null);
 		});
 
-		function hasAttributes(attributes: slimdom.Attr[], expected: { name: string; value: string }[]): boolean {
+		function hasAttributes(
+			attributes: slimdom.Attr[],
+			expected: { name: string; value: string }[]
+		): boolean {
 			return (
 				attributes.length === expected.length &&
-				attributes.every(attr => expected.some(pair => pair.name === attr.name && pair.value === attr.value)) &&
-				expected.every(pair => attributes.some(attr => attr.name === pair.name && attr.value === pair.value))
+				attributes.every(attr =>
+					expected.some(pair => pair.name === attr.name && pair.value === attr.value)
+				) &&
+				expected.every(pair =>
+					attributes.some(attr => attr.name === pair.name && attr.value === pair.value)
+				)
 			);
 		}
 
@@ -163,8 +194,14 @@ describe('Element', () => {
 			);
 
 			element.setAttributeNS('http://www.example.com/ns', 'prf:lastAttribute', 'new value');
-			chai.assert(element.hasAttributeNS('http://www.example.com/ns', 'lastAttribute'), 'has the attribute');
-			chai.assert.equal(element.getAttributeNS('http://www.example.com/ns', 'lastAttribute'), 'new value');
+			chai.assert(
+				element.hasAttributeNS('http://www.example.com/ns', 'lastAttribute'),
+				'has the attribute'
+			);
+			chai.assert.equal(
+				element.getAttributeNS('http://www.example.com/ns', 'lastAttribute'),
+				'new value'
+			);
 			chai.assert(
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
@@ -186,10 +223,14 @@ describe('Element', () => {
 				])
 			);
 			element.removeAttributeNS('http://www.example.com/ns', 'lastAttribute');
-			chai.assert(hasAttributes(element.attributes, [{ name: 'firstAttribute', value: 'first' }]));
+			chai.assert(
+				hasAttributes(element.attributes, [{ name: 'firstAttribute', value: 'first' }])
+			);
 			// Removing something that doesn't exist does nothing
 			element.removeAttributeNS('http://www.example.com/ns', 'missingAttribute');
-			chai.assert(hasAttributes(element.attributes, [{ name: 'firstAttribute', value: 'first' }]));
+			chai.assert(
+				hasAttributes(element.attributes, [{ name: 'firstAttribute', value: 'first' }])
+			);
 		});
 
 		it('ignores removing non-existent attributes', () => {
@@ -210,7 +251,10 @@ describe('Element', () => {
 			const attr = document.createAttribute('attr');
 			attr.value = 'some value';
 			chai.assert.equal(element.setAttributeNodeNS(attr), null);
-			const namespacedAttr = document.createAttributeNS('http://www.example.com/ns', 'prf:aaa');
+			const namespacedAttr = document.createAttributeNS(
+				'http://www.example.com/ns',
+				'prf:aaa'
+			);
 			element.setAttributeNode(namespacedAttr);
 			chai.assert(
 				hasAttributes(element.attributes, [
@@ -227,7 +271,10 @@ describe('Element', () => {
 			chai.assert.equal(element.setAttributeNode(document.createAttribute('attr')), attr);
 
 			const otherElement = document.createElement('test');
-			chai.assert.throws(() => otherElement.setAttributeNode(namespacedAttr), 'InUseAttributeError');
+			chai.assert.throws(
+				() => otherElement.setAttributeNode(namespacedAttr),
+				'InUseAttributeError'
+			);
 		});
 
 		it('can remove attributes using their nodes', () => {

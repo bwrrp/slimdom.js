@@ -38,8 +38,9 @@ export default class DOMImplementation {
 		// 1. Validate qualifiedName.
 		validateQualifiedName(qualifiedName);
 
-		// 2. Return a new doctype, with qualifiedName as its name, publicId as its public ID, and systemId as its
-		// system ID, and with its node document set to the associated document of the context object.
+		// 2. Return a new doctype, with qualifiedName as its name, publicId as its public ID, and
+		// systemId as its system ID, and with its node document set to the associated document of
+		// the context object.
 		const context = getContext(this._document);
 		const doctype = new context.DocumentType(qualifiedName, publicId, systemId);
 		doctype.ownerDocument = this._document;
@@ -47,11 +48,13 @@ export default class DOMImplementation {
 	}
 
 	/**
-	 * Returns an XMLDocument, with a document element whose local name is qualifiedName and whose namespace is
-	 * namespace (unless qualifiedName is the empty string), and with doctype, if it is given, as its doctype.
+	 * Returns an XMLDocument, with a document element whose local name is qualifiedName and whose
+	 * namespace is namespace (unless qualifiedName is the empty string), and with doctype, if it is
+	 * given, as its doctype.
 	 *
 	 * @param namespace     The namespace for the root element
-	 * @param qualifiedName The qualified name for the root element, or empty string to not create a root element
+	 * @param qualifiedName The qualified name for the root element, or empty string to not create a
+	 *                      root element
 	 * @param doctype       The doctype for the new document, or null to not add a doctype
 	 *
 	 * @return The new XMLDocument
@@ -74,8 +77,9 @@ export default class DOMImplementation {
 		// 2. Let element be null.
 		let element = null;
 
-		// 3. If qualifiedName is not the empty string, then set element to the result of running the internal
-		// createElementNS steps, given document, namespace, qualifiedName, and an empty dictionary.
+		// 3. If qualifiedName is not the empty string, then set element to the result of running
+		// the internal createElementNS steps, given document, namespace, qualifiedName, and an
+		// empty dictionary.
 		if (qualifiedName !== '') {
 			element = createElementNS(document, namespace, qualifiedName);
 		}
@@ -120,34 +124,36 @@ export default class DOMImplementation {
 		// 2. Set doc’s content type to "text/html".
 		// (content type not implemented)
 
-		// 3. Append a new doctype, with "html" as its name and with its node document set to doc, to doc.
+		// 3. Append a new doctype, with "html" as its name and with its node document set to doc,
+		// to doc.
 		const doctype = new context.DocumentType('html');
 		doctype.ownerDocument = doc;
 		doc.appendChild(doctype);
 
-		// 4. Append the result of creating an element given doc, html, and the HTML namespace, to doc.
+		// 4. Append the result of creating an element given doc, html, and the HTML namespace, to
+		// doc.
 		const htmlElement = createElement(doc, 'html', HTML_NAMESPACE);
 		doc.appendChild(htmlElement);
 
-		// 5. Append the result of creating an element given doc, head, and the HTML namespace, to the html element
-		// created earlier.
+		// 5. Append the result of creating an element given doc, head, and the HTML namespace, to
+		// the html element created earlier.
 		const headElement = createElement(doc, 'head', HTML_NAMESPACE);
 		htmlElement.appendChild(headElement);
 
 		// 6. If title is given:
 		if (title !== null) {
-			// 6.1. Append the result of creating an element given doc, title, and the HTML namespace, to the head
-			// element created earlier.
+			// 6.1. Append the result of creating an element given doc, title, and the HTML
+			// namespace, to the head element created earlier.
 			const titleElement = createElement(doc, 'title', HTML_NAMESPACE);
 			headElement.appendChild(titleElement);
 
-			// 6.2. Append a new Text node, with its data set to title (which could be the empty string) and its node
-			// document set to doc, to the title element created earlier.
+			// 6.2. Append a new Text node, with its data set to title (which could be the empty
+			// string) and its node document set to doc, to the title element created earlier.
 			titleElement.appendChild(doc.createTextNode(title));
 		}
 
-		// 7. Append the result of creating an element given doc, body, and the HTML namespace, to the html element
-		// created earlier.
+		// 7. Append the result of creating an element given doc, body, and the HTML namespace, to
+		// the html element created earlier.
 		htmlElement.appendChild(createElement(doc, 'body', HTML_NAMESPACE));
 
 		// 8. doc’s origin is context object’s associated document’s origin.

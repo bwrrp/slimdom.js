@@ -13,7 +13,11 @@ import Range from './Range';
 import { getContext } from './context/Context';
 import cloneNode from './util/cloneNode';
 import createElementNS from './util/createElementNS';
-import { expectArity, throwInvalidCharacterError, throwNotSupportedError } from './util/errorHelpers';
+import {
+	expectArity,
+	throwInvalidCharacterError,
+	throwNotSupportedError
+} from './util/errorHelpers';
 import { adoptNode } from './util/mutationAlgorithms';
 import { NodeType, isNodeOfType } from './util/NodeType';
 import { matchesNameProduction, validateAndExtract } from './util/namespaceHelpers';
@@ -48,8 +52,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		// (not necessary due to recursion)
 
 		// 2. Switch on the context object:
-		// Document - Return the result of locating a namespace prefix for its document element, if its document element
-		// is non-null, and null otherwise.
+		// Document - Return the result of locating a namespace prefix for its document element, if
+		// its document element is non-null, and null otherwise.
 		if (this.documentElement !== null) {
 			return this.documentElement.lookupPrefix(namespace);
 		}
@@ -105,8 +109,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	/**
 	 * Creates a new Document.
 	 *
-	 * Note: Unlike DOMImplementation#createDocument(), this constructor does not return an XMLDocument object, but a
-	 * document (Document object).
+	 * Note: Unlike DOMImplementation#createDocument(), this constructor does not return an
+	 * XMLDocument object, but a document (Document object).
 	 */
 	constructor() {
 		super();
@@ -128,19 +132,20 @@ export default class Document extends Node implements NonElementParentNode, Pare
 			throwInvalidCharacterError('The local name is not a valid Name');
 		}
 
-		// 2. If the context object is an HTML document, then set localName to localName in ASCII lowercase.
+		// 2. If the context object is an HTML document, then set localName to localName in ASCII
+		// lowercase.
 		// (html documents not implemented)
 
 		// 3. Let is be the value of is member of options, or null if no such member exists.
 		// (custom elements not implemented)
 
-		// 4. Let namespace be the HTML namespace, if the context object is an HTML document or context object’s content
-		// type is "application/xhtml+xml", and null otherwise.
+		// 4. Let namespace be the HTML namespace, if the context object is an HTML document or
+		// context object’s content type is "application/xhtml+xml", and null otherwise.
 		// (html documents not implemented)
 		const namespace: string | null = null;
 
-		// 5. Let element be the result of creating an element given the context object, localName, namespace, null, is,
-		// and with the synchronous custom elements flag set.
+		// 5. Let element be the result of creating an element given the context object, localName,
+		// namespace, null, is, and with the synchronous custom elements flag set.
 		const element = createElement(this, localName, namespace, null);
 
 		// 6. If is is non-null, then set an attribute value for element using "is" and is.
@@ -163,8 +168,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		namespace = asNullableString(namespace);
 		qualifiedName = String(qualifiedName);
 
-		// return the result of running the internal createElementNS steps, given context object, namespace,
-		// qualifiedName, and options.
+		// return the result of running the internal createElementNS steps, given context object,
+		// namespace, qualifiedName, and options.
 		return createElementNS(this, namespace, qualifiedName);
 	}
 
@@ -181,7 +186,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	}
 
 	/**
-	 * Returns a new Text node with its data set to data and node document set to the context object.
+	 * Returns a new Text node with its data set to data and node document set to the context
+	 * object.
 	 *
 	 * @param data Data for the new text node
 	 *
@@ -216,7 +222,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 			throwInvalidCharacterError('Data must not contain the string "]]>"');
 		}
 
-		// 3. Return a new CDATASection node with its data set to data and node document set to the context object.
+		// 3. Return a new CDATASection node with its data set to data and node document set to the
+		// context object.
 		const context = getContext(this);
 		const cdataSection = new context.CDATASection(data);
 		cdataSection.ownerDocument = this;
@@ -224,7 +231,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	}
 
 	/**
-	 * Returns a new Comment node with its data set to data and node document set to the context object.
+	 * Returns a new Comment node with its data set to data and node document set to the context
+	 * object.
 	 *
 	 * @param data Data for the new comment
 	 *
@@ -241,8 +249,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	}
 
 	/**
-	 * Creates a new processing instruction node, with target set to target, data set to data, and node document set to
-	 * the context object.
+	 * Creates a new processing instruction node, with target set to target, data set to data, and
+	 * node document set to the context object.
 	 *
 	 * @param target Target for the new processing instruction
 	 * @param data   Data for the new processing instruction
@@ -264,19 +272,20 @@ export default class Document extends Node implements NonElementParentNode, Pare
 			throwInvalidCharacterError('Data must not contain the string "?>"');
 		}
 
-		// 3. Return a new ProcessingInstruction node, with target set to target, data set to data, and node document
-		// set to the context object.
+		// 3. Return a new ProcessingInstruction node, with target set to target, data set to data,
+		// and node document set to the context object.
 		const context = getContext(this);
 		const pi = new context.ProcessingInstruction(target, data);
 		pi.ownerDocument = this;
 		return pi;
 
-		// Note: No check is performed that target contains "xml" or ":", or that data contains characters that match
-		// the Char production.
+		// Note: No check is performed that target contains "xml" or ":", or that data contains
+		// characters that match the Char production.
 	}
 
 	/**
-	 * Creates a copy of a node from an external document that can be inserted into the current document.
+	 * Creates a copy of a node from an external document that can be inserted into the current
+	 * document.
 	 *
 	 * @param node The node to import
 	 * @param deep Whether to also import node's children
@@ -290,13 +299,15 @@ export default class Document extends Node implements NonElementParentNode, Pare
 			throwNotSupportedError('importing a Document node is not supported');
 		}
 
-		// 2. Return a clone of node, with context object and the clone children flag set if deep is true.
+		// 2. Return a clone of node, with context object and the clone children flag set if deep is
+		// true.
 		return cloneNode(node, deep, this);
 	}
 
 	/**
-	 * Adopts a node. The node and its subtree is removed from the document it's in (if any), and its ownerDocument is
-	 * changed to the current document. The node can then be inserted into the current document.
+	 * Adopts a node. The node and its subtree is removed from the document it's in (if any), and
+	 * its ownerDocument is changed to the current document. The node can then be inserted into the
+	 * current document.
 	 *
 	 * @param node The node to adopt
 	 */
@@ -330,15 +341,18 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		expectArity(arguments, 1);
 		localName = String(localName);
 
-		// 1. If localName does not match the Name production in XML, then throw an InvalidCharacterError.
+		// 1. If localName does not match the Name production in XML, then throw an
+		// InvalidCharacterError.
 		if (!matchesNameProduction(localName)) {
 			throwInvalidCharacterError('The local name is not a valid Name');
 		}
 
-		// 2. If the context object is an HTML document, then set localName to localName in ASCII lowercase.
+		// 2. If the context object is an HTML document, then set localName to localName in ASCII
+		// lowercase.
 		// (html documents not implemented)
 
-		// 3. Return a new attribute whose local name is localName and node document is context object.
+		// 3. Return a new attribute whose local name is localName and node document is context
+		// object.
 		const context = getContext(this);
 		const attr = new context.Attr(null, null, localName, '', null);
 		attr.ownerDocument = this;
@@ -358,12 +372,15 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		namespace = asNullableString(namespace);
 		qualifiedName = String(qualifiedName);
 
-		// 1. Let namespace, prefix, and localName be the result of passing namespace and qualifiedName to validate and
-		// extract.
-		const { namespace: validatedNamespace, prefix, localName } = validateAndExtract(namespace, qualifiedName);
+		// 1. Let namespace, prefix, and localName be the result of passing namespace and
+		// qualifiedName to validate and extract.
+		const { namespace: validatedNamespace, prefix, localName } = validateAndExtract(
+			namespace,
+			qualifiedName
+		);
 
-		// 2. Return a new attribute whose namespace is namespace, namespace prefix is prefix, local name is localName,
-		// and node document is context object.
+		// 2. Return a new attribute whose namespace is namespace, namespace prefix is prefix, local
+		// name is localName, and node document is context object.
 		const context = getContext(this);
 		const attr = new context.Attr(validatedNamespace, prefix, localName, '', null);
 		attr.ownerDocument = this;
@@ -372,9 +389,6 @@ export default class Document extends Node implements NonElementParentNode, Pare
 
 	/**
 	 * Creates a new Range, initially positioned at the root of this document.
-	 *
-	 * Note: although the spec encourages use of the Range() constructor, this implementation does not associate any
-	 * Document with the global object, preventing implementation of that constructor.
 	 *
 	 * @return The new Range
 	 */

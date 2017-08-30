@@ -10,21 +10,21 @@ import queueMutationRecord from '../mutation-observer/queueMutationRecord';
  * @param value     The new value for the attribute
  */
 export function changeAttribute(attribute: Attr, element: Element, value: string): void {
-	// 1. Queue a mutation record of "attributes" for element with name attribute’s local name, namespace attribute’s
-	// namespace, and oldValue attribute’s value.
+	// 1. Queue a mutation record of "attributes" for element with name attribute’s local name,
+	// namespace attribute’s namespace, and oldValue attribute’s value.
 	queueMutationRecord('attributes', element, {
 		name: attribute.localName,
 		namespace: attribute.namespaceURI,
 		oldValue: attribute.value
 	});
 
-	// 2. If element is custom, then enqueue a custom element callback reaction with element, callback name
-	// "attributeChangedCallback", and an argument list containing attribute’s local name, attribute’s value, value, and
-	// attribute’s namespace.
+	// 2. If element is custom, then enqueue a custom element callback reaction with element,
+	// callback name "attributeChangedCallback", and an argument list containing attribute’s local
+	// name, attribute’s value, value, and attribute’s namespace.
 	// (custom elements not implemented)
 
-	// 3. Run the attribute change steps with element, attribute’s local name, attribute’s value, value, and attribute’s
-	// namespace.
+	// 3. Run the attribute change steps with element, attribute’s local name, attribute’s value,
+	// value, and attribute’s namespace.
 	// (attribute change steps not implemented)
 
 	// 4. Set attribute’s value to value.
@@ -38,21 +38,21 @@ export function changeAttribute(attribute: Attr, element: Element, value: string
  * @param element   The element to append attribute to
  */
 export function appendAttribute(attribute: Attr, element: Element): void {
-	// 1. Queue a mutation record of "attributes" for element with name attribute’s local name, namespace attribute’s
-	// namespace, and oldValue null.
+	// 1. Queue a mutation record of "attributes" for element with name attribute’s local name,
+	// namespace attribute’s namespace, and oldValue null.
 	queueMutationRecord('attributes', element, {
 		name: attribute.localName,
 		namespace: attribute.namespaceURI,
 		oldValue: null
 	});
 
-	// 2. If element is custom, then enqueue a custom element callback reaction with element, callback name
-	// "attributeChangedCallback", and an argument list containing attribute’s local name, null, attribute’s value, and
-	// attribute’s namespace.
+	// 2. If element is custom, then enqueue a custom element callback reaction with element,
+	// callback name "attributeChangedCallback", and an argument list containing attribute’s local
+	// name, null, attribute’s value, and attribute’s namespace.
 	// (custom elements not implemented)
 
-	// 3. Run the attribute change steps with element, attribute’s local name, null, attribute’s value, and attribute’s
-	// namespace.
+	// 3. Run the attribute change steps with element, attribute’s local name, null, attribute’s
+	// value, and attribute’s namespace.
 	// (attribute change steps not implemented)
 
 	// 4. Append attribute to element’s attribute list.
@@ -69,21 +69,21 @@ export function appendAttribute(attribute: Attr, element: Element): void {
  * @param element   The element to remove attribute from
  */
 export function removeAttribute(attribute: Attr, element: Element): void {
-	// 1. Queue a mutation record of "attributes" for element with name attribute’s local name, namespace attribute’s
-	// namespace, and oldValue attribute’s value.
+	// 1. Queue a mutation record of "attributes" for element with name attribute’s local name,
+	// namespace attribute’s namespace, and oldValue attribute’s value.
 	queueMutationRecord('attributes', element, {
 		name: attribute.localName,
 		namespace: attribute.namespaceURI,
 		oldValue: attribute.value
 	});
 
-	// 2. If element is custom, then enqueue a custom element callback reaction with element, callback name
-	// "attributeChangedCallback", and an argument list containing attribute’s local name, attribute’s value, null, and
-	// attribute’s namespace.
+	// 2. If element is custom, then enqueue a custom element callback reaction with element,
+	// callback name "attributeChangedCallback", and an argument list containing attribute’s local
+	// name, attribute’s value, null, and attribute’s namespace.
 	// (custom elements not implemented)
 
-	// 3. Run the attribute change steps with element, attribute’s local name, attribute’s value, null, and attribute’s
-	// namespace.
+	// 3. Run the attribute change steps with element, attribute’s local name, attribute’s value,
+	// null, and attribute’s namespace.
 	// (attribute change steps not implemented)
 
 	// 4. Remove attribute from element’s attribute list.
@@ -101,21 +101,21 @@ export function removeAttribute(attribute: Attr, element: Element): void {
  * @param element The element on which to replace the attribute
  */
 export function replaceAttribute(oldAttr: Attr, newAttr: Attr, element: Element): void {
-	// 1. Queue a mutation record of "attributes" for element with name oldAttr’s local name, namespace oldAttr’s
-	// namespace, and oldValue oldAttr’s value.
+	// 1. Queue a mutation record of "attributes" for element with name oldAttr’s local name,
+	// namespace oldAttr’s namespace, and oldValue oldAttr’s value.
 	queueMutationRecord('attributes', element, {
 		name: oldAttr.localName,
 		namespace: oldAttr.namespaceURI,
 		oldValue: oldAttr.value
 	});
 
-	// 2. If element is custom, then enqueue a custom element callback reaction with element, callback name
-	// "attributeChangedCallback", and an argument list containing oldAttr’s local name, oldAttr’s value, newAttr’s
-	// value, and oldAttr’s namespace.
+	// 2. If element is custom, then enqueue a custom element callback reaction with element,
+	// callback name "attributeChangedCallback", and an argument list containing oldAttr’s local
+	// name, oldAttr’s value, newAttr’s value, and oldAttr’s namespace.
 	// (custom elements not implemented)
 
-	// 3. Run the attribute change steps with element, oldAttr’s local name, oldAttr’s value, newAttr’s value, and
-	// oldAttr’s namespace.
+	// 3. Run the attribute change steps with element, oldAttr’s local name, oldAttr’s value,
+	// newAttr’s value, and oldAttr’s namespace.
 	// (attribute change steps not implemented)
 
 	// 4. Replace oldAttr by newAttr in element’s attribute list.

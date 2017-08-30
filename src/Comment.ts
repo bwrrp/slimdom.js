@@ -17,7 +17,8 @@ export default class Comment extends CharacterData {
 	// Comment
 
 	/**
-	 * Returns a new Comment node whose data is data and node document is current global object’s associated Document.
+	 * Returns a new Comment node whose data is data and node document is current global object’s
+	 * associated Document.
 	 *
 	 * @param data The data for the new comment
 	 */

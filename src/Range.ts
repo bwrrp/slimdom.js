@@ -56,8 +56,8 @@ export default class Range {
 	}
 
 	/**
-	 * The Range() constructor, when invoked, must return a new range with (current global object’s associated Document,
-	 * 0) as its start and end.
+	 * The Range() constructor, when invoked, must return a new range with (current global object’s
+	 * associated Document, 0) as its start and end.
 	 */
 	constructor() {
 		const context = getContext(this);
@@ -91,12 +91,14 @@ export default class Range {
 
 		// 3. Let bp be the boundary point (node, offset).
 		// 4.a. If these steps were invoked as "set the start"
-		// 4.a.1. If bp is after the range’s end, or if range’s root is not equal to node’s root, set range’s end to bp.
+		// 4.a.1. If bp is after the range’s end, or if range’s root is not equal to node’s root,
+		// set range’s end to bp.
 		const rootOfNode = getRootOfNode(node);
 		const rootOfRange = getRootOfRange(this);
 		if (
 			rootOfNode !== rootOfRange ||
-			compareBoundaryPointPositions(node, offset, this.endContainer, this.endOffset) === POSITION_AFTER
+			compareBoundaryPointPositions(node, offset, this.endContainer, this.endOffset) ===
+				POSITION_AFTER
 		) {
 			this.endContainer = node;
 			this.endOffset = offset;
@@ -106,8 +108,8 @@ export default class Range {
 		this.startOffset = offset;
 
 		// 4.b. If these steps were invoked as "set the end"
-		// 4.b.1. If bp is before the range’s start, or if range’s root is not equal to node’s root, set range’s start
-		// to bp.
+		// 4.b.1. If bp is before the range’s start, or if range’s root is not equal to node’s root,
+		// set range’s start to bp.
 		// 4.b.2. Set range’s end to bp.
 		// (see Range#setEnd for this branch)
 	}
@@ -135,18 +137,20 @@ export default class Range {
 
 		// 3. Let bp be the boundary point (node, offset).
 		// 4.a. If these steps were invoked as "set the start"
-		// 4.a.1. If bp is after the range’s end, or if range’s root is not equal to node’s root, set range’s end to bp.
+		// 4.a.1. If bp is after the range’s end, or if range’s root is not equal to node’s root,
+		// set range’s end to bp.
 		// 4.a.2. Set range’s start to bp.
 		// (see Range#setStart for this branch)
 
 		// 4.b. If these steps were invoked as "set the end"
-		// 4.b.1. If bp is before the range’s start, or if range’s root is not equal to node’s root, set range’s start
-		// to bp.
+		// 4.b.1. If bp is before the range’s start, or if range’s root is not equal to node’s root,
+		// set range’s start to bp.
 		const rootOfNode = getRootOfNode(node);
 		const rootOfRange = getRootOfRange(this);
 		if (
 			rootOfNode !== rootOfRange ||
-			compareBoundaryPointPositions(node, offset, this.startContainer, this.startOffset) === POSITION_BEFORE
+			compareBoundaryPointPositions(node, offset, this.startContainer, this.startOffset) ===
+				POSITION_BEFORE
 		) {
 			this.startContainer = node;
 			this.startOffset = offset;
@@ -243,7 +247,8 @@ export default class Range {
 	/**
 	 * Sets the range's boundary points to the same position.
 	 *
-	 * @param toStart If true, set both points to the start of the range, otherwise set them to the end
+	 * @param toStart If true, set both points to the start of the range, otherwise set them to the
+	 *                end
 	 */
 	collapse(toStart: boolean = false): void {
 		if (toStart) {
@@ -309,8 +314,8 @@ export default class Range {
 		expectArity(arguments, 2);
 		sourceRange = asObject(sourceRange, Range);
 
-		// 1. If how is not one of START_TO_START, START_TO_END, END_TO_END, and END_TO_START, then throw a
-		// NotSupportedError.
+		// 1. If how is not one of START_TO_START, START_TO_END, END_TO_END, and END_TO_START, then
+		// throw a NotSupportedError.
 		if (
 			how !== Range.START_TO_START &&
 			how !== Range.START_TO_END &&
@@ -320,7 +325,8 @@ export default class Range {
 			throwNotSupportedError('Unsupported comparison type');
 		}
 
-		// 2. If context object’s root is not the same as sourceRange’s root, then throw a WrongDocumentError.
+		// 2. If context object’s root is not the same as sourceRange’s root, then throw a
+		// WrongDocumentError.
 		if (getRootOfRange(this) !== getRootOfRange(sourceRange)) {
 			throwWrongDocumentError('Can not compare positions of ranges in different trees');
 		}
@@ -329,7 +335,8 @@ export default class Range {
 		switch (how) {
 			// START_TO_START:
 			case Range.START_TO_START:
-				// Let this point be the context object’s start. Let other point be sourceRange’s start.
+				// Let this point be the context object’s start. Let other point be sourceRange’s
+				// start.
 				return compareBoundaryPointPositions(
 					// this point
 					this.startContainer,
@@ -341,7 +348,8 @@ export default class Range {
 
 			// START_TO_END:
 			case Range.START_TO_END:
-				// Let this point be the context object’s end. Let other point be sourceRange’s start.
+				// Let this point be the context object’s end. Let other point be sourceRange’s
+				// start.
 				return compareBoundaryPointPositions(
 					// this point
 					this.endContainer,
@@ -365,7 +373,8 @@ export default class Range {
 
 			// END_TO_START:
 			default:
-				// Let this point be the context object’s start. Let other point be sourceRange’s end.
+				// Let this point be the context object’s start. Let other point be sourceRange’s
+				// end.
 				return compareBoundaryPointPositions(
 					// this point
 					this.startContainer,
@@ -401,9 +410,10 @@ export default class Range {
 	/**
 	 * Stops tracking the range.
 	 *
-	 * (non-standard) According to the spec, this method must do nothing. However, as it is not possible to rely on
-	 * garbage collection to determine when to stop updating a range for node mutations, this implementation requires
-	 * calling detach to stop such updates from affecting the range.
+	 * (non-standard) According to the spec, this method must do nothing. However, as it is not
+	 * possible to rely on garbage collection to determine when to stop updating a range for node
+	 * mutations, this implementation requires calling detach to stop such updates from affecting
+	 * the range.
 	 */
 	detach(): void {
 		const index = ranges.indexOf(this);
@@ -413,8 +423,8 @@ export default class Range {
 	}
 
 	/**
-	 * Returns true if the given point is after or equal to the start point and before or equal to the end point of the
-	 * context object.
+	 * Returns true if the given point is after or equal to the start point and before or equal to
+	 * the end point of the context object.
 	 *
 	 * @param node   Node of point to check
 	 * @param offset Offset of point to check
@@ -443,8 +453,10 @@ export default class Range {
 
 		// 4. If (node, offset) is before start or after end, return false.
 		if (
-			compareBoundaryPointPositions(node, offset, this.startContainer, this.startOffset) === POSITION_BEFORE ||
-			compareBoundaryPointPositions(node, offset, this.endContainer, this.endOffset) === POSITION_AFTER
+			compareBoundaryPointPositions(node, offset, this.startContainer, this.startOffset) ===
+				POSITION_BEFORE ||
+			compareBoundaryPointPositions(node, offset, this.endContainer, this.endOffset) ===
+				POSITION_AFTER
 		) {
 			return false;
 		}
@@ -459,14 +471,16 @@ export default class Range {
 	 * @param node   Node of point to check
 	 * @param offset Offset of point to check
 	 *
-	 * @return -1, 0 or 1 depending on whether the point is before, inside or after the range, respectively
+	 * @return -1, 0 or 1 depending on whether the point is before, inside or after the range,
+	 *         respectively
 	 */
 	comparePoint(node: Node, offset: number): number {
 		expectArity(arguments, 2);
 		node = asObject(node, Node);
 		offset = asUnsignedLong(offset);
 
-		// 1. If node’s root is different from the context object’s root, then throw a WrongDocumentError.
+		// 1. If node’s root is different from the context object’s root, then throw a
+		// WrongDocumentError.
 		if (getRootOfNode(node) !== getRootOfRange(this)) {
 			throwWrongDocumentError('Can not compare point to range in different trees');
 		}
@@ -482,12 +496,18 @@ export default class Range {
 		}
 
 		// 4. If (node, offset) is before start, return −1.
-		if (compareBoundaryPointPositions(node, offset, this.startContainer, this.startOffset) === POSITION_BEFORE) {
+		if (
+			compareBoundaryPointPositions(node, offset, this.startContainer, this.startOffset) ===
+			POSITION_BEFORE
+		) {
 			return -1;
 		}
 
 		// 5. If (node, offset) is after end, return 1.
-		if (compareBoundaryPointPositions(node, offset, this.endContainer, this.endOffset) === POSITION_AFTER) {
+		if (
+			compareBoundaryPointPositions(node, offset, this.endContainer, this.endOffset) ===
+			POSITION_AFTER
+		) {
 			return 1;
 		}
 
@@ -522,11 +542,18 @@ export default class Range {
 		// 4. Let offset be node’s index.
 		const offset = getNodeIndex(node);
 
-		// 5. If (parent, offset) is before end and (parent, offset + 1) is after start, return true.
+		// 5. If (parent, offset) is before end and (parent, offset + 1) is after start, return
+		// true.
 		// 6. Return false.
 		return (
-			compareBoundaryPointPositions(parent, offset, this.endContainer, this.endOffset) === POSITION_BEFORE &&
-			compareBoundaryPointPositions(parent, offset + 1, this.startContainer, this.startOffset) === POSITION_AFTER
+			compareBoundaryPointPositions(parent, offset, this.endContainer, this.endOffset) ===
+				POSITION_BEFORE &&
+			compareBoundaryPointPositions(
+				parent,
+				offset + 1,
+				this.startContainer,
+				this.startOffset
+			) === POSITION_AFTER
 		);
 	}
 }
@@ -536,8 +563,8 @@ const POSITION_EQUAL = 0;
 const POSITION_AFTER = 1;
 
 /**
- * If the two nodes of boundary points (node A, offset A) and (node B, offset B) have the same root, the position of the
- * first relative to the second is either before, equal, or after.
+ * If the two nodes of boundary points (node A, offset A) and (node B, offset B) have the same root,
+ * the position of the first relative to the second is either before, equal, or after.
  *
  * Note: for efficiency reasons, this implementation deviates from the algorithm given in 4.2.
  *
@@ -550,7 +577,12 @@ const POSITION_AFTER = 1;
  *
  * @return -1, 0 or 1, depending on the boundary points' relative positions
  */
-function compareBoundaryPointPositions(nodeA: Node, offsetA: number, nodeB: Node, offsetB: number): number {
+function compareBoundaryPointPositions(
+	nodeA: Node,
+	offsetA: number,
+	nodeB: Node,
+	offsetB: number
+): number {
 	if (nodeA !== nodeB) {
 		const ancestors1 = getInclusiveAncestors(nodeA);
 		const ancestors2 = getInclusiveAncestors(nodeB);
@@ -561,8 +593,8 @@ function compareBoundaryPointPositions(nodeA: Node, offsetA: number, nodeB: Node
 			ancestors2.shift();
 		}
 
-		// Compute offsets at the level under the last common parent. Add 0.5 to bias positions inside the parent vs.
-		// those before or after.
+		// Compute offsets at the level under the last common parent. Add 0.5 to bias positions
+		// inside the parent vs. those before or after.
 		if (ancestors1.length) {
 			offsetA = getNodeIndex(ancestors1[0]) + 0.5;
 		}

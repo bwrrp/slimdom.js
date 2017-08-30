@@ -52,7 +52,11 @@ describe('MutationObserver', () => {
 				const expectedValue = (expectedRecord as any)[key];
 				const actualValue = (actualRecord as any)[key];
 				if (Array.isArray(expectedValue)) {
-					chai.assert.deepEqual(actualValue, expectedValue, `property ${key} of record ${i}`);
+					chai.assert.deepEqual(
+						actualValue,
+						expectedValue,
+						`property ${key} of record ${i}`
+					);
 				} else {
 					chai.assert.equal(
 						actualValue,

@@ -29,8 +29,8 @@ export default class RegisteredObservers {
 	 */
 	public register(observer: MutationObserver, options: MutationObserverInit) {
 		// (continuing from MutationObserver#observe)
-		// 7. For each registered observer registered in target’s list of registered observers whose observer is the
-		// context object:
+		// 7. For each registered observer registered in target’s list of registered observers whose
+		// observer is the context object:
 		const registeredObservers = this._registeredObservers;
 		let hasRegisteredObserverForObserver = false;
 		registeredObservers.forEach(registered => {
@@ -47,13 +47,13 @@ export default class RegisteredObservers {
 			registered.options = options;
 		});
 
-		// 8. Otherwise, add a new registered observer to target’s list of registered observers with the context object
-		// as the observer and options as the options, and add target to context object’s list of nodes on which it is
-		// registered.
+		// 8. Otherwise, add a new registered observer to target’s list of registered observers with
+		// the context object as the observer and options as the options, and add target to context
+		// object’s list of nodes on which it is registered.
 		if (!hasRegisteredObserverForObserver) {
 			this._registeredObservers.push(new RegisteredObserver(observer, this._node, options));
-			// No registered observer for this observer at the current node means that node can't exist in the
-			// observer's list of nodes either.
+			// No registered observer for this observer at the current node means that node can't
+			// exist in the observer's list of nodes either.
 			observer._nodes.push(this._node);
 		}
 	}
@@ -61,21 +61,26 @@ export default class RegisteredObservers {
 	/**
 	 * Removes the given transient registered observer.
 	 *
-	 * Transient registered observers never have a corresponding entry in the observer's list of nodes. They are
-	 * guaranteed to be present in the array, as MutationObserver#_transients and
+	 * Transient registered observers never have a corresponding entry in the observer's list of
+	 * nodes. They are guaranteed to be present in the array, as MutationObserver#_transients and
 	 * RegisteredObservers#_registeredObservers are kept in sync.
 	 *
 	 * @param transientRegisteredObserver The registered observer to remove
 	 */
-	public removeTransientRegisteredObserver(transientRegisteredObserver: RegisteredObserver): void {
-		this._registeredObservers.splice(this._registeredObservers.indexOf(transientRegisteredObserver), 1);
+	public removeTransientRegisteredObserver(
+		transientRegisteredObserver: RegisteredObserver
+	): void {
+		this._registeredObservers.splice(
+			this._registeredObservers.indexOf(transientRegisteredObserver),
+			1
+		);
 	}
 
 	/**
 	 * Remove any registered observer on the associated node for which observer is the observer.
 	 *
-	 * As this only occurs for all nodes at once, it is the caller's responsibility to remove the associated node from
-	 * the observer's list of nodes.
+	 * As this only occurs for all nodes at once, it is the caller's responsibility to remove the
+	 * associated node from the observer's list of nodes.
 	 *
 	 * @param observer Observer for which to remove the registration
 	 */
@@ -113,15 +118,22 @@ export default class RegisteredObservers {
 		pairedStrings: (string | null | undefined)[]
 	) {
 		// (continuing from queueMutationRecord)
-		// 3. ...and then for each registered observer (with registered observer’s options as options) in node’s list of
-		// registered observers:
+		// 3. ...and then for each registered observer (with registered observer’s options as
+		// options) in node’s list of registered observers:
 		this._registeredObservers.forEach(registeredObserver => {
-			registeredObserver.collectInterestedObservers(type, target, data, interestedObservers, pairedStrings);
+			registeredObserver.collectInterestedObservers(
+				type,
+				target,
+				data,
+				interestedObservers,
+				pairedStrings
+			);
 		});
 	}
 
 	/**
-	 * Append transient registered observers for any registered observers whose options' subtree is true.
+	 * Append transient registered observers for any registered observers whose options' subtree is
+	 * true.
 	 *
 	 * @param node Node to append the transient registered observers to
 	 */
@@ -139,7 +151,9 @@ export default class RegisteredObservers {
 	 * @param source The source registered observer
 	 */
 	public registerTransient(source: RegisteredObserver): void {
-		this._registeredObservers.push(new RegisteredObserver(source.observer, this._node, source.options, source));
+		this._registeredObservers.push(
+			new RegisteredObserver(source.observer, this._node, source.options, source)
+		);
 		// Note that node is not added to the transient observer's observer's list of nodes.
 	}
 }

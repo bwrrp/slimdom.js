@@ -44,7 +44,7 @@
 		"typescript": "^2.5.2"
 	},
 	"prettier": {
-		"printWidth": 120,
+		"printWidth": 100,
 		"singleQuote": true,
 		"tabWidth": 4,
 		"useTabs": true

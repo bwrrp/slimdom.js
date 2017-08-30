@@ -90,7 +90,8 @@ export function getRootOfNode(node: Node): Node {
  * Invokes callback on each inclusive descendant of node, in tree order
  *
  * @param node     Root of the subtree to process
- * @param callback Callback to invoke for each descendant, should not modify node's position in the tree
+ * @param callback Callback to invoke for each descendant, should not modify node's position in the
+ *                 tree
  */
 export function forEachInclusiveDescendant(node: Node, callback: (node: Node) => void): void {
 	callback(node);

@@ -29,8 +29,13 @@ export default class SlimdomTreeAdapter implements parse5.AST.TreeAdapter {
 		throw new Error('Method not implemented.');
 	}
 
-	createElement(tagName: string, namespaceURI: string, attrs: parse5.AST.Default.Attribute[]): parse5.AST.Element {
-		const [localName, prefix] = tagName.indexOf(':') >= 0 ? tagName.split(':') : [tagName, null];
+	createElement(
+		tagName: string,
+		namespaceURI: string,
+		attrs: parse5.AST.Default.Attribute[]
+	): parse5.AST.Element {
+		const [localName, prefix] =
+			tagName.indexOf(':') >= 0 ? tagName.split(':') : [tagName, null];
 		// Create element without validation, as per HTML parser spec
 		const element = createElement(this._globalDocument, localName!, namespaceURI, prefix);
 		attrs.forEach(attr => {
@@ -56,11 +61,21 @@ export default class SlimdomTreeAdapter implements parse5.AST.TreeAdapter {
 		(parentNode as slimdom.Node).appendChild(newNode as slimdom.Node);
 	}
 
-	insertBefore(parentNode: parse5.AST.ParentNode, newNode: parse5.AST.Node, referenceNode: parse5.AST.Node): void {
-		(parentNode as slimdom.Node).insertBefore(newNode as slimdom.Node, referenceNode as slimdom.Node);
+	insertBefore(
+		parentNode: parse5.AST.ParentNode,
+		newNode: parse5.AST.Node,
+		referenceNode: parse5.AST.Node
+	): void {
+		(parentNode as slimdom.Node).insertBefore(
+			newNode as slimdom.Node,
+			referenceNode as slimdom.Node
+		);
 	}
 
-	setTemplateContent(templateElement: parse5.AST.Element, contentElement: parse5.AST.DocumentFragment): void {
+	setTemplateContent(
+		templateElement: parse5.AST.Element,
+		contentElement: parse5.AST.DocumentFragment
+	): void {
 		throw new Error('Method not implemented.');
 	}
 
@@ -68,8 +83,17 @@ export default class SlimdomTreeAdapter implements parse5.AST.TreeAdapter {
 		throw new Error('Method not implemented.');
 	}
 
-	setDocumentType(document: parse5.AST.Document, name: string, publicId: string, systemId: string): void {
-		const doctype = this._globalDocument.implementation.createDocumentType(name, publicId, systemId);
+	setDocumentType(
+		document: parse5.AST.Document,
+		name: string,
+		publicId: string,
+		systemId: string
+	): void {
+		const doctype = this._globalDocument.implementation.createDocumentType(
+			name,
+			publicId,
+			systemId
+		);
 		const doc = document as slimdom.Document;
 		if (doc.doctype) {
 			doc.replaceChild(doctype, doc.doctype);
@@ -103,7 +127,11 @@ export default class SlimdomTreeAdapter implements parse5.AST.TreeAdapter {
 		(parentNode as slimdom.Node).appendChild(this._globalDocument.createTextNode(text));
 	}
 
-	insertTextBefore(parentNode: parse5.AST.ParentNode, text: string, referenceNode: parse5.AST.Node): void {
+	insertTextBefore(
+		parentNode: parse5.AST.ParentNode,
+		text: string,
+		referenceNode: parse5.AST.Node
+	): void {
 		const sibling = referenceNode && (referenceNode as slimdom.Node).previousSibling;
 		if (sibling && sibling.nodeType === slimdom.Node.TEXT_NODE) {
 			(sibling as slimdom.Text).appendData(text);

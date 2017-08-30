@@ -1,5 +1,6 @@
 export function expectArity(args: IArguments, minArity: number): void {
-	// According to WebIDL overload resolution semantics, only a lower bound applies to the number of arguments provided
+	// According to WebIDL overload resolution semantics, only a lower bound applies to the number
+	// of arguments provided
 	if (args.length < minArity) {
 		throw new TypeError(`Function should be called with at least ${minArity} arguments`);
 	}

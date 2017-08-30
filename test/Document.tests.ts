@@ -55,7 +55,8 @@ describe('Document', () => {
 			chai.assert.equal(document.lastElementChild, element);
 		});
 
-		it('the child element is adopted into the document', () => chai.assert.equal(element.ownerDocument, document));
+		it('the child element is adopted into the document', () =>
+			chai.assert.equal(element.ownerDocument, document));
 
 		describe('after removing the element', () => {
 			beforeEach(() => {
@@ -94,7 +95,8 @@ describe('Document', () => {
 
 		it('has no documentElement', () => chai.assert.equal(document.documentElement, null));
 
-		it('has childNodes', () => chai.assert.deepEqual(document.childNodes, [processingInstruction]));
+		it('has childNodes', () =>
+			chai.assert.deepEqual(document.childNodes, [processingInstruction]));
 
 		it('has no children', () => chai.assert.deepEqual(document.children, []));
 
@@ -161,7 +163,10 @@ describe('Document', () => {
 		});
 
 		it('throws if given an invalid name', () => {
-			chai.assert.throws(() => document.createElement(String.fromCodePoint(0x200b)), 'InvalidCharacterError');
+			chai.assert.throws(
+				() => document.createElement(String.fromCodePoint(0x200b)),
+				'InvalidCharacterError'
+			);
 		});
 	});
 
@@ -171,7 +176,10 @@ describe('Document', () => {
 				() => document.createElementNS(null, String.fromCodePoint(0x200b)),
 				'InvalidCharacterError'
 			);
-			chai.assert.throws(() => document.createElementNS(null, 'a:b:c'), 'InvalidCharacterError');
+			chai.assert.throws(
+				() => document.createElementNS(null, 'a:b:c'),
+				'InvalidCharacterError'
+			);
 		});
 
 		it('throws if given a prefixed name without a namespace', () => {
@@ -180,21 +188,29 @@ describe('Document', () => {
 
 		it('throws if given an invalid use of a reserved prefix', () => {
 			chai.assert.throws(() => document.createElementNS('not the xml namespace', 'xml:test'));
-			chai.assert.throws(() => document.createElementNS('not the xmlns namespace', 'xmlns:test'));
-			chai.assert.throws(() => document.createElementNS('http://www.w3.org/2000/xmlns/', 'pre:test'));
+			chai.assert.throws(() =>
+				document.createElementNS('not the xmlns namespace', 'xmlns:test')
+			);
+			chai.assert.throws(() =>
+				document.createElementNS('http://www.w3.org/2000/xmlns/', 'pre:test')
+			);
 		});
 	});
 
 	describe('.createCDATASection', () => {
 		it('throws if data contains "]]>"', () => {
-			chai.assert.throws(() => document.createCDATASection('meep]]>maap'), 'InvalidCharacterError');
+			chai.assert.throws(
+				() => document.createCDATASection('meep]]>maap'),
+				'InvalidCharacterError'
+			);
 		});
 	});
 
 	describe('.createProcessingInstruction', () => {
 		it('throws if given an invalid target', () => {
 			chai.assert.throws(
-				() => document.createProcessingInstruction(String.fromCodePoint(0x200b), 'some data'),
+				() =>
+					document.createProcessingInstruction(String.fromCodePoint(0x200b), 'some data'),
 				'InvalidCharacterError'
 			);
 		});
@@ -294,7 +310,10 @@ describe('Document', () => {
 
 	describe('.createAttribute', () => {
 		it('throws if given an invalid name', () => {
-			chai.assert.throws(() => document.createAttribute(String.fromCodePoint(0x200b)), 'InvalidCharacterError');
+			chai.assert.throws(
+				() => document.createAttribute(String.fromCodePoint(0x200b)),
+				'InvalidCharacterError'
+			);
 		});
 	});
 });

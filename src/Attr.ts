@@ -40,8 +40,8 @@ export default class Attr extends Node {
 		// (not necessary due to recursion)
 
 		// 2. Switch on the context object:
-		// Attr - Return the result of locating a namespace prefix for its element, if its element is non-null, and null
-		// otherwise.
+		// Attr - Return the result of locating a namespace prefix for its element, if its element
+		// is non-null, and null otherwise.
 		if (this.ownerElement !== null) {
 			return this.ownerElement.lookupPrefix(namespace);
 		}
@@ -87,13 +87,15 @@ export default class Attr extends Node {
 	public ownerElement: Element | null;
 
 	/**
-	 * (non-standard) use Document#createAttribute(NS) or Element#setAttribute(NS) to create attribute nodes
+	 * (non-standard) use Document#createAttribute(NS) or Element#setAttribute(NS) to create
+	 * attribute nodes
 	 *
 	 * @param namespace The namespace URI for the attribute
 	 * @param prefix    The prefix for the attribute
 	 * @param localName The local name for the attribute
 	 * @param value     The value for the attribute
-	 * @param element   The element for the attribute, or null if the attribute is not attached to an element
+	 * @param element   The element for the attribute, or null if the attribute is not attached to
+	 *                  an element
 	 */
 	constructor(
 		namespace: string | null,
@@ -122,14 +124,21 @@ export default class Attr extends Node {
 	public _copy(document: Document): Attr {
 		// Set copy’s namespace, namespace prefix, local name, and value, to those of node.
 		const context = getContext(document);
-		const copy = new context.Attr(this.namespaceURI, this.prefix, this.localName, this.value, null);
+		const copy = new context.Attr(
+			this.namespaceURI,
+			this.prefix,
+			this.localName,
+			this.value,
+			null
+		);
 		copy.ownerDocument = document;
 		return copy;
 	}
 }
 
 /**
- * To set an existing attribute value, given an attribute attribute and string value, run these steps:
+ * To set an existing attribute value, given an attribute attribute and string value, run these
+ * steps:
  *
  * @param attribute The attribute to set the value of
  * @param value     The new value for attribute

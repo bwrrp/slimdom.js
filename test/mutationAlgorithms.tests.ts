@@ -22,7 +22,10 @@ describe('DOM mutations', () => {
 				.appendChild(document.createElement('ancestor'))
 				.appendChild(document.createElement('middle'))
 				.appendChild(document.createElement('descendant'));
-			chai.assert.throws(() => descendant.appendChild(document.documentElement!), 'HierarchyRequestError');
+			chai.assert.throws(
+				() => descendant.appendChild(document.documentElement!),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('throws if the reference node is not a child of the parent', () => {
@@ -74,26 +77,44 @@ describe('DOM mutations', () => {
 		it('throws if inserting a fragment would add a document element before the doctype', () => {
 			const fragment = document.createDocumentFragment();
 			fragment.appendChild(document.createElement('child1'));
-			const doctype = document.appendChild(document.implementation.createDocumentType('html', '', ''));
-			chai.assert.throws(() => document.insertBefore(fragment, doctype), 'HierarchyRequestError');
+			const doctype = document.appendChild(
+				document.implementation.createDocumentType('html', '', '')
+			);
+			chai.assert.throws(
+				() => document.insertBefore(fragment, doctype),
+				'HierarchyRequestError'
+			);
 			const comment = document.insertBefore(document.createComment('test'), doctype);
-			chai.assert.throws(() => document.insertBefore(fragment, comment), 'HierarchyRequestError');
+			chai.assert.throws(
+				() => document.insertBefore(fragment, comment),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('allows inserting a document element using a fragment', () => {
 			const fragment = document.createDocumentFragment();
 			const child = fragment.appendChild(document.createElement('child1')) as slimdom.Element;
-			const doctype = document.appendChild(document.implementation.createDocumentType('html', '', ''));
+			const doctype = document.appendChild(
+				document.implementation.createDocumentType('html', '', '')
+			);
 			document.appendChild(fragment);
 			chai.assert.equal(document.documentElement, child);
 		});
 
 		it('throws if inserting a document element before the doctype', () => {
 			const element = document.createElement('test');
-			const doctype = document.appendChild(document.implementation.createDocumentType('html', '', ''));
-			chai.assert.throws(() => document.insertBefore(element, doctype), 'HierarchyRequestError');
+			const doctype = document.appendChild(
+				document.implementation.createDocumentType('html', '', '')
+			);
+			chai.assert.throws(
+				() => document.insertBefore(element, doctype),
+				'HierarchyRequestError'
+			);
 			const comment = document.insertBefore(document.createComment('test'), doctype);
-			chai.assert.throws(() => document.insertBefore(element, comment), 'HierarchyRequestError');
+			chai.assert.throws(
+				() => document.insertBefore(element, comment),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('throws if inserting a second doctype', () => {
@@ -109,7 +130,9 @@ describe('DOM mutations', () => {
 		});
 
 		it('correctly handles inserting a node before itself', () => {
-			const parent = document.appendChild(document.createElement('parent')) as slimdom.Element;
+			const parent = document.appendChild(
+				document.createElement('parent')
+			) as slimdom.Element;
 			const element = parent.appendChild(document.createElement('child')) as slimdom.Element;
 			parent.insertBefore(element, element);
 			chai.assert.equal(parent.firstElementChild, element);
@@ -119,7 +142,10 @@ describe('DOM mutations', () => {
 
 		it('throws if inserting the document element before itself', () => {
 			const element = document.appendChild(document.createElement('test')) as slimdom.Element;
-			chai.assert.throws(() => document.insertBefore(element, element), 'HierarchyRequestError');
+			chai.assert.throws(
+				() => document.insertBefore(element, element),
+				'HierarchyRequestError'
+			);
 		});
 
 		describe('effect on ranges', () => {
@@ -145,7 +171,10 @@ describe('DOM mutations', () => {
 	describe('replaceChild', () => {
 		it('throws if replacing under a non-parent node', () => {
 			const doctype = document.implementation.createDocumentType('html', '', '');
-			chai.assert.throws(() => doctype.replaceChild(doctype, doctype), 'HierarchyRequestError');
+			chai.assert.throws(
+				() => doctype.replaceChild(doctype, doctype),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('throws if inserting a node below one of its descendants', () => {
@@ -153,8 +182,13 @@ describe('DOM mutations', () => {
 				.appendChild(document.createElement('ancestor'))
 				.appendChild(document.createElement('middle'))
 				.appendChild(document.createElement('descendant'));
-			const pi = descendant.appendChild(document.createProcessingInstruction('target', 'test'));
-			chai.assert.throws(() => descendant.replaceChild(document.documentElement!, pi), 'HierarchyRequestError');
+			const pi = descendant.appendChild(
+				document.createProcessingInstruction('target', 'test')
+			);
+			chai.assert.throws(
+				() => descendant.replaceChild(document.documentElement!, pi),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('throws if replacing a node that is not a child of the parent', () => {
@@ -176,21 +210,30 @@ describe('DOM mutations', () => {
 		it('throws if inserting a text node directly under the document', () => {
 			const text = document.createTextNode('test');
 			const oldChild = document.appendChild(document.createComment(''));
-			chai.assert.throws(() => document.replaceChild(text, oldChild), 'HierarchyRequestError');
+			chai.assert.throws(
+				() => document.replaceChild(text, oldChild),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('throws if inserting a doctype under something other than a document', () => {
 			const doctype = document.implementation.createDocumentType('html', '', '');
 			const fragment = document.createDocumentFragment();
 			const oldChild = fragment.appendChild(document.createComment(''));
-			chai.assert.throws(() => fragment.replaceChild(doctype, oldChild), 'HierarchyRequestError');
+			chai.assert.throws(
+				() => fragment.replaceChild(doctype, oldChild),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('throws if inserting a fragment would add a text node under a document', () => {
 			const oldChild = document.appendChild(document.createComment(''));
 			const fragment = document.createDocumentFragment();
 			fragment.appendChild(document.createTextNode('test'));
-			chai.assert.throws(() => document.replaceChild(fragment, oldChild), 'HierarchyRequestError');
+			chai.assert.throws(
+				() => document.replaceChild(fragment, oldChild),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('throws if inserting a fragment would add multiple document elements', () => {
@@ -198,7 +241,10 @@ describe('DOM mutations', () => {
 			const fragment = document.createDocumentFragment();
 			fragment.appendChild(document.createElement('child1'));
 			fragment.appendChild(document.createElement('child2'));
-			chai.assert.throws(() => document.replaceChild(fragment, oldChild), 'HierarchyRequestError');
+			chai.assert.throws(
+				() => document.replaceChild(fragment, oldChild),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('throws if inserting a fragment would add another document element', () => {
@@ -206,21 +252,31 @@ describe('DOM mutations', () => {
 			const fragment = document.createDocumentFragment();
 			document.appendChild(document.createElement('child1'));
 			fragment.appendChild(document.createElement('child2'));
-			chai.assert.throws(() => document.replaceChild(fragment, oldChild), 'HierarchyRequestError');
+			chai.assert.throws(
+				() => document.replaceChild(fragment, oldChild),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('throws if inserting a fragment would add a document element before the doctype', () => {
 			const oldChild = document.appendChild(document.createComment(''));
 			const fragment = document.createDocumentFragment();
 			fragment.appendChild(document.createElement('child1'));
-			const doctype = document.appendChild(document.implementation.createDocumentType('html', '', ''));
-			chai.assert.throws(() => document.replaceChild(fragment, oldChild), 'HierarchyRequestError');
+			const doctype = document.appendChild(
+				document.implementation.createDocumentType('html', '', '')
+			);
+			chai.assert.throws(
+				() => document.replaceChild(fragment, oldChild),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('allows inserting a document element using a fragment', () => {
 			const fragment = document.createDocumentFragment();
 			const child = fragment.appendChild(document.createElement('child1')) as slimdom.Element;
-			const doctype = document.appendChild(document.implementation.createDocumentType('html', '', ''));
+			const doctype = document.appendChild(
+				document.implementation.createDocumentType('html', '', '')
+			);
 			const oldChild = document.appendChild(document.createComment(''));
 			document.replaceChild(fragment, oldChild);
 			chai.assert.equal(document.documentElement, child);
@@ -229,22 +285,33 @@ describe('DOM mutations', () => {
 		it('throws if inserting a document element before the doctype', () => {
 			const element = document.createElement('test');
 			const oldChild = document.appendChild(document.createComment(''));
-			const doctype = document.appendChild(document.implementation.createDocumentType('html', '', ''));
-			chai.assert.throws(() => document.replaceChild(element, oldChild), 'HierarchyRequestError');
+			const doctype = document.appendChild(
+				document.implementation.createDocumentType('html', '', '')
+			);
+			chai.assert.throws(
+				() => document.replaceChild(element, oldChild),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('throws if inserting a second doctype', () => {
 			const htmlDocument = document.implementation.createHTMLDocument('test');
 			const doctype = document.implementation.createDocumentType('test', '', '');
 			const oldChild = htmlDocument.appendChild(document.createComment(''));
-			chai.assert.throws(() => htmlDocument.replaceChild(doctype, oldChild), 'HierarchyRequestError');
+			chai.assert.throws(
+				() => htmlDocument.replaceChild(doctype, oldChild),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('throws if inserting a doctype after the document element', () => {
 			const element = document.appendChild(document.createElement('test'));
 			const oldChild = document.appendChild(document.createComment(''));
 			const doctype = document.implementation.createDocumentType('html', '', '');
-			chai.assert.throws(() => document.replaceChild(doctype, oldChild), 'HierarchyRequestError');
+			chai.assert.throws(
+				() => document.replaceChild(doctype, oldChild),
+				'HierarchyRequestError'
+			);
 		});
 
 		it('allows insert a doctype', () => {
@@ -255,7 +322,9 @@ describe('DOM mutations', () => {
 		});
 
 		it('correctly handles replacing a node with itself', () => {
-			const parent = document.appendChild(document.createElement('parent')) as slimdom.Element;
+			const parent = document.appendChild(
+				document.createElement('parent')
+			) as slimdom.Element;
 			const element = parent.appendChild(document.createElement('child')) as slimdom.Element;
 			parent.replaceChild(element, element);
 			chai.assert.equal(parent.firstElementChild, element);
@@ -264,7 +333,9 @@ describe('DOM mutations', () => {
 		});
 
 		it('correctly handles replacing a node with its next sibling', () => {
-			const parent = document.appendChild(document.createElement('parent')) as slimdom.Element;
+			const parent = document.appendChild(
+				document.createElement('parent')
+			) as slimdom.Element;
 			const element1 = parent.appendChild(document.createElement('child')) as slimdom.Element;
 			const element2 = parent.appendChild(document.createElement('child')) as slimdom.Element;
 			parent.replaceChild(element2, element1);

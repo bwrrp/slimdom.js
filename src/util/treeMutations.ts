@@ -18,7 +18,8 @@ import { NodeType, isNodeOfType } from './NodeType';
 export function insertIntoChildren(node: Node, parent: Node, referenceChild: Node | null): void {
 	// Node
 	node.parentNode = parent;
-	const previousSibling: Node | null = referenceChild === null ? parent.lastChild : referenceChild.previousSibling;
+	const previousSibling: Node | null =
+		referenceChild === null ? parent.lastChild : referenceChild.previousSibling;
 	const nextSibling: Node | null = referenceChild === null ? null : referenceChild;
 	node.previousSibling = previousSibling;
 	node.nextSibling = nextSibling;

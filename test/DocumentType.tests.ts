@@ -6,7 +6,11 @@ describe('DocumentType', () => {
 	let doctype: slimdom.DocumentType;
 	beforeEach(() => {
 		document = new slimdom.Document();
-		doctype = document.implementation.createDocumentType('somename', 'somePublicId', 'someSystemId');
+		doctype = document.implementation.createDocumentType(
+			'somename',
+			'somePublicId',
+			'someSystemId'
+		);
 	});
 
 	it('can be created using DOMImplementation#createDocumentType', () => {

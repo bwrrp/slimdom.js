@@ -17,29 +17,31 @@ export interface MutationRecordInit {
  */
 export default class MutationRecord {
 	/**
-	 * Returns "attributes" if it was an attribute mutation. "characterData" if it was a mutation to a CharacterData
-	 * node. And "childList" if it was a mutation to the tree of nodes.
+	 * Returns "attributes" if it was an attribute mutation. "characterData" if it was a mutation to
+	 * a CharacterData node. And "childList" if it was a mutation to the tree of nodes.
 	 */
 	public type: string;
 
 	/**
-	 * Returns the node the mutation affected, depending on the type. For "attributes", it is the element whose
-	 * attribute changed. For "characterData", it is the CharacterData node. For "childList", it is the node whose
-	 * children changed.
+	 * Returns the node the mutation affected, depending on the type. For "attributes", it is the
+	 * element whose attribute changed. For "characterData", it is the CharacterData node. For
+	 * "childList", it is the node whose children changed.
 	 */
 	public target: Node;
 
 	/**
 	 * Children of target added in this mutation.
 	 *
-	 * (non-standard) According to the spec this should be a NodeList. This implementation uses an array.
+	 * (non-standard) According to the spec this should be a NodeList. This implementation uses an
+	 * array.
 	 */
 	public addedNodes: Node[] = [];
 
 	/**
 	 * Children of target removed in this mutation.
 	 *
-	 * (non-standard) According to the spec this should be a NodeList. This implementation uses an array.
+	 * (non-standard) According to the spec this should be a NodeList. This implementation uses an
+	 * array.
 	 */
 	public removedNodes: Node[] = [];
 
@@ -64,8 +66,9 @@ export default class MutationRecord {
 	public attributeNamespace: string | null = null;
 
 	/**
-	 * The return value depends on type. For "attributes", it is the value of the changed attribute before the change.
-	 * For "characterData", it is the data of the changed node before the change. For "childList", it is null.
+	 * The return value depends on type. For "attributes", it is the value of the changed attribute
+	 * before the change. For "characterData", it is the data of the changed node before the change.
+	 * For "childList", it is null.
 	 */
 	public oldValue: string | null = null;
 

@@ -25,10 +25,21 @@ export type CDATASectionConstructor = new (data: string) => CDATASection;
 export type CommentConstructor = new (data: string) => Comment;
 export type DocumentConstructor = new () => Document;
 export type DocumentFragmentConstructor = new () => DocumentFragment;
-export type DocumentTypeConstructor = new (name: string, publicId?: string, systemId?: string) => DocumentType;
+export type DocumentTypeConstructor = new (
+	name: string,
+	publicId?: string,
+	systemId?: string
+) => DocumentType;
 export type DOMImplementationConstructor = new (document: Document) => DOMImplementation;
-export type ElementConstructor = new (namespace: string | null, prefix: string | null, localName: string) => Element;
-export type ProcessingInstructionConstructor = new (target: string, data: string) => ProcessingInstruction;
+export type ElementConstructor = new (
+	namespace: string | null,
+	prefix: string | null,
+	localName: string
+) => Element;
+export type ProcessingInstructionConstructor = new (
+	target: string,
+	data: string
+) => ProcessingInstruction;
 export type RangeConstructor = new () => Range;
 export type TextConstructor = new (data: string) => Text;
 export type XMLDocumentConstructor = new () => XMLDocument;
@@ -51,8 +62,9 @@ export interface Context {
 }
 
 /**
- * The DefaultContext is comparable to the global object in that it tracks its associated document. It also serves as a
- * way to inject the constructors for the constructable types, avoiding cyclic dependencies.
+ * The DefaultContext is comparable to the global object in that it tracks its associated document.
+ * It also serves as a way to inject the constructors for the constructable types, avoiding cyclic
+ * dependencies.
  */
 export class DefaultContext implements Context {
 	public document: Document;
