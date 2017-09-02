@@ -1,4 +1,8 @@
-# slimdom [![Build Status](https://travis-ci.org/bwrrp/slimdom.js.png?branch=master)](https://travis-ci.org/bwrrp/slimdom.js)
+# slimdom
+
+[![NPM version](https://badge.fury.io/js/slimdom.svg)](https://badge.fury.io/js/slimdom)
+[![Build Status](https://travis-ci.org/bwrrp/slimdom.js.svg?branch=master)](https://travis-ci.org/bwrrp/slimdom.js)
+[![devDependency Status](https://david-dm.org/bwrrp/slimdom.js/dev-status.svg)](https://david-dm.org/bwrrp/slimdom.js?type=dev)
 
 Fast, tiny DOM implementation for node and the browser.
 
