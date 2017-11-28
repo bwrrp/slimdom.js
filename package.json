@@ -29,7 +29,7 @@
 	},
 	"devDependencies": {
 		"@types/chai": "^4.0.4",
-		"@types/lolex": "^1.5.31",
+		"@types/lolex": "^2.1.0",
 		"@types/mocha": "^2.2.43",
 		"chai": "^4.1.2",
 		"lolex": "^2.1.2",
