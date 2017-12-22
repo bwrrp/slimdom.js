@@ -431,12 +431,12 @@ function getAllScripts(doc: slimdom.Document, casePath: string) {
 					// Historical alias, unfortunately not an actual file
 					// https://github.com/w3c/web-platform-tests/issues/5608
 					resolvedPath = path.resolve(
-						process.env.WEB_PLATFORM_TESTS_PATH,
+						process.env.WEB_PLATFORM_TESTS_PATH as string,
 						'resources/webidl2/lib/webidl2.js'
 					);
 				} else {
 					resolvedPath = src.value.startsWith('/')
-						? path.resolve(process.env.WEB_PLATFORM_TESTS_PATH, src.value.substring(1))
+						? path.resolve(process.env.WEB_PLATFORM_TESTS_PATH as string, src.value.substring(1))
 						: path.resolve(path.dirname(casePath), src.value);
 				}
 				return scripts.concat([fs.readFileSync(resolvedPath, 'utf-8')]);
@@ -564,7 +564,7 @@ function createTest(casePath: string, blacklistReason: { [key: string]: string }
 function createTests(dirPath: string): void {
 	fs.readdirSync(dirPath).forEach(entry => {
 		const entryPath = path.join(dirPath, entry);
-		const relativePath = path.relative(process.env.WEB_PLATFORM_TESTS_PATH, entryPath);
+		const relativePath = path.relative(process.env.WEB_PLATFORM_TESTS_PATH as string, entryPath);
 		const blacklistReason = TEST_BLACKLIST[relativePath.replace(/\\/g, '/')];
 		if (typeof blacklistReason === 'string') {
 			// Create a pending test
@@ -699,5 +699,5 @@ describe('web platform DOM test suite', () => {
 		}
 	});
 
-	createTests(path.join(process.env.WEB_PLATFORM_TESTS_PATH, 'dom'));
+	createTests(path.join(process.env.WEB_PLATFORM_TESTS_PATH as string, 'dom'));
 });
