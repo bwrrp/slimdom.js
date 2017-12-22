@@ -415,4 +415,11 @@ describe('serializeToWellFormedString', () => {
 		pi.appendData('?>test');
 		chai.assert.throws(() => slimdom.serializeToWellFormedString(pi), 'InvalidStateError');
 	});
+
+	it('can serialize normally if there are no well-formedness violations', () => {
+		chai.assert.equal(
+			slimdom.serializeToWellFormedString(document.createElement('el')),
+			'<el/>'
+		);
+	});
 });

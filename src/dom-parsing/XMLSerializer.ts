@@ -5,7 +5,7 @@ import { produceXmlSerialization } from './serializationAlgorithms';
 export default class XMLSerializer {
 	/**
 	 * Constructs a new XMLSerializer object.
-	*/
+	 */
 	public constructor() {}
 
 	/**
@@ -21,7 +21,9 @@ export default class XMLSerializer {
 
 		// Produce an XML serialization of root passing a value of false for the require well-formed
 		// parameter, and return the result.
-		return produceXmlSerialization(root, false);
+		const result: string[] = [];
+		produceXmlSerialization(root, false, result);
+		return result.join('');
 	}
 }
 
@@ -41,5 +43,7 @@ export function serializeToWellFormedString(root: Node): string {
 
 	// Produce an XML serialization of root passing a value of false for the require well-formed
 	// parameter, and return the result.
-	return produceXmlSerialization(root, true);
+	const result: string[] = [];
+	produceXmlSerialization(root, true, result);
+	return result.join('');
 }
