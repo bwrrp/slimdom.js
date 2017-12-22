@@ -104,9 +104,9 @@ export function serializeFragment(
 	// and make outerHTML trigger undefined behavior (the spec doesn't state the type of the
 	// fictional node that acts as a parent). Instead, serialize the children only
 	const childNodes = withFictionalParent ? [node] : node.childNodes;
-	let result = [];
+	const result: string[] = [];
 	for (const child of childNodes) {
-		result.push(produceXmlSerialization(child, requireWellFormed));
+		produceXmlSerialization(child, requireWellFormed, result);
 	}
 	return result.join('');
 
@@ -124,10 +124,13 @@ type PrefixIndex = { value: number };
  *
  * @param node                The node to serialize
  * @param requireWellFormed   Determines whether the result needs to be well-formed
- *
- * @return A string representing the XML serialization of node
+ * @param result              Array of strings in which to construct the result
  */
-export function produceXmlSerialization(node: Node, requireWellFormed: boolean): string {
+export function produceXmlSerialization(
+	node: Node,
+	requireWellFormed: boolean,
+	result: string[]
+): void {
 	// 1. Let namespace be a context namespace with value null. The context namespace tracks the XML
 	// serialization algorithm's current default namespace. The context namespace is changed when
 	// either an Element Node has a default namespace declaration, or the algorithm generates a
@@ -153,13 +156,14 @@ export function produceXmlSerialization(node: Node, requireWellFormed: boolean):
 	// the execution of the algorithm, then catch that exception and throw an "InvalidStateError"
 	// DOMException.
 	try {
-		return runXmlSerializationAlgorithm(
+		runXmlSerializationAlgorithm(
 			node,
 			namespace,
 			prefixMap,
 			prefixIndex,
-			requireWellFormed
-		).join('');
+			requireWellFormed,
+			result
+		);
 	} catch (error) {
 		return throwInvalidStateError(error.message);
 	}
@@ -175,6 +179,7 @@ export function produceXmlSerialization(node: Node, requireWellFormed: boolean):
  * @param prefixMap         The namespace prefix map
  * @param prefixIndex       A reference to the generated namespace prefix index
  * @param requireWellFormed Determines whether the result needs to be well-formed
+ * @param result            Array of strings in which to construct the result
  *
  * @return The serialization of node
  */
@@ -183,79 +188,107 @@ function runXmlSerializationAlgorithm(
 	namespace: null | string,
 	prefixMap: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
-	requireWellFormed: boolean
-): string[] {
+	requireWellFormed: boolean,
+	result: string[]
+): void {
 	// If node's interface is:
 	switch (node.nodeType) {
 		// Element: Run the algorithm for XML serializing an Element node node.
 		case NodeType.ELEMENT_NODE:
-			return serializeElementNode(node, namespace, prefixMap, prefixIndex, requireWellFormed);
-
-		// Document: Run the algorithm for XML serializing a Document node node.
-		case NodeType.DOCUMENT_NODE:
-			return serializeDocumentNode(
+			serializeElementNode(
 				node,
 				namespace,
 				prefixMap,
 				prefixIndex,
-				requireWellFormed
+				requireWellFormed,
+				result
 			);
+			return;
+
+		// Document: Run the algorithm for XML serializing a Document node node.
+		case NodeType.DOCUMENT_NODE:
+			serializeDocumentNode(
+				node,
+				namespace,
+				prefixMap,
+				prefixIndex,
+				requireWellFormed,
+				result
+			);
+			return;
 
 		// Comment: Run the algorithm for XML serializing a Comment node node.
 		case NodeType.COMMENT_NODE:
-			return serializeCommentNode(node, namespace, prefixMap, prefixIndex, requireWellFormed);
+			serializeCommentNode(
+				node,
+				namespace,
+				prefixMap,
+				prefixIndex,
+				requireWellFormed,
+				result
+			);
+			return;
 
 		// CDATASection: Run the algorithm for XML serializing a CDATASection node node.
 		// Note: this is currently commented out in the DOM parsing spec, as it is based on the DOM4
 		// spec which removed the CDATASection interface. It seems the interface has been restored
 		// in the DOM living standard, so we'll implement its serialization as specced previously.
 		case NodeType.CDATA_SECTION_NODE:
-			return serializeCDATASectionNode(
+			serializeCDATASectionNode(
 				node,
 				namespace,
 				prefixMap,
 				prefixIndex,
-				requireWellFormed
+				requireWellFormed,
+				result
 			);
+			return;
 
 		// Text: Run the algorithm for XML serializing a Text node node.
 		case NodeType.TEXT_NODE:
-			return serializeTextNode(node, namespace, prefixMap, prefixIndex, requireWellFormed);
+			serializeTextNode(node, namespace, prefixMap, prefixIndex, requireWellFormed, result);
+			return;
 
 		// DocumentFragment: Run the algorithm for XML serializing a DocumentFragment node node.
 		case NodeType.DOCUMENT_FRAGMENT_NODE:
-			return serializeDocumentFragmentNode(
+			serializeDocumentFragmentNode(
 				node,
 				namespace,
 				prefixMap,
 				prefixIndex,
-				requireWellFormed
+				requireWellFormed,
+				result
 			);
+			return;
 
 		// DocumentType: Run the algorithm for XML serializing a DocumentType node node.
 		case NodeType.DOCUMENT_TYPE_NODE:
-			return serializeDocumentTypeNode(
+			serializeDocumentTypeNode(
 				node,
 				namespace,
 				prefixMap,
 				prefixIndex,
-				requireWellFormed
+				requireWellFormed,
+				result
 			);
+			return;
 
 		// ProcessingInstruction: Run the algorithm for XML serializing a ProcessingInstruction node
 		// node.
 		case NodeType.PROCESSING_INSTRUCTION_NODE:
-			return serializeProcessingInstructionNode(
+			serializeProcessingInstructionNode(
 				node,
 				namespace,
 				prefixMap,
 				prefixIndex,
-				requireWellFormed
+				requireWellFormed,
+				result
 			);
+			return;
 
 		// An Attr object: Return an empty string.
 		case NodeType.ATTRIBUTE_NODE:
-			return [];
+			return;
 
 		// Anything else: Throw a TypeError. Only Nodes and Attr objects can be serialized by this
 		// algorithm.
@@ -274,16 +307,16 @@ function runXmlSerializationAlgorithm(
  * @param prefixMap         The namespace prefix map
  * @param prefixIndex       A reference to the generated namespace prefix index
  * @param requireWellFormed Determines whether the result needs to be well-formed
- *
- * @return The serialization of node
+ * @param result            Array of strings in which to construct the result
  */
 function serializeElementNode(
 	node: Node,
 	namespace: string | null,
 	prefixMap: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
-	requireWellFormed: boolean
-): string[] {
+	requireWellFormed: boolean,
+	result: string[]
+): void {
 	const element = node as Element;
 	// If the require well-formed flag is set (its value is true), and this node's localName
 	// attribute contains the character ":" (U+003A COLON) or does not match the XML Name
@@ -297,7 +330,7 @@ function serializeElementNode(
 	}
 
 	// 2. Let markup be the string "<" (U+003C LESS-THAN SIGN).
-	const markup = ['<'];
+	result.push('<');
 
 	// 3. Let qualified name be an empty string.
 	let qualifiedName = '';
@@ -352,7 +385,7 @@ function serializeElementNode(
 			qualifiedName += element.localName;
 		}
 		// 11.4. Append the value of qualified name to markup.
-		markup.push(qualifiedName);
+		result.push(qualifiedName);
 	} else {
 		// 12. Otherwise, inherited ns is not equal to ns (the node's own namespace is different
 		// from the context namespace of its parent). Run these sub-steps:
@@ -403,7 +436,7 @@ function serializeElementNode(
 			}
 
 			// 12.4.3. Append the value of qualified name to markup.
-			markup.push(qualifiedName);
+			result.push(qualifiedName);
 		} else if (prefix !== null) {
 			// 12.5. Otherwise, if prefix is not null, then:
 			// NOTE: By this step, there is no namespace or prefix mapping declaration in this node
@@ -427,7 +460,7 @@ function serializeElementNode(
 			qualifiedName += prefix + ':' + element.localName;
 
 			// 12.5.4. Append the value of qualified name to markup.
-			markup.push(qualifiedName);
+			result.push(qualifiedName);
 
 			// 12.5.5. Append the following to markup, in the order listed:
 			// NOTE: The following serializes a namespace prefix declaration for prefix which was
@@ -439,7 +472,7 @@ function serializeElementNode(
 			// 12.5.5.5. The result of serializing an attribute value given ns and the require
 			// well-formed flag as input;
 			// 12.5.5.6. """ (U+0022 QUOTATION MARK).
-			markup.push(
+			result.push(
 				' xmlns:',
 				prefix,
 				'="',
@@ -477,7 +510,7 @@ function serializeElementNode(
 			inheritedNs = ns;
 
 			// 12.6.4. Append the value of qualified name to markup.
-			markup.push(qualifiedName);
+			result.push(qualifiedName);
 
 			// 12.6.5. Append the following to markup, in the order listed:
 			// NOTE: The following serializes the new (or replacement) default namespace definition.
@@ -487,14 +520,14 @@ function serializeElementNode(
 			// 12.6.5.4. The result of serializing an attribute value given ns and the require
 			// well-formed flag as input;
 			// 12.6.5.5. """ (U+0022 QUOTATION MARK).
-			markup.push(' xmlns="', serializeAttributeValue(ns, requireWellFormed), '"');
+			result.push(' xmlns="', serializeAttributeValue(ns, requireWellFormed), '"');
 		} else {
 			// 12.7. Otherwise, the node has a local default namespace that matches ns. Append to
 			// qualified name the value of node's localName, let the value of inherited ns be ns,
 			// and append the value of qualified name to markup.
 			qualifiedName += element.localName;
 			inheritedNs = ns;
-			markup.push(qualifiedName);
+			result.push(qualifiedName);
 		}
 
 		// NOTE: All of the combinations where ns is not equal to inherited ns are handled above
@@ -504,15 +537,14 @@ function serializeElementNode(
 	// 13. Append to markup the result of the XML serialization of node's attributes given map,
 	// prefix index, local prefixes map, ignore namespace definition attribute flag, and require
 	// well-formed flag.
-	markup.push(
-		...serializeAttributes(
-			element,
-			map,
-			prefixIndex,
-			localPrefixesMap,
-			ignoreNamespaceDefinitionAttribute,
-			requireWellFormed
-		)
+	serializeAttributes(
+		element,
+		map,
+		prefixIndex,
+		localPrefixesMap,
+		ignoreNamespaceDefinitionAttribute,
+		requireWellFormed,
+		result
 	);
 
 	// 14. If ns is the HTML namespace, and the node's list of children is empty, and the node's
@@ -527,7 +559,7 @@ function serializeElementNode(
 	) {
 		// 14.1. " " (U+0020 SPACE);
 		// 14.2. "/" (U+002F SOLIDUS).
-		markup.push(' /');
+		result.push(' /');
 
 		// and set the skip end tag flag to true.
 		skipEndTag = true;
@@ -536,17 +568,17 @@ function serializeElementNode(
 	// 15. If ns is not the HTML namespace, and the node's list of children is empty, then append
 	// "/" (U+002F SOLIDUS) to markup and set the skip end tag flag to true.
 	if (ns !== HTML_NAMESPACE && !element.hasChildNodes()) {
-		markup.push('/');
+		result.push('/');
 		skipEndTag = true;
 	}
 
 	// 16. Append ">" (U+003E GREATER-THAN SIGN) to markup.
-	markup.push('>');
+	result.push('>');
 
 	// 17. If the value of skip end tag is true, then return the value of markup and skip the
 	// remaining steps. The node is a leaf-node.
 	if (skipEndTag) {
-		return markup;
+		return;
 	}
 
 	// 18. If ns is the HTML namespace, and the node's localName matches the string "template", then
@@ -561,8 +593,13 @@ function serializeElementNode(
 	// of node's children, in tree order, providing inherited ns, map, prefix index, and the require
 	// well-formed flag.
 	for (const child of node.childNodes) {
-		markup.push(
-			...runXmlSerializationAlgorithm(child, inheritedNs, map, prefixIndex, requireWellFormed)
+		runXmlSerializationAlgorithm(
+			child,
+			inheritedNs,
+			map,
+			prefixIndex,
+			requireWellFormed,
+			result
 		);
 	}
 
@@ -570,10 +607,9 @@ function serializeElementNode(
 	// 20.1. "</" (U+003C LESS-THAN SIGN, U+002F SOLIDUS);
 	// 20.2. The value of qualified name;
 	// 20.3. ">" (U+003E GREATER-THAN SIGN).
-	markup.push('</', qualifiedName, '>');
+	result.push('</', qualifiedName, '>');
 
 	// 21. Return the value of markup.
-	return markup;
 }
 
 // 3.2.1.1.3 Serializing an Element's attributes
@@ -590,8 +626,7 @@ function serializeElementNode(
  * @param localPrefixesMap                   The local prefixes map
  * @param ignoreNamespaceDefinitionAttribute The ignore namespace definition attribute flag
  * @param requireWellFormed                  The require well-formed flag
- *
- * @return The XML serialization of element's attributes
+ * @param result                             Array of strings in which to construct the result
  */
 function serializeAttributes(
 	element: Element,
@@ -599,10 +634,11 @@ function serializeAttributes(
 	prefixIndex: PrefixIndex,
 	localPrefixesMap: LocalPrefixesMap,
 	ignoreNamespaceDefinitionAttribute: boolean,
-	requireWellFormed: boolean
-): string[] {
+	requireWellFormed: boolean,
+	result: string[]
+): void {
 	// 1. Let result be the empty string.
-	const result: string[] = [];
+	// (result constructed in-place in argument)
 
 	// 2. Let localname set be a new empty namespace localname set. This localname set will contain
 	// tuples of unique attribute namespaceURI and localName pairs, and is populated as each attr is
@@ -793,7 +829,6 @@ function serializeAttributes(
 	}
 
 	// 4. Return the value of result.
-	return result;
 }
 
 /**
@@ -886,16 +921,16 @@ function generatePrefix(
  * @param prefixMap         The namespace prefix map
  * @param prefixIndex       A reference to the generated namespace prefix index
  * @param requireWellFormed Determines whether the result needs to be well-formed
- *
- * @return The serialization of node
+ * @param result            Array of strings in which to construct the result
  */
 function serializeDocumentNode(
 	node: Node,
 	namespace: string | null,
 	prefixMap: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
-	requireWellFormed: boolean
-): string[] {
+	requireWellFormed: boolean,
+	result: string[]
+): void {
 	const document = node as Document;
 	// 1. If the require well-formed flag is set (its value is true), and this node has no
 	// documentElement (the documentElement attribute's value is null), then throw an exception; the
@@ -907,7 +942,7 @@ function serializeDocumentNode(
 	// 2. Otherwise, run the following steps:
 
 	// 2.1. Let serialized document be an empty string.
-	const serializedDocument = [];
+	// (constructed in-place in result argument)
 
 	// 2.2. For each child child of node, in tree order, run the XML serialization algorithm on the
 	// child passing along the provided arguments, and append the result to serialized document.
@@ -915,19 +950,17 @@ function serializeDocumentNode(
 	// and after the Document's documentElement node, including at most one DocumentType node. (Text
 	// nodes are not allowed as children of the Document.)
 	for (const child of document.childNodes) {
-		serializedDocument.push(
-			...runXmlSerializationAlgorithm(
-				child,
-				namespace,
-				prefixMap,
-				prefixIndex,
-				requireWellFormed
-			)
+		runXmlSerializationAlgorithm(
+			child,
+			namespace,
+			prefixMap,
+			prefixIndex,
+			requireWellFormed,
+			result
 		);
 	}
 
 	// 2.3. Return the value of serialized document.
-	return serializedDocument;
 }
 
 /**
@@ -938,16 +971,16 @@ function serializeDocumentNode(
  * @param prefixMap         The namespace prefix map
  * @param prefixIndex       A reference to the generated namespace prefix index
  * @param requireWellFormed Determines whether the result needs to be well-formed
- *
- * @return The serialization of node
+ * @param result            Array of strings in which to construct the result
  */
 function serializeCommentNode(
 	node: Node,
 	namespace: string | null,
 	prefixMap: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
-	requireWellFormed: boolean
-): string[] {
+	requireWellFormed: boolean,
+	result: string[]
+): void {
 	const comment = node as Comment;
 	// 1. If the require well-formed flag is set (its value is true), and node's data contains
 	// characters that are not matched by the XML Char production or contains "--" (two adjacent
@@ -963,7 +996,7 @@ function serializeCommentNode(
 	}
 
 	// 2. Otherwise, return the concatenation of "<!--", node's data, and "-->".
-	return ['<!--', comment.data, '-->'];
+	result.push('<!--', comment.data, '-->');
 }
 
 /**
@@ -974,23 +1007,22 @@ function serializeCommentNode(
  * @param prefixMap         The namespace prefix map
  * @param prefixIndex       A reference to the generated namespace prefix index
  * @param requireWellFormed Determines whether the result needs to be well-formed
- *
- * @return The serialization of node
+ * @param result            Array of strings in which to construct the result
  */
 function serializeCDATASectionNode(
 	node: Node,
 	namespace: string | null,
 	prefixMap: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
-	requireWellFormed: boolean
-): string[] {
+	requireWellFormed: boolean,
+	result: string[]
+): void {
 	const cs = node as CDATASection;
 
 	// 1. Let markup be the concatenation of "<![CDATA[", node's data, and "]]>".
-	const markup = ['<![CDATA[', cs.data, ']]>'];
+	result.push('<![CDATA[', cs.data, ']]>');
 
 	// 2. Return the value of markup.
-	return markup;
 }
 
 /**
@@ -1001,16 +1033,16 @@ function serializeCDATASectionNode(
  * @param prefixMap         The namespace prefix map
  * @param prefixIndex       A reference to the generated namespace prefix index
  * @param requireWellFormed Determines whether the result needs to be well-formed
- *
- * @return The serialization of node
+ * @param result            Array of strings in which to construct the result
  */
 function serializeTextNode(
 	node: Node,
 	namespace: string | null,
 	prefixMap: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
-	requireWellFormed: boolean
-): string[] {
+	requireWellFormed: boolean,
+	result: string[]
+): void {
 	const text = node as Text;
 	// 1. If the require well-formed flag is set (its value is true), and node's data contains
 	// characters that are not matched by the XML Char production, then throw an exception; the
@@ -1032,7 +1064,7 @@ function serializeTextNode(
 	markup = markup.replace(/>/g, '&gt;');
 
 	// 6. Return the value of markup.
-	return [markup];
+	result.push(markup);
 }
 
 /**
@@ -1043,36 +1075,34 @@ function serializeTextNode(
  * @param prefixMap         The namespace prefix map
  * @param prefixIndex       A reference to the generated namespace prefix index
  * @param requireWellFormed Determines whether the result needs to be well-formed
- *
- * @return The serialization of node
+ * @param result            Array of strings in which to construct the result
  */
 function serializeDocumentFragmentNode(
 	node: Node,
 	namespace: string | null,
 	prefixMap: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
-	requireWellFormed: boolean
-): string[] {
+	requireWellFormed: boolean,
+	result: string[]
+): void {
 	// 1. Let markup the empty string.
-	const markup: string[] = [];
+	// (constructed in-place in result argument)
 
 	// 2. For each child child of node, in tree order, run the XML serialization algorithm on the
 	// child given namespace, prefix map, a reference to prefix index, and flag require well-formed.
 	// Concatenate the result to markup.
 	for (const child of node.childNodes) {
-		markup.push(
-			...runXmlSerializationAlgorithm(
-				child,
-				namespace,
-				prefixMap,
-				prefixIndex,
-				requireWellFormed
-			)
+		runXmlSerializationAlgorithm(
+			child,
+			namespace,
+			prefixMap,
+			prefixIndex,
+			requireWellFormed,
+			result
 		);
 	}
 
 	// 3. Return the value of markup.
-	return markup;
 }
 
 /**
@@ -1083,16 +1113,16 @@ function serializeDocumentFragmentNode(
  * @param prefixMap         The namespace prefix map
  * @param prefixIndex       A reference to the generated namespace prefix index
  * @param requireWellFormed Determines whether the result needs to be well-formed
- *
- * @return The serialization of node
+ * @param result            Array of strings in which to construct the result
  */
 function serializeDocumentTypeNode(
 	node: Node,
 	namespace: string | null,
 	prefixMap: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
-	requireWellFormed: boolean
-): string[] {
+	requireWellFormed: boolean,
+	result: string[]
+): void {
 	const dt = node as DocumentType;
 	// 1. If the require well-formed flag is true and the node's publicId attribute contains
 	// characters that are not matched by the XML PubidChar production, then throw an exception; the
@@ -1118,18 +1148,18 @@ function serializeDocumentTypeNode(
 	}
 
 	// 3. Let markup be an empty string.
-	const markup: string[] = [];
+	// (constructed in-place in result argument)
 
 	// 4. Append the string "<!DOCTYPE" to markup.
-	markup.push('<!DOCTYPE');
+	result.push('<!DOCTYPE');
 
 	// 5. Append " " (U+0020 SPACE) to markup.
-	markup.push(' ');
+	result.push(' ');
 
 	// 6. Append the value of the node's name attribute to markup. For a node belonging to an HTML
 	// document, the value will be all lowercase.
 	// (HTML documents not implemented)
-	markup.push(dt.name);
+	result.push(dt.name);
 
 	// 7. If the node's publicId is not the empty string then append the following, in the order
 	// listed, to markup:
@@ -1140,7 +1170,7 @@ function serializeDocumentTypeNode(
 		// 7.4. """ (U+0022 QUOTATION MARK);
 		// 7.5. The value of the node's publicId attribute;
 		// 7.6. """ (U+0022 QUOTATION MARK).
-		markup.push(' PUBLIC "', dt.publicId, '"');
+		result.push(' PUBLIC "', dt.publicId, '"');
 	}
 
 	// 8. If the node's systemId is not the empty string and the node's publicId is set to the empty
@@ -1148,7 +1178,7 @@ function serializeDocumentTypeNode(
 	if (dt.systemId !== '' && dt.publicId === '') {
 		// 8.1. " " (U+0020 SPACE);
 		// 8.2. The string "SYSTEM".
-		markup.push(' SYSTEM');
+		result.push(' SYSTEM');
 	}
 
 	// 9. If the node's systemId is not the empty string then append the following, in the order
@@ -1158,14 +1188,13 @@ function serializeDocumentTypeNode(
 		// 9.2. """ (U+0022 QUOTATION MARK);
 		// 9.3. The value of the node's systemId attribute;
 		// 9.4. """ (U+0022 QUOTATION MARK).
-		markup.push(' "', dt.systemId, '"');
+		result.push(' "', dt.systemId, '"');
 	}
 
 	// 10. Append ">" (U+003E GREATER-THAN SIGN) to markup.
-	markup.push('>');
+	result.push('>');
 
 	// 11. Return the value of markup.
-	return markup;
 }
 
 /**
@@ -1176,16 +1205,16 @@ function serializeDocumentTypeNode(
  * @param prefixMap         The namespace prefix map
  * @param prefixIndex       A reference to the generated namespace prefix index
  * @param requireWellFormed Determines whether the result needs to be well-formed
- *
- * @return The serialization of node
+ * @param result            Array of strings in which to construct the result
  */
 function serializeProcessingInstructionNode(
 	node: Node,
 	namespace: string | null,
 	prefixMap: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
-	requireWellFormed: boolean
-): string[] {
+	requireWellFormed: boolean,
+	result: string[]
+): void {
 	const pi = node as ProcessingInstruction;
 	// 1. If the require well-formed flag is set (its value is true), and node's target contains a
 	// ":" (U+003A COLON) character or is an ASCII case-insensitive match for the string "xml", then
@@ -1211,8 +1240,7 @@ function serializeProcessingInstructionNode(
 	// 3.3. " " (U+0020 SPACE);
 	// 3.4. The value of node's data;
 	// 3.5. "?>" (U+003F QUESTION MARK, U+003E GREATER-THAN SIGN).
-	const markup = ['<?', pi.target, ' ', pi.data, '?>'];
+	result.push('<?', pi.target, ' ', pi.data, '?>');
 
 	// 4. Return the value of markup.
-	return markup;
 }
