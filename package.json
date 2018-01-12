@@ -28,14 +28,14 @@
 		"url": "git://github.com/bwrrp/slimdom.js.git"
 	},
 	"devDependencies": {
-		"@types/jest": "^20.0.2",
-		"jest": "^20.0.4",
+		"@types/jest": "^22.0.1",
+		"jest": "^22.0.6",
 		"prettier": "^1.7.0",
 		"rimraf": "^2.6.2",
-		"rollup": "^0.49.2",
+		"rollup": "^0.54.0",
 		"rollup-plugin-babel-minify": "^3.1.2",
-		"ts-jest": "^20.0.6",
-		"typedoc": "^0.8.0",
+		"ts-jest": "^22.0.1",
+		"typedoc": "^0.9.0",
 		"typescript": "^2.5.2"
 	},
 	"jest": {
