@@ -3,11 +3,13 @@ import minify from 'rollup-plugin-babel-minify';
 const { main: MAIN_DEST_FILE, module: MODULE_DEST_FILE } = require('./package.json');
 
 export default {
-	entry: 'lib/index.js',
-	targets: [{ dest: MAIN_DEST_FILE, format: 'umd' }, { dest: MODULE_DEST_FILE, format: 'es' }],
-	moduleName: 'slimdom',
-	exports: 'named',
-	sourceMap: true,
+	input: 'lib/index.js',
+	output: [
+		{ file: MAIN_DEST_FILE, format: 'umd', exports: 'named' },
+		{ file: MODULE_DEST_FILE, format: 'es' }
+	],
+	name: 'slimdom',
+	sourcemap: true,
 	onwarn(warning) {
 		// Ignore "this is undefined" warning triggered by typescript's __extends helper
 		if (warning.code === 'THIS_IS_UNDEFINED') {
