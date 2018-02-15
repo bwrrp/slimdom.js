@@ -67,20 +67,20 @@ export interface Context {
  * dependencies.
  */
 export class DefaultContext implements Context {
-	public document: Document;
+	public document!: Document;
 
-	public Attr: AttrConstructor;
-	public CDATASection: CDATASectionConstructor;
-	public Comment: CommentConstructor;
-	public Document: DocumentConstructor;
-	public DocumentFragment: DocumentFragmentConstructor;
-	public DocumentType: DocumentTypeConstructor;
-	public DOMImplementation: DOMImplementationConstructor;
-	public Element: ElementConstructor;
-	public ProcessingInstruction: ProcessingInstructionConstructor;
-	public Range: RangeConstructor;
-	public Text: TextConstructor;
-	public XMLDocument: XMLDocumentConstructor;
+	public Attr!: AttrConstructor;
+	public CDATASection!: CDATASectionConstructor;
+	public Comment!: CommentConstructor;
+	public Document!: DocumentConstructor;
+	public DocumentFragment!: DocumentFragmentConstructor;
+	public DocumentType!: DocumentTypeConstructor;
+	public DOMImplementation!: DOMImplementationConstructor;
+	public Element!: ElementConstructor;
+	public ProcessingInstruction!: ProcessingInstructionConstructor;
+	public Range!: RangeConstructor;
+	public Text!: TextConstructor;
+	public XMLDocument!: XMLDocumentConstructor;
 }
 
 // TODO: make it possible to create multiple contexts by binding constructors to each instance
