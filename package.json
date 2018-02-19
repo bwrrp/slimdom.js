@@ -1,12 +1,14 @@
 {
 	"name": "slimdom",
 	"version": "2.1.1",
-	"description": "Fast, tiny DOM implementation in pure JS",
+	"description": "Fast, tiny, standards-compliant XML DOM implementation for node and the browser",
 	"author": "Stef Busking",
 	"license": "MIT",
 	"keywords": [
 		"dom",
-		"xml"
+		"xml",
+		"XMLSerializer",
+		"w3c"
 	],
 	"main": "dist/slimdom.js",
 	"module": "dist/slimdom.mjs",

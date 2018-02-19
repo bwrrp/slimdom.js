@@ -4,7 +4,7 @@
 [![Build Status](https://travis-ci.org/bwrrp/slimdom.js.svg?branch=master)](https://travis-ci.org/bwrrp/slimdom.js)
 [![Greenkeeper badge](https://badges.greenkeeper.io/bwrrp/slimdom.js.svg)](https://greenkeeper.io/)
 
-Fast, tiny DOM implementation for node and the browser.
+Fast, tiny, standards-compliant XML DOM implementation for node and the browser.
 
 This is a (partial) implementation of the [DOM living standard][domstandard], as last updated 8 August 2017, and the [DOM Parsing and Serialization W3C Editor's Draft][domparsing]. See the 'Features' and 'Limitations' sections below for details on what's included and what's not.
 
