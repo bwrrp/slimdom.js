@@ -774,6 +774,10 @@ function serializeAttributes(
 						candidatePrefix = attr.prefix;
 					}
 
+					// Update the local and aggregate prefixes to account for the new declaration.
+					map.add(candidatePrefix, attr.namespaceURI);
+					localPrefixesMap[candidatePrefix] = attr.namespaceURI;
+
 					// 3.5.3.2. Append the following to result, in the order listed:
 					// 3.5.3.2.1. " " (U+0020 SPACE);
 					// 3.5.3.2.2. The string "xmlns:";
