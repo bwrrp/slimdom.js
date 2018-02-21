@@ -225,6 +225,64 @@ describe('XMLSerializer', () => {
 		);
 	});
 
+	it('does not introduce duplicate namespaces', () => {
+		const el = document.createElement('test');
+		document.appendChild(el);
+		document.appendChild(document.createComment('sibling'));
+		el.setAttributeNS('http://example.com/ns', 'ns:attr1', 'value');
+		el.setAttributeNS('http://example.com/ns', 'ns:attr2', 'value');
+		expect(serializer.serializeToString(el)).toBe(
+			'<test xmlns:ns="http://example.com/ns" ns:attr1="value" ns:attr2="value"/>'
+		);
+	});
+
+	it('handles binding the same prefix for attributes to separate URIs on the same element', () => {
+		const el = document.createElement('test');
+		document.appendChild(el);
+		document.appendChild(document.createComment('sibling'));
+		el.setAttributeNS('http://example.com/ns1', 'ns:attr1', 'value');
+		el.setAttributeNS('http://example.com/ns2', 'ns:attr2', 'value');
+		expect(serializer.serializeToString(el)).toBe(
+			'<test xmlns:ns="http://example.com/ns1" ns:attr1="value" xmlns:ns1="http://example.com/ns2" ns1:attr2="value"/>'
+		);
+	});
+
+	it('correctly generates prefixes for inconsistent prefixes and namespace bindings', () => {
+		const el = document.createElement('test');
+		document.appendChild(el);
+		document.appendChild(document.createComment('sibling'));
+		el.setAttributeNS('http://example.com/ns1', 'ns:attr1', 'value');
+		// By setting the next attribute, slimdom is forced to regenerate the prefix when parsing
+		el.setAttributeNS('http://example.com/ns2', 'ns:attr2', 'value');
+		el.setAttributeNS('http://example.com/ns2', 'ns1:attr3', 'value');
+		expect(serializer.serializeToString(el)).toBe(
+			'<test xmlns:ns="http://example.com/ns1" ns:attr1="value" xmlns:ns1="http://example.com/ns2" ns1:attr2="value" ns1:attr3="value"/>'
+		);
+	});
+
+	it('handles using multiple prefixes binding to the same namespace for attributes', () => {
+		const el = document.createElement('test');
+		document.appendChild(el);
+		document.appendChild(document.createComment('sibling'));
+		el.setAttributeNS('http://example.com/ns1', 'ns:attr1', 'value');
+		el.setAttributeNS('http://example.com/ns1', 'ns1:attr2', 'value');
+		expect(serializer.serializeToString(el)).toBe(
+			'<test xmlns:ns="http://example.com/ns1" ns:attr1="value" ns:attr2="value"/>'
+		);
+	});
+
+	it('handles using multiple prefixes binding to the same namespace for attributes when some are declared explicitly', () => {
+		const el = document.createElement('test');
+		document.appendChild(el);
+		document.appendChild(document.createComment('sibling'));
+		el.setAttributeNS('http://example.com/ns1', 'ns:attr1', 'value');
+		el.setAttributeNS('http://example.com/ns1', 'nsx:attr2', 'value');
+		el.setAttributeNS(XMLNS_NAMESPACE, 'xmlns:nsx', 'http://example.com/ns1');
+		expect(serializer.serializeToString(el)).toBe(
+			'<test nsx:attr1="value" nsx:attr2="value" xmlns:nsx="http://example.com/ns1"/>'
+		);
+	});
+
 	it('can serialize a ProcessingInstruction', () => {
 		expect(
 			serializer.serializeToString(document.createProcessingInstruction('target', 'data'))
