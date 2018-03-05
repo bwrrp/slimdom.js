@@ -31,7 +31,7 @@
 		"rollup": "^0.56.2",
 		"rollup-plugin-babel-minify": "^4.0.0",
 		"ts-jest": "^22.0.4",
-		"typedoc": "^0.10.0",
+		"typedoc": "^0.11.0",
 		"typescript": "^2.7.2"
 	},
 	"jest": {
