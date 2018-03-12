@@ -22,7 +22,7 @@ export default {
 		minify({
 			comments: false,
 			mangle: {
-				blacklist: [
+				exclude: [
 					'Attr',
 					'CDATASection',
 					'CharacterData',
@@ -37,7 +37,8 @@ export default {
 					'ProcessingInstruction',
 					'Range',
 					'Text',
-					'XMLDocument'
+					'XMLDocument',
+					'XMLSerializer'
 				]
 			},
 			sourceMap: true
