@@ -5,11 +5,9 @@ const { main: MAIN_DEST_FILE, module: MODULE_DEST_FILE } = require('./package.js
 export default {
 	input: 'lib/index.js',
 	output: [
-		{ file: MAIN_DEST_FILE, format: 'umd', exports: 'named' },
-		{ file: MODULE_DEST_FILE, format: 'es' }
+		{ name: 'slimdom', file: MAIN_DEST_FILE, format: 'umd', exports: 'named', sourcemap: true },
+		{ file: MODULE_DEST_FILE, format: 'es', sourcemap: true }
 	],
-	name: 'slimdom',
-	sourcemap: true,
 	onwarn(warning) {
 		// Ignore "this is undefined" warning triggered by typescript's __extends helper
 		if (warning.code === 'THIS_IS_UNDEFINED') {
