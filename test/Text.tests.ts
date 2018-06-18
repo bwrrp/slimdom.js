@@ -56,7 +56,7 @@ describe('Text', () => {
 
 	it('can be cloned', () => {
 		const text = document.createTextNode('some data');
-		var copy = text.cloneNode() as slimdom.Text;
+		var copy = text.cloneNode();
 		expect(copy.nodeType).toBe(3);
 		expect(copy.nodeName).toBe('#text');
 		expect(copy.nodeValue).toBe('some data');

@@ -90,7 +90,7 @@ describe('MutationObserver', () => {
 	const cases: { [description: string]: TestCase } = {
 		'responds to text changes': observer => {
 			const element = document.createElement('test');
-			const text = element.appendChild(document.createTextNode('text')) as slimdom.Text;
+			const text = element.appendChild(document.createTextNode('text'));
 			observer.observe(element, { subtree: true, characterData: true });
 
 			text.data = 'meep';
@@ -100,7 +100,7 @@ describe('MutationObserver', () => {
 
 		'records previous text values': observer => {
 			const element = document.createElement('test');
-			const text = element.appendChild(document.createTextNode('text')) as slimdom.Text;
+			const text = element.appendChild(document.createTextNode('text'));
 			observer.observe(element, { subtree: true, characterDataOldValue: true });
 
 			text.data = 'meep';
@@ -311,7 +311,7 @@ describe('MutationObserver', () => {
 		},
 
 		'does not respond to subtree mutations if the subtree option is not set': observer => {
-			const element = document.appendChild(document.createElement('test')) as slimdom.Element;
+			const element = document.appendChild(document.createElement('test'));
 			observer.observe(document, { attributes: true, childList: true });
 			element.appendChild(document.createElement('child'));
 			element.setAttribute('test', 'value');
@@ -340,7 +340,7 @@ describe('MutationObserver', () => {
 		'continues tracking under a removed node until javascript re-enters the event loop': observer => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const child = parent.appendChild(document.createElement('child'));
-			const text = child.appendChild(document.createTextNode('text')) as slimdom.Text;
+			const text = child.appendChild(document.createTextNode('text'));
 			observer.observe(document, {
 				childList: true,
 				characterDataOldValue: true,
@@ -372,7 +372,7 @@ describe('MutationObserver', () => {
 		'does not add transient registered observers for non-subtree observers': observer => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const child = parent.appendChild(document.createElement('child'));
-			const text = child.appendChild(document.createTextNode('text')) as slimdom.Text;
+			const text = child.appendChild(document.createTextNode('text'));
 			observer.observe(document, {
 				childList: true,
 				characterDataOldValue: true,
@@ -394,7 +394,7 @@ describe('MutationObserver', () => {
 		'removes transient observers when observe is called for the same observer': observer => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const child = parent.appendChild(document.createElement('child'));
-			const text = child.appendChild(document.createTextNode('text')) as slimdom.Text;
+			const text = child.appendChild(document.createTextNode('text'));
 			observer.observe(document, {
 				childList: true,
 				characterDataOldValue: true,
@@ -421,7 +421,7 @@ describe('MutationObserver', () => {
 		'does not remove transient observers when observe is called for a different observer': observer => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const child = parent.appendChild(document.createElement('child'));
-			const text = child.appendChild(document.createTextNode('text')) as slimdom.Text;
+			const text = child.appendChild(document.createTextNode('text'));
 			observer.observe(document, {
 				childList: true,
 				characterDataOldValue: true,

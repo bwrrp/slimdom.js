@@ -120,7 +120,7 @@ describe('Document', () => {
 		});
 
 		it('can be cloned (shallow)', () => {
-			const copy = document.cloneNode() as slimdom.Document;
+			const copy = document.cloneNode();
 
 			expect(copy.nodeType).toBe(9);
 			expect(copy.nodeName).toBe('#document');
@@ -132,7 +132,7 @@ describe('Document', () => {
 		});
 
 		it('can be cloned (deep)', () => {
-			const copy = document.cloneNode(true) as slimdom.Document;
+			const copy = document.cloneNode(true);
 
 			expect(copy.nodeType).toBe(9);
 			expect(copy.nodeName).toBe('#document');
@@ -236,7 +236,7 @@ describe('Document', () => {
 				.appendChild(otherDocument.createElement('child'))
 				.appendChild(otherDocument.createTextNode('content'));
 			expect(element.ownerDocument).toBe(otherDocument);
-			const copy = document.importNode(element, true) as slimdom.Element;
+			const copy = document.importNode(element, true);
 			expect(copy.ownerDocument).toBe(document);
 			expect(copy.nodeName).toBe(element.nodeName);
 			expect(copy).not.toBe(element);
@@ -281,7 +281,7 @@ describe('Document', () => {
 				.appendChild(otherDocument.createTextNode('content'));
 			element.setAttribute('test', 'value');
 			expect(element.ownerDocument).toBe(otherDocument);
-			const adopted = document.adoptNode(element) as slimdom.Element;
+			const adopted = document.adoptNode(element);
 			expect(adopted.ownerDocument).toBe(document);
 			expect(adopted.nodeName).toBe(element.nodeName);
 			expect(adopted).toBe(element);

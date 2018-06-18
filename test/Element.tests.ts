@@ -536,7 +536,7 @@ describe('Element', () => {
 		});
 
 		it('can be cloned (shallow)', () => {
-			const copy = element.cloneNode() as slimdom.Element;
+			const copy = element.cloneNode();
 
 			expect(copy.nodeType).toBe(1);
 			expect(copy.nodeName).toBe('svg:g');
@@ -553,7 +553,7 @@ describe('Element', () => {
 		});
 
 		it('can be cloned (deep)', () => {
-			const copy = element.cloneNode(true) as slimdom.Element;
+			const copy = element.cloneNode(true);
 
 			expect(copy.nodeType).toBe(1);
 			expect(copy.nodeName).toBe('svg:g');

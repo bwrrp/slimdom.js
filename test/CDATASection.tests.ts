@@ -16,7 +16,7 @@ describe('CDATASection', () => {
 
 	it('can be cloned', () => {
 		const cs = document.createCDATASection('some content');
-		const copy = cs.cloneNode() as slimdom.CDATASection;
+		const copy = cs.cloneNode();
 		expect(copy.nodeType).toBe(4);
 		expect(copy.nodeName).toBe('#cdata-section');
 		expect(copy.nodeValue).toBe('some content');

@@ -13,7 +13,11 @@ import { getNodeDocument } from './treeHelpers';
  * @param cloneChildren Whether to also clone node's descendants
  * @param document      The document used to create the copy
  */
-export default function cloneNode(node: Node, cloneChildren: boolean, document?: Document): Node {
+export default function cloneNode<TNode extends Node>(
+	node: TNode,
+	cloneChildren: boolean,
+	document?: Document
+): TNode {
 	// 1. If document is not given, let document be node’s node document.
 	if (!document) {
 		document = getNodeDocument(node);
@@ -37,7 +41,7 @@ export default function cloneNode(node: Node, cloneChildren: boolean, document?:
 	// 4. Set copy’s node document and document to copy, if copy is a document, and set copy’s node
 	// document to document otherwise.
 	// (all handled by _copy method)
-	let copy = node._copy(document);
+	let copy = node._copy(document) as TNode;
 
 	// 5. Run any cloning steps defined for node in other applicable specifications and pass copy,
 	// node, document and the clone children flag if set, as parameters.

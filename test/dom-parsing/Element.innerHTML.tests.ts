@@ -10,7 +10,7 @@ describe('Element#innerHTML', () => {
 		const el = document.createElement('test');
 		el.setAttribute('attr', 'value');
 		el.appendChild(document.createTextNode('test'));
-		const child = el.appendChild(document.createElement('child')) as slimdom.Element;
+		const child = el.appendChild(document.createElement('child'));
 		child.setAttribute('childAttr', 'childValue');
 		expect(el.innerHTML).toBe('test<child childAttr="childValue"/>');
 	});

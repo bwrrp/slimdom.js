@@ -68,7 +68,7 @@ export function getNodeDocument(node: Node): Document {
  * @return The index of node in its parent's children
  */
 export function getNodeIndex(node: Node): number {
-	return (node.parentNode as Node).childNodes.indexOf(node);
+	return node.parentNode!.childNodes.indexOf(node);
 }
 
 /**

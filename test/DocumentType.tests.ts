@@ -33,7 +33,7 @@ describe('DocumentType', () => {
 	});
 
 	it('can be cloned', () => {
-		const copy = doctype.cloneNode(true) as slimdom.DocumentType;
+		const copy = doctype.cloneNode(true);
 		expect(copy.nodeType).toBe(10);
 		expect(copy.name).toBe('somename');
 		expect(copy.publicId).toBe('somePublicId');

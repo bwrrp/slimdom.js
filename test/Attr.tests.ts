@@ -64,7 +64,7 @@ describe('Attr', () => {
 		const attr = document.createAttributeNS('http://www.example.com/ns', 'ns:test');
 		attr.value = 'some value';
 
-		const copy = attr.cloneNode() as slimdom.Attr;
+		const copy = attr.cloneNode();
 		expect(copy.nodeType).toBe(2);
 		expect(copy.nodeName).toBe('ns:test');
 		expect(copy.nodeValue).toBe('some value');

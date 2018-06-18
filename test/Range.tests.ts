@@ -7,8 +7,8 @@ describe('Range', () => {
 	let range: slimdom.Range;
 	beforeEach(() => {
 		document = new slimdom.Document();
-		element = document.appendChild(document.createElement('root')) as slimdom.Element;
-		text = element.appendChild(document.createTextNode('text')) as slimdom.Text;
+		element = document.appendChild(document.createElement('root'));
+		text = element.appendChild(document.createTextNode('text'));
 		range = document.createRange();
 	});
 

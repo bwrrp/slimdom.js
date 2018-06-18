@@ -290,7 +290,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * @param node The node to import
 	 * @param deep Whether to also import node's children
 	 */
-	public importNode(node: Node, deep: boolean = false): Node {
+	public importNode<TNode extends Node>(node: TNode, deep: boolean = false): TNode {
 		expectArity(arguments, 1);
 		node = asObject(node, Node);
 
@@ -311,7 +311,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 *
 	 * @param node The node to adopt
 	 */
-	public adoptNode(node: Node): Node {
+	public adoptNode<TNode extends Node>(node: TNode): TNode {
 		expectArity(arguments, 1);
 		node = asObject(node, Node);
 

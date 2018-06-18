@@ -85,7 +85,7 @@ describe('DOM mutations', () => {
 
 		it('allows inserting a document element using a fragment', () => {
 			const fragment = document.createDocumentFragment();
-			const child = fragment.appendChild(document.createElement('child1')) as slimdom.Element;
+			const child = fragment.appendChild(document.createElement('child1'));
 			const doctype = document.appendChild(
 				document.implementation.createDocumentType('html', '', '')
 			);
@@ -116,10 +116,8 @@ describe('DOM mutations', () => {
 		});
 
 		it('correctly handles inserting a node before itself', () => {
-			const parent = document.appendChild(
-				document.createElement('parent')
-			) as slimdom.Element;
-			const element = parent.appendChild(document.createElement('child')) as slimdom.Element;
+			const parent = document.appendChild(document.createElement('parent'));
+			const element = parent.appendChild(document.createElement('child'));
 			parent.insertBefore(element, element);
 			expect(parent.firstElementChild).toBe(element);
 			expect(element.nextElementSibling).toBe(null);
@@ -127,7 +125,7 @@ describe('DOM mutations', () => {
 		});
 
 		it('throws if inserting the document element before itself', () => {
-			const element = document.appendChild(document.createElement('test')) as slimdom.Element;
+			const element = document.appendChild(document.createElement('test'));
 			expect(() => document.insertBefore(element, element)).toThrow('HierarchyRequestError');
 		});
 
@@ -242,7 +240,7 @@ describe('DOM mutations', () => {
 
 		it('allows inserting a document element using a fragment', () => {
 			const fragment = document.createDocumentFragment();
-			const child = fragment.appendChild(document.createElement('child1')) as slimdom.Element;
+			const child = fragment.appendChild(document.createElement('child1'));
 			const doctype = document.appendChild(
 				document.implementation.createDocumentType('html', '', '')
 			);
@@ -284,10 +282,8 @@ describe('DOM mutations', () => {
 		});
 
 		it('correctly handles replacing a node with itself', () => {
-			const parent = document.appendChild(
-				document.createElement('parent')
-			) as slimdom.Element;
-			const element = parent.appendChild(document.createElement('child')) as slimdom.Element;
+			const parent = document.appendChild(document.createElement('parent'));
+			const element = parent.appendChild(document.createElement('child'));
 			parent.replaceChild(element, element);
 			expect(parent.firstElementChild).toBe(element);
 			expect(element.nextElementSibling).toBe(null);
@@ -295,11 +291,9 @@ describe('DOM mutations', () => {
 		});
 
 		it('correctly handles replacing a node with its next sibling', () => {
-			const parent = document.appendChild(
-				document.createElement('parent')
-			) as slimdom.Element;
-			const element1 = parent.appendChild(document.createElement('child')) as slimdom.Element;
-			const element2 = parent.appendChild(document.createElement('child')) as slimdom.Element;
+			const parent = document.appendChild(document.createElement('parent'));
+			const element1 = parent.appendChild(document.createElement('child'));
+			const element2 = parent.appendChild(document.createElement('child'));
 			parent.replaceChild(element2, element1);
 			expect(parent.firstElementChild).toBe(element2);
 			expect(element2.nextElementSibling).toBe(null);

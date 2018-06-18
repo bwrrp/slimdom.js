@@ -40,11 +40,11 @@ describe('DocumentFragment', () => {
 	it('initially has no children', () => expect(fragment.children).toEqual([]));
 
 	it('correctly updates its relation properties when children are added', () => {
-		const child1 = fragment.appendChild(document.createElement('child1')) as slimdom.Element;
+		const child1 = fragment.appendChild(document.createElement('child1'));
 		const text = fragment.appendChild(document.createTextNode('text'));
-		const child2 = fragment.appendChild(document.createElement('child2')) as slimdom.Element;
+		const child2 = fragment.appendChild(document.createElement('child2'));
 		const pi = fragment.appendChild(document.createProcessingInstruction('target', 'data'));
-		const child3 = fragment.appendChild(document.createElement('child3')) as slimdom.Element;
+		const child3 = fragment.appendChild(document.createElement('child3'));
 		expect(fragment.childNodes).toEqual([child1, text, child2, pi, child3]);
 		expect(fragment.children).toEqual([child1, child2, child3]);
 		expect(fragment.firstElementChild).toBe(child1);
@@ -61,11 +61,11 @@ describe('DocumentFragment', () => {
 	});
 
 	it('inserts its children if inserted under another node', () => {
-		const child1 = fragment.appendChild(document.createElement('child1')) as slimdom.Element;
+		const child1 = fragment.appendChild(document.createElement('child1'));
 		const text = fragment.appendChild(document.createTextNode('text'));
-		const child2 = fragment.appendChild(document.createElement('child2')) as slimdom.Element;
+		const child2 = fragment.appendChild(document.createElement('child2'));
 		const pi = fragment.appendChild(document.createProcessingInstruction('target', 'data'));
-		const child3 = fragment.appendChild(document.createElement('child3')) as slimdom.Element;
+		const child3 = fragment.appendChild(document.createElement('child3'));
 		const parent = document.createElement('parent');
 		const existingChild = parent.appendChild(document.createComment('test'));
 		parent.insertBefore(fragment, existingChild);
@@ -83,7 +83,7 @@ describe('DocumentFragment', () => {
 		});
 
 		it('can be cloned (shallow)', () => {
-			const copy = fragment.cloneNode() as slimdom.DocumentFragment;
+			const copy = fragment.cloneNode();
 
 			expect(copy.nodeType).toBe(11);
 			expect(copy.nodeName).toBe('#document-fragment');
@@ -95,7 +95,7 @@ describe('DocumentFragment', () => {
 		});
 
 		it('can be cloned (deep)', () => {
-			const copy = fragment.cloneNode(true) as slimdom.DocumentFragment;
+			const copy = fragment.cloneNode(true);
 
 			expect(copy.nodeType).toBe(11);
 			expect(copy.nodeName).toBe('#document-fragment');

@@ -57,7 +57,7 @@ describe('Comment', () => {
 
 	it('can be cloned', () => {
 		const comment = document.createComment('some data');
-		var copy = comment.cloneNode() as slimdom.Comment;
+		var copy = comment.cloneNode();
 		expect(copy.nodeType).toBe(8);
 		expect(copy.nodeName).toBe('#comment');
 		expect(copy.nodeValue).toBe('some data');

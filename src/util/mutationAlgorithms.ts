@@ -161,7 +161,11 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
  *
  * @return The inserted node
  */
-export function preInsertNode(node: Node, parent: Node, child: Node | null): Node {
+export function preInsertNode<TNode extends Node>(
+	node: TNode,
+	parent: Node,
+	child: Node | null
+): TNode {
 	// 1. Ensure pre-insertion validity of node into parent before child.
 	ensurePreInsertionValidity(node, parent, child);
 
@@ -294,7 +298,7 @@ export function insertNode(
  *
  * @return The appended node
  */
-export function appendNode(node: Node, parent: Node): Node {
+export function appendNode<TNode extends Node>(node: TNode, parent: Node): TNode {
 	// pre-insert node into parent before null.
 	return preInsertNode(node, parent, null);
 }
@@ -308,7 +312,11 @@ export function appendNode(node: Node, parent: Node): Node {
  *
  * @return The old child node
  */
-export function replaceChildWithNode(child: Node, node: Node, parent: Node): Node {
+export function replaceChildWithNode<TChild extends Node>(
+	child: TChild,
+	node: Node,
+	parent: Node
+): TChild {
 	// 1. If parent is not a Document, DocumentFragment, or Element node, throw a
 	// HierarchyRequestError.
 	if (
@@ -389,7 +397,8 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
 				// that is not child or a doctype is following child.
 				if (
 					fragment.firstElementChild &&
-					((parentDocument.documentElement && parentDocument.documentElement !== child) ||
+					((parentDocument.documentElement &&
+						parentDocument.documentElement !== (child as Node)) ||
 						(child &&
 							parentDocument.doctype &&
 							getNodeIndex(child) < getNodeIndex(parentDocument.doctype)))
@@ -405,7 +414,8 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
 			case NodeType.ELEMENT_NODE:
 				// parent has an element child that is not child or a doctype is following child.
 				if (
-					(parentDocument.documentElement && parentDocument.documentElement !== child) ||
+					(parentDocument.documentElement &&
+						parentDocument.documentElement !== (child as Node)) ||
 					(parentDocument.doctype &&
 						getNodeIndex(child) < getNodeIndex(parentDocument.doctype))
 				) {
@@ -420,7 +430,7 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
 			case NodeType.DOCUMENT_TYPE_NODE:
 				// parent has a doctype child that is not child, or an element is preceding child.
 				if (
-					(parentDocument.doctype && parentDocument.doctype !== child) ||
+					(parentDocument.doctype && parentDocument.doctype !== (child as Node)) ||
 					(parentDocument.documentElement &&
 						getNodeIndex(parentDocument.documentElement) < getNodeIndex(child))
 				) {
@@ -491,7 +501,7 @@ export function replaceChildWithNode(child: Node, node: Node, parent: Node): Nod
  *
  * @return The removed child
  */
-export function preRemoveChild(child: Node, parent: Node): Node {
+export function preRemoveChild<TChild extends Node>(child: TChild, parent: Node): TChild {
 	// 1. If child’s parent is not parent, then throw a NotFoundError.
 	if (child.parentNode !== parent) {
 		throwNotFoundError('child is not a child of parent');

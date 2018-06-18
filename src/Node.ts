@@ -58,7 +58,7 @@ export default abstract class Node {
 	 */
 	public get parentElement(): Element | null {
 		return this.parentNode && isNodeOfType(this.parentNode, NodeType.ELEMENT_NODE)
-			? this.parentNode as Element
+			? (this.parentNode as Element)
 			: null;
 	}
 
@@ -222,7 +222,7 @@ export default abstract class Node {
 	 *
 	 * @return A copy of the current node
 	 */
-	public cloneNode(deep: boolean = false): Node {
+	public cloneNode(deep: boolean = false): this {
 		return cloneNode(this, deep);
 	}
 
@@ -297,7 +297,7 @@ export default abstract class Node {
 	 *
 	 * @return The node that was inserted
 	 */
-	public insertBefore(node: Node, child: Node | null): Node {
+	public insertBefore<TNode extends Node>(node: TNode, child: Node | null): TNode {
 		expectArity(arguments, 2);
 		node = asObject(node, Node);
 		child = asNullableObject(child, Node);
@@ -314,7 +314,7 @@ export default abstract class Node {
 	 *
 	 * @return The node that was inserted
 	 */
-	public appendChild(node: Node): Node {
+	public appendChild<TNode extends Node>(node: TNode): TNode {
 		expectArity(arguments, 1);
 		node = asObject(node, Node);
 
@@ -329,7 +329,7 @@ export default abstract class Node {
 	 *
 	 * @return The node that was removed
 	 */
-	public replaceChild(node: Node, child: Node): Node {
+	public replaceChild<TChild extends Node>(node: Node, child: TChild): TChild {
 		expectArity(arguments, 2);
 		node = asObject(node, Node);
 		child = asObject(child, Node);
@@ -344,7 +344,7 @@ export default abstract class Node {
 	 *
 	 * @return The node that was removed
 	 */
-	public removeChild(child: Node): Node {
+	public removeChild<TChild extends Node>(child: TChild): TChild {
 		expectArity(arguments, 1);
 		child = asObject(child, Node);
 

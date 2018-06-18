@@ -12,7 +12,7 @@ describe('Element#outerHTML', () => {
 		document.appendChild(document.createComment('sibling'));
 		el.setAttribute('attr', 'value');
 		el.appendChild(document.createTextNode('test'));
-		const child = el.appendChild(document.createElement('child')) as slimdom.Element;
+		const child = el.appendChild(document.createElement('child'));
 		child.setAttribute('childAttr', 'childValue');
 		expect(el.outerHTML).toBe('<test attr="value">test<child childAttr="childValue"/></test>');
 	});

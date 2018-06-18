@@ -18,7 +18,7 @@ describe('ProcessingInstruction', () => {
 
 	it('can be cloned', () => {
 		const pi = document.createProcessingInstruction('sometarget', 'some data');
-		var copy = pi.cloneNode() as slimdom.ProcessingInstruction;
+		var copy = pi.cloneNode();
 		expect(copy.nodeType).toBe(7);
 		expect(copy.nodeName).toBe('sometarget');
 		expect(copy.nodeValue).toBe('some data');
