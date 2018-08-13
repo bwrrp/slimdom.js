@@ -39,6 +39,7 @@
 			"^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
 		},
 		"testRegex": "(\\.(tests))\\.(tsx?|jsx?)$",
+		"testURL": "http://localhost",
 		"moduleFileExtensions": ["ts", "tsx", "js", "json", "jsx"],
 		"collectCoverageFrom": ["src/**/*.ts"]
 	},
