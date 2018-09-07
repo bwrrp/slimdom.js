@@ -15,13 +15,13 @@ This is a (partial) implementation of the [DOM living standard][domstandard], as
 
 The slimdom library can be installed using npm or yarn:
 
-```
+```bat
 npm install --save slimdom
 ```
 
 or
 
-```
+```bat
 yarn add slimdom
 ```
 
@@ -29,14 +29,15 @@ The package includes both a commonJS bundle (`dist/slimdom.js`) and an ES6 modul
 
 ## Usage
 
-Create documents using the slimdom.Document constructor, and manipulate them using the [standard DOM API][1].
+Create documents using the slimdom.Document constructor, and manipulate them using the [standard DOM API][domstandard].
 
-```
+```javascript
 import * as slimdom from 'slimdom';
 
 const document = new slimdom.Document();
-document.appendChild(document.createElement('root'));
-// ...
+document.appendChild(document.createElementNS('http://www.example.com', 'root'));
+const xml = slimdom.serializeToWellFormedString(document);
+// -> '<root xmlns="http://www.example.com"/>'
 ```
 
 Some DOM API's, such as the `DocumentFragment` constructor, require the presence of a global document. In these cases, slimdom will use the instance exposed through `slimdom.document`. Although you could mutate this document, it is recommended to create your own to avoid conflicts with other code using slimdom in your application.
@@ -48,34 +49,37 @@ When using a `Range`, make sure to call `detach` when you don't need it anymore.
 This library implements:
 
 -   All node types: `Attr`, `CDATASection`, `Comment`, `Document`, `DocumentFragment`, `DocumentType`, `Element`, `ProcessingInstruction`, `Text` and `XMLDocument`.
--   `Range`, which correctly updates under mutations
+-   `Range`, which correctly updates under mutations.
 -   `MutationObserver`
--   `XMLSerializer`, and read-only versions of `innerHTML` / `outerHTML` on `Element`
+-   `XMLSerializer`, and read-only versions of `innerHTML` / `outerHTML` on `Element`.
 
 ## Limitations
 
-The following features are not (yet) implemented:
+For simplicity and efficiency, this implementation deviates from the spec in a few minor ways. Most notably, normal JavaScript arrays are used instead of `HTMLCollection` / `NodeList` and `NamedNodeMap`.
 
--   No events, no `createEvent` on `Document`
--   Arrays are used instead of `HTMLCollection` / `NodeList` and `NamedNodeMap`.
--   No `getElementById` / `getElementsByTagName` / `getElementsByTagNameNS` / `getElementsByClassName`
--   No `prepend` / `append`
--   No selectors, no `querySelector` / `querySelectorAll` on `ParentNode`, no `closest` / `matches` / `webkitMatchesSelector` on `Element`
--   No `before` / `after` / `replaceWith` / `remove`
--   No `attributeFilter` for mutation observers
--   No `baseURI` / `isConnected` / `getRootNode` / `textContent` / `isEqualNode` / `isSameNode` / `compareDocumentPosition` on `Node`
--   No `URL` / `documentURI` / `origin` / `compatMode` / `characterSet` / `charset` / `inputEncoding` / `contentType` on `Document`
--   No `hasFeature` on `DOMImplementation`
--   No `id` / `className` / `classList` / `insertAdjacentElement` / `insertAdjacentText` on `Element`
--   No `specified` on `Attr`
--   No `wholeText` on `Text`
--   No `deleteContents` / `extractContents` / `cloneContents` / `insertNode` / `surroundContents` on `Range`
--   No `NodeIterator` / `TreeWalker` / `NodeFilter`, no `createNodeIterator` / `createTreeWalker` on `Document`
--   No HTML documents, including `HTMLElement` and its subclasses. This also includes HTML casing behavior for attributes and tagNames.
--   No shadow DOM, `Slotable` / `ShadowRoot`, no `slot` / `attachShadow` / `shadowRoot` on `Element`
--   No custom elements
--   No XML parsing
--   No HTML parsing / serialization, but see `test/SlimdomTreeAdapter.ts` for an example on how to connect the parse5 HTML parser.
+The following features have not yet been implemented:
+
+-   No XML parsing (no `DOMParser`, `innerHTML` and `outerHTML` are read-only). If you need to parse XML, consider using [slimdom-sax-parser][slimdom-sax-parser].
+-   No CSS selectors, so no `querySelector` / `querySelectorAll` on `ParentNode`, no `closest` / `matches` / `webkitMatchesSelector` on `Element`. The older non-CSS query methods (`getElementById` for interface `NonElementParentNode`, and `getElementsByTagName` / `getElementsByTagNameNS` / `getElementsByClassName` on `Document`) have not yet been implemented either. To query the DOM, consider using [FontoXPath][fontoxpath].
+-   No HTML parsing / serialization, but see [this example][parse5-adapter] which shows how to connect the [parse5][parse5] HTML parser.
+-   No special treatment of HTML documents, including `HTMLElement` and its subclasses. This also includes HTML casing behavior for attributes and tagNames, as well as the `id` / `className` / `classList` properties on `Element` and `compatMode` / `contentType` on `Document`.
+-   No events, no `createEvent` on `Document`.
+-   No support for shadow DOM, `Slotable` / `ShadowRoot`, no `slot` / `attachShadow` / `shadowRoot` on `Element`.
+-   No support for custom elements or the `is` option on `createElement` / `createElementNS`.
+-   No iteration helpers (`NodeIterator` / `TreeWalker` / `NodeFilter`, and the `createNodeIterator` / `createTreeWalker` methods on `Document`).
+-   No DOM modifying methods on Range (`deleteContents` / `extractContents` / `cloneContents` / `insertNode` / `surroundContents`).
+-   No support for newer DOM mutation methods (`prepend` / `append` for interface `ParentNode`, `before` / `after` / `replaceWith` / `remove` for interface `ChildNode`).
+-   No `attributeFilter` for mutation observers.
+-   No `wholeText` on `Text`.
+-   No `isConnected` / `getRootNode` / `textContent` / `isEqualNode` / `isSameNode` / `compareDocumentPosition` on `Node`
+-   No notion of URLs (`baseURI` on `Node`, and `URL` / `documentURI` / `origin` on `Document`).
+-   No notion of encodings (`characterSet` / `charset` / `inputEncoding` on `Document`). This library only deals with JavaScript strings, not raw byte streams.
+-   No properties / methods that exist mainly for web compatibility reasons (`insertAdjacentElement` / `insertAdjacentText` on `Element`, `hasFeature` on `DOMImplementation`, and `specified` on `Attr`).
+
+[slimdom-sax-parser]: https://github.com/wvbe/slimdom-sax-parser
+[fontoxpath]: https://github.com/FontoXML/fontoxpath/
+[parse5-adapter]: https://github.com/bwrrp/slimdom.js/blob/jest-web-platform-tests/test/web-platform-tests/SlimdomTreeAdapter.ts
+[parse5]: https://github.com/inikulin/parse5
 
 Do not rely on the behavior or presence of any methods and properties not specified in the DOM standard. For example, do not use JavaScript array methods exposed on properties that should expose a NodeList and do not use Element as a constructor. This behavior is _not_ considered public API and may change without warning in a future release.
 
