@@ -21,16 +21,45 @@ import { asObject, asUnsignedLong } from './util/typeHelpers';
 export const ranges: Range[] = [];
 
 /**
- * 4.2. Interface Range
+ * Interface AbstractRange
+ *
+ * Objects implementing the AbstractRange interface are known as ranges.
  */
-export default class Range {
+export interface AbstractRange {
+	startContainer: Node;
+	startOffset: number;
+	endContainer: Node;
+	endOffset: number;
+	collapsed: boolean;
+}
+
+/**
+ * Interface StaticRange
+ */
+export interface StaticRange extends AbstractRange {}
+
+/**
+ * A range is collapsed if its start node is its end node and its start offset is its end offset.
+ *
+ * @param range
+ */
+function isCollapsed(range: AbstractRange): boolean {
+	return range.startContainer === range.endContainer && range.startOffset === range.endOffset;
+}
+
+/**
+ * Interface Range
+ *
+ * Objects implementing the Range interface are known as live ranges.
+ */
+export default class Range implements AbstractRange {
 	public startContainer: Node;
 	public startOffset: number;
 	public endContainer: Node;
 	public endOffset: number;
 
 	public get collapsed(): boolean {
-		return this.startContainer === this.endContainer && this.startOffset === this.endOffset;
+		return isCollapsed(this);
 	}
 
 	/**
@@ -56,8 +85,8 @@ export default class Range {
 	}
 
 	/**
-	 * The Range() constructor, when invoked, must return a new range with (current global object’s
-	 * associated Document, 0) as its start and end.
+	 * The Range() constructor, when invoked, must return a new live range with (current global
+	 * object’s associated Document, 0) as its start and end.
 	 */
 	constructor() {
 		const context = getContext(this);
@@ -267,7 +296,7 @@ export default class Range {
 		// 1. Let parent be node’s parent.
 		let parent = node.parentNode;
 
-		// 2. If parent is null, throw an InvalidNodeTypeError.
+		// 2. If parent is null, then throw an InvalidNodeTypeError.
 		if (parent === null) {
 			return throwInvalidNodeTypeError('Can not select node with null parent');
 		}
@@ -288,7 +317,7 @@ export default class Range {
 		expectArity(arguments, 1);
 		node = asObject(node, Node);
 
-		// 1. If node is a doctype, throw an InvalidNodeTypeError.
+		// 1. If node is a doctype, then throw an InvalidNodeTypeError.
 		if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE)) {
 			throwInvalidNodeTypeError('Can not place range inside a doctype node');
 		}

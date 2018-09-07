@@ -200,21 +200,22 @@ export function replaceData(
 		count = length - offset;
 	}
 
-	// 4. Queue a mutation record of "characterData" for node with oldValue node’s data.
+	// 4. Queue a mutation record of "characterData" for node with null, null, node's data, « »,
+	// « », null, and null.
 	queueMutationRecord('characterData', node, {
 		oldValue: node.data
 	});
 
 	// 5. Insert data into node’s data after offset code units.
-	// 6. Let delete offset be offset plus the number of code units in data.
+	// 6. Let delete offset be offset + data's length.
 	// 7. Starting from delete offset code units, remove count code units from node’s data.
 	const nodeData = node.data;
 	const newData = nodeData.substring(0, offset) + data + nodeData.substring(offset + count);
 	(node as any)._data = newData;
 
 	ranges.forEach(range => {
-		// 8. For each range whose start node is node and start offset is greater than offset but
-		// less than or equal to offset plus count, set its start offset to offset.
+		// 8. For each live range whose start node is node and start offset is greater than offset
+		// but less than or equal to offset plus count, set its start offset to offset.
 		if (
 			range.startContainer === node &&
 			range.startOffset > offset &&
@@ -223,8 +224,8 @@ export function replaceData(
 			range.startOffset = offset;
 		}
 
-		// 9. For each range whose end node is node and end offset is greater than offset but less
-		// than or equal to offset plus count, set its end offset to offset.
+		// 9. For each live range whose end node is node and end offset is greater than offset but
+		// less than or equal to offset plus count, set its end offset to offset.
 		if (
 			range.endContainer === node &&
 			range.endOffset > offset &&
@@ -233,16 +234,14 @@ export function replaceData(
 			range.endOffset = offset;
 		}
 
-		// 10. For each range whose start node is node and start offset is greater than offset plus
-		// count, increase its start offset by the number of code units in data, then decrease it by
-		// count.
+		// 10. For each live range whose start node is node and start offset is greater than offset
+		// plus count, increase its start offset by data's length and decrease it by count.
 		if (range.startContainer === node && range.startOffset > offset + count) {
 			range.startOffset = range.startOffset + data.length - count;
 		}
 
-		// 11. For each range whose end node is node and end offset is greater than offset plus
-		// count, increase its end offset by the number of code units in data, then decrease it by
-		// count.
+		// 11. For each live range whose end node is node and end offset is greater than offset plus
+		// count, increase its end offset by data's length and decrease it by count.
 		if (range.endContainer === node && range.endOffset > offset + count) {
 			range.endOffset = range.endOffset + data.length - count;
 		}

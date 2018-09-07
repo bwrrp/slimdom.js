@@ -103,7 +103,9 @@ export default abstract class Node {
 	public abstract set nodeValue(value: string | null);
 
 	/**
-	 * (non-standard) Each node has an associated list of registered observers.
+	 * (non-standard)
+	 * Each node has a registered observer list of zero or more registered observers, which is
+	 * initially empty.
 	 */
 	public _registeredObservers: RegisteredObservers = new RegisteredObservers(this);
 
@@ -163,30 +165,31 @@ export default abstract class Node {
 				const currentNodeIndex = index + i + 1;
 
 				ranges.forEach(range => {
-					// 6.1. For each range whose start node is currentNode, add length to its start
-					// offset and set its start node to node.
+					// 6.1. For each live range whose start node is currentNode, add length to its
+					// start offset and set its start node to node.
 					if (range.startContainer === currentNode) {
 						range.startOffset += length;
 						range.startContainer = textNode;
 					}
 
-					// 6.2. For each range whose end node is currentNode, add length to its end
+					// 6.2. For each live range whose end node is currentNode, add length to its end
 					// offset and set its end node to node.
 					if (range.endContainer === currentNode) {
 						range.endOffset += length;
 						range.endContainer = textNode;
 					}
 
-					// 6.3. For each range whose start node is currentNode’s parent and start offset
-					// is currentNode’s index, set its start node to node and its start offset to
-					// length.
+					// 6.3. For each live range whose start node is currentNode’s parent and start
+					// offset is currentNode’s index, set its start node to node and its start
+					// offset to length.
 					if (range.startContainer === this && range.startOffset === currentNodeIndex) {
 						range.startContainer = textNode;
 						range.startOffset = length;
 					}
 
-					// 6.4. For each range whose end node is currentNode’s parent and end offset is
-					// currentNode’s index, set its end node to node and its end offset to length.
+					// 6.4. For each live range whose end node is currentNode’s parent and end
+					// offset is currentNode’s index, set its end node to node and its end offset to
+					// length.
 					if (range.endContainer === this && range.endOffset === currentNodeIndex) {
 						range.endContainer = textNode;
 						range.endOffset = length;

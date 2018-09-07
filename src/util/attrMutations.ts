@@ -10,8 +10,8 @@ import queueMutationRecord from '../mutation-observer/queueMutationRecord';
  * @param value     The new value for the attribute
  */
 export function changeAttribute(attribute: Attr, element: Element, value: string): void {
-	// 1. Queue a mutation record of "attributes" for element with name attribute’s local name,
-	// namespace attribute’s namespace, and oldValue attribute’s value.
+	// 1. Queue an attribute mutation record for element with attribute’s local name, attribute's
+	// namespace, and attribute’s value.
 	queueMutationRecord('attributes', element, {
 		name: attribute.localName,
 		namespace: attribute.namespaceURI,
@@ -38,8 +38,8 @@ export function changeAttribute(attribute: Attr, element: Element, value: string
  * @param element   The element to append attribute to
  */
 export function appendAttribute(attribute: Attr, element: Element): void {
-	// 1. Queue a mutation record of "attributes" for element with name attribute’s local name,
-	// namespace attribute’s namespace, and oldValue null.
+	// 1. Queue an attribute mutation record for element with attribute’s local name, attribute's
+	// namespace, and null.
 	queueMutationRecord('attributes', element, {
 		name: attribute.localName,
 		namespace: attribute.namespaceURI,
@@ -69,8 +69,8 @@ export function appendAttribute(attribute: Attr, element: Element): void {
  * @param element   The element to remove attribute from
  */
 export function removeAttribute(attribute: Attr, element: Element): void {
-	// 1. Queue a mutation record of "attributes" for element with name attribute’s local name,
-	// namespace attribute’s namespace, and oldValue attribute’s value.
+	// 1. Queue an attribute mutation record for element with attribute’s local name, attribute's
+	// namespace, and attribute’s value.
 	queueMutationRecord('attributes', element, {
 		name: attribute.localName,
 		namespace: attribute.namespaceURI,
@@ -101,8 +101,8 @@ export function removeAttribute(attribute: Attr, element: Element): void {
  * @param element The element on which to replace the attribute
  */
 export function replaceAttribute(oldAttr: Attr, newAttr: Attr, element: Element): void {
-	// 1. Queue a mutation record of "attributes" for element with name oldAttr’s local name,
-	// namespace oldAttr’s namespace, and oldValue oldAttr’s value.
+	// 1. Queue an attribute mutation record for element with oldAttr’s local name, oldAttr’s
+	// namespace, and oldAttr’s value.
 	queueMutationRecord('attributes', element, {
 		name: oldAttr.localName,
 		namespace: oldAttr.namespaceURI,

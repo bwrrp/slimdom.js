@@ -1,7 +1,6 @@
 import Document from '../Document';
 import Node from '../Node';
 
-import { isNodeOfType, NodeType } from './NodeType';
 import { getNodeDocument } from './treeHelpers';
 
 // 3.4. Interface Node
@@ -25,8 +24,8 @@ export default function cloneNode<TNode extends Node>(
 
 	// 2. If node is an element, then:
 	// 2.1. Let copy be the result of creating an element, given document, node’s local name, node’s
-	// namespace, node’s namespace prefix, and the value of node’s is attribute if present (or null
-	// if not). The synchronous custom elements flag should be unset.
+	// namespace, node’s namespace prefix, and node’s is value, with the synchronous custom elements
+	// flag unset.
 	// 2.2. For each attribute in node’s attribute list:
 	// 2.2.1. Let copyAttribute be a clone of attribute.
 	// 2.2.2. Append copyAttribute to copy.

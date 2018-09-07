@@ -388,7 +388,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	}
 
 	/**
-	 * Creates a new Range, initially positioned at the root of this document.
+	 * Creates a new live Range, initially positioned at the root of this document.
 	 *
 	 * @return The new Range
 	 */

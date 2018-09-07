@@ -29,7 +29,7 @@ export default class RegisteredObservers {
 	 */
 	public register(observer: MutationObserver, options: MutationObserverInit) {
 		// (continuing from MutationObserver#observe)
-		// 7. For each registered observer registered in target’s list of registered observers whose
+		// 7. For each registered registered of target’s registered observer list, if registered's
 		// observer is the context object:
 		const registeredObservers = this._registeredObservers;
 		let hasRegisteredObserverForObserver = false;
@@ -40,20 +40,20 @@ export default class RegisteredObservers {
 
 			hasRegisteredObserverForObserver = true;
 
-			// 7.1. Remove all transient registered observers whose source is registered.
+			// 7.1. For each node of the context object's node list, remove all transient registered
+			// observers whose source is registered from node's registered observer list.
 			removeTransientRegisteredObserversForSource(registered);
 
-			// 7.2. Replace registered’s options with options.
+			// 7.2. Set registered’s options to options.
 			registered.options = options;
 		});
 
-		// 8. Otherwise, add a new registered observer to target’s list of registered observers with
-		// the context object as the observer and options as the options, and add target to context
-		// object’s list of nodes on which it is registered.
+		// 8. Otherwise:
 		if (!hasRegisteredObserverForObserver) {
+			// 8.1. Append a new registered observer whose observer is the context object and
+			// options is options to target's registered observer list.
 			this._registeredObservers.push(new RegisteredObserver(observer, this._node, options));
-			// No registered observer for this observer at the current node means that node can't
-			// exist in the observer's list of nodes either.
+			// 8.2. Append target to the context object's node list.
 			observer._nodes.push(this._node);
 		}
 	}
@@ -118,8 +118,7 @@ export default class RegisteredObservers {
 		pairedStrings: (string | null | undefined)[]
 	) {
 		// (continuing from queueMutationRecord)
-		// 3. ...and then for each registered observer (with registered observer’s options as
-		// options) in node’s list of registered observers:
+		// 3. ...and then for each registered of node's registered observer list:
 		this._registeredObservers.forEach(registeredObserver => {
 			registeredObserver.collectInterestedObservers(
 				type,

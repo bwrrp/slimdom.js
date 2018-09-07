@@ -6,7 +6,7 @@
 
 Fast, tiny, standards-compliant XML DOM implementation for node and the browser.
 
-This is a (partial) implementation of the [DOM living standard][domstandard], as last updated 8 August 2017, and the [DOM Parsing and Serialization W3C Editor's Draft][domparsing]. See the 'Features' and 'Limitations' sections below for details on what's included and what's not.
+This is a (partial) implementation of the [DOM living standard][domstandard], as last updated 8 August 2018, and the [DOM Parsing and Serialization W3C Editor's Draft][domparsing]. See the 'Features' and 'Limitations' sections below for details on what's included and what's not.
 
 [domstandard]: https://dom.spec.whatwg.org/
 [domparsing]: https://w3c.github.io/DOM-Parsing/
@@ -47,35 +47,35 @@ When using a `Range`, make sure to call `detach` when you don't need it anymore.
 
 This library implements:
 
-* All node types: `Attr`, `CDATASection`, `Comment`, `Document`, `DocumentFragment`, `DocumentType`, `Element`, `ProcessingInstruction`, `Text` and `XMLDocument`.
-* `Range`, which correctly updates under mutations
-* `MutationObserver`
-* `XMLSerializer`, and read-only versions of `innerHTML` / `outerHTML` on `Element`
+-   All node types: `Attr`, `CDATASection`, `Comment`, `Document`, `DocumentFragment`, `DocumentType`, `Element`, `ProcessingInstruction`, `Text` and `XMLDocument`.
+-   `Range`, which correctly updates under mutations
+-   `MutationObserver`
+-   `XMLSerializer`, and read-only versions of `innerHTML` / `outerHTML` on `Element`
 
 ## Limitations
 
 The following features are not (yet) implemented:
 
-* No events, no `createEvent` on `Document`
-* Arrays are used instead of `HTMLCollection` / `NodeList` and `NamedNodeMap`.
-* No `getElementById` / `getElementsByTagName` / `getElementsByTagNameNS` / `getElementsByClassName`
-* No `prepend` / `append`
-* No selectors, no `querySelector` / `querySelectorAll` on `ParentNode`, no `closest` / `matches` / `webkitMatchesSelector` on `Element`
-* No `before` / `after` / `replaceWith` / `remove`
-* No `attributeFilter` for mutation observers
-* No `baseURI` / `isConnected` / `getRootNode` / `textContent` / `isEqualNode` / `isSameNode` / `compareDocumentPosition` on `Node`
-* No `URL` / `documentURI` / `origin` / `compatMode` / `characterSet` / `charset` / `inputEncoding` / `contentType` on `Document`
-* No `hasFeature` on `DOMImplementation`
-* No `id` / `className` / `classList` / `insertAdjacentElement` / `insertAdjacentText` on `Element`
-* No `specified` on `Attr`
-* No `wholeText` on `Text`
-* No `deleteContents` / `extractContents` / `cloneContents` / `insertNode` / `surroundContents` on `Range`
-* No `NodeIterator` / `TreeWalker` / `NodeFilter`, no `createNodeIterator` / `createTreeWalker` on `Document`
-* No HTML documents, including `HTMLElement` and its subclasses. This also includes HTML casing behavior for attributes and tagNames.
-* No shadow DOM, `Slotable` / `ShadowRoot`, no `slot` / `attachShadow` / `shadowRoot` on `Element`
-* No custom elements
-* No XML parsing
-* No HTML parsing / serialization, but see `test/SlimdomTreeAdapter.ts` for an example on how to connect the parse5 HTML parser.
+-   No events, no `createEvent` on `Document`
+-   Arrays are used instead of `HTMLCollection` / `NodeList` and `NamedNodeMap`.
+-   No `getElementById` / `getElementsByTagName` / `getElementsByTagNameNS` / `getElementsByClassName`
+-   No `prepend` / `append`
+-   No selectors, no `querySelector` / `querySelectorAll` on `ParentNode`, no `closest` / `matches` / `webkitMatchesSelector` on `Element`
+-   No `before` / `after` / `replaceWith` / `remove`
+-   No `attributeFilter` for mutation observers
+-   No `baseURI` / `isConnected` / `getRootNode` / `textContent` / `isEqualNode` / `isSameNode` / `compareDocumentPosition` on `Node`
+-   No `URL` / `documentURI` / `origin` / `compatMode` / `characterSet` / `charset` / `inputEncoding` / `contentType` on `Document`
+-   No `hasFeature` on `DOMImplementation`
+-   No `id` / `className` / `classList` / `insertAdjacentElement` / `insertAdjacentText` on `Element`
+-   No `specified` on `Attr`
+-   No `wholeText` on `Text`
+-   No `deleteContents` / `extractContents` / `cloneContents` / `insertNode` / `surroundContents` on `Range`
+-   No `NodeIterator` / `TreeWalker` / `NodeFilter`, no `createNodeIterator` / `createTreeWalker` on `Document`
+-   No HTML documents, including `HTMLElement` and its subclasses. This also includes HTML casing behavior for attributes and tagNames.
+-   No shadow DOM, `Slotable` / `ShadowRoot`, no `slot` / `attachShadow` / `shadowRoot` on `Element`
+-   No custom elements
+-   No XML parsing
+-   No HTML parsing / serialization, but see `test/SlimdomTreeAdapter.ts` for an example on how to connect the parse5 HTML parser.
 
 Do not rely on the behavior or presence of any methods and properties not specified in the DOM standard. For example, do not use JavaScript array methods exposed on properties that should expose a NodeList and do not use Element as a constructor. This behavior is _not_ considered public API and may change without warning in a future release.
 

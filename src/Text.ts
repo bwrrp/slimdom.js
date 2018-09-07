@@ -107,28 +107,28 @@ function splitText(node: Text, offset: number): Text {
 
 		const indexOfNodePlusOne = getNodeIndex(node) + 1;
 		ranges.forEach(range => {
-			// 7.2. For each range whose start node is node and start offset is greater than offset,
-			// set its start node to new node and decrease its start offset by offset.
+			// 7.2. For each live range whose start node is node and start offset is greater than
+			// offset, set its start node to new node and decrease its start offset by offset.
 			if (range.startContainer === node && range.startOffset > offset) {
 				range.startContainer = newNode;
 				range.startOffset -= offset;
 			}
 
-			// 7.3. For each range whose end node is node and end offset is greater than offset, set
-			// its end node to new node and decrease its end offset by offset.
+			// 7.3. For each live range whose end node is node and end offset is greater than
+			// offset, set its end node to new node and decrease its end offset by offset.
 			if (range.endContainer === node && range.endOffset > offset) {
 				range.endContainer = newNode;
 				range.endOffset -= offset;
 			}
 
-			// 7.4. For each range whose start node is parent and start offset is equal to the index
-			// of node + 1, increase its start offset by one.
+			// 7.4. For each live range whose start node is parent and start offset is equal to the
+			// index of node + 1, increase its start offset by one.
 			if (range.startContainer === parent && range.startOffset === indexOfNodePlusOne) {
 				range.startOffset += 1;
 			}
 
-			// 7.5. For each range whose end node is parent and end offset is equal to the index of
-			// node + 1, increase its end offset by one.
+			// 7.5. For each live range whose end node is parent and end offset is equal to the
+			// index of node + 1, increase its end offset by one.
 			if (range.endContainer === parent && range.endOffset === indexOfNodePlusOne) {
 				range.endOffset += 1;
 			}

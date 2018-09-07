@@ -157,13 +157,15 @@ export default class MutationObserver {
 			);
 		}
 
-		// 7. For each registered observer registered in target’s list of registered observers whose
+		// 7. For each registered registered of target’s registered observer list, if registered's
 		// observer is the context object:
-		// 7.1. Remove all transient registered observers whose source is registered.
-		// 7.2. Replace registered’s options with options.
-		// 8. Otherwise, add a new registered observer to target’s list of registered observers with
-		// the context object as the observer and options as the options, and add target to context
-		// object’s list of nodes on which it is registered.
+		// 7.1. For each node of the context object's node list, remove all transient registered
+		// observers whose source is registered from node's registered observer list.
+		// 7.2. Set registered’s options to options.
+		// 8. Otherwise:
+		// 8.1. Append a new registered observer whose observer is the context object and options is
+		// options to target's registered observer list.
+		// 8.2. Append target to the context object's node list.
 		target._registeredObservers.register(this, options);
 	}
 
@@ -172,12 +174,12 @@ export default class MutationObserver {
 	 * observe() method is used again, observer's callback will not be invoked.
 	 */
 	disconnect() {
-		// for each node node in context object’s list of nodes, remove any registered observer on
-		// node for which context object is the observer,
+		// 1. For each node of the context object’s node list, remove any registered observer from
+		// node's registered observer list for which the context object is the observer.
 		this._nodes.forEach(node => node._registeredObservers.removeForObserver(this));
 		this._nodes.length = 0;
 
-		// and also empty context object’s record queue.
+		// 2. Empty the context object’s record queue.
 		this._recordQueue.length = 0;
 	}
 
@@ -187,10 +189,11 @@ export default class MutationObserver {
 	 * @return An Array of MutationRecord objects that were recorded.
 	 */
 	takeRecords(): MutationRecord[] {
-		// return a copy of the record queue
-		const recordQueue = this._recordQueue.concat();
-		// and then empty the record queue
+		// 1. Let records be a clone of the context object's record queue.
+		const records = this._recordQueue.concat();
+		// 2. Empty the context object's record queue
 		this._recordQueue.length = 0;
-		return recordQueue;
+		// 3. Return records
+		return records;
 	}
 }

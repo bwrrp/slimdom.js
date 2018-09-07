@@ -63,8 +63,8 @@ export default class NotifyList {
 		// 1. Unset mutation observer compound microtask queued flag.
 		this._compoundMicrotaskQueued = null;
 
-		// 2. Let notify list be a copy of unit of related similar-origin browsing contexts' list of
-		// MutationObserver objects.
+		// 2. Let notify list be a clone of unit of related similar-origin browsing contexts' list
+		// of MutationObserver objects.
 		const notifyList = this._notifyList.concat();
 		// Clear the notify list - for efficiency this list only tracks observers that have a
 		// non-empty queue
@@ -72,8 +72,8 @@ export default class NotifyList {
 
 		// 3. Let signalList be a copy of unit of related similar-origin browsing contexts' signal
 		// slot list.
-		// 4. Empty unit of related similar-origin browsing contexts' signal slot list. (shadow dom
-		// not implemented)
+		// 4. Empty unit of related similar-origin browsing contexts' signal slot list.
+		// (shadow dom not implemented)
 
 		// 5. For each MutationObserver object mo in notify list, execute a compound microtask
 		// subtask to run these steps: [HTML]
@@ -84,12 +84,12 @@ export default class NotifyList {
 					// 5.2. Empty mo’s record queue.
 					const queue = mo.takeRecords();
 
-					// 5.3. Remove all transient registered observers whose observer is mo.
+					// 5.3. For each node of mo's node list, remove all transient registered
+					// observers whose observer is mo from node's registered observer list.
 					removeTransientRegisteredObserversForObserver(mo);
 
-					// 5.4. If queue is non-empty, invoke mo’s callback with a list of arguments
-					// consisting of queue and mo, and mo as the callback this value. If this throws
-					// an exception, report the exception.
+					// 5.4. If records is not empty, then invoke mo’s callback with « records, mo »,
+					// and mo. If this throws an exception, then report the exception.
 					if (queue.length) {
 						mo._callback(queue, mo);
 					}

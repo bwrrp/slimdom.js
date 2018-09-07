@@ -211,14 +211,14 @@ export function insertNode(
 	if (child !== null) {
 		const childIndex = getNodeIndex(child);
 		ranges.forEach(range => {
-			// 2.1. For each range whose start node is parent and start offset is greater than
+			// 2.1. For each live range whose start node is parent and start offset is greater than
 			// child’s index, increase its start offset by count.
 			if (range.startContainer === parent && range.startOffset > childIndex) {
 				range.startOffset += count;
 			}
 
-			// 2.2. For each range whose end node is parent and end offset is greater than child’s
-			// index, increase its end offset by count.
+			// 2.2. For each live range whose end node is parent and end offset is greater than
+			// child’s index, increase its end offset by count.
 			if (range.endContainer === parent && range.endOffset > childIndex) {
 				range.endOffset += count;
 			}
@@ -235,9 +235,9 @@ export function insertNode(
 		nodes.forEach(n => removeNode(n, node, true));
 	}
 
-	// 5. If node is a DocumentFragment node, queue a mutation record of "childList" for node with
-	// removedNodes nodes. This step intentionally does not pay attention to the suppress observers
-	// flag.
+	// 5. If node is a DocumentFragment node, then queue a tree mutation record for node with « »,
+	// nodes, null and null. This step intentionally does not pay attention to the suppress
+	// observers flag.
 	if (isDocumentFragment) {
 		queueMutationRecord('childList', node, {
 			removedNodes: nodes
@@ -279,8 +279,8 @@ export function insertNode(
 		// (custom elements not implemented)
 	});
 
-	// 8. If suppress observers flag is unset, queue a mutation record of "childList" for parent
-	// with addedNodes nodes, nextSibling child, and previousSibling previousSibling.
+	// 8. If suppress observers flag is unset, queue a tree mutation record for parent with nodes,
+	// « », previousSibling and child.
 	if (!suppressObservers) {
 		queueMutationRecord('childList', parent, {
 			addedNodes: nodes,
@@ -480,8 +480,8 @@ export function replaceChildWithNode<TChild extends Node>(
 	// 14. Insert node into parent before reference child with the suppress observers flag set.
 	insertNode(node, parent, referenceChild, true);
 
-	// 15. Queue a mutation record of "childList" for target parent with addedNodes nodes,
-	// removedNodes removedNodes, nextSibling reference child, and previousSibling previousSibling.
+	// 15. Queue a tree mutation record for parent with nodes, removedNodes, previousSibling and
+	// reference child.
 	queueMutationRecord('childList', parent, {
 		addedNodes: nodes,
 		removedNodes: removedNodes,
@@ -526,28 +526,28 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 	const index = getNodeIndex(node);
 
 	ranges.forEach(range => {
-		// 2. For each range whose start node is an inclusive descendant of node, set its start to
-		// (parent, index).
+		// 2. For each live range whose start node is an inclusive descendant of node, set its start
+		// to (parent, index).
 		if (node.contains(range.startContainer)) {
 			range.startContainer = parent;
 			range.startOffset = index;
 		}
 
-		// 3. For each range whose end node is an inclusive descendant of node, set its end to
+		// 3. For each live range whose end node is an inclusive descendant of node, set its end to
 		// (parent, index).
 		if (node.contains(range.endContainer)) {
 			range.endContainer = parent;
 			range.endOffset = index;
 		}
 
-		// 4. For each range whose start node is parent and start offset is greater than index,
+		// 4. For each live range whose start node is parent and start offset is greater than index,
 		// decrease its start offset by one.
 		if (range.startContainer === parent && range.startOffset > index) {
 			range.startOffset -= 1;
 		}
 
-		// 5. For each range whose end node is parent and end offset is greater than index, decrease
-		// its end offset by one.
+		// 5. For each live range whose end node is parent and end offset is greater than index,
+		// decrease its end offset by one.
 		if (range.endContainer === parent && range.endOffset > index) {
 			range.endOffset -= 1;
 		}
@@ -596,10 +596,10 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 	// descendant, callback name "disconnectedCallback", and an empty argument list.
 	// (custom elements not implemented)
 
-	// 16. For each inclusive ancestor inclusiveAncestor of parent, if inclusiveAncestor has any
-	// registered observers whose options' subtree is true, then for each such registered observer
-	// registered, append a transient registered observer whose observer and options are identical
-	// to those of registered and source which is registered to node’s list of registered observers.
+	// 16. For each inclusive ancestor inclusiveAncestor of parent, and then for each registered of
+	// inclusiveAncestor's registered observer list, if registered's options's subtree is true, then
+	// append a new transient registered observer whose observer is registered's observer, options
+	// is registered's options, and source is registered to node's registered observer list.
 	for (
 		let inclusiveAncestor: Node | null = parent;
 		inclusiveAncestor;
@@ -608,9 +608,8 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 		inclusiveAncestor._registeredObservers.appendTransientRegisteredObservers(node);
 	}
 
-	// 17. If suppress observers flag is unset, queue a mutation record of "childList" for parent
-	// with removedNodes a list solely containing node, nextSibling oldNextSibling, and
-	// previousSibling oldPreviousSibling.
+	// 17. If suppress observers flag is unset, queue a tree mutation record for parent with « »,
+	// « node », oldPreviousSibling, and oldNextSibling
 	if (!suppressObservers) {
 		queueMutationRecord('childList', parent, {
 			removedNodes: [node],
@@ -619,7 +618,7 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 		});
 	}
 
-	// 18. If node is a Text node, run the child text content change steps for parent.
+	// 18. If node is a Text node, then run the child text content change steps for parent.
 	// (child text content change steps not implemented)
 }
 
