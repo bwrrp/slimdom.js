@@ -5,23 +5,23 @@ function undefinedAsNull<T>(value: T | undefined): T | null {
 	return value === undefined ? null : value;
 }
 
-export default class SlimdomTreeAdapter implements parse5.AST.TreeAdapter {
+export default class SlimdomTreeAdapter implements parse5.TreeAdapter {
 	private _globalDocument = new slimdom.Document();
-	private _mode: parse5.AST.DocumentMode = 'no-quirks';
+	private _mode: parse5.DocumentMode = 'no-quirks';
 
-	createDocument(): parse5.AST.Document {
+	createDocument(): parse5.Document {
 		return this._globalDocument.implementation.createDocument(null, '');
 	}
 
-	createDocumentFragment(): parse5.AST.DocumentFragment {
+	createDocumentFragment(): parse5.DocumentFragment {
 		throw new Error('Method not implemented.');
 	}
 
 	createElement(
 		tagName: string,
 		namespaceURI: string,
-		attrs: parse5.AST.Default.Attribute[]
-	): parse5.AST.Element {
+		attrs: parse5.Attribute[]
+	): parse5.Element {
 		const [localName, prefix] =
 			tagName.indexOf(':') >= 0 ? tagName.split(':') : [tagName, null];
 		// Create element without validation, as per HTML parser spec
@@ -46,18 +46,18 @@ export default class SlimdomTreeAdapter implements parse5.AST.TreeAdapter {
 		return element;
 	}
 
-	createCommentNode(data: string): parse5.AST.CommentNode {
+	createCommentNode(data: string): parse5.CommentNode {
 		return this._globalDocument.createComment(data);
 	}
 
-	appendChild(parentNode: parse5.AST.ParentNode, newNode: parse5.AST.Node): void {
+	appendChild(parentNode: parse5.ParentNode, newNode: parse5.Node): void {
 		(parentNode as slimdom.Node).appendChild(newNode as slimdom.Node);
 	}
 
 	insertBefore(
-		parentNode: parse5.AST.ParentNode,
-		newNode: parse5.AST.Node,
-		referenceNode: parse5.AST.Node
+		parentNode: parse5.ParentNode,
+		newNode: parse5.Node,
+		referenceNode: parse5.Node
 	): void {
 		(parentNode as slimdom.Node).insertBefore(
 			newNode as slimdom.Node,
@@ -66,18 +66,18 @@ export default class SlimdomTreeAdapter implements parse5.AST.TreeAdapter {
 	}
 
 	setTemplateContent(
-		templateElement: parse5.AST.Element,
-		contentElement: parse5.AST.DocumentFragment
+		templateElement: parse5.Element,
+		contentElement: parse5.DocumentFragment
 	): void {
 		throw new Error('Method not implemented.');
 	}
 
-	getTemplateContent(templateElement: parse5.AST.Element): parse5.AST.DocumentFragment {
+	getTemplateContent(templateElement: parse5.Element): parse5.DocumentFragment {
 		throw new Error('Method not implemented.');
 	}
 
 	setDocumentType(
-		document: parse5.AST.Document,
+		document: parse5.Document,
 		name: string,
 		publicId: string,
 		systemId: string
@@ -95,22 +95,22 @@ export default class SlimdomTreeAdapter implements parse5.AST.TreeAdapter {
 		}
 	}
 
-	setDocumentMode(document: parse5.AST.Document, mode: parse5.AST.DocumentMode): void {
+	setDocumentMode(document: parse5.Document, mode: parse5.DocumentMode): void {
 		this._mode = mode;
 	}
 
-	getDocumentMode(document: parse5.AST.Document): parse5.AST.DocumentMode {
+	getDocumentMode(document: parse5.Document): parse5.DocumentMode {
 		return this._mode;
 	}
 
-	detachNode(node: parse5.AST.Node): void {
+	detachNode(node: parse5.Node): void {
 		const parent = (node as slimdom.Node).parentNode;
 		if (parent) {
 			parent.removeChild(node as slimdom.Node);
 		}
 	}
 
-	insertText(parentNode: parse5.AST.ParentNode, text: string): void {
+	insertText(parentNode: parse5.ParentNode, text: string): void {
 		const lastChild = (parentNode as slimdom.Node).lastChild;
 		if (lastChild && lastChild.nodeType === slimdom.Node.TEXT_NODE) {
 			(lastChild as slimdom.Text).appendData(text);
@@ -121,9 +121,9 @@ export default class SlimdomTreeAdapter implements parse5.AST.TreeAdapter {
 	}
 
 	insertTextBefore(
-		parentNode: parse5.AST.ParentNode,
+		parentNode: parse5.ParentNode,
 		text: string,
-		referenceNode: parse5.AST.Node
+		referenceNode: parse5.Node
 	): void {
 		const sibling = referenceNode && (referenceNode as slimdom.Node).previousSibling;
 		if (sibling && sibling.nodeType === slimdom.Node.TEXT_NODE) {
@@ -137,32 +137,32 @@ export default class SlimdomTreeAdapter implements parse5.AST.TreeAdapter {
 		);
 	}
 
-	adoptAttributes(recipient: parse5.AST.Element, attrs: parse5.AST.Default.Attribute[]): void {
+	adoptAttributes(recipient: parse5.Element, attrs: parse5.Attribute[]): void {
 		const element = recipient as slimdom.Element;
 		attrs.forEach(attr => {
 			if (!element.hasAttributeNS(undefinedAsNull(attr.namespace), attr.name)) {
 				element.setAttributeNS(
 					undefinedAsNull(attr.namespace),
-					attr.prefix ? `${attr.prefix}:${attr.name}` : name,
+					attr.prefix ? `${attr.prefix}:${attr.name}` : attr.name,
 					attr.value
 				);
 			}
 		});
 	}
 
-	getFirstChild(node: parse5.AST.ParentNode): parse5.AST.Node {
+	getFirstChild(node: parse5.ParentNode): parse5.Node {
 		return (node as slimdom.Node).firstChild!;
 	}
 
-	getChildNodes(node: parse5.AST.ParentNode): parse5.AST.Node[] {
+	getChildNodes(node: parse5.ParentNode): parse5.Node[] {
 		return (node as slimdom.Node).childNodes;
 	}
 
-	getParentNode(node: parse5.AST.Node): parse5.AST.ParentNode {
+	getParentNode(node: parse5.Node): parse5.ParentNode {
 		return (node as slimdom.Node).parentNode!;
 	}
 
-	getAttrList(element: parse5.AST.Element): parse5.AST.Default.Attribute[] {
+	getAttrList(element: parse5.Element): parse5.Attribute[] {
 		return (element as slimdom.Element).attributes.map(attr => ({
 			name: attr.localName,
 			namespace: attr.namespaceURI || undefined,
@@ -171,47 +171,47 @@ export default class SlimdomTreeAdapter implements parse5.AST.TreeAdapter {
 		}));
 	}
 
-	getTagName(element: parse5.AST.Element): string {
+	getTagName(element: parse5.Element): string {
 		return (element as slimdom.Element).tagName;
 	}
 
-	getNamespaceURI(element: parse5.AST.Element): string {
+	getNamespaceURI(element: parse5.Element): string {
 		return (element as slimdom.Element).namespaceURI!;
 	}
 
-	getTextNodeContent(textNode: parse5.AST.TextNode): string {
+	getTextNodeContent(textNode: parse5.TextNode): string {
 		return (textNode as slimdom.Text).data;
 	}
 
-	getCommentNodeContent(commentNode: parse5.AST.CommentNode): string {
+	getCommentNodeContent(commentNode: parse5.CommentNode): string {
 		return (commentNode as slimdom.Comment).data;
 	}
 
-	getDocumentTypeNodeName(doctypeNode: parse5.AST.DocumentType): string {
+	getDocumentTypeNodeName(doctypeNode: parse5.DocumentType): string {
 		return (doctypeNode as slimdom.DocumentType).name;
 	}
 
-	getDocumentTypeNodePublicId(doctypeNode: parse5.AST.DocumentType): string {
+	getDocumentTypeNodePublicId(doctypeNode: parse5.DocumentType): string {
 		return (doctypeNode as slimdom.DocumentType).publicId;
 	}
 
-	getDocumentTypeNodeSystemId(doctypeNode: parse5.AST.DocumentType): string {
+	getDocumentTypeNodeSystemId(doctypeNode: parse5.DocumentType): string {
 		return (doctypeNode as slimdom.DocumentType).systemId;
 	}
 
-	isTextNode(node: parse5.AST.Node): boolean {
+	isTextNode(node: parse5.Node): boolean {
 		return node && (node as slimdom.Node).nodeType === slimdom.Node.TEXT_NODE;
 	}
 
-	isCommentNode(node: parse5.AST.Node): boolean {
+	isCommentNode(node: parse5.Node): boolean {
 		return node && (node as slimdom.Node).nodeType === slimdom.Node.COMMENT_NODE;
 	}
 
-	isDocumentTypeNode(node: parse5.AST.Node): boolean {
+	isDocumentTypeNode(node: parse5.Node): boolean {
 		return node && (node as slimdom.Node).nodeType === slimdom.Node.DOCUMENT_TYPE_NODE;
 	}
 
-	isElementNode(node: parse5.AST.Node): boolean {
+	isElementNode(node: parse5.Node): boolean {
 		return node && (node as slimdom.Node).nodeType === slimdom.Node.ELEMENT_NODE;
 	}
 }
