@@ -7,7 +7,7 @@ import {
 import Document from './Document';
 import Element from './Element';
 import Node from './Node';
-import { ranges } from './Range';
+import { getContext } from './context/Context';
 import queueMutationRecord from './mutation-observer/queueMutationRecord';
 import { expectArity, throwIndexSizeError } from './util/errorHelpers';
 import { asNullableString, asUnsignedLong, treatNullAsEmptyString } from './util/typeHelpers';
@@ -213,7 +213,8 @@ export function replaceData(
 	const newData = nodeData.substring(0, offset) + data + nodeData.substring(offset + count);
 	(node as any)._data = newData;
 
-	ranges.forEach(range => {
+	const context = getContext(node);
+	context._ranges.forEach(range => {
 		// 8. For each live range whose start node is node and start offset is greater than offset
 		// but less than or equal to offset plus count, set its start offset to offset.
 		if (

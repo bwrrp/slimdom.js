@@ -47,7 +47,9 @@ export type XMLDocumentConstructor = new () => XMLDocument;
 
 export interface Context {
 	document: Document;
+
 	_notifyList: NotifyList;
+	_ranges: Range[];
 
 	Attr: AttrConstructor;
 	CDATASection: CDATASectionConstructor;
@@ -74,10 +76,10 @@ export class DefaultContext implements Context {
 	/**
 	 * The NotifyList instance is shared between all MutationObserver objects. It holds references
 	 * to all MutationObserver instances that have collected records, and is responsible for
-	 * invoking their callbacks when control returns to the event loop (using setImmediate or
-	 * setTimeout).
+	 * invoking their callbacks when control returns to the event loop.
 	 */
 	public _notifyList: NotifyList = new NotifyList();
+	public _ranges: Range[] = [];
 
 	public Attr!: AttrConstructor;
 	public CDATASection!: CDATASectionConstructor;

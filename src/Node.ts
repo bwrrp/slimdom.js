@@ -1,7 +1,7 @@
 import Element from './Element';
 import Document from './Document';
 import Text from './Text';
-import { ranges } from './Range';
+import { getContext } from './context/Context';
 import RegisteredObservers from './mutation-observer/RegisteredObservers';
 import cloneNode from './util/cloneNode';
 import { expectArity } from './util/errorHelpers';
@@ -160,11 +160,12 @@ export default abstract class Node {
 
 			// 5. Let currentNode be node’s next sibling.
 			// 6. While currentNode is an exclusive Text node:
+			const context = getContext(this);
 			for (let i = 0, l = siblingsToRemove.length; i < l; ++i) {
 				const currentNode = siblingsToRemove[i];
 				const currentNodeIndex = index + i + 1;
 
-				ranges.forEach(range => {
+				context._ranges.forEach(range => {
 					// 6.1. For each live range whose start node is currentNode, add length to its
 					// start offset and set its start node to node.
 					if (range.startContainer === currentNode) {

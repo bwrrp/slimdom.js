@@ -1,6 +1,5 @@
 import { replaceData, substringData, default as CharacterData } from './CharacterData';
 import Document from './Document';
-import { ranges } from './Range';
 import { getContext } from './context/Context';
 import { expectArity, throwIndexSizeError } from './util/errorHelpers';
 import { insertNode } from './util/mutationAlgorithms';
@@ -106,7 +105,8 @@ function splitText(node: Text, offset: number): Text {
 		insertNode(newNode, parent, node.nextSibling);
 
 		const indexOfNodePlusOne = getNodeIndex(node) + 1;
-		ranges.forEach(range => {
+		const context = getContext(node);
+		context._ranges.forEach(range => {
 			// 7.2. For each live range whose start node is node and start offset is greater than
 			// offset, set its start node to new node and decrease its start offset by offset.
 			if (range.startContainer === node && range.startOffset > offset) {

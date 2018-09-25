@@ -18,8 +18,6 @@ import {
 } from './util/treeHelpers';
 import { asObject, asUnsignedLong } from './util/typeHelpers';
 
-export const ranges: Range[] = [];
-
 /**
  * Interface AbstractRange
  *
@@ -94,7 +92,7 @@ export default class Range implements AbstractRange {
 		this.startOffset = 0;
 		this.endContainer = context.document;
 		this.endOffset = 0;
-		ranges.push(this);
+		context._ranges.push(this);
 	}
 
 	/**
@@ -445,9 +443,10 @@ export default class Range implements AbstractRange {
 	 * the range.
 	 */
 	detach(): void {
-		const index = ranges.indexOf(this);
+		const context = getContext(this);
+		const index = context._ranges.indexOf(this);
 		if (index >= 0) {
-			ranges.splice(index, 1);
+			context._ranges.splice(index, 1);
 		}
 	}
 

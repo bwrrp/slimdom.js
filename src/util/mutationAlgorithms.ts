@@ -11,7 +11,7 @@ import Document from '../Document';
 import DocumentFragment from '../DocumentFragment';
 import Element from '../Element';
 import Node from '../Node';
-import { ranges } from '../Range';
+import { getContext } from '../context/Context';
 import queueMutationRecord from '../mutation-observer/queueMutationRecord';
 
 // 3.2.3. Mutation algorithms
@@ -210,7 +210,8 @@ export function insertNode(
 	// 2. If child is non-null, then:
 	if (child !== null) {
 		const childIndex = getNodeIndex(child);
-		ranges.forEach(range => {
+		const context = getContext(node);
+		context._ranges.forEach(range => {
 			// 2.1. For each live range whose start node is parent and start offset is greater than
 			// child’s index, increase its start offset by count.
 			if (range.startContainer === parent && range.startOffset > childIndex) {
@@ -525,7 +526,8 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 	// 1. Let index be node’s index.
 	const index = getNodeIndex(node);
 
-	ranges.forEach(range => {
+	const context = getContext(node);
+	context._ranges.forEach(range => {
 		// 2. For each live range whose start node is an inclusive descendant of node, set its start
 		// to (parent, index).
 		if (node.contains(range.startContainer)) {
