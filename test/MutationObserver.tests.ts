@@ -1,14 +1,6 @@
 import * as slimdom from '../src/index';
 
 describe('MutationObserver', () => {
-	beforeAll(() => {
-		jest.useFakeTimers();
-	});
-
-	afterAll(() => {
-		jest.useRealTimers();
-	});
-
 	let document: slimdom.Document;
 	let observer: slimdom.MutationObserver;
 	let calls: { records: slimdom.MutationRecord[]; observer: slimdom.MutationObserver }[];
@@ -527,6 +519,14 @@ describe('MutationObserver', () => {
 		}
 	};
 
+	// Mutation Observer callbacks run in a microtask, which run before normal tasks such as a
+	// setTimeout callback
+	function waitForNextTask() {
+		return new Promise(resolve => {
+			setTimeout(() => resolve(), 0);
+		});
+	}
+
 	describe('synchronous usage', () => {
 		Object.keys(cases).forEach(description => {
 			const testCase = cases[description];
@@ -536,9 +536,9 @@ describe('MutationObserver', () => {
 				const records = observer.takeRecords();
 				assertRecords(records, expected);
 
-				jest.runAllTimers();
-
-				expect(callbackCalled).toBe(false);
+				return waitForNextTask().then(() => {
+					expect(callbackCalled).toBe(false);
+				});
 			});
 		});
 	});
@@ -558,16 +558,16 @@ describe('MutationObserver', () => {
 			it(description, () => {
 				const expected = testCase(observer);
 
-				jest.runAllTimers();
-
-				if (expected !== null) {
-					expect(callbackCalled).toBe(true);
-					expect(calls.length).toBe(1);
-					expect(calls[0].observer).toBe(observer);
-					assertRecords(calls[0].records, expected);
-				} else {
-					expect(callbackCalled).toBe(false);
-				}
+				waitForNextTask().then(() => {
+					if (expected !== null) {
+						expect(callbackCalled).toBe(true);
+						expect(calls.length).toBe(1);
+						expect(calls[0].observer).toBe(observer);
+						assertRecords(calls[0].records, expected);
+					} else {
+						expect(callbackCalled).toBe(false);
+					}
+				});
 			});
 		});
 	});

@@ -2,22 +2,12 @@ import { MutationCallback, default as MutationObserver } from './MutationObserve
 import MutationRecord from './MutationRecord';
 import { removeTransientRegisteredObserversForObserver } from './RegisteredObservers';
 
-// Declare functions without having to bring in the entire DOM lib
-declare function setImmediate(handler: (...args: any[]) => void): number;
-declare function setTimeout(handler: (...args: any[]) => void, timeout: number): number;
-
-const hasSetImmediate = typeof setImmediate === 'function';
-
 function queueCompoundMicrotask(
 	callback: (...args: any[]) => void,
 	thisArg: NotifyList,
 	...args: any[]
-): number {
-	// Branch taken is platform dependent and constant
-	/* istanbul ignore next */
-	return (hasSetImmediate ? setImmediate : setTimeout)(() => {
-		callback.apply(thisArg, args);
-	}, 0);
+): void {
+	Promise.resolve().then(() => callback.apply(thisArg, args));
 }
 
 /**
@@ -26,7 +16,7 @@ function queueCompoundMicrotask(
  */
 export default class NotifyList {
 	private _notifyList: MutationObserver[] = [];
-	private _compoundMicrotaskQueued: number | null = null;
+	private _compoundMicrotaskQueued: boolean = false;
 
 	/**
 	 * Appends a given MutationRecord to the recordQueue of the given MutationObserver and schedules
@@ -51,7 +41,8 @@ export default class NotifyList {
 
 		// 2. Set mutation observer compound microtask queued flag.
 		// 3. Queue a compound microtask to notify mutation observers.
-		this._compoundMicrotaskQueued = queueCompoundMicrotask(() => {
+		this._compoundMicrotaskQueued = true;
+		queueCompoundMicrotask(() => {
 			this._notifyMutationObservers();
 		}, this);
 	}
@@ -61,7 +52,7 @@ export default class NotifyList {
 	 */
 	private _notifyMutationObservers() {
 		// 1. Unset mutation observer compound microtask queued flag.
-		this._compoundMicrotaskQueued = null;
+		this._compoundMicrotaskQueued = false;
 
 		// 2. Let notify list be a clone of unit of related similar-origin browsing contexts' list
 		// of MutationObserver objects.
