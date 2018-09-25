@@ -46,14 +46,6 @@ export type MutationCallback = (records: MutationRecord[], observer: MutationObs
  */
 export default class MutationObserver {
 	/**
-	 * The NotifyList instance is shared between all MutationObserver objects. It holds references
-	 * to all MutationObserver instances that have collected records, and is responsible for
-	 * invoking their callbacks when control returns to the event loop (using setImmediate or
-	 * setTimeout).
-	 */
-	static _notifyList = new NotifyList();
-
-	/**
 	 * The function that will be called when control returns to the event loop, if there are any
 	 * queued records. The function is passed the MutationRecords and the observer instance that
 	 * collected them.

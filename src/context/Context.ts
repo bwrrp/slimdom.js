@@ -12,6 +12,7 @@ import Range from '../Range';
 import Text from '../Text';
 import XMLDocument from '../XMLDocument';
 
+import NotifyList from '../mutation-observer/NotifyList';
 import { NodeType } from '../util/NodeType';
 
 export type AttrConstructor = new (
@@ -46,6 +47,7 @@ export type XMLDocumentConstructor = new () => XMLDocument;
 
 export interface Context {
 	document: Document;
+	_notifyList: NotifyList;
 
 	Attr: AttrConstructor;
 	CDATASection: CDATASectionConstructor;
@@ -68,6 +70,14 @@ export interface Context {
  */
 export class DefaultContext implements Context {
 	public document!: Document;
+
+	/**
+	 * The NotifyList instance is shared between all MutationObserver objects. It holds references
+	 * to all MutationObserver instances that have collected records, and is responsible for
+	 * invoking their callbacks when control returns to the event loop (using setImmediate or
+	 * setTimeout).
+	 */
+	public _notifyList: NotifyList = new NotifyList();
 
 	public Attr!: AttrConstructor;
 	public CDATASection!: CDATASectionConstructor;

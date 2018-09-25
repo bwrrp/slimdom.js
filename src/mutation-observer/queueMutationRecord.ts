@@ -1,3 +1,4 @@
+import { getContext } from '../context/Context';
 import MutationObserver from './MutationObserver';
 import { MutationRecordInit, default as MutationRecord } from './MutationRecord';
 import Node from '../Node';
@@ -37,6 +38,8 @@ export default function queueMutationRecord(type: string, target: Node, data: Mu
 			pairedStrings
 		);
 	}
+
+	const context = getContext(target);
 
 	// 4. For each observer → mappedOldValue of interestedObservers:
 	interestedObservers.forEach((observer, index) => {
@@ -78,9 +81,9 @@ export default function queueMutationRecord(type: string, target: Node, data: Mu
 		}
 
 		// 4.2. Enqueue record to observer’s record queue.
-		MutationObserver._notifyList.appendRecord(observer, record);
+		context._notifyList.appendRecord(observer, record);
 	});
 
 	// 5. Queue a mutation observer compound microtask.
-	MutationObserver._notifyList.queueMutationObserverCompoundMicrotask();
+	context._notifyList.queueMutationObserverCompoundMicrotask();
 }
