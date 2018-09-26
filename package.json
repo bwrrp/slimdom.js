@@ -38,7 +38,7 @@
 		"rimraf": "^2.6.2",
 		"rollup": "^0.66.2",
 		"rollup-plugin-babel-minify": "^6.0.0",
-		"ts-jest": "23.10.1",
+		"ts-jest": "23.10.2",
 		"typedoc": "^0.12.0",
 		"typescript": "^3.0.3"
 	},
