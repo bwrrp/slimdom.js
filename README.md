@@ -78,7 +78,7 @@ The following features have not yet been implemented:
 
 [slimdom-sax-parser]: https://github.com/wvbe/slimdom-sax-parser
 [fontoxpath]: https://github.com/FontoXML/fontoxpath/
-[parse5-example]: https://github.com/bwrrp/slimdom.js/tree/master/test/example/parse5
+[parse5-example]: https://github.com/bwrrp/slimdom.js/tree/master/test/examples/parse5
 [parse5]: https://github.com/inikulin/parse5
 
 Do not rely on the behavior or presence of any methods and properties not specified in the DOM standard. For example, do not use JavaScript array methods exposed on properties that should expose a NodeList and do not use Element as a constructor. This behavior is _not_ considered public API and may change without warning in a future release.
