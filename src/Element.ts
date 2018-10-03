@@ -313,6 +313,62 @@ export default class Element extends Node
 	}
 
 	/**
+	 * If force is not given, "toggles" qualifiedName, removing it if it is present and adding it if
+	 * it is not present. If force is true, adds qualifiedName. If force is false, removes
+	 * qualifiedName.
+	 *
+	 * Returns true if qualifiedName is now present, and false otherwise.
+	 *
+	 * @param qualifiedName
+	 * @param force
+	 */
+	public toggleAttribute(qualifiedName: string, force?: boolean): boolean {
+		// 1. If qualifiedName does not match the Name production in XML, then throw an
+		// "InvalidCharacterError" DOMException.
+		if (!matchesNameProduction(qualifiedName)) {
+			throwInvalidCharacterError('The qualified name does not match the Name production');
+		}
+
+		// 2. If the context object is in the HTML namespace and its node document is an HTML
+		// document, then set qualifiedName to qualifiedName in ASCII lowercase.
+		// (html documents not implemented)
+
+		// 3. Let attribute be the first attribute in the context object’s attribute list whose
+		// qualified name is qualifiedName, and null otherwise.
+		const attribute = getAttributeByName(qualifiedName, this);
+
+		// 4. If attribute is null, then:
+		if (attribute === null) {
+			// 4.1. If force is not given or is true,
+			if (force === undefined || force === true) {
+				// ...create an attribute whose local name is qualifiedName, value is the empty
+				// string, and node document is the context object’s node document,
+				const context = getContext(this);
+				const attribute = new context.Attr(null, null, qualifiedName, '', this);
+				attribute.ownerDocument = this.ownerDocument;
+				// ...then append this attribute to the context object,
+				appendAttribute(attribute, this);
+				// ...and then return true.
+				return true;
+			}
+
+			// 4.2. Return false.
+			return false;
+		}
+
+		// 5. Otherwise, if force is not given or is false,
+		if (force === undefined || force === false) {
+			// ...remove an attribute given qualifiedName and the context object,
+			removeAttributeByName(qualifiedName, this);
+			// ...and then return false.
+			return false;
+		}
+
+		// 6. Return true.
+		return true;
+	}
+
+	/**
 	 * Returns true if the specified attribute exists and false otherwise.
 	 *
 	 * @param qualifiedName The qualified name of the attribute

@@ -229,6 +229,33 @@ describe('Element', () => {
 			).toBe(true);
 		});
 
+		it('can toggle an attribute', () => {
+			expect(element.hasAttribute('toggle')).toBe(false);
+			expect(element.toggleAttribute('toggle')).toBe(true);
+			expect(element.hasAttribute('toggle')).toBe(true);
+			expect(element.getAttribute('toggle')).toBe('');
+			expect(element.toggleAttribute('toggle')).toBe(false);
+			expect(element.hasAttribute('toggle')).toBe(false);
+		});
+
+		it('can toggle an attribute with force', () => {
+			expect(element.hasAttribute('toggle')).toBe(false);
+			expect(element.toggleAttribute('toggle', false)).toBe(false);
+			expect(element.hasAttribute('toggle')).toBe(false);
+			expect(element.toggleAttribute('toggle', true)).toBe(true);
+			expect(element.hasAttribute('toggle')).toBe(true);
+			expect(element.getAttribute('toggle')).toBe('');
+			expect(element.toggleAttribute('toggle', true)).toBe(true);
+			expect(element.hasAttribute('toggle')).toBe(true);
+			expect(element.getAttribute('toggle')).toBe('');
+			expect(element.toggleAttribute('toggle', false)).toBe(false);
+			expect(element.hasAttribute('toggle')).toBe(false);
+		});
+
+		it('throws when trying to toggle an attribute with an invalid name', () => {
+			expect(() => element.toggleAttribute('0')).toThrow();
+		});
+
 		it('can set attributes using their nodes', () => {
 			const attr = document.createAttribute('attr');
 			attr.value = 'some value';
