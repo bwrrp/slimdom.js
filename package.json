@@ -30,17 +30,17 @@
 		"url": "git://github.com/bwrrp/slimdom.js.git"
 	},
 	"devDependencies": {
-		"@types/jest": "^23.3.2",
+		"@types/jest": "^23.3.5",
 		"@types/parse5": "^5.0.0",
 		"jest": "^23.6.0",
 		"parse5": "^5.1.0",
 		"prettier": "^1.14.3",
 		"rimraf": "^2.6.2",
-		"rollup": "^0.66.2",
-		"rollup-plugin-babel-minify": "^6.0.0",
-		"ts-jest": "23.10.1",
+		"rollup": "^0.66.5",
+		"rollup-plugin-babel-minify": "^6.1.1",
+		"ts-jest": "~23.10.4",
 		"typedoc": "^0.12.0",
-		"typescript": "^3.0.3"
+		"typescript": "^3.1.2"
 	},
 	"jest": {
 		"transform": {
