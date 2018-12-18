@@ -439,4 +439,15 @@ describe('serializeToWellFormedString', () => {
 	it('can serialize normally if there are no well-formedness violations', () => {
 		expect(slimdom.serializeToWellFormedString(document.createElement('el'))).toBe('<el/>');
 	});
+
+	it('can serialize a very large amount of data', () => {
+		const data = Array.from({ length: 10_000_000 })
+			.map(_ => '&')
+			.join('');
+		const el = document.createElement('meep');
+		el.appendChild(document.createTextNode(data));
+		expect(() => {
+			slimdom.serializeToWellFormedString(el);
+		}).not.toThrow();
+	});
 });
