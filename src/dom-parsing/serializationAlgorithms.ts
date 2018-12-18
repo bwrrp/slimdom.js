@@ -35,7 +35,7 @@ const Char = regenerate()
 
 return `^(${Char.toString()})*$`;
 */
-const CHAR_REGEX_XML_1_0_FIFTH_EDITION = /^([\t\n\r -\uD7FF\uE000-\uFFFD]|[\uD800-\uDB7F][\uDC00-\uDFFF])*$/;
+const CHAR_REGEX_XML_1_0_FIFTH_EDITION = /^(?:[\t\n\r -\uD7FF\uE000-\uFFFD]|[\uD800-\uDB7F][\uDC00-\uDFFF])*$/;
 
 /*
 // PUBIDCHAR_REGEX_XML_1_0_FIFTH_EDITION generated using regenerate:
@@ -53,7 +53,7 @@ const PubidChar = regenerate()
 
 `^(${PubidChar.toString()})*$`;
 */
-const PUBIDCHAR_REGEX_XML_1_0_FIFTH_EDITION = /^([\n\r !#-%'-;=\?-Z_a-z])*$/;
+const PUBIDCHAR_REGEX_XML_1_0_FIFTH_EDITION = /^(?:[\n\r !#-%'-;=\?-Z_a-z])*$/;
 
 const HTML_VOID_ELEMENTS = [
 	'area',
