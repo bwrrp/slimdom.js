@@ -37,7 +37,7 @@
 		"prettier": "^1.15.3",
 		"rimraf": "^2.6.2",
 		"rollup": "^0.68.0",
-		"rollup-plugin-babel-minify": "^6.2.0",
+		"rollup-plugin-babel-minify": "^7.0.0",
 		"ts-jest": "~23.10.5",
 		"typedoc": "^0.13.0",
 		"typescript": "^3.2.2"
