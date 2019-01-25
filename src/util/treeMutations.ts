@@ -11,9 +11,9 @@ import { NodeType, isNodeOfType } from './NodeType';
  *
  * Updates the pointers that model the tree, as well as precomputing derived properties.
  *
- * @param node           Node to insert
- * @param parent         Parent to insert under
- * @param referenceChild Child to insert before
+ * @param node           - Node to insert
+ * @param parent         - Parent to insert under
+ * @param referenceChild - Child to insert before
  */
 export function insertIntoChildren(node: Node, parent: Node, referenceChild: Node | null): void {
 	// Node
@@ -97,8 +97,8 @@ export function insertIntoChildren(node: Node, parent: Node, referenceChild: Nod
  *
  * Updates the pointers that model the tree, as well as precomputing derived properties.
  *
- * @param node   Node to remove
- * @param parent Parent to remove from
+ * @param node   - Node to remove
+ * @param parent - Parent to remove from
  */
 export function removeFromChildren(node: Node, parent: Node) {
 	const previousSibling = node.previousSibling;

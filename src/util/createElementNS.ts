@@ -8,11 +8,11 @@ import { validateAndExtract } from './namespaceHelpers';
  * The internal createElementNS steps, given document, namespace, qualifiedName, and options, are as
  * follows:
  *
- * @param document      The node document for the new element
- * @param namespace     The namespace for the new element
- * @param qualifiedName The qualified name for the new element
+ * @param document      - The node document for the new element
+ * @param namespace     - The namespace for the new element
+ * @param qualifiedName - The qualified name for the new element
  *
- * @return The new element
+ * @returns The new element
  */
 export default function createElementNS(
 	document: Document,

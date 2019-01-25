@@ -9,6 +9,8 @@ import { asUnsignedLong } from './util/typeHelpers';
 
 /**
  * 3.11. Interface Text
+ *
+ * @public
  */
 export default class Text extends CharacterData {
 	// Node
@@ -27,7 +29,7 @@ export default class Text extends CharacterData {
 	 * Returns a new Text node whose data is data and node document is current global object’s
 	 * associated Document.
 	 *
-	 * @param data     The data for the new text node
+	 * @param data - The data for the new text node
 	 */
 	constructor(data: string = '') {
 		super(data);
@@ -39,9 +41,9 @@ export default class Text extends CharacterData {
 	/**
 	 * Splits data at the given offset and returns the remainder as Text node.
 	 *
-	 * @param offset The offset at which to split
+	 * @param offset - The offset at which to split
 	 *
-	 * @return a text node containing the second half of the split node's data
+	 * @returns a text node containing the second half of the split node's data
 	 */
 	public splitText(offset: number): Text {
 		expectArity(arguments, 1);
@@ -53,9 +55,9 @@ export default class Text extends CharacterData {
 	/**
 	 * (non-standard) Creates a copy of the context object, not including its children.
 	 *
-	 * @param document The node document to associate with the copy
+	 * @param document - The node document to associate with the copy
 	 *
-	 * @return A shallow copy of the context object
+	 * @returns A shallow copy of the context object
 	 */
 	public _copy(document: Document): Text {
 		// Set copy’s data, to that of node.
@@ -69,10 +71,10 @@ export default class Text extends CharacterData {
 /**
  * To split a Text node node with offset offset, run these steps:
  *
- * @param node   The text node to split
- * @param offset The offset to split at
+ * @param node   - The text node to split
+ * @param offset - The offset to split at
  *
- * @return a text node containing the second half of the split node's data
+ * @returns a text node containing the second half of the split node's data
  */
 function splitText(node: Text, offset: number): Text {
 	// 1. Let length be node’s length.

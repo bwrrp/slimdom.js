@@ -8,9 +8,9 @@ import { getNodeDocument } from './treeHelpers';
 /**
  * To clone a node, with an optional document and clone children flag, run these steps:
  *
- * @param node          The node to clone
- * @param cloneChildren Whether to also clone node's descendants
- * @param document      The document used to create the copy
+ * @param node          - The node to clone
+ * @param cloneChildren - Whether to also clone node's descendants
+ * @param document      - The document used to create the copy
  */
 export default function cloneNode<TNode extends Node>(
 	node: TNode,

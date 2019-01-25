@@ -6,6 +6,9 @@ import { getContext } from './context/Context';
 import { expectArity } from './util/errorHelpers';
 import { NodeType } from './util/NodeType';
 
+/**
+ * @public
+ */
 export default class DocumentFragment extends Node implements NonElementParentNode, ParentNode {
 	// Node
 
@@ -73,9 +76,9 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 	/**
 	 * (non-standard) Creates a copy of the context object, not including its children.
 	 *
-	 * @param document The node document to associate with the copy
+	 * @param document - The node document to associate with the copy
 	 *
-	 * @return A shallow copy of the context object
+	 * @returns A shallow copy of the context object
 	 */
 	public _copy(document: Document): DocumentFragment {
 		const context = getContext(document);

@@ -24,7 +24,7 @@ export class NamespacePrefixMap {
 	 * keys' value into a new list which should be associated with the respective key in the new
 	 * map.
 	 *
-	 * @return A copy of the namespace prefix map
+	 * @returns A copy of the namespace prefix map
 	 */
 	public copy(): NamespacePrefixMap {
 		const copy = new NamespacePrefixMap();
@@ -39,10 +39,10 @@ export class NamespacePrefixMap {
 	 * To retrieve a preferred prefix string preferred prefix from the namespace prefix map map
 	 * given a namespace ns, the user agent should:
 	 *
-	 * @param preferredPrefix The prefix to look up
-	 * @param ns              The namespace for the prefix
+	 * @param preferredPrefix - The prefix to look up
+	 * @param ns              - The namespace for the prefix
 	 *
-	 * @return The matching candidate prefix, if found, or null otherwise
+	 * @returns The matching candidate prefix, if found, or null otherwise
 	 */
 	public retrievePreferredPrefixString(
 		preferredPrefix: string | null,
@@ -76,10 +76,10 @@ export class NamespacePrefixMap {
 	 * To check if a prefix string prefix is found in a namespace prefix map map given a namespace
 	 * ns, the user agent should:
 	 *
-	 * @param prefix The prefix to check
-	 * @param ns     The namespace to check
+	 * @param prefix - The prefix to check
+	 * @param ns     - The namespace to check
 	 *
-	 * @return Whether the combination of prefix and ns is found in the map
+	 * @returns Whether the combination of prefix and ns is found in the map
 	 */
 	public checkIfFound(prefix: string, ns: string | null): boolean {
 		// 1. Let candidates list be the result of retrieving a list from map where there exists a
@@ -99,8 +99,8 @@ export class NamespacePrefixMap {
 	 * To add a prefix string prefix to the namespace prefix map map given a namespace ns, the user
 	 * agent should:
 	 *
-	 * @param prefix The prefix to add
-	 * @param ns     The namespace to add for prefix
+	 * @param prefix - The prefix to add
+	 * @param ns     - The namespace to add for prefix
 	 */
 	public add(prefix: string, ns: string | null): void {
 		// 1. Let candidates list be the result of retrieving a list from map where there exists a
@@ -135,11 +135,11 @@ export type LocalPrefixesMap = { [key: string]: string | null };
  * default namespace value defined by a default namespace attribute if one exists. Otherwise it
  * returns null.
  *
- * @param element          Element for which to record namespace information
- * @param map              The namespace prefix map to update
- * @param localPrefixesMap The local prefixes map to update
+ * @param element          - Element for which to record namespace information
+ * @param map              - The namespace prefix map to update
+ * @param localPrefixesMap - The local prefixes map to update
  *
- * @return The local default namespace value for element, or null if element does not define one
+ * @returns The local default namespace value for element, or null if element does not define one
  */
 export function recordNamespaceInformation(
 	element: Element,

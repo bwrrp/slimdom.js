@@ -25,6 +25,8 @@ import { asNullableString, asObject } from './util/typeHelpers';
 
 /**
  * 3.5. Interface Document
+ *
+ * @public
  */
 export default class Document extends Node implements NonElementParentNode, ParentNode {
 	// Node
@@ -119,9 +121,9 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	/**
 	 * Creates a new element in the null namespace.
 	 *
-	 * @param localName Local name of the element
+	 * @param localName - Local name of the element
 	 *
-	 * @return The new element
+	 * @returns The new element
 	 */
 	public createElement(localName: string): Element {
 		expectArity(arguments, 1);
@@ -158,10 +160,10 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	/**
 	 * Creates a new element in the given namespace.
 	 *
-	 * @param namespace     Namespace URI for the new element
-	 * @param qualifiedName Qualified name for the new element
+	 * @param namespace     - Namespace URI for the new element
+	 * @param qualifiedName - Qualified name for the new element
 	 *
-	 * @return The new element
+	 * @returns The new element
 	 */
 	public createElementNS(namespace: string | null, qualifiedName: string): Element {
 		expectArity(arguments, 2);
@@ -176,7 +178,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	/**
 	 * Returns a new DocumentFragment node with its node document set to the context object.
 	 *
-	 * @return The new document fragment
+	 * @returns The new document fragment
 	 */
 	public createDocumentFragment(): DocumentFragment {
 		const context = getContext(this);
@@ -189,9 +191,9 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * Returns a new Text node with its data set to data and node document set to the context
 	 * object.
 	 *
-	 * @param data Data for the new text node
+	 * @param data - Data for the new text node
 	 *
-	 * @return The new text node
+	 * @returns The new text node
 	 */
 	public createTextNode(data: string): Text {
 		expectArity(arguments, 1);
@@ -206,9 +208,9 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	/**
 	 * Returns a new CDATA section with the given data and node document set to the context object.
 	 *
-	 * @param data Data for the new CDATA section
+	 * @param data - Data for the new CDATA section
 	 *
-	 * @return The new CDATA section
+	 * @returns The new CDATA section
 	 */
 	public createCDATASection(data: string): CDATASection {
 		expectArity(arguments, 1);
@@ -234,9 +236,9 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * Returns a new Comment node with its data set to data and node document set to the context
 	 * object.
 	 *
-	 * @param data Data for the new comment
+	 * @param data - Data for the new comment
 	 *
-	 * @return The new comment node
+	 * @returns The new comment node
 	 */
 	public createComment(data: string): Comment {
 		expectArity(arguments, 1);
@@ -252,10 +254,10 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * Creates a new processing instruction node, with target set to target, data set to data, and
 	 * node document set to the context object.
 	 *
-	 * @param target Target for the new processing instruction
-	 * @param data   Data for the new processing instruction
+	 * @param target - Target for the new processing instruction
+	 * @param data   - Data for the new processing instruction
 	 *
-	 * @return The new processing instruction
+	 * @returns The new processing instruction
 	 */
 	public createProcessingInstruction(target: string, data: string): ProcessingInstruction {
 		expectArity(arguments, 2);
@@ -287,8 +289,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * Creates a copy of a node from an external document that can be inserted into the current
 	 * document.
 	 *
-	 * @param node The node to import
-	 * @param deep Whether to also import node's children
+	 * @param node - The node to import
+	 * @param deep - Whether to also import node's children
 	 */
 	public importNode<TNode extends Node>(node: TNode, deep: boolean = false): TNode {
 		expectArity(arguments, 1);
@@ -309,7 +311,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	 * its ownerDocument is changed to the current document. The node can then be inserted into the
 	 * current document.
 	 *
-	 * @param node The node to adopt
+	 * @param node - The node to adopt
 	 */
 	public adoptNode<TNode extends Node>(node: TNode): TNode {
 		expectArity(arguments, 1);
@@ -333,9 +335,9 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	/**
 	 * Creates a new attribute node with the null namespace and given local name.
 	 *
-	 * @param localName The local name of the attribute
+	 * @param localName - The local name of the attribute
 	 *
-	 * @return The new attribute node
+	 * @returns The new attribute node
 	 */
 	public createAttribute(localName: string): Attr {
 		expectArity(arguments, 1);
@@ -362,10 +364,10 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	/**
 	 * Creates a new attribute node with the given namespace and qualified name.
 	 *
-	 * @param namespace     Namespace URI for the new attribute, or null for the null namespace
-	 * @param qualifiedName Qualified name for the new attribute
+	 * @param namespace     - Namespace URI for the new attribute, or null for the null namespace
+	 * @param qualifiedName - Qualified name for the new attribute
 	 *
-	 * @return The new attribute node
+	 * @returns The new attribute node
 	 */
 	public createAttributeNS(namespace: string | null, qualifiedName: string): Attr {
 		expectArity(arguments, 2);
@@ -390,7 +392,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	/**
 	 * Creates a new live Range, initially positioned at the root of this document.
 	 *
-	 * @return The new Range
+	 * @returns The new Range
 	 */
 	public createRange(): Range {
 		const context = getContext(this);
@@ -405,9 +407,9 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	/**
 	 * (non-standard) Creates a copy of the context object, not including its children.
 	 *
-	 * @param document The node document to associate with the copy
+	 * @param document - The node document to associate with the copy
 	 *
-	 * @return A shallow copy of the context object
+	 * @returns A shallow copy of the context object
 	 */
 	public _copy(document: Document): Document {
 		// Set copy’s encoding, content type, URL, origin, type, and mode, to those of node.

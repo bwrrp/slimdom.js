@@ -134,9 +134,9 @@ const NAME_REGEX_XML_1_0_FIFTH_EDITION = /^(?:[:A-Z_a-z\xC0-\xD6\xD8-\xF6\xF8-\u
 /**
  * Returns true if name matches the Name production.
  *
- * @param name The name to check
+ * @param name - The name to check
  *
- * @return true if name matches Name, otherwise false
+ * @returns true if name matches Name, otherwise false
  */
 export function matchesNameProduction(name: string): boolean {
 	return NAME_REGEX_XML_1_0_FOURTH_EDITION.test(name);
@@ -146,9 +146,9 @@ export function matchesNameProduction(name: string): boolean {
  * As we're already testing against Name, testing QName validity can be reduced to checking if the
  * name contains at most a single colon which is not at the first or last position.
  *
- * @param name The name to check
+ * @param name - The name to check
  *
- * @return True if the name is a valid QName, provided it is also a valid Name, otherwise false
+ * @returns True if the name is a valid QName, provided it is also a valid Name, otherwise false
  */
 function isValidQName(name: string): boolean {
 	const parts = name.split(':');
@@ -165,7 +165,7 @@ function isValidQName(name: string): boolean {
 /**
  * To validate a qualifiedName,
  *
- * @param qualifiedName Qualified name to validate
+ * @param qualifiedName - Qualified name to validate
  */
 export function validateQualifiedName(qualifiedName: string): void {
 	// throw an InvalidCharacterError if qualifiedName does not match the Name or QName production.
@@ -179,10 +179,10 @@ export function validateQualifiedName(qualifiedName: string): void {
 /**
  * To validate and extract a namespace and qualifiedName, run these steps:
  *
- * @param namespace     Namespace for the qualified name
- * @param qualifiedName Qualified name to validate and extract the components of
+ * @param namespace     - Namespace for the qualified name
+ * @param qualifiedName - Qualified name to validate and extract the components of
  *
- * @return Namespace, prefix and localName
+ * @returns Namespace, prefix and localName
  */
 export function validateAndExtract(
 	namespace: string | null,
@@ -239,10 +239,10 @@ export function validateAndExtract(
 /**
  * To locate a namespace prefix for an element using namespace, run these steps:
  *
- * @param element    The element at which to start the lookup
- * @param namespace  Namespace for which to look up the prefix
+ * @param element    - The element at which to start the lookup
+ * @param namespace  - Namespace for which to look up the prefix
  *
- * @return The prefix, or null if there isn't one
+ * @returns The prefix, or null if there isn't one
  */
 export function locateNamespacePrefix(element: Element, namespace: string | null): string | null {
 	// 1. If element’s namespace is namespace and its namespace prefix is not null, then return its

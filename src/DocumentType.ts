@@ -5,6 +5,9 @@ import { getContext } from './context/Context';
 import { expectArity } from './util/errorHelpers';
 import { NodeType } from './util/NodeType';
 
+/**
+ * @public
+ */
 export default class DocumentType extends Node implements ChildNode {
 	// Node
 
@@ -68,9 +71,9 @@ export default class DocumentType extends Node implements ChildNode {
 	/**
 	 * (non-standard) Use DOMImplementation#createDocumentType instead.
 	 *
-	 * @param name     The name of the doctype
-	 * @param publicId The public ID of the doctype
-	 * @param systemId The system ID of the doctype
+	 * @param name     - The name of the doctype
+	 * @param publicId - The public ID of the doctype
+	 * @param systemId - The system ID of the doctype
 	 */
 	constructor(name: string, publicId: string = '', systemId: string = '') {
 		super();
@@ -83,9 +86,9 @@ export default class DocumentType extends Node implements ChildNode {
 	/**
 	 * (non-standard) Creates a copy of the context object, not including its children.
 	 *
-	 * @param document The node document to associate with the copy
+	 * @param document - The node document to associate with the copy
 	 *
-	 * @return A shallow copy of the context object
+	 * @returns A shallow copy of the context object
 	 */
 	public _copy(document: Document): DocumentType {
 		// Set copy’s name, public ID, and system ID, to those of node.

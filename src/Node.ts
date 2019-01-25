@@ -18,6 +18,8 @@ import { asNullableObject, asNullableString, asObject } from './util/typeHelpers
 
 /**
  * 3.4. Interface Node
+ *
+ * @public
  */
 export default abstract class Node {
 	static ELEMENT_NODE: number = NodeType.ELEMENT_NODE;
@@ -222,9 +224,9 @@ export default abstract class Node {
 	/**
 	 * Returns a copy of the current node.
 	 *
-	 * @param deep Whether to also clone the node's descendants
+	 * @param deep - Whether to also clone the node's descendants
 	 *
-	 * @return A copy of the current node
+	 * @returns A copy of the current node
 	 */
 	public cloneNode(deep: boolean = false): this {
 		return cloneNode(this, deep);
@@ -234,9 +236,9 @@ export default abstract class Node {
 	 * Returns true if other is an inclusive descendant of context object, and false otherwise
 	 * (including when other is null).
 	 *
-	 * @param childNode Node to check
+	 * @param childNode - Node to check
 	 *
-	 * @return Whether childNode is an inclusive descendant of the current node
+	 * @returns Whether childNode is an inclusive descendant of the current node
 	 */
 	public contains(other: Node | null): boolean {
 		expectArity(arguments, 1);
@@ -251,27 +253,27 @@ export default abstract class Node {
 	/**
 	 *
 	 *
-	 * @param namespace The namespace to look up
+	 * @param namespace - The namespace to look up
 	 *
-	 * @return The prefix for the given namespace, or null if none was found
+	 * @returns The prefix for the given namespace, or null if none was found
 	 */
 	public abstract lookupPrefix(namespace: string | null): string | null;
 
 	/**
 	 * Returns the namespace for the given prefix.
 	 *
-	 * @param prefix The prefix to look up
+	 * @param prefix - The prefix to look up
 	 *
-	 * @return The namespace for the given prefix, or null if the prefix is not defined
+	 * @returns The namespace for the given prefix, or null if the prefix is not defined
 	 */
 	public abstract lookupNamespaceURI(prefix: string | null): string | null;
 
 	/**
 	 * Return true if defaultNamespace is the same as namespace, and false otherwise.
 	 *
-	 * @param namespace The namespace to check
+	 * @param namespace - The namespace to check
 	 *
-	 * @return Whether namespace is the default namespace
+	 * @returns Whether namespace is the default namespace
 	 */
 	public isDefaultNamespace(namespace: string | null): boolean {
 		expectArity(arguments, 1);
@@ -295,11 +297,11 @@ export default abstract class Node {
 	 *
 	 * If child is null, the new node is appended after the last child node of the current node.
 	 *
-	 * @param node  Node to insert
-	 * @param child Childnode of the current node before which to insert, or null to append newNode
-	 *              at the end
+	 * @param node  - Node to insert
+	 * @param child - Childnode of the current node before which to insert, or null to append
+	 *                newNode at the end
 	 *
-	 * @return The node that was inserted
+	 * @returns The node that was inserted
 	 */
 	public insertBefore<TNode extends Node>(node: TNode, child: Node | null): TNode {
 		expectArity(arguments, 2);
@@ -314,9 +316,9 @@ export default abstract class Node {
 	 *
 	 * If the node already exists it is removed from its current parent node, then added.
 	 *
-	 * @param node Node to append
+	 * @param node - Node to append
 	 *
-	 * @return The node that was inserted
+	 * @returns The node that was inserted
 	 */
 	public appendChild<TNode extends Node>(node: TNode): TNode {
 		expectArity(arguments, 1);
@@ -328,10 +330,10 @@ export default abstract class Node {
 	/**
 	 * Replaces child with node within context object and returns child.
 	 *
-	 * @param node  Node to insert
-	 * @param child Node to remove
+	 * @param node  - Node to insert
+	 * @param child - Node to remove
 	 *
-	 * @return The node that was removed
+	 * @returns The node that was removed
 	 */
 	public replaceChild<TChild extends Node>(node: Node, child: TChild): TChild {
 		expectArity(arguments, 2);
@@ -344,9 +346,9 @@ export default abstract class Node {
 	/**
 	 * Removes child from context object and returns the removed node.
 	 *
-	 * @param child Child of the current node to remove
+	 * @param child - Child of the current node to remove
 	 *
-	 * @return The node that was removed
+	 * @returns The node that was removed
 	 */
 	public removeChild<TChild extends Node>(child: TChild): TChild {
 		expectArity(arguments, 1);
@@ -358,9 +360,9 @@ export default abstract class Node {
 	/**
 	 * (non-standard) Creates a copy of the context object, not including its children.
 	 *
-	 * @param document The node document to associate with the copy
+	 * @param document - The node document to associate with the copy
 	 *
-	 * @return A shallow copy of the context object
+	 * @returns A shallow copy of the context object
 	 */
 	public abstract _copy(document: Document): Node;
 }

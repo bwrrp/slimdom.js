@@ -9,6 +9,8 @@ import { treatNullAsEmptyString } from './util/typeHelpers';
 
 /**
  * 3.9.2. Interface Attr
+ *
+ * @public
  */
 export default class Attr extends Node {
 	// Node
@@ -90,12 +92,12 @@ export default class Attr extends Node {
 	 * (non-standard) use Document#createAttribute(NS) or Element#setAttribute(NS) to create
 	 * attribute nodes
 	 *
-	 * @param namespace The namespace URI for the attribute
-	 * @param prefix    The prefix for the attribute
-	 * @param localName The local name for the attribute
-	 * @param value     The value for the attribute
-	 * @param element   The element for the attribute, or null if the attribute is not attached to
-	 *                  an element
+	 * @param namespace - The namespace URI for the attribute
+	 * @param prefix    - The prefix for the attribute
+	 * @param localName - The local name for the attribute
+	 * @param value     - The value for the attribute
+	 * @param element   - The element for the attribute, or null if the attribute is not attached to
+	 *                    an element
 	 */
 	constructor(
 		namespace: string | null,
@@ -117,9 +119,9 @@ export default class Attr extends Node {
 	/**
 	 * (non-standard) Creates a copy of the context object, not including its children.
 	 *
-	 * @param document The node document to associate with the copy
+	 * @param document - The node document to associate with the copy
 	 *
-	 * @return A shallow copy of the context object
+	 * @returns A shallow copy of the context object
 	 */
 	public _copy(document: Document): Attr {
 		// Set copy’s namespace, namespace prefix, local name, and value, to those of node.
@@ -140,8 +142,8 @@ export default class Attr extends Node {
  * To set an existing attribute value, given an attribute attribute and string value, run these
  * steps:
  *
- * @param attribute The attribute to set the value of
- * @param value     The new value for attribute
+ * @param attribute - The attribute to set the value of
+ * @param value     - The new value for attribute
  */
 function setExistingAttributeValue(attribute: Attr, value: string) {
 	// 1. If attribute’s element is null, then set attribute’s value to value.

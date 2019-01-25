@@ -39,9 +39,15 @@ import ProcessingInstruction from './ProcessingInstruction';
 import Range from './Range';
 import Text from './Text';
 import XMLDocument from './XMLDocument';
-import MutationObserver from './mutation-observer/MutationObserver';
 
-// Document to associate with the global object
+/**
+ * The document associated with the global object. Used when calling constructors directly.
+ *
+ * Do not mutate this instance. When possible, it is recommended to use `new slimdom.Document` to
+ * create a new document, and then use the factory methods on that instance to create other nodes.
+ *
+ * @public
+ */
 export const document = new Document();
 defaultContext.document = document;
 

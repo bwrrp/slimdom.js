@@ -3,6 +3,9 @@ import Document from './Document';
 import { getContext } from './context/Context';
 import { NodeType } from './util/NodeType';
 
+/**
+ * @public
+ */
 export default class Comment extends CharacterData {
 	// Node
 
@@ -20,7 +23,7 @@ export default class Comment extends CharacterData {
 	 * Returns a new Comment node whose data is data and node document is current global object’s
 	 * associated Document.
 	 *
-	 * @param data The data for the new comment
+	 * @param data - The data for the new comment
 	 */
 	constructor(data: string = '') {
 		super(data);
@@ -32,9 +35,9 @@ export default class Comment extends CharacterData {
 	/**
 	 * (non-standard) Creates a copy of the context object, not including its children.
 	 *
-	 * @param document The node document to associate with the copy
+	 * @param document - The node document to associate with the copy
 	 *
-	 * @return A shallow copy of the context object
+	 * @returns A shallow copy of the context object
 	 */
 	public _copy(document: Document): Comment {
 		// Set copy’s data, to that of node.

@@ -14,6 +14,8 @@ export interface MutationRecordInit {
  * 3.3.3. Interface MutationRecord
  *
  * A helper class which describes a specific mutation as it is observed by a MutationObserver.
+ *
+ * @public
  */
 export default class MutationRecord {
 	/**
@@ -75,8 +77,8 @@ export default class MutationRecord {
 	/**
 	 * (non-standard) Constructs a MutationRecord
 	 *
-	 * @param type   The value for the type property
-	 * @param target The value for the target property
+	 * @param type   - The value for the type property
+	 * @param target - The value for the target property
 	 */
 	constructor(type: string, target: Node) {
 		this.type = type;

@@ -5,9 +5,9 @@ import queueMutationRecord from '../mutation-observer/queueMutationRecord';
 /**
  * To change an attribute attribute from an element element to value, run these steps:
  *
- * @param attribute The attribute to change
- * @param element   The element that has the attribute
- * @param value     The new value for the attribute
+ * @param attribute - The attribute to change
+ * @param element   - The element that has the attribute
+ * @param value     - The new value for the attribute
  */
 export function changeAttribute(attribute: Attr, element: Element, value: string): void {
 	// 1. Queue an attribute mutation record for element with attribute’s local name, attribute's
@@ -34,8 +34,8 @@ export function changeAttribute(attribute: Attr, element: Element, value: string
 /**
  * To append an attribute attribute to an element element, run these steps:
  *
- * @param attribute The attribute to append
- * @param element   The element to append attribute to
+ * @param attribute - The attribute to append
+ * @param element   - The element to append attribute to
  */
 export function appendAttribute(attribute: Attr, element: Element): void {
 	// 1. Queue an attribute mutation record for element with attribute’s local name, attribute's
@@ -65,8 +65,8 @@ export function appendAttribute(attribute: Attr, element: Element): void {
 /**
  * To remove an attribute attribute from an element element, run these steps:
  *
- * @param attribute The attribute to remove
- * @param element   The element to remove attribute from
+ * @param attribute - The attribute to remove
+ * @param element   - The element to remove attribute from
  */
 export function removeAttribute(attribute: Attr, element: Element): void {
 	// 1. Queue an attribute mutation record for element with attribute’s local name, attribute's
@@ -96,9 +96,9 @@ export function removeAttribute(attribute: Attr, element: Element): void {
 /**
  * To replace an attribute oldAttr by an attribute newAttr in an element element, run these steps:
  *
- * @param oldAttr The attribute to replace
- * @param newAttr The attribute to replace oldAttr with
- * @param element The element on which to replace the attribute
+ * @param oldAttr - The attribute to replace
+ * @param newAttr - The attribute to replace oldAttr with
+ * @param element - The element on which to replace the attribute
  */
 export function replaceAttribute(oldAttr: Attr, newAttr: Attr, element: Element): void {
 	// 1. Queue an attribute mutation record for element with oldAttr’s local name, oldAttr’s

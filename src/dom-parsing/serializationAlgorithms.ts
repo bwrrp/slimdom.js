@@ -82,12 +82,12 @@ const HTML_VOID_ELEMENTS = [
 /**
  * The following steps form the fragment serializing algorithm:
  *
- * @param node                The node to serialize
- * @param requireWellFormed   Determines whether the result needs to be well-formed
- * @param withFictionalParent Whether to treat node as a fictional parent with node as its only
- *                            child
+ * @param node                - The node to serialize
+ * @param requireWellFormed   - Determines whether the result needs to be well-formed
+ * @param withFictionalParent - Whether to treat node as a fictional parent with node as its only
+ *                              child
  *
- * @return A string representing the serialization of node
+ * @returns A string representing the serialization of node
  */
 export function serializeFragment(
 	node: Node,
@@ -122,9 +122,9 @@ type PrefixIndex = { value: number };
  * To produce an XML serialization of a Node node given a flag require well-formed, run the
  * following steps:
  *
- * @param node                The node to serialize
- * @param requireWellFormed   Determines whether the result needs to be well-formed
- * @param result              Array of strings in which to construct the result
+ * @param node              - The node to serialize
+ * @param requireWellFormed - Determines whether the result needs to be well-formed
+ * @param result            - Array of strings in which to construct the result
  */
 export function produceXmlSerialization(
 	node: Node,
@@ -174,14 +174,14 @@ export function produceXmlSerialization(
  * on the node's interface type. Each referenced algorithm is to be passed the arguments as they
  * were recieved by the caller and return their result to the caller. Re-throw any exceptions.
  *
- * @param node              The node to serializer
- * @param namespace         The context namespace
- * @param prefixMap         The namespace prefix map
- * @param prefixIndex       A reference to the generated namespace prefix index
- * @param requireWellFormed Determines whether the result needs to be well-formed
- * @param result            Array of strings in which to construct the result
+ * @param node              - The node to serialize
+ * @param namespace         - The context namespace
+ * @param prefixMap         - The namespace prefix map
+ * @param prefixIndex       - A reference to the generated namespace prefix index
+ * @param requireWellFormed - Determines whether the result needs to be well-formed
+ * @param result            - Array of strings in which to construct the result
  *
- * @return The serialization of node
+ * @returns The serialization of node
  */
 function runXmlSerializationAlgorithm(
 	node: Node,
@@ -302,12 +302,12 @@ function runXmlSerializationAlgorithm(
 /**
  * 3.2.1.1 XML serializing an Element node
  *
- * @param node              The node to serializer
- * @param namespace         The context namespace
- * @param prefixMap         The namespace prefix map
- * @param prefixIndex       A reference to the generated namespace prefix index
- * @param requireWellFormed Determines whether the result needs to be well-formed
- * @param result            Array of strings in which to construct the result
+ * @param node              - The node to serialize
+ * @param namespace         - The context namespace
+ * @param prefixMap         - The namespace prefix map
+ * @param prefixIndex       - A reference to the generated namespace prefix index
+ * @param requireWellFormed - Determines whether the result needs to be well-formed
+ * @param result            - Array of strings in which to construct the result
  */
 function serializeElementNode(
 	node: Node,
@@ -620,13 +620,13 @@ function serializeElementNode(
  * ignore namespace definition attribute flag, and a require well-formed flag, is the result of the
  * following algorithm:
  *
- * @param element                            The element for which to serialize attributes
- * @param prefixMap                          The namespace prefix map
- * @param prefixIndex                        The generated namespace prefix index, by reference
- * @param localPrefixesMap                   The local prefixes map
- * @param ignoreNamespaceDefinitionAttribute The ignore namespace definition attribute flag
- * @param requireWellFormed                  The require well-formed flag
- * @param result                             Array of strings in which to construct the result
+ * @param element                            - The element for which to serialize attributes
+ * @param prefixMap                          - The namespace prefix map
+ * @param prefixIndex                        - The generated namespace prefix index, by reference
+ * @param localPrefixesMap                   - The local prefixes map
+ * @param ignoreNamespaceDefinitionAttribute - The ignore namespace definition attribute flag
+ * @param requireWellFormed                  - The require well-formed flag
+ * @param result                             - Array of strings in which to construct the result
  */
 function serializeAttributes(
 	element: Element,
@@ -839,10 +839,10 @@ function serializeAttributes(
  * When serializing an attribute value given an attribute value and require well-formed flag, the
  * user agent must run the following steps:
  *
- * @param attributeValue    The attribute value to serialize
- * @param requireWellFormed Determines whether the result needs to be well-formed
+ * @param attributeValue    - The attribute value to serialize
+ * @param requireWellFormed - Determines whether the result needs to be well-formed
  *
- * @return The serialized attribute value
+ * @returns The serialized attribute value
  */
 function serializeAttributeValue(
 	attributeValue: string | null,
@@ -892,11 +892,11 @@ function serializeAttributeValue(
  * To generate a prefix given a namespace prefix map map, a string new namespace, and a reference to
  * a generated namespace prefix index prefix index, the user agent must run the following steps:
  *
- * @param map          The namespace prefix map
- * @param newNamespace The new namespace to generate a prefix for
- * @param prefixIndex  The reference to the generated namespace prefix index
+ * @param map          - The namespace prefix map
+ * @param newNamespace - The new namespace to generate a prefix for
+ * @param prefixIndex  - The reference to the generated namespace prefix index
  *
- * @return The generated prefix for the new namespace
+ * @returns The generated prefix for the new namespace
  */
 function generatePrefix(
 	map: NamespacePrefixMap,
@@ -920,12 +920,12 @@ function generatePrefix(
 /**
  * 3.2.1.2 XML serializing a Document node
  *
- * @param node              The node to serializer
- * @param namespace         The context namespace
- * @param prefixMap         The namespace prefix map
- * @param prefixIndex       A reference to the generated namespace prefix index
- * @param requireWellFormed Determines whether the result needs to be well-formed
- * @param result            Array of strings in which to construct the result
+ * @param node              - The node to serialize
+ * @param namespace         - The context namespace
+ * @param prefixMap         - The namespace prefix map
+ * @param prefixIndex       - A reference to the generated namespace prefix index
+ * @param requireWellFormed - Determines whether the result needs to be well-formed
+ * @param result            - Array of strings in which to construct the result
  */
 function serializeDocumentNode(
 	node: Node,
@@ -970,12 +970,12 @@ function serializeDocumentNode(
 /**
  * 3.2.1.3 XML serializing a Comment node
  *
- * @param node              The node to serializer
- * @param namespace         The context namespace
- * @param prefixMap         The namespace prefix map
- * @param prefixIndex       A reference to the generated namespace prefix index
- * @param requireWellFormed Determines whether the result needs to be well-formed
- * @param result            Array of strings in which to construct the result
+ * @param node              - The node to serialize
+ * @param namespace         - The context namespace
+ * @param prefixMap         - The namespace prefix map
+ * @param prefixIndex       - A reference to the generated namespace prefix index
+ * @param requireWellFormed - Determines whether the result needs to be well-formed
+ * @param result            - Array of strings in which to construct the result
  */
 function serializeCommentNode(
 	node: Node,
@@ -1006,12 +1006,12 @@ function serializeCommentNode(
 /**
  * (not currently in spec) XML serializing a CDATASection node
  *
- * @param node              The node to serializer
- * @param namespace         The context namespace
- * @param prefixMap         The namespace prefix map
- * @param prefixIndex       A reference to the generated namespace prefix index
- * @param requireWellFormed Determines whether the result needs to be well-formed
- * @param result            Array of strings in which to construct the result
+ * @param node              - The node to serialize
+ * @param namespace         - The context namespace
+ * @param prefixMap         - The namespace prefix map
+ * @param prefixIndex       - A reference to the generated namespace prefix index
+ * @param requireWellFormed - Determines whether the result needs to be well-formed
+ * @param result            - Array of strings in which to construct the result
  */
 function serializeCDATASectionNode(
 	node: Node,
@@ -1032,12 +1032,12 @@ function serializeCDATASectionNode(
 /**
  * 3.2.1.4 XML serializing a Text node
  *
- * @param node              The node to serializer
- * @param namespace         The context namespace
- * @param prefixMap         The namespace prefix map
- * @param prefixIndex       A reference to the generated namespace prefix index
- * @param requireWellFormed Determines whether the result needs to be well-formed
- * @param result            Array of strings in which to construct the result
+ * @param node              - The node to serialize
+ * @param namespace         - The context namespace
+ * @param prefixMap         - The namespace prefix map
+ * @param prefixIndex       - A reference to the generated namespace prefix index
+ * @param requireWellFormed - Determines whether the result needs to be well-formed
+ * @param result            - Array of strings in which to construct the result
  */
 function serializeTextNode(
 	node: Node,
@@ -1074,12 +1074,12 @@ function serializeTextNode(
 /**
  * 3.2.1.5 XML serializing a DocumentFragment node
  *
- * @param node              The node to serializer
- * @param namespace         The context namespace
- * @param prefixMap         The namespace prefix map
- * @param prefixIndex       A reference to the generated namespace prefix index
- * @param requireWellFormed Determines whether the result needs to be well-formed
- * @param result            Array of strings in which to construct the result
+ * @param node              - The node to serialize
+ * @param namespace         - The context namespace
+ * @param prefixMap         - The namespace prefix map
+ * @param prefixIndex       - A reference to the generated namespace prefix index
+ * @param requireWellFormed - Determines whether the result needs to be well-formed
+ * @param result            - Array of strings in which to construct the result
  */
 function serializeDocumentFragmentNode(
 	node: Node,
@@ -1112,12 +1112,12 @@ function serializeDocumentFragmentNode(
 /**
  * 3.2.1.6 XML serializing a DocumentType node
  *
- * @param node              The node to serializer
- * @param namespace         The context namespace
- * @param prefixMap         The namespace prefix map
- * @param prefixIndex       A reference to the generated namespace prefix index
- * @param requireWellFormed Determines whether the result needs to be well-formed
- * @param result            Array of strings in which to construct the result
+ * @param node              - The node to serialize
+ * @param namespace         - The context namespace
+ * @param prefixMap         - The namespace prefix map
+ * @param prefixIndex       - A reference to the generated namespace prefix index
+ * @param requireWellFormed - Determines whether the result needs to be well-formed
+ * @param result            - Array of strings in which to construct the result
  */
 function serializeDocumentTypeNode(
 	node: Node,
@@ -1204,12 +1204,12 @@ function serializeDocumentTypeNode(
 /**
  * 3.2.1.7 XML serializing a ProcessingInstruction node
  *
- * @param node              The node to serializer
- * @param namespace         The context namespace
- * @param prefixMap         The namespace prefix map
- * @param prefixIndex       A reference to the generated namespace prefix index
- * @param requireWellFormed Determines whether the result needs to be well-formed
- * @param result            Array of strings in which to construct the result
+ * @param node              - The node to serialize
+ * @param namespace         - The context namespace
+ * @param prefixMap         - The namespace prefix map
+ * @param prefixIndex       - A reference to the generated namespace prefix index
+ * @param requireWellFormed - Determines whether the result needs to be well-formed
+ * @param result            - Array of strings in which to construct the result
  */
 function serializeProcessingInstructionNode(
 	node: Node,

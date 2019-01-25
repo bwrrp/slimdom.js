@@ -13,12 +13,12 @@
 	"main": "dist/slimdom.js",
 	"module": "dist/slimdom.mjs",
 	"scripts": {
-		"build:amd": "rimraf lib && tsc -P tsconfig.build.json --module amd",
-		"build:commonjs": "rimraf lib && tsc -P tsconfig.build.json --module commonjs",
-		"build:es": "rimraf lib && tsc -P tsconfig.build.json --module es6",
-		"build:bundle": "rimraf dist && rimraf lib && tsc -P tsconfig.build.json && rollup -c",
-		"docs": "typedoc --out docs --excludePrivate --excludeNotExported src/index.ts",
-		"prepare": "npm run build:bundle",
+		"build": "npm-run-all build:tsc build:bundle build:api build:docs",
+		"build:tsc": "rimraf dist && rimraf lib && tsc -P tsconfig.build.json",
+		"build:bundle": "rollup -c",
+		"build:api": "api-extractor run; copyfiles --flat temp/* api",
+		"build:docs": "api-documenter markdown -i dist -o docs",
+		"prepare": "npm run build",
 		"test": "jest --coverage --verbose",
 		"test:debug": "node --inspect --debug-brk node_modules/jest/bin/jest.js --runInBand"
 	},
@@ -30,17 +30,20 @@
 		"url": "git://github.com/bwrrp/slimdom.js.git"
 	},
 	"devDependencies": {
-		"@types/jest": "^23.3.10",
+		"@microsoft/api-documenter": "^7.0.35",
+		"@microsoft/api-extractor": "^7.0.28",
+		"@types/jest": "^24.0.11",
 		"@types/parse5": "^5.0.0",
-		"jest": "^23.6.0",
+		"copyfiles": "^2.1.0",
+		"jest": "^24.5.0",
+		"npm-run-all": "^4.1.5",
 		"parse5": "^5.1.0",
-		"prettier": "^1.15.3",
-		"rimraf": "^2.6.2",
-		"rollup": "^0.68.0",
-		"rollup-plugin-babel-minify": "^6.2.0",
-		"ts-jest": "~23.10.5",
-		"typedoc": "^0.13.0",
-		"typescript": "^3.2.2"
+		"prettier": "^1.16.4",
+		"rimraf": "^2.6.3",
+		"rollup": "^1.6.0",
+		"rollup-plugin-babel-minify": "^7.0.0",
+		"ts-jest": "~24.0.0",
+		"typescript": "^3.3.3333"
 	},
 	"jest": {
 		"transform": {

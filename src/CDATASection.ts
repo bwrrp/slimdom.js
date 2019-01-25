@@ -3,6 +3,9 @@ import Text from './Text';
 import { getContext } from './context/Context';
 import { NodeType } from './util/NodeType';
 
+/**
+ * @public
+ */
 export default class CDATASection extends Text {
 	// Node
 
@@ -19,7 +22,7 @@ export default class CDATASection extends Text {
 	/**
 	 * (non-standard) use Document#createCDATASection to create a CDATA section.
 	 *
-	 * @param data The data for the node
+	 * @param data - The data for the node
 	 */
 	constructor(data: string) {
 		super(data);
@@ -28,9 +31,9 @@ export default class CDATASection extends Text {
 	/**
 	 * (non-standard) Creates a copy of the context object, not including its children.
 	 *
-	 * @param document The node document to associate with the copy
+	 * @param document - The node document to associate with the copy
 	 *
-	 * @return A shallow copy of the context object
+	 * @returns A shallow copy of the context object
 	 */
 	public _copy(document: Document): CDATASection {
 		// Set copy’s data, to that of node.

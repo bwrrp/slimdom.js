@@ -18,9 +18,9 @@ import Node from '../Node';
  * mutation record of "attributes" for target with name, namespace, oldValue, « », « », null, and
  * null.
  *
- * @param type   The type of mutation record to queue
- * @param target The target node
- * @param data   The data for the mutation record
+ * @param type   - The type of mutation record to queue
+ * @param target - The target node
+ * @param data   - The data for the mutation record
  */
 export default function queueMutationRecord(type: string, target: Node, data: MutationRecordInit) {
 	// 1. Let interested observers be an empty map

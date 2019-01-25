@@ -22,8 +22,8 @@ export default class NotifyList {
 	 * Appends a given MutationRecord to the recordQueue of the given MutationObserver and schedules
 	 * it for reporting.
 	 *
-	 * @param observer The observer for which to enqueue the record
-	 * @param record   The record to enqueue
+	 * @param observer - The observer for which to enqueue the record
+	 * @param record   - The record to enqueue
 	 */
 	appendRecord(observer: MutationObserver, record: MutationRecord) {
 		observer._recordQueue.push(record);

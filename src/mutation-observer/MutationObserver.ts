@@ -5,6 +5,9 @@ import Node from '../Node';
 import { expectArity } from '../util/errorHelpers';
 import { asObject } from '../util/typeHelpers';
 
+/**
+ * @public
+ */
 export interface MutationObserverInit {
 	/**
 	 * Whether to observe childList mutations.
@@ -43,6 +46,8 @@ export type MutationCallback = (records: MutationRecord[], observer: MutationObs
  * 3.3.1. Interface MutationObserver
  *
  * A MutationObserver object can be used to observe mutations to the tree of nodes.
+ *
+ * @public
  */
 export default class MutationObserver {
 	/**
@@ -73,7 +78,7 @@ export default class MutationObserver {
 	 * MutationObserver object as second argument. It is invoked after nodes registered with the
 	 * observe() method, are mutated.
 	 *
-	 * @param callback Function called after mutations have been observed.
+	 * @param callback - Function called after mutations have been observed.
 	 */
 	constructor(callback: MutationCallback) {
 		expectArity(arguments, 1);
@@ -97,8 +102,8 @@ export default class MutationObserver {
 	 * other words, once an element is observed, observing it again with the same will do nothing.
 	 * However if the callback object is different it will of course add another observer to it.
 	 *
-	 * @param target  Node (or root of subtree) to observe
-	 * @param options Determines which types of mutations to observe
+	 * @param target  - Node (or root of subtree) to observe
+	 * @param options - Determines which types of mutations to observe
 	 */
 	observe(target: Node, options: MutationObserverInit) {
 		expectArity(arguments, 2);
@@ -178,7 +183,7 @@ export default class MutationObserver {
 	/**
 	 * Empties the MutationObserver instance's record queue and returns what was in there.
 	 *
-	 * @return An Array of MutationRecord objects that were recorded.
+	 * @returns An Array of MutationRecord objects that were recorded.
 	 */
 	takeRecords(): MutationRecord[] {
 		// 1. Let records be a clone of the context object's record queue.

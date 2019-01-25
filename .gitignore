@@ -1,8 +1,7 @@
-/.nyc_output/
 /coverage/
 /dist/
 /docs/
 /lib/
-/test/bin/
+/temp/
 node_modules/
 package-lock.json

@@ -28,6 +28,8 @@ import { asNullableString, asObject } from './util/typeHelpers';
 
 /**
  * 3.9. Interface Element
+ *
+ * @public
  */
 export default class Element extends Node
 	implements ParentNode, NonDocumentTypeChildNode, ChildNode {
@@ -141,9 +143,9 @@ export default class Element extends Node
 	/**
 	 * (non-standard) Use Document#createElement or Document#createElementNS to create an Element.
 	 *
-	 * @param namespace Namespace for the element
-	 * @param prefix    Prefix for the element
-	 * @param localName Local name for the element
+	 * @param namespace - Namespace for the element
+	 * @param prefix    - Prefix for the element
+	 * @param localName - Local name for the element
 	 */
 	constructor(namespace: string | null, prefix: string | null, localName: string) {
 		super();
@@ -157,7 +159,7 @@ export default class Element extends Node
 	/**
 	 * Returns whether the element has any attributes.
 	 *
-	 * @return True if the element has attributes, otherwise false
+	 * @returns True if the element has attributes, otherwise false
 	 */
 	public hasAttributes(): boolean {
 		return this.attributes.length > 0;
@@ -174,9 +176,9 @@ export default class Element extends Node
 	/**
 	 * Get the value of the specified attribute.
 	 *
-	 * @param qualifiedName The qualified name of the attribute
+	 * @param qualifiedName - The qualified name of the attribute
 	 *
-	 * @return The value of the attribute, or null if no such attribute exists
+	 * @returns The value of the attribute, or null if no such attribute exists
 	 */
 	public getAttribute(qualifiedName: string): string | null {
 		expectArity(arguments, 1);
@@ -198,10 +200,10 @@ export default class Element extends Node
 	/**
 	 * Get the value of the specified attribute.
 	 *
-	 * @param namespace The namespace of the attribute
-	 * @param localName The local name of the attribute
+	 * @param namespace - The namespace of the attribute
+	 * @param localName - The local name of the attribute
 	 *
-	 * @return The value of the attribute, or null if no such attribute exists
+	 * @returns The value of the attribute, or null if no such attribute exists
 	 */
 	public getAttributeNS(namespace: string | null, localName: string): string | null {
 		expectArity(arguments, 2);
@@ -224,8 +226,8 @@ export default class Element extends Node
 	/**
 	 * Sets the value of the specified attribute.
 	 *
-	 * @param qualifiedName The qualified name of the attribute
-	 * @param value         The new value for the attribute
+	 * @param qualifiedName - The qualified name of the attribute
+	 * @param value         - The new value for the attribute
 	 */
 	public setAttribute(qualifiedName: string, value: string): void {
 		expectArity(arguments, 2);
@@ -264,9 +266,9 @@ export default class Element extends Node
 	/**
 	 * Sets the value of the specified attribute.
 	 *
-	 * @param namespace     The namespace of the attribute
-	 * @param qualifiedName The qualified name of the attribute
-	 * @param value         The value for the attribute
+	 * @param namespace     - The namespace of the attribute
+	 * @param qualifiedName - The qualified name of the attribute
+	 * @param value         - The value for the attribute
 	 */
 	public setAttributeNS(namespace: string | null, qualifiedName: string, value: string): void {
 		expectArity(arguments, 3);
@@ -289,7 +291,7 @@ export default class Element extends Node
 	/**
 	 * Removes the specified attribute.
 	 *
-	 * @param qualifiedName The qualified name of the attribute
+	 * @param qualifiedName - The qualified name of the attribute
 	 */
 	public removeAttribute(qualifiedName: string): void {
 		expectArity(arguments, 1);
@@ -301,8 +303,8 @@ export default class Element extends Node
 	/**
 	 * Removes the specified attribute.
 	 *
-	 * @param namespace The namespace of the attribute
-	 * @param localName The local name of the attribute
+	 * @param namespace - The namespace of the attribute
+	 * @param localName - The local name of the attribute
 	 */
 	public removeAttributeNS(namespace: string | null, localName: string): void {
 		expectArity(arguments, 2);
@@ -319,8 +321,8 @@ export default class Element extends Node
 	 *
 	 * Returns true if qualifiedName is now present, and false otherwise.
 	 *
-	 * @param qualifiedName
-	 * @param force
+	 * @param qualifiedName - The qualified name of the attribute to toggle
+	 * @param force         - If true, adds the attribute, if false removes it
 	 */
 	public toggleAttribute(qualifiedName: string, force?: boolean): boolean {
 		// 1. If qualifiedName does not match the Name production in XML, then throw an
@@ -371,7 +373,7 @@ export default class Element extends Node
 	/**
 	 * Returns true if the specified attribute exists and false otherwise.
 	 *
-	 * @param qualifiedName The qualified name of the attribute
+	 * @param qualifiedName - The qualified name of the attribute
 	 */
 	public hasAttribute(qualifiedName: string): boolean {
 		expectArity(arguments, 1);
@@ -389,8 +391,8 @@ export default class Element extends Node
 	/**
 	 * Returns true if the specified attribute exists and false otherwise.
 	 *
-	 * @param namespace The namespace of the attribute
-	 * @param localName The local name of the attribute
+	 * @param namespace - The namespace of the attribute
+	 * @param localName - The local name of the attribute
 	 */
 	public hasAttributeNS(namespace: string | null, localName: string): boolean {
 		expectArity(arguments, 2);
@@ -407,9 +409,9 @@ export default class Element extends Node
 	/**
 	 * Returns the specified attribute node, or null if no such attribute exists.
 	 *
-	 * @param qualifiedName The qualified name of the attribute
+	 * @param qualifiedName - The qualified name of the attribute
 	 *
-	 * @return The attribute, or null if no such attribute exists
+	 * @returns The attribute, or null if no such attribute exists
 	 */
 	public getAttributeNode(qualifiedName: string): Attr | null {
 		expectArity(arguments, 1);
@@ -421,10 +423,10 @@ export default class Element extends Node
 	/**
 	 * Returns the specified attribute node, or null if no such attribute exists.
 	 *
-	 * @param namespace The namespace of the attribute
-	 * @param localName The local name of the attribute
+	 * @param namespace - The namespace of the attribute
+	 * @param localName - The local name of the attribute
 	 *
-	 * @return The attribute, or null if no such attribute exists
+	 * @returns The attribute, or null if no such attribute exists
 	 */
 	public getAttributeNodeNS(namespace: string | null, localName: string): Attr | null {
 		expectArity(arguments, 2);
@@ -437,9 +439,9 @@ export default class Element extends Node
 	/**
 	 * Sets an attribute given its node
 	 *
-	 * @param attr The attribute node to set
+	 * @param attr - The attribute node to set
 	 *
-	 * @return The previous attribute node for the attribute
+	 * @returns The previous attribute node for the attribute
 	 */
 	public setAttributeNode(attr: Attr): Attr | null {
 		expectArity(arguments, 1);
@@ -451,9 +453,9 @@ export default class Element extends Node
 	/**
 	 * Sets an attribute given its node
 	 *
-	 * @param attr The attribute node to set
+	 * @param attr - The attribute node to set
 	 *
-	 * @return The previous attribute node for the attribute
+	 * @returns The previous attribute node for the attribute
 	 */
 	public setAttributeNodeNS(attr: Attr): Attr | null {
 		expectArity(arguments, 1);
@@ -465,9 +467,9 @@ export default class Element extends Node
 	/**
 	 * Removes an attribute given its node
 	 *
-	 * @param attr The attribute node to remove
+	 * @param attr - The attribute node to remove
 	 *
-	 * @return The removed attribute node
+	 * @returns The removed attribute node
 	 */
 	public removeAttributeNode(attr: Attr): Attr {
 		expectArity(arguments, 1);
@@ -488,10 +490,10 @@ export default class Element extends Node
 	/**
 	 * (non-standard) Creates a copy of the given node
 	 *
-	 * @param document The node document to associate with the copy
-	 * @param other    The node to copy
+	 * @param document - The node document to associate with the copy
+	 * @param other    - The node to copy
 	 *
-	 * @return A shallow copy of the node
+	 * @returns A shallow copy of the node
 	 */
 	public _copy(document: Document): Element {
 		// 2.1. Let copy be the result of creating an element, given document, node’s local name,
@@ -538,12 +540,12 @@ export default class Element extends Node
  * To create an element, given a document, localName, namespace, and optional prefix, is, and
  * synchronous custom elements flag, run these steps:
  *
- * @param document  The node document for the new element
- * @param localName The local name for the new element
- * @param namespace The namespace URI for the new element, or null for the null namespace
- * @param prefix    The prefix for the new element, or null for no prefix
+ * @param document  - The node document for the new element
+ * @param localName - The local name for the new element
+ * @param namespace - The namespace URI for the new element, or null for the null namespace
+ * @param prefix    - The prefix for the new element, or null for no prefix
  *
- * @return The new element
+ * @returns The new element
  */
 export function createElement(
 	document: Document,
@@ -634,10 +636,10 @@ export function createElement(
 /**
  * To get an attribute by name given a qualifiedName and element element, run these steps:
  *
- * @param qualifiedName The qualified name of the attribute to get
- * @param element       The element to get the attribute on
+ * @param qualifiedName - The qualified name of the attribute to get
+ * @param element       - The element to get the attribute on
  *
- * @return The first matching attribute, or null otherwise
+ * @returns The first matching attribute, or null otherwise
  */
 function getAttributeByName(qualifiedName: string, element: Element): Attr | null {
 	// 1. If element is in the HTML namespace and its node document is an HTML document, then set
@@ -653,11 +655,11 @@ function getAttributeByName(qualifiedName: string, element: Element): Attr | nul
  * To get an attribute by namespace and local name given a namespace, localName, and element
  * element, run these steps:
  *
- * @param namespace Namespace for the attribute
- * @param localName Local name for the attribute
- * @param element   The element to get the attribute on
+ * @param namespace - Namespace for the attribute
+ * @param localName - Local name for the attribute
+ * @param element   - The element to get the attribute on
  *
- * @return The first matching attribute, or null otherwise
+ * @returns The first matching attribute, or null otherwise
  */
 function getAttributeByNamespaceAndLocalName(
 	namespace: string | null,
@@ -681,10 +683,10 @@ function getAttributeByNamespaceAndLocalName(
 /**
  * To set an attribute given an attr and element, run these steps:
  *
- * @param attr    The new attribute to set
- * @param element The element to set attr on
+ * @param attr    - The new attribute to set
+ * @param element - The element to set attr on
  *
- * @return The previous attribute with attr's namespace and local name, or null if there was no such
+ * @returns The previous attribute with attr's namespace and local name, or null if there was no such
  *         attribute
  */
 function setAttribute(attr: Attr, element: Element): Attr | null {
@@ -718,11 +720,11 @@ function setAttribute(attr: Attr, element: Element): Attr | null {
  * To set an attribute value for an element element using a localName and value, and an optional
  * prefix, and namespace, run these steps:
  *
- * @param element   Element to set the attribute value on
- * @param localName Local name of the attribute
- * @param value     New value of the attribute
- * @param prefix    Prefix of the attribute
- * @param namespace Namespace of the attribute
+ * @param element   - Element to set the attribute value on
+ * @param localName - Local name of the attribute
+ * @param value     - New value of the attribute
+ * @param prefix    - Prefix of the attribute
+ * @param namespace - Namespace of the attribute
  */
 function setAttributeValue(
 	element: Element,
@@ -757,10 +759,10 @@ function setAttributeValue(
 /**
  * To remove an attribute by name given a qualifiedName and element element, run these steps:
  *
- * @param qualifiedName Qualified name of the attribute
- * @param element       The element to remove the attribute from
+ * @param qualifiedName - Qualified name of the attribute
+ * @param element       - The element to remove the attribute from
  *
- * @return The removed attribute, or null if no matching attribute exists
+ * @returns The removed attribute, or null if no matching attribute exists
  */
 function removeAttributeByName(qualifiedName: string, element: Element): Attr | null {
 	// 1. Let attr be the result of getting an attribute given qualifiedName and element.
@@ -779,11 +781,11 @@ function removeAttributeByName(qualifiedName: string, element: Element): Attr | 
  * To remove an attribute by namespace and local name given a namespace, localName, and element
  * element, run these steps:
  *
- * @param namespace The namespace of the attribute
- * @param localName The local name of the attribute
- * @param element   The element to remove the attribute from
+ * @param namespace - The namespace of the attribute
+ * @param localName - The local name of the attribute
+ * @param element   - The element to remove the attribute from
  *
- * @return The removed attribute, or null if no matching attribute exists
+ * @returns The removed attribute, or null if no matching attribute exists
  */
 function removeAttributeByNamespaceAndLocalName(
 	namespace: string | null,

@@ -15,7 +15,7 @@ export default class RegisteredObservers {
 	private _registeredObservers: RegisteredObserver[] = [];
 
 	/**
-	 * @param node Node for which this instance holds RegisteredObserver instances.
+	 * @param node - Node for which this instance holds RegisteredObserver instances.
 	 */
 	constructor(node: Node) {
 		this._node = node;
@@ -24,8 +24,8 @@ export default class RegisteredObservers {
 	/**
 	 * Registers a given MutationObserver with the given options.
 	 *
-	 * @param observer Observer to create a registration for
-	 * @param options  Options for the registration
+	 * @param observer - Observer to create a registration for
+	 * @param options  - Options for the registration
 	 */
 	public register(observer: MutationObserver, options: MutationObserverInit) {
 		// (continuing from MutationObserver#observe)
@@ -65,7 +65,7 @@ export default class RegisteredObservers {
 	 * nodes. They are guaranteed to be present in the array, as MutationObserver#_transients and
 	 * RegisteredObservers#_registeredObservers are kept in sync.
 	 *
-	 * @param transientRegisteredObserver The registered observer to remove
+	 * @param transientRegisteredObserver - The registered observer to remove
 	 */
 	public removeTransientRegisteredObserver(
 		transientRegisteredObserver: RegisteredObserver
@@ -82,7 +82,7 @@ export default class RegisteredObservers {
 	 * As this only occurs for all nodes at once, it is the caller's responsibility to remove the
 	 * associated node from the observer's list of nodes.
 	 *
-	 * @param observer Observer for which to remove the registration
+	 * @param observer - Observer for which to remove the registration
 	 */
 	public removeForObserver(observer: MutationObserver): void {
 		// Filter the array in-place
@@ -104,11 +104,11 @@ export default class RegisteredObservers {
 	/**
 	 * Determines interested observers for the given record.
 	 *
-	 * @param type                The type of mutation record to queue
-	 * @param target              The target node
-	 * @param data                The data for the mutation record
-	 * @param interestedObservers Array of mutation observer objects to append to
-	 * @param pairedStrings       Paired strings for the mutation observer objects
+	 * @param type                - The type of mutation record to queue
+	 * @param target              - The target node
+	 * @param data                - The data for the mutation record
+	 * @param interestedObservers - Array of mutation observer objects to append to
+	 * @param pairedStrings       - Paired strings for the mutation observer objects
 	 */
 	public collectInterestedObservers(
 		type: string,
@@ -134,7 +134,7 @@ export default class RegisteredObservers {
 	 * Append transient registered observers for any registered observers whose options' subtree is
 	 * true.
 	 *
-	 * @param node Node to append the transient registered observers to
+	 * @param node - Node to append the transient registered observers to
 	 */
 	public appendTransientRegisteredObservers(node: Node): void {
 		this._registeredObservers.forEach(registeredObserver => {
@@ -147,7 +147,7 @@ export default class RegisteredObservers {
 	/**
 	 * Appends a transient registered observer for the given registered observer.
 	 *
-	 * @param source The source registered observer
+	 * @param source - The source registered observer
 	 */
 	public registerTransient(source: RegisteredObserver): void {
 		this._registeredObservers.push(
@@ -160,7 +160,7 @@ export default class RegisteredObservers {
 /**
  * Removes all transient registered observers whose observer is observer.
  *
- * @param observer The mutation observer object to remove transient registered observers for
+ * @param observer - The mutation observer object to remove transient registered observers for
  */
 export function removeTransientRegisteredObserversForObserver(observer: MutationObserver): void {
 	observer._transients.forEach(transientRegisteredObserver => {
@@ -174,7 +174,7 @@ export function removeTransientRegisteredObserversForObserver(observer: Mutation
 /**
  * Removes all transient registered observer whose source is source.
  *
- * @param source The registered observer to remove transient registered observers for
+ * @param source - The registered observer to remove transient registered observers for
  */
 export function removeTransientRegisteredObserversForSource(source: RegisteredObserver): void {
 	for (let i = source.observer._transients.length - 1; i >= 0; --i) {

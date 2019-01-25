@@ -18,10 +18,10 @@ export const enum NodeType {
 /**
  * Checks whether the given node's nodeType is one of the specified values
  *
- * @param node  The node to test
- * @param types Possible nodeTypes for node
+ * @param node  - The node to test
+ * @param types - Possible nodeTypes for node
  *
- * @return Whether node.nodeType is one of the specified values
+ * @returns Whether node.nodeType is one of the specified values
  */
 export function isNodeOfType(node: Node, ...types: NodeType[]): boolean {
 	return types.some(t => node.nodeType === t);

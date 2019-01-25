@@ -34,11 +34,11 @@ export default class RegisteredObserver {
 	public source: RegisteredObserver | null = null;
 
 	/**
-	 * @param observer The observer being registered
-	 * @param node     The node being observed
-	 * @param options  Options for the registration
-	 * @param source   If not null, creates a transient registered observer for the given registered
-	 *                 observer
+	 * @param observer - The observer being registered
+	 * @param node     - The node being observed
+	 * @param options  - Options for the registration
+	 * @param source   - If not null, creates a transient registered observer for the given
+	 *                   registered observer
 	 */
 	constructor(
 		observer: MutationObserver,
@@ -60,11 +60,11 @@ export default class RegisteredObserver {
 	 * adds the record when it's type isn't blocked by one of the flags of this registered
 	 * MutationObserver options (formally the MutationObserverInit object).
 	 *
-	 * @param type                The type of mutation record to queue
-	 * @param target              The target node
-	 * @param data                The data for the mutation record
-	 * @param interestedObservers Array of mutation observer objects to append to
-	 * @param pairedStrings       Paired strings for the mutation observer objects
+	 * @param type                - The type of mutation record to queue
+	 * @param target              - The target node
+	 * @param data                - The data for the mutation record
+	 * @param interestedObservers - Array of mutation observer objects to append to
+	 * @param pairedStrings       - Paired strings for the mutation observer objects
 	 */
 	public collectInterestedObservers(
 		type: string,

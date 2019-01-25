@@ -22,6 +22,8 @@ import { asObject, asUnsignedLong } from './util/typeHelpers';
  * Interface AbstractRange
  *
  * Objects implementing the AbstractRange interface are known as ranges.
+ *
+ * @public
  */
 export interface AbstractRange {
 	startContainer: Node;
@@ -33,13 +35,15 @@ export interface AbstractRange {
 
 /**
  * Interface StaticRange
+ *
+ * @public
  */
 export interface StaticRange extends AbstractRange {}
 
 /**
  * A range is collapsed if its start node is its end node and its start offset is its end offset.
  *
- * @param range
+ * @param range - The range to check
  */
 function isCollapsed(range: AbstractRange): boolean {
 	return range.startContainer === range.endContainer && range.startOffset === range.endOffset;
@@ -49,6 +53,8 @@ function isCollapsed(range: AbstractRange): boolean {
  * Interface Range
  *
  * Objects implementing the Range interface are known as live ranges.
+ *
+ * @public
  */
 export default class Range implements AbstractRange {
 	public startContainer: Node;
@@ -98,8 +104,8 @@ export default class Range implements AbstractRange {
 	/**
 	 * Sets the start boundary point of the range.
 	 *
-	 * @param node   The new start container
-	 * @param offset The new start offset
+	 * @param node   - The new start container
+	 * @param offset - The new start offset
 	 */
 	setStart(node: Node, offset: number): void {
 		expectArity(arguments, 2);
@@ -144,8 +150,8 @@ export default class Range implements AbstractRange {
 	/**
 	 * Sets the end boundary point of the range.
 	 *
-	 * @param node   The new end container
-	 * @param offset The new end offset
+	 * @param node   - The new end container
+	 * @param offset - The new end offset
 	 */
 	setEnd(node: Node, offset: number): void {
 		expectArity(arguments, 2);
@@ -190,7 +196,7 @@ export default class Range implements AbstractRange {
 	/**
 	 * Sets the start boundary point of the range to the position just before the given node.
 	 *
-	 * @param node The node to set the range's start before
+	 * @param node - The node to set the range's start before
 	 */
 	setStartBefore(node: Node): void {
 		expectArity(arguments, 1);
@@ -211,7 +217,7 @@ export default class Range implements AbstractRange {
 	/**
 	 * Sets the start boundary point of the range to the position just after the given node.
 	 *
-	 * @param node The node to set the range's start before
+	 * @param node - The node to set the range's start before
 	 */
 	setStartAfter(node: Node): void {
 		expectArity(arguments, 1);
@@ -232,7 +238,7 @@ export default class Range implements AbstractRange {
 	/**
 	 * Sets the end boundary point of the range to the position just before the given node.
 	 *
-	 * @param node The node to set the range's end before
+	 * @param node - The node to set the range's end before
 	 */
 	setEndBefore(node: Node): void {
 		expectArity(arguments, 1);
@@ -253,7 +259,7 @@ export default class Range implements AbstractRange {
 	/**
 	 * Sets the end boundary point of the range to the position just after the given node.
 	 *
-	 * @param node The node to set the range's end before
+	 * @param node - The node to set the range's end before
 	 */
 	setEndAfter(node: Node): void {
 		expectArity(arguments, 1);
@@ -274,8 +280,8 @@ export default class Range implements AbstractRange {
 	/**
 	 * Sets the range's boundary points to the same position.
 	 *
-	 * @param toStart If true, set both points to the start of the range, otherwise set them to the
-	 *                end
+	 * @param toStart - If true, set both points to the start of the range, otherwise set them to
+	 *                  the end
 	 */
 	collapse(toStart: boolean = false): void {
 		if (toStart) {
@@ -422,7 +428,7 @@ export default class Range implements AbstractRange {
 	/**
 	 * Returns a range with the same start and end as the context object.
 	 *
-	 * @return A copy of the context object
+	 * @returns A copy of the context object
 	 */
 	cloneRange(): Range {
 		const context = getContext(this);
@@ -454,10 +460,10 @@ export default class Range implements AbstractRange {
 	 * Returns true if the given point is after or equal to the start point and before or equal to
 	 * the end point of the context object.
 	 *
-	 * @param node   Node of point to check
-	 * @param offset Offset of point to check
+	 * @param node   - Node of point to check
+	 * @param offset - Offset of point to check
 	 *
-	 * @return Whether the point is in the range
+	 * @returns Whether the point is in the range
 	 */
 	isPointInRange(node: Node, offset: number): boolean {
 		expectArity(arguments, 2);
@@ -496,10 +502,10 @@ export default class Range implements AbstractRange {
 	/**
 	 * Compares the given point to the range's boundary points.
 	 *
-	 * @param node   Node of point to check
-	 * @param offset Offset of point to check
+	 * @param node   - Node of point to check
+	 * @param offset - Offset of point to check
 	 *
-	 * @return -1, 0 or 1 depending on whether the point is before, inside or after the range,
+	 * @returns -1, 0 or 1 depending on whether the point is before, inside or after the range,
 	 *         respectively
 	 */
 	comparePoint(node: Node, offset: number): number {
@@ -546,9 +552,9 @@ export default class Range implements AbstractRange {
 	/**
 	 * Returns true if range overlaps the range from before node to after node.
 	 *
-	 * @param node The node to check
+	 * @param node - The node to check
 	 *
-	 * @return Whether the range intersects node
+	 * @returns Whether the range intersects node
 	 */
 	intersectsNode(node: Node): boolean {
 		expectArity(arguments, 1);
@@ -598,12 +604,12 @@ const POSITION_AFTER = 1;
  *
  * This implementation assumes it is called on nodes under the same root.
  *
- * @param nodeA   First boundary point's node
- * @param offsetA First boundary point's offset
- * @param nodeB   Second boundary point's node
- * @param offsetB Second boundary point's offset
+ * @param nodeA   - First boundary point's node
+ * @param offsetA - First boundary point's offset
+ * @param nodeB   - Second boundary point's node
+ * @param offsetB - Second boundary point's offset
  *
- * @return -1, 0 or 1, depending on the boundary points' relative positions
+ * @returns -1, 0 or 1, depending on the boundary points' relative positions
  */
 function compareBoundaryPointPositions(
 	nodeA: Node,
@@ -641,9 +647,9 @@ function compareBoundaryPointPositions(
 /**
  * The root of a range is the root of its start node.
  *
- * @param range The range to get the root of
+ * @param range - The range to get the root of
  *
- * @return The root of range
+ * @returns The root of range
  */
 function getRootOfRange(range: Range): Node {
 	return getRootOfNode(range.startContainer);

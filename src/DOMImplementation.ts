@@ -8,13 +8,16 @@ import { expectArity } from './util/errorHelpers';
 import { HTML_NAMESPACE, validateQualifiedName } from './util/namespaceHelpers';
 import { asNullableObject, asNullableString, treatNullAsEmptyString } from './util/typeHelpers';
 
+/**
+ * @public
+ */
 export default class DOMImplementation {
 	private _document: Document;
 
 	/**
 	 * (non-standard) Use Document#implementation to access instances of this class
 	 *
-	 * @param document The document to associate with this instance
+	 * @param document - The document to associate with this instance
 	 */
 	constructor(document: Document) {
 		this._document = document;
@@ -23,11 +26,11 @@ export default class DOMImplementation {
 	/**
 	 * Returns a doctype, with the given qualifiedName, publicId, and systemId.
 	 *
-	 * @param qualifiedName Qualified name for the doctype
-	 * @param publicId      Public ID for the doctype
-	 * @param systemId      System ID for the doctype
+	 * @param qualifiedName - Qualified name for the doctype
+	 * @param publicId      - Public ID for the doctype
+	 * @param systemId      - System ID for the doctype
 	 *
-	 * @return The new doctype node
+	 * @returns The new doctype node
 	 */
 	createDocumentType(qualifiedName: string, publicId: string, systemId: string): DocumentType {
 		expectArity(arguments, 3);
@@ -52,12 +55,12 @@ export default class DOMImplementation {
 	 * namespace is namespace (unless qualifiedName is the empty string), and with doctype, if it is
 	 * given, as its doctype.
 	 *
-	 * @param namespace     The namespace for the root element
-	 * @param qualifiedName The qualified name for the root element, or empty string to not create a
-	 *                      root element
-	 * @param doctype       The doctype for the new document, or null to not add a doctype
+	 * @param namespace     - The namespace for the root element
+	 * @param qualifiedName - The qualified name for the root element, or empty string to not create
+	 *                        a root element
+	 * @param doctype       - The doctype for the new document, or null to not add a doctype
 	 *
-	 * @return The new XMLDocument
+	 * @returns The new XMLDocument
 	 */
 	createDocument(
 		namespace: string | null,
@@ -110,9 +113,9 @@ export default class DOMImplementation {
 	/**
 	 * Returns a HTML document with a basic tree already constructed.
 	 *
-	 * @param title Optional title for the new HTML document
+	 * @param title - Optional title for the new HTML document
 	 *
-	 * @return The new document
+	 * @returns The new document
 	 */
 	createHTMLDocument(title?: string | null): Document {
 		title = asNullableString(title);

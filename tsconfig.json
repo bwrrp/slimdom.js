@@ -2,7 +2,6 @@
 	"compilerOptions": {
 		"outDir": "lib",
 		"sourceMap": true,
-		"inlineSourceMap": true,
 		"strict": true,
 		"module": "commonjs",
 		"target": "es6",

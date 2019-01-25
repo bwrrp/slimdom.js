@@ -51,9 +51,9 @@ export function asParentNode(node: Node): ParentNode | null {
  * (Non-standard) According to the spec, the children getter should return a live HTMLCollection.
  * This implementation returns a static array instead.
  *
- * @param node The node to get element children of
+ * @param node - The node to get element children of
  *
- * @return The
+ * @returns The
  */
 export function getChildren(node: ParentNode): Element[] {
 	const elements: Element[] = [];

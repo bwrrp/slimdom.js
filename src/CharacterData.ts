@@ -14,6 +14,8 @@ import { asNullableString, asUnsignedLong, treatNullAsEmptyString } from './util
 
 /**
  * 3.10. Interface CharacterData
+ *
+ * @public
  */
 export default abstract class CharacterData extends Node
 	implements NonDocumentTypeChildNode, ChildNode {
@@ -104,7 +106,7 @@ export default abstract class CharacterData extends Node
 	/**
 	 * (non-standard) CharacterData should never be instantiated directly.
 	 *
-	 * @param data The data to associate with the node
+	 * @param data - The data to associate with the node
 	 */
 	protected constructor(data: string) {
 		super();
@@ -114,10 +116,10 @@ export default abstract class CharacterData extends Node
 	/**
 	 * Returns a substring of the node's data.
 	 *
-	 * @param offset Offset at which to start the substring
-	 * @param count  The number of code units to return
+	 * @param offset - Offset at which to start the substring
+	 * @param count  - The number of code units to return
 	 *
-	 * @return The specified substring
+	 * @returns The specified substring
 	 */
 	public substringData(offset: number, count: number): string {
 		expectArity(arguments, 2);
@@ -127,7 +129,7 @@ export default abstract class CharacterData extends Node
 	/**
 	 * Appends data to the node's data.
 	 *
-	 * @param data Data to append
+	 * @param data - Data to append
 	 */
 	public appendData(data: string): void {
 		expectArity(arguments, 1);
@@ -137,8 +139,8 @@ export default abstract class CharacterData extends Node
 	/**
 	 * Inserts data at the specified position in the node's data.
 	 *
-	 * @param offset Offset at which to insert
-	 * @param data   Data to insert
+	 * @param offset - Offset at which to insert
+	 * @param data   - Data to insert
 	 */
 	public insertData(offset: number, data: string): void {
 		expectArity(arguments, 1);
@@ -148,8 +150,8 @@ export default abstract class CharacterData extends Node
 	/**
 	 * Deletes data from the specified position.
 	 *
-	 * @param offset Offset at which to delete
-	 * @param count  Number of code units to delete
+	 * @param offset - Offset at which to delete
+	 * @param count  - Number of code units to delete
 	 */
 	public deleteData(offset: number, count: number): void {
 		expectArity(arguments, 2);
@@ -159,9 +161,9 @@ export default abstract class CharacterData extends Node
 	/**
 	 * Replaces data at the specified position.
 	 *
-	 * @param offset Offset at which to replace
-	 * @param count  Number of code units to remove
-	 * @param data   Data to insert
+	 * @param offset - Offset at which to replace
+	 * @param count  - Number of code units to remove
+	 * @param data   - Data to insert
 	 */
 	public replaceData(offset: number, count: number, data: string): void {
 		expectArity(arguments, 3);
@@ -172,10 +174,10 @@ export default abstract class CharacterData extends Node
 /**
  * To replace data of node node with offset offset, count count, and data data, run these steps:
  *
- * @param node   The node to replace data on
- * @param offset The offset at which to start replacing
- * @param count  The number of code units to replace
- * @param data   The data to insert in place of the removed data
+ * @param node   - The node to replace data on
+ * @param offset - The offset at which to start replacing
+ * @param count  - The number of code units to replace
+ * @param data   - The data to insert in place of the removed data
  */
 export function replaceData(
 	node: CharacterData,
@@ -256,11 +258,11 @@ export function replaceData(
 /**
  * To substring data with node node, offset offset, and count count, run these steps:
  *
- * @param node   The node to get data from
- * @param offset The offset at which to start the substring
- * @param count  The number of code units to include in the substring
+ * @param node   - The node to get data from
+ * @param offset - The offset at which to start the substring
+ * @param count  - The number of code units to include in the substring
  *
- * @return The requested substring
+ * @returns The requested substring
  */
 export function substringData(node: CharacterData, offset: number, count: number): string {
 	// Match spec data types

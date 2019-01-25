@@ -155,11 +155,11 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
 /**
  * To pre-insert a node into a parent before a child, run these steps:
  *
- * @param node   Node to pre-insert
- * @param parent Parent to insert under
- * @param child  Child to insert before, or null to insert at the end of parent
+ * @param node   - Node to pre-insert
+ * @param parent - Parent to insert under
+ * @param child  - Child to insert before, or null to insert at the end of parent
  *
- * @return The inserted node
+ * @returns The inserted node
  */
 export function preInsertNode<TNode extends Node>(
 	node: TNode,
@@ -191,10 +191,10 @@ export function preInsertNode<TNode extends Node>(
  * To insert a node into a parent before a child, with an optional suppress observers flag, run
  * these steps:
  *
- * @param node              Node to insert
- * @param parent            Parent to insert under
- * @param child             Child to insert before, or null to insert at end of parent
- * @param suppressObservers Whether to skip enqueueing a mutation record for this mutation
+ * @param node              - Node to insert
+ * @param parent            - Parent to insert under
+ * @param child             - Child to insert before, or null to insert at end of parent
+ * @param suppressObservers - Whether to skip enqueueing a mutation record for this mutation
  */
 export function insertNode(
 	node: Node,
@@ -294,10 +294,10 @@ export function insertNode(
 /**
  * To append a node to a parent
  *
- * @param node   Node to append
- * @param parent Parent to append to
+ * @param node   - Node to append
+ * @param parent - Parent to append to
  *
- * @return The appended node
+ * @returns The appended node
  */
 export function appendNode<TNode extends Node>(node: TNode, parent: Node): TNode {
 	// pre-insert node into parent before null.
@@ -307,11 +307,11 @@ export function appendNode<TNode extends Node>(node: TNode, parent: Node): TNode
 /**
  * To replace a child with node within a parent, run these steps:
  *
- * @param child  The child node to replace
- * @param node   The node to replace child with
- * @param parent The parent to replace under
+ * @param child  - The child node to replace
+ * @param node   - The node to replace child with
+ * @param parent - The parent to replace under
  *
- * @return The old child node
+ * @returns The old child node
  */
 export function replaceChildWithNode<TChild extends Node>(
 	child: TChild,
@@ -497,10 +497,10 @@ export function replaceChildWithNode<TChild extends Node>(
 /**
  * To pre-remove a child from a parent, run these steps:
  *
- * @param child  Child node to remove
- * @param parent Parent under which to remove child
+ * @param child  - Child node to remove
+ * @param parent - Parent under which to remove child
  *
- * @return The removed child
+ * @returns The removed child
  */
 export function preRemoveChild<TChild extends Node>(child: TChild, parent: Node): TChild {
 	// 1. If child’s parent is not parent, then throw a NotFoundError.
@@ -518,9 +518,9 @@ export function preRemoveChild<TChild extends Node>(child: TChild, parent: Node)
 /**
  * To remove a node from a parent, with an optional suppress observers flag, run these steps:
  *
- * @param node              Child to remove
- * @param parent            Parent to remove child from
- * @param suppressObservers Whether to skip enqueueing a mutation record for this mutation
+ * @param node              - Child to remove
+ * @param parent            - Parent to remove child from
+ * @param suppressObservers - Whether to skip enqueueing a mutation record for this mutation
  */
 export function removeNode(node: Node, parent: Node, suppressObservers: boolean = false): void {
 	// 1. Let index be node’s index.
@@ -629,8 +629,8 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
  *
  * To adopt a node into a document, run these steps:
  *
- * @param node     Node to adopt
- * @param document Document to adopt node into
+ * @param node     - Node to adopt
+ * @param document - Document to adopt node into
  */
 export function adoptNode(node: Node, document: Document): void {
 	// 1. Let oldDocument be node’s node document.
