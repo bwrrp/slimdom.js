@@ -1,4 +1,4 @@
-import minify from 'rollup-plugin-babel-minify';
+import { terser } from 'rollup-plugin-terser';
 
 const { main: MAIN_DEST_FILE, module: MODULE_DEST_FILE } = require('./package.json');
 
@@ -17,10 +17,12 @@ export default {
 		console.error(warning.message);
 	},
 	plugins: [
-		minify({
-			comments: false,
+		terser({
 			mangle: {
-				exclude: [
+				properties: {
+					regex: /^_/
+				},
+				reserved: [
 					'Attr',
 					'CDATASection',
 					'CharacterData',
@@ -38,8 +40,7 @@ export default {
 					'XMLDocument',
 					'XMLSerializer'
 				]
-			},
-			sourceMap: true
+			}
 		})
 	]
 };
