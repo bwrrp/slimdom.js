@@ -4,7 +4,9 @@ import Element from './Element';
 import Node from './Node';
 import { getContext } from './context/Context';
 import { expectArity } from './util/errorHelpers';
+import { getConcatenatedTextNodesData, setTextContentByReplacing } from './util/mutationAlgorithms';
 import { NodeType } from './util/NodeType';
+import { treatNullAsEmptyString } from './util/typeHelpers';
 
 /**
  * @public
@@ -26,6 +28,17 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 
 	public set nodeValue(newValue: string | null) {
 		// Do nothing.
+	}
+
+	public get textContent(): string | null {
+		// Return the concatenation of data of all the Text node descendants of
+		// the context object, in tree order
+		return getConcatenatedTextNodesData(this);
+	}
+
+	public set textContent(newValue: string | null) {
+		newValue = treatNullAsEmptyString(newValue);
+		setTextContentByReplacing(this, newValue);
 	}
 
 	public lookupPrefix(namespace: string | null): string | null {

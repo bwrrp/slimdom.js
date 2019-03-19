@@ -32,6 +32,11 @@ describe('DocumentType', () => {
 		expect(document.nodeValue).toBe(null);
 	});
 
+	it('can not change its textContent', () => {
+		doctype.textContent = 'test';
+		expect(doctype.textContent).toBe(null);
+	});
+
 	it('can be cloned', () => {
 		const copy = doctype.cloneNode(true);
 		expect(copy.nodeType).toBe(10);

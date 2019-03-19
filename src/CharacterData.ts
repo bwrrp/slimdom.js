@@ -32,6 +32,17 @@ export default abstract class CharacterData extends Node
 		replaceData(this, 0, this.length, newValue);
 	}
 
+	public get textContent(): string | null {
+		return this._data;
+	}
+
+	public set textContent(newValue: string | null) {
+		newValue = treatNullAsEmptyString(newValue);
+
+		// Set an existing attribute value with context object and new value.
+		replaceData(this, 0, this.length, newValue);
+	}
+
 	public lookupPrefix(namespace: string | null): string | null {
 		expectArity(arguments, 1);
 

@@ -35,6 +35,17 @@ export default class Attr extends Node {
 		setExistingAttributeValue(this, newValue);
 	}
 
+	public get textContent(): string | null {
+		return this._value;
+	}
+
+	public set textContent(newValue: string | null) {
+		newValue = treatNullAsEmptyString(newValue);
+
+		// Set an existing attribute value with context object and new value.
+		setExistingAttributeValue(this, newValue);
+	}
+
 	public lookupPrefix(namespace: string | null): string | null {
 		expectArity(arguments, 1);
 

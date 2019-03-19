@@ -35,6 +35,23 @@ describe('Element', () => {
 		expect(element.nodeValue).toBe(null);
 	});
 
+	it('can change its textContent, replacing its existing children', () => {
+		element
+			.appendChild(document.createElement('oldChild'))
+			.appendChild(document.createTextNode('old'));
+		element.appendChild(document.createCDATASection('text'));
+		expect(element.textContent).toBe('oldtext');
+
+		element.textContent = 'test';
+		expect(element.textContent).toBe('test');
+		expect(element.childNodes.length).toBe(1);
+		expect(element.firstChild!.nodeType).toBe(3);
+
+		element.textContent = null;
+		expect(element.textContent).toBe('');
+		expect(element.childNodes.length).toBe(0);
+	});
+
 	it('can lookup its own prefix or namespace', () => {
 		expect(element.lookupPrefix(null)).toBe(null);
 		expect(element.lookupNamespaceURI('')).toBe(null);

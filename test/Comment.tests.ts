@@ -38,10 +38,25 @@ describe('Comment', () => {
 		const comment = document.createComment('some data');
 		comment.nodeValue = 'other data';
 		expect(comment.nodeValue).toBe('other data');
+		expect(comment.textContent).toBe('other data');
 		expect(comment.data).toBe('other data');
 
 		comment.nodeValue = null;
 		expect(comment.nodeValue).toBe('');
+		expect(comment.textContent).toBe('');
+		expect(comment.data).toBe('');
+	});
+
+	it('can set its data using textContent', () => {
+		const comment = document.createComment('some data');
+		comment.textContent = 'other data';
+		expect(comment.nodeValue).toBe('other data');
+		expect(comment.textContent).toBe('other data');
+		expect(comment.data).toBe('other data');
+
+		comment.textContent = null;
+		expect(comment.nodeValue).toBe('');
+		expect(comment.textContent).toBe('');
 		expect(comment.data).toBe('');
 	});
 

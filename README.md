@@ -71,7 +71,7 @@ The following features have not yet been implemented:
 -   No support for newer DOM mutation methods (`prepend` / `append` for interface `ParentNode`, `before` / `after` / `replaceWith` / `remove` for interface `ChildNode`).
 -   No `attributeFilter` for mutation observers.
 -   No `wholeText` on `Text`.
--   No `isConnected` / `getRootNode` / `textContent` / `isEqualNode` / `isSameNode` / `compareDocumentPosition` on `Node`
+-   No `isConnected` / `getRootNode` / `isEqualNode` / `isSameNode` / `compareDocumentPosition` on `Node`
 -   No notion of URLs (`baseURI` on `Node`, and `URL` / `documentURI` / `origin` on `Document`).
 -   No notion of encodings (`characterSet` / `charset` / `inputEncoding` on `Document`). This library only deals with JavaScript strings, not raw byte streams.
 -   No properties / methods that exist mainly for web compatibility reasons (`insertAdjacentElement` / `insertAdjacentText` on `Element`, `hasFeature` on `DOMImplementation`, and `specified` on `Attr`).
