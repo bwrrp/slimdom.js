@@ -36,10 +36,25 @@ describe('Attr', () => {
 		const attr = document.createAttribute('test');
 		attr.nodeValue = 'value';
 		expect(attr.nodeValue).toBe('value');
+		expect(attr.textContent).toBe('value');
 		expect(attr.value).toBe('value');
 
 		attr.nodeValue = null;
 		expect(attr.nodeValue).toBe('');
+		expect(attr.textContent).toBe('');
+		expect(attr.value).toBe('');
+	});
+
+	it('can set its value using textContent', () => {
+		const attr = document.createAttribute('test');
+		attr.textContent = 'value';
+		expect(attr.nodeValue).toBe('value');
+		expect(attr.textContent).toBe('value');
+		expect(attr.value).toBe('value');
+
+		attr.textContent = null;
+		expect(attr.nodeValue).toBe('');
+		expect(attr.textContent).toBe('');
 		expect(attr.value).toBe('');
 	});
 
@@ -47,6 +62,7 @@ describe('Attr', () => {
 		const attr = document.createAttribute('test');
 		attr.value = 'value';
 		expect(attr.nodeValue).toBe('value');
+		expect(attr.textContent).toBe('value');
 		expect(attr.value).toBe('value');
 	});
 

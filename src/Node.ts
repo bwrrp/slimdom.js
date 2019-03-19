@@ -105,6 +105,12 @@ export default abstract class Node {
 	public abstract set nodeValue(value: string | null);
 
 	/**
+	 * The textContent of the node.
+	 */
+	public abstract get textContent(): string | null;
+	public abstract set textContent(value: string | null);
+
+	/**
 	 * (non-standard)
 	 * Each node has a registered observer list of zero or more registered observers, which is
 	 * initially empty.

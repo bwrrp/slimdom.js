@@ -29,6 +29,8 @@ class Attr extends Node {
     // (undocumented)
     readonly prefix: string | null;
     // (undocumented)
+    textContent: string | null;
+    // (undocumented)
     value: string;
     }
 
@@ -68,6 +70,8 @@ abstract class CharacterData extends Node implements NonDocumentTypeChildNode, C
     readonly previousElementSibling: Element | null;
     replaceData(offset: number, count: number, data: string): void;
     substringData(offset: number, count: number): string;
+    // (undocumented)
+    textContent: string | null;
 }
 
 // @public (undocumented)
@@ -120,6 +124,8 @@ class Document extends Node implements NonElementParentNode, ParentNode {
     readonly nodeType: number;
     // (undocumented)
     nodeValue: string | null;
+    // (undocumented)
+    textContent: string | null;
 }
 
 // @public
@@ -147,6 +153,8 @@ class DocumentFragment extends Node implements NonElementParentNode, ParentNode 
     readonly nodeType: number;
     // (undocumented)
     nodeValue: string | null;
+    // (undocumented)
+    textContent: string | null;
 }
 
 // @public (undocumented)
@@ -166,6 +174,8 @@ class DocumentType extends Node implements ChildNode {
     nodeValue: string | null;
     publicId: string;
     systemId: string;
+    // (undocumented)
+    textContent: string | null;
 }
 
 // @public (undocumented)
@@ -227,6 +237,8 @@ class Element extends Node implements ParentNode, NonDocumentTypeChildNode, Chil
     setAttributeNS(namespace: string | null, qualifiedName: string, value: string): void;
     // (undocumented)
     readonly tagName: string;
+    // (undocumented)
+    textContent: string | null;
     toggleAttribute(qualifiedName: string, force?: boolean): boolean;
 }
 
@@ -311,6 +323,7 @@ abstract class Node {
     replaceChild<TChild extends Node>(node: Node, child: TChild): TChild;
     // (undocumented)
     static TEXT_NODE: number;
+    abstract textContent: string | null;
 }
 
 // @public

@@ -23,7 +23,15 @@ export default class DocumentType extends Node implements ChildNode {
 		return null;
 	}
 
-	public set nodeValue(newValue: string | null) {
+	public set nodeValue(_newValue: string | null) {
+		// Do nothing.
+	}
+
+	public get textContent(): string | null {
+		return null;
+	}
+
+	public set textContent(_newValue: string | null) {
 		// Do nothing.
 	}
 

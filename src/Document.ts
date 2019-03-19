@@ -43,7 +43,15 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		return null;
 	}
 
-	public set nodeValue(newValue: string | null) {
+	public set nodeValue(_newValue: string | null) {
+		// Do nothing.
+	}
+
+	public get textContent(): string | null {
+		return null;
+	}
+
+	public set textContent(_newValue: string | null) {
 		// Do nothing.
 	}
 

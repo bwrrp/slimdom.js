@@ -27,4 +27,10 @@ describe('ProcessingInstruction', () => {
 		expect(copy.ownerDocument).toBe(document);
 		expect(copy).not.toBe(pi);
 	});
+
+	it('can set data using textContent', () => {
+		const pi = document.createProcessingInstruction('sometarget', 'some data');
+		pi.textContent = 'other data';
+		expect(pi.data).toBe('other data');
+	});
 });

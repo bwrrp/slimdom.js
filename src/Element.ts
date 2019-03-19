@@ -5,6 +5,7 @@ import Document from './Document';
 import Node from './Node';
 import { getContext } from './context/Context';
 import { serializeFragment } from './dom-parsing/serializationAlgorithms';
+import { getConcatenatedTextNodesData, setTextContentByReplacing } from './util/mutationAlgorithms';
 import {
 	appendAttribute,
 	changeAttribute,
@@ -24,7 +25,7 @@ import {
 	XMLNS_NAMESPACE
 } from './util/namespaceHelpers';
 import { NodeType } from './util/NodeType';
-import { asNullableString, asObject } from './util/typeHelpers';
+import { asNullableString, asObject, treatNullAsEmptyString } from './util/typeHelpers';
 
 /**
  * 3.9. Interface Element
@@ -49,6 +50,17 @@ export default class Element extends Node
 
 	public set nodeValue(newValue: string | null) {
 		// Do nothing.
+	}
+
+	public get textContent(): string | null {
+		// Return the concatenation of data of all the Text node descendants of
+		// the context object, in tree order
+		return getConcatenatedTextNodesData(this);
+	}
+
+	public set textContent(newValue: string | null) {
+		newValue = treatNullAsEmptyString(newValue);
+		setTextContentByReplacing(this, newValue);
 	}
 
 	public lookupPrefix(namespace: string | null): string | null {

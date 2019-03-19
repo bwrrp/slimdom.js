@@ -18,6 +18,11 @@ describe('Document', () => {
 		expect(document.nodeValue).toBe(null);
 	});
 
+	it('can not change its textContent', () => {
+		document.textContent = 'test';
+		expect(document.textContent).toBe(null);
+	});
+
 	it('exposes its DOMImplementation', () =>
 		expect(document.implementation).toBeInstanceOf(slimdom.DOMImplementation));
 

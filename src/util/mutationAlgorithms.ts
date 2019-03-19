@@ -13,6 +13,7 @@ import Element from '../Element';
 import Node from '../Node';
 import { getContext } from '../context/Context';
 import queueMutationRecord from '../mutation-observer/queueMutationRecord';
+import Text from '../Text';
 
 // 3.2.3. Mutation algorithms
 
@@ -495,6 +496,56 @@ export function replaceChildWithNode<TChild extends Node>(
 }
 
 /**
+ * To replace all with a node within a parent, run these steps:
+ *
+ * @param node   New node to insert, or null to remove all nodes under parent
+ * @param parent Parent to replace under
+ */
+function replaceAllWithNode(node: Node | null, parent: Node): void {
+	// 1. If node is not null, adopt node into parent’s node document.
+	if (node !== null) {
+		adoptNode(node, getNodeDocument(parent));
+	}
+
+	// 2. Let removedNodes be parent’s children.
+	const removedNodes = Array.from(parent.childNodes);
+
+	// 3. Let addedNodes be the empty list if node is null, node’s children if node is a
+	// DocumentFragment node, and a list containing node otherwise.
+	let addedNodes: Node[];
+	if (node === null) {
+		addedNodes = [];
+	} else if (isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE)) {
+		// This case is never actually reachable from any usage of "replace all" in the spec, as the
+		// algorithm is currently only used with node being either null or a Text instance.
+		/* istanbul ignore next */
+		addedNodes = Array.from(node.childNodes);
+	} else {
+		addedNodes = [];
+	}
+
+	// 4. Remove all parent’s children, in tree order, with the suppress observers flag set.
+	removedNodes.forEach(child => {
+		removeNode(child, parent, true);
+	});
+
+	// 5. If node is not null, then insert node into parent before null with the suppress observers
+	// flag set.
+	if (node !== null) {
+		insertNode(node, parent, null, true);
+	}
+
+	// 6. Queue a tree mutation record for parent with addedNodes, removedNodes, null, and null.
+	queueMutationRecord('childList', parent, {
+		addedNodes,
+		removedNodes
+	});
+
+	// This algorithm does not make any checks with regards to the node tree constraints.
+	// Specification authors need to use it wisely.
+}
+
+/**
  * To pre-remove a child from a parent, run these steps:
  *
  * @param child  - Child node to remove
@@ -669,4 +720,46 @@ export function adoptNode(node: Node, document: Document): void {
 	// 3.3. For each inclusiveDescendant in node’s shadow-including inclusive descendants, in
 	// shadow-including tree order, run the adopting steps with inclusiveDescendant and oldDocument.
 	// (adopting steps not implemented)
+}
+
+/**
+ * Implementation of the textContent getter for DocumentFragment and Element.
+ *
+ * @param node Root node
+ *
+ * @returns  The concatenation of data of all the Text node descendants of the given node, in tree
+ *           order
+ */
+export function getConcatenatedTextNodesData(node: Node): string {
+	const data: string[] = [];
+	forEachInclusiveDescendant(node, descendant => {
+		// CDATASection is a subtype of Text
+		if (!isNodeOfType(descendant, NodeType.TEXT_NODE, NodeType.CDATA_SECTION_NODE)) {
+			return;
+		}
+
+		data.push((descendant as Text).data);
+	});
+	return data.join('');
+}
+
+/**
+ * Implementation of the textContent setter for DocumentFragment and Element
+ *
+ * @param contextObject Node for which to set textContent
+ * @param newValue      New textContent value
+ */
+export function setTextContentByReplacing(contextObject: Node, newValue: string): void {
+	// 1. Let node be null.
+	let node = null;
+
+	// 2. If the given value is not the empty string, set node to a new Text node whose data is the
+	// given value and node document is context object’s node document.
+	if (newValue !== '') {
+		const context = getContext(contextObject);
+		node = new context.Text(newValue);
+	}
+
+	// 3. Replace all with node within the context object.
+	replaceAllWithNode(node, contextObject);
 }

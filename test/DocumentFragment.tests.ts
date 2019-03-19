@@ -29,6 +29,23 @@ describe('DocumentFragment', () => {
 		expect(fragment.nodeValue).toBe(null);
 	});
 
+	it('can change its textContent, replacing its existing children', () => {
+		fragment
+			.appendChild(document.createElement('oldChild'))
+			.appendChild(document.createTextNode('old'));
+		fragment.appendChild(document.createCDATASection('text'));
+		expect(fragment.textContent).toBe('oldtext');
+
+		fragment.textContent = 'test';
+		expect(fragment.textContent).toBe('test');
+		expect(fragment.childNodes.length).toBe(1);
+		expect(fragment.firstChild!.nodeType).toBe(3);
+
+		fragment.textContent = null;
+		expect(fragment.textContent).toBe('');
+		expect(fragment.childNodes.length).toBe(0);
+	});
+
 	it('can not lookup namespaces or prefixes', () => {
 		fragment.appendChild(document.createElementNS('http://www.example.com/ns', 'prf:test'));
 		expect(fragment.lookupNamespaceURI('prf')).toBe(null);
