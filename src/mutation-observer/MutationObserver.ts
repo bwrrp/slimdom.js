@@ -1,5 +1,5 @@
 import MutationRecord from './MutationRecord';
-import NotifyList from './NotifyList';
+import NotifySet from './NotifyList';
 import RegisteredObserver from './RegisteredObserver';
 import Node from '../Node';
 import { expectArity } from '../util/errorHelpers';
@@ -84,12 +84,14 @@ export default class MutationObserver {
 		expectArity(arguments, 1);
 		callback = asObject(callback, Function);
 
-		// create a new MutationObserver object with callback set to callback
+		// 1. Let mo be a new MutationObserver object whose callback is callback.
 		this._callback = callback;
 
-		// append it to the unit of related similar-origin browsing contexts' list of
-		// MutationObserver objects (for efficiency, this implementation only tracks
-		// MutationObserver objects that have records queued)
+		// 2. Append mo to mo's relevant agent's mutation observers.
+		// (for efficiency, this implementation only tracks MutationObserver objects that have
+		// records queued)
+
+		// 3. Return mo.
 	}
 
 	/**

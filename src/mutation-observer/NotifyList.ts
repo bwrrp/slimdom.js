@@ -1,10 +1,10 @@
-import { MutationCallback, default as MutationObserver } from './MutationObserver';
+import { default as MutationObserver } from './MutationObserver';
 import MutationRecord from './MutationRecord';
 import { removeTransientRegisteredObserversForObserver } from './RegisteredObservers';
 
 function queueCompoundMicrotask(
 	callback: (...args: any[]) => void,
-	thisArg: NotifyList,
+	thisArg: NotifySet,
 	...args: any[]
 ): void {
 	Promise.resolve().then(() => callback.apply(thisArg, args));
@@ -14,8 +14,8 @@ function queueCompoundMicrotask(
  * Tracks MutationObserver instances which have a non-empty record queue and schedules their
  * callbacks to be called.
  */
-export default class NotifyList {
-	private _notifyList: MutationObserver[] = [];
+export default class NotifySet {
+	private _notifySet: Set<MutationObserver> = new Set();
 	private _compoundMicrotaskQueued: boolean = false;
 
 	/**
@@ -27,7 +27,7 @@ export default class NotifyList {
 	 */
 	appendRecord(observer: MutationObserver, record: MutationRecord) {
 		observer._recordQueue.push(record);
-		this._notifyList.push(observer);
+		this._notifySet.add(observer);
 	}
 
 	/**
@@ -54,21 +54,19 @@ export default class NotifyList {
 		// 1. Unset mutation observer compound microtask queued flag.
 		this._compoundMicrotaskQueued = false;
 
-		// 2. Let notify list be a clone of unit of related similar-origin browsing contexts' list
-		// of MutationObserver objects.
-		const notifyList = this._notifyList.concat();
-		// Clear the notify list - for efficiency this list only tracks observers that have a
+		// 2. Let notifySet be a clone of the surrounding agent's mutation observers
+		const notifySet = Array.from(this._notifySet);
+		// Clear the notify set - for efficiency this set only tracks observers that have a
 		// non-empty queue
-		this._notifyList.length = 0;
+		this._notifySet.clear();
 
-		// 3. Let signalList be a copy of unit of related similar-origin browsing contexts' signal
-		// slot list.
-		// 4. Empty unit of related similar-origin browsing contexts' signal slot list.
+		// 3. Let signalSet be a clone of the surrounding agent's signal slots.
+		// 4. Empty the surrounding agent's signal slots.
 		// (shadow dom not implemented)
 
-		// 5. For each MutationObserver object mo in notify list, execute a compound microtask
-		// subtask to run these steps: [HTML]
-		notifyList.forEach(mo => {
+		// 5. For each mo of notifySet, execute a compound microtask subtask to run these steps:
+		// [HTML]
+		notifySet.forEach(mo => {
 			queueCompoundMicrotask(
 				(mo: MutationObserver) => {
 					// 5.1. Let queue be a copy of mo’s record queue.
@@ -90,8 +88,8 @@ export default class NotifyList {
 			);
 		});
 
-		// 6. For each slot slot in signalList, in order, fire an event named slotchange, with its
-		// bubbles attribute set to true, at slot.
+		// 6. For each slot of signalSet, fire an event named slotchange, with its bubbles attribute
+		// set to true, at slot.
 		// (shadow dom not implemented)
 	}
 }

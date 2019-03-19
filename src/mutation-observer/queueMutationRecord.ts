@@ -81,9 +81,9 @@ export default function queueMutationRecord(type: string, target: Node, data: Mu
 		}
 
 		// 4.2. Enqueue record to observer’s record queue.
-		context._notifyList.appendRecord(observer, record);
+		context._notifySet.appendRecord(observer, record);
 	});
 
 	// 5. Queue a mutation observer compound microtask.
-	context._notifyList.queueMutationObserverCompoundMicrotask();
+	context._notifySet.queueMutationObserverCompoundMicrotask();
 }

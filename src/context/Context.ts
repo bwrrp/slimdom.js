@@ -12,7 +12,7 @@ import Range from '../Range';
 import Text from '../Text';
 import XMLDocument from '../XMLDocument';
 
-import NotifyList from '../mutation-observer/NotifyList';
+import NotifySet from '../mutation-observer/NotifyList';
 import { NodeType } from '../util/NodeType';
 
 export type AttrConstructor = new (
@@ -48,7 +48,7 @@ export type XMLDocumentConstructor = new () => XMLDocument;
 export interface Context {
 	document: Document;
 
-	_notifyList: NotifyList;
+	_notifySet: NotifySet;
 	_ranges: Range[];
 
 	Attr: AttrConstructor;
@@ -78,7 +78,7 @@ export class DefaultContext implements Context {
 	 * to all MutationObserver instances that have collected records, and is responsible for
 	 * invoking their callbacks when control returns to the event loop.
 	 */
-	public _notifyList: NotifyList = new NotifyList();
+	public _notifySet: NotifySet = new NotifySet();
 	public _ranges: Range[] = [];
 
 	public Attr!: AttrConstructor;
