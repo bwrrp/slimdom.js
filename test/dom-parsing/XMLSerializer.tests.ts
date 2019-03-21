@@ -450,4 +450,23 @@ describe('serializeToWellFormedString', () => {
 			slimdom.serializeToWellFormedString(el);
 		}).not.toThrow();
 	});
+
+	it('allows resetting the default namespace', () => {
+		const root = document.appendChild(document.createElementNS('ns_root', 'root'));
+		const child = root.appendChild(document.createElementNS('ns_child', 'p:child'));
+		const grandChild = child.appendChild(document.createElementNS(null, 'grandchild'));
+		expect(slimdom.serializeToWellFormedString(document)).toBe(
+			'<root xmlns="ns_root"><p:child xmlns:p="ns_child"><grandchild xmlns=""/></p:child></root>'
+		);
+	});
+
+	it('allows resetting the default namespace using an explicit declaration', () => {
+		const root = document.appendChild(document.createElementNS('ns_root', 'root'));
+		const child = root.appendChild(document.createElementNS('ns_child', 'p:child'));
+		child.setAttributeNS(XMLNS_NAMESPACE, 'xmlns', '');
+		const grandChild = child.appendChild(document.createElementNS(null, 'grandchild'));
+		expect(slimdom.serializeToWellFormedString(document)).toBe(
+			'<root xmlns="ns_root"><p:child xmlns:p="ns_child" xmlns=""><grandchild/></p:child></root>'
+		);
+	});
 });
