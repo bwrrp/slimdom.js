@@ -90,7 +90,7 @@ export class NamespacePrefixMap {
 			return false;
 		}
 
-		// If the value of prefix occurs at least once in candidates list, return true, otherwise
+		// 2. If the value of prefix occurs at least once in candidates list, return true, otherwise
 		// return false.
 		return candidatesList.indexOf(prefix) >= 0;
 	}
@@ -106,7 +106,7 @@ export class NamespacePrefixMap {
 		// 1. Let candidates list be the result of retrieving a list from map where there exists a
 		// key in map that matches the value of ns or if there is no such key, then let candidates
 		// list be null.
-		// Note: undefined used instead of null for convenience
+		// (undefined used instead of null for convenience)
 		const candidatesList = this._map.get(ns);
 
 		// 2. If candidates list is null, then create a new list with prefix as the only item in the

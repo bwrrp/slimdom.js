@@ -762,10 +762,15 @@ function serializeAttributes(
 			} else {
 				// 3.5.3. Otherwise, the attribute namespace in not the XMLNS namespace. Run these
 				// steps:
+				// (interpreting this as a typo in the spec: "in" should probably have been "is")
 
-				// Note: we deviate from the spec here, as implementing as specified would generate
-				// prefixes for all namespaced attributes.
+				// (We need to deviate from the spec here, as implementing as specified would always
+				// generate prefixes for all namespaced attributes. Instead, first check if no valid
+				// candidate prefix was found in the steps above.)
 				if (candidatePrefix === null) {
+					// (Again, we need to deviate from the spec to make sure we prefer the attr's
+					// own prefix over a generated prefix where that would not conflict with
+					// existing definitions.)
 					if (attr.prefix === null || attr.prefix in localPrefixesMap) {
 						// 3.5.3.1. Let candidate prefix be the result of generating a prefix
 						// providing map, attribute namespace, and prefix index as input.

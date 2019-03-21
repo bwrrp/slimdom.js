@@ -3,6 +3,8 @@ import { asObject } from '../util/typeHelpers';
 import { produceXmlSerialization } from './serializationAlgorithms';
 
 /**
+ * 2.2 The XMLSerializer interface
+ *
  * @public
  */
 export default class XMLSerializer {
