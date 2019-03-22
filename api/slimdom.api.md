@@ -430,6 +430,7 @@ class Text extends CharacterData {
     // (undocumented)
     readonly nodeType: number;
     splitText(offset: number): Text;
+    readonly wholeText: string;
 }
 
 // @public

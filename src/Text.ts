@@ -3,7 +3,7 @@ import Document from './Document';
 import { getContext } from './context/Context';
 import { expectArity, throwIndexSizeError } from './util/errorHelpers';
 import { insertNode } from './util/mutationAlgorithms';
-import { NodeType } from './util/NodeType';
+import { NodeType, isNodeOfType } from './util/NodeType';
 import { getNodeIndex } from './util/treeHelpers';
 import { asUnsignedLong } from './util/typeHelpers';
 
@@ -65,6 +65,38 @@ export default class Text extends CharacterData {
 		const copy = new context.Text(this.data);
 		copy.ownerDocument = document;
 		return copy;
+	}
+
+	/**
+	 * Returns the combined data of all direct Text node siblings.
+	 *
+	 * @returns the concatenation of the data of the contiguous Text nodes of the context object, in
+	 *          tree order.
+	 */
+	public get wholeText(): string {
+		const allData: string[] = [this.data];
+
+		let previousSibling = this.previousSibling;
+		while (
+			previousSibling !== null &&
+			isNodeOfType(previousSibling, NodeType.TEXT_NODE, NodeType.CDATA_SECTION_NODE)
+		) {
+			const data = (previousSibling as Text).data;
+			allData.unshift(data);
+			previousSibling = previousSibling.previousSibling;
+		}
+
+		let nextSibling = this.nextSibling;
+		while (
+			nextSibling !== null &&
+			isNodeOfType(nextSibling, NodeType.TEXT_NODE, NodeType.CDATA_SECTION_NODE)
+		) {
+			const data = (nextSibling as Text).data;
+			allData.push(data);
+			nextSibling = nextSibling.nextSibling;
+		}
+
+		return allData.join('');
 	}
 }
 

@@ -234,6 +234,50 @@ describe('Text', () => {
 		});
 	});
 
+	describe('wholeText', () => {
+		it('returns the concatenation of the data of the contiguous text nodes of the context object', () => {
+			const element = document.createElement('parent');
+			element.append('These', ' ', 'are', ' some text nodes');
+			expect((element.childNodes[0] as slimdom.Text).wholeText).toBe(
+				'These are some text nodes'
+			);
+			expect((element.childNodes[1] as slimdom.Text).wholeText).toBe(
+				'These are some text nodes'
+			);
+			expect((element.childNodes[2] as slimdom.Text).wholeText).toBe(
+				'These are some text nodes'
+			);
+			expect((element.childNodes[3] as slimdom.Text).wholeText).toBe(
+				'These are some text nodes'
+			);
+		});
+
+		it('stops at any non-Text node', () => {
+			const element = document.createElement('parent');
+			element.append('These', document.createComment(' '), 'are', ' some text nodes');
+			expect((element.childNodes[0] as slimdom.Text).wholeText).toBe('These');
+			expect((element.childNodes[2] as slimdom.Text).wholeText).toBe('are some text nodes');
+			expect((element.childNodes[3] as slimdom.Text).wholeText).toBe('are some text nodes');
+		});
+
+		it('includes CDATA sections', () => {
+			const element = document.createElement('parent');
+			element.append('These', document.createCDATASection(' '), 'are', ' some text nodes');
+			expect((element.childNodes[0] as slimdom.Text).wholeText).toBe(
+				'These are some text nodes'
+			);
+			expect((element.childNodes[1] as slimdom.CDATASection).wholeText).toBe(
+				'These are some text nodes'
+			);
+			expect((element.childNodes[2] as slimdom.Text).wholeText).toBe(
+				'These are some text nodes'
+			);
+			expect((element.childNodes[3] as slimdom.Text).wholeText).toBe(
+				'These are some text nodes'
+			);
+		});
+	});
+
 	describe('.before', () => {
 		let text: slimdom.Text;
 		let comment: slimdom.Comment;

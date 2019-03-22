@@ -69,7 +69,6 @@ The following features have not yet been implemented:
 -   No iteration helpers (`NodeIterator` / `TreeWalker` / `NodeFilter`, and the `createNodeIterator` / `createTreeWalker` methods on `Document`).
 -   No DOM modifying methods on Range (`deleteContents` / `extractContents` / `cloneContents` / `insertNode` / `surroundContents`).
 -   No `attributeFilter` for mutation observers.
--   No `wholeText` on `Text`.
 -   No `isConnected` / `getRootNode` / `isEqualNode` / `isSameNode` / `compareDocumentPosition` on `Node`
 -   No notion of URLs (`baseURI` on `Node`, and `URL` / `documentURI` / `origin` on `Document`).
 -   No notion of encodings (`characterSet` / `charset` / `inputEncoding` on `Document`). This library only deals with JavaScript strings, not raw byte streams.
