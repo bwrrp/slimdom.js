@@ -59,6 +59,10 @@
 		],
 		"collectCoverageFrom": [
 			"src/**/*.ts"
+		],
+		"coverageReporters": [
+			"html",
+			"text"
 		]
 	},
 	"prettier": {
