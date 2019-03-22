@@ -40,10 +40,10 @@
 		"parse5": "^5.1.0",
 		"prettier": "^1.16.4",
 		"rimraf": "^2.6.3",
-		"rollup": "^1.6.0",
-		"rollup-plugin-terser": "^4.0.2",
+		"rollup": "^1.7.0",
+		"rollup-plugin-terser": "^4.0.4",
 		"ts-jest": "~24.0.0",
-		"typescript": "^3.3.3333"
+		"typescript": "^3.3.4000"
 	},
 	"jest": {
 		"transform": {
