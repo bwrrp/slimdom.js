@@ -124,4 +124,30 @@ describe('DocumentFragment', () => {
 			expect(copy.firstChild).not.toBe(fragment.firstChild);
 		});
 	});
+
+	describe('.prepend', () => {
+		it('can add nodes at the start', () => {
+			const comment = document.createComment('test');
+			const pi = document.createProcessingInstruction('target', 'data');
+			fragment.prepend(comment, 'text', pi);
+
+			expect(fragment.firstChild).toBe(comment);
+			expect(fragment.firstChild!.nextSibling!.nodeType).toBe(slimdom.Node.TEXT_NODE);
+			expect((fragment.firstChild!.nextSibling as slimdom.Text).data).toBe('text');
+			expect(fragment.firstChild!.nextSibling!.nextSibling).toBe(pi);
+		});
+	});
+
+	describe('.append', () => {
+		it('can add nodes at the end', () => {
+			const comment = document.createComment('test');
+			const pi = document.createProcessingInstruction('target', 'data');
+			fragment.append(comment, 'text', pi);
+
+			expect(fragment.lastChild!.previousSibling!.previousSibling).toBe(comment);
+			expect(fragment.lastChild!.previousSibling!.nodeType).toBe(slimdom.Node.TEXT_NODE);
+			expect((fragment.lastChild!.previousSibling as slimdom.Text).data).toBe('text');
+			expect(fragment.lastChild).toBe(pi);
+		});
+	});
 });

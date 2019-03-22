@@ -4,7 +4,12 @@ import Element from './Element';
 import Node from './Node';
 import { getContext } from './context/Context';
 import { expectArity } from './util/errorHelpers';
-import { getConcatenatedTextNodesData, setTextContentByReplacing } from './util/mutationAlgorithms';
+import {
+	appendNodes,
+	prependNodes,
+	getConcatenatedTextNodesData,
+	setTextContentByReplacing
+} from './util/mutationAlgorithms';
 import { NodeType } from './util/NodeType';
 import { treatNullAsEmptyString } from './util/typeHelpers';
 
@@ -74,6 +79,14 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 	public firstElementChild: Element | null = null;
 	public lastElementChild: Element | null = null;
 	public childElementCount: number = 0;
+
+	public prepend(...nodes: (Node | string)[]): void {
+		prependNodes(this, nodes);
+	}
+
+	public append(...nodes: (Node | string)[]): void {
+		appendNodes(this, nodes);
+	}
 
 	/**
 	 * Return a new DocumentFragment node whose node document is current global object’s associated

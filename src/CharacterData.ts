@@ -4,13 +4,18 @@ import {
 	getNextElementSibling,
 	getPreviousElementSibling
 } from './mixins';
-import Document from './Document';
 import Element from './Element';
 import Node from './Node';
 import { getContext } from './context/Context';
 import queueMutationRecord from './mutation-observer/queueMutationRecord';
 import { expectArity, throwIndexSizeError } from './util/errorHelpers';
-import { asNullableString, asUnsignedLong, treatNullAsEmptyString } from './util/typeHelpers';
+import { asUnsignedLong, treatNullAsEmptyString } from './util/typeHelpers';
+import {
+	insertNodesBefore,
+	insertNodesAfter,
+	replaceWithNodes,
+	removeFromParent
+} from './util/mutationAlgorithms';
 
 /**
  * 3.10. Interface CharacterData
@@ -77,6 +82,24 @@ export default abstract class CharacterData extends Node
 
 		// 2. Return the result of running locate a namespace on its parent element using prefix.
 		return parentElement.lookupNamespaceURI(prefix);
+	}
+
+	// ChildNode
+
+	public before(...nodes: (Node | string)[]): void {
+		insertNodesBefore(this, nodes);
+	}
+
+	public after(...nodes: (Node | string)[]): void {
+		insertNodesAfter(this, nodes);
+	}
+
+	public replaceWith(...nodes: (Node | string)[]): void {
+		replaceWithNodes(this, nodes);
+	}
+
+	public remove(): void {
+		removeFromParent(this);
 	}
 
 	// NonDocumentTypeChildNode

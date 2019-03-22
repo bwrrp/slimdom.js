@@ -616,4 +616,153 @@ describe('Element', () => {
 			expect(child).not.toBe(element.firstChild);
 		});
 	});
+
+	describe('.before', () => {
+		let comment: slimdom.Comment;
+		beforeEach(() => {
+			comment = document.createComment('comment');
+		});
+
+		it('does nothing if the node does not have a parent', () => {
+			element.before(comment);
+			expect(comment.parentNode).toBe(null);
+		});
+
+		it('can insert nodes before the node', () => {
+			const parent = document.createElement('parent');
+			parent.appendChild(element);
+			element.before('hello', comment);
+
+			expect(element.previousSibling).toBe(comment);
+			expect((element.previousSibling!.previousSibling as slimdom.Text).data).toBe('hello');
+		});
+
+		it('can re-insert when nodes contains the node or its siblings', () => {
+			const parent = document.createElement('parent');
+			const previousSibling = parent.appendChild(document.createElement('previousSibling'));
+			parent.appendChild(element);
+			element.before(element, previousSibling, 'text');
+
+			expect(element.parentNode).toBe(parent);
+			expect(element.nextSibling).toBe(previousSibling);
+			expect((element.nextSibling!.nextSibling as slimdom.Text).data).toBe('text');
+
+			element.before('first');
+			element.before(previousSibling, element);
+			expect(element.previousSibling).toBe(previousSibling);
+		});
+	});
+
+	describe('.after', () => {
+		let comment: slimdom.Comment;
+		beforeEach(() => {
+			comment = document.createComment('comment');
+		});
+
+		it('does nothing if the node does not have a parent', () => {
+			element.after(comment);
+			expect(comment.parentNode).toBe(null);
+		});
+
+		it('can insert nodes after the node', () => {
+			const parent = document.createElement('parent');
+			parent.appendChild(element);
+			element.after(comment, 'hello');
+
+			expect(element.nextSibling).toBe(comment);
+			expect((element.nextSibling!.nextSibling as slimdom.Text).data).toBe('hello');
+		});
+
+		it('can re-insert when nodes contains the node or its siblings', () => {
+			const parent = document.createElement('parent');
+			parent.appendChild(element);
+			const nextSibling = parent.appendChild(document.createElement('nextSibling'));
+			element.after('text', nextSibling, element);
+
+			expect(element.parentNode).toBe(parent);
+			expect(element.previousSibling).toBe(nextSibling);
+			expect((element.previousSibling!.previousSibling as slimdom.Text).data).toBe('text');
+
+			element.after('last');
+			element.after(element, nextSibling);
+			expect(element.nextSibling).toBe(nextSibling);
+		});
+	});
+
+	describe('.replaceWith', () => {
+		let comment: slimdom.Comment;
+		beforeEach(() => {
+			comment = document.createComment('comment');
+		});
+
+		it('does nothing if the node does not have a parent', () => {
+			element.replaceWith(comment);
+			expect(comment.parentNode).toBe(null);
+		});
+
+		it('can replace the node with nodes and/or text', () => {
+			const parent = document.createElement('parent');
+			parent.appendChild(element);
+			element.replaceWith(comment, 'hello');
+
+			expect(element.parentNode).toBe(null);
+			expect(parent.firstChild).toBe(comment);
+			expect((parent.lastChild as slimdom.Text).data).toBe('hello');
+		});
+
+		it('can replace a node with nodes containing itself or its siblings', () => {
+			const parent = document.createElement('parent');
+			parent.appendChild(element);
+			const nextSibling = parent.appendChild(document.createElement('nextSibling'));
+			element.replaceWith(comment, nextSibling, element, 'hello');
+
+			expect(element.parentNode).toBe(parent);
+			expect(parent.firstChild).toBe(comment);
+			expect(comment.nextSibling).toBe(nextSibling);
+			expect(nextSibling.nextSibling).toBe(element);
+			expect((parent.lastChild as slimdom.Text).data).toBe('hello');
+		});
+	});
+
+	describe('.remove', () => {
+		it('does nothing if the node does not have a parent', () => {
+			element.remove();
+			expect(element.parentNode).toBe(null);
+		});
+
+		it('can remove the node from its parent', () => {
+			const parent = document.createElement('parent');
+			parent.appendChild(element);
+			element.remove();
+
+			expect(element.parentNode).toBe(null);
+			expect(parent.firstChild).toBe(null);
+		});
+	});
+
+	describe('.prepend', () => {
+		it('can add nodes at the start', () => {
+			const comment = document.createComment('test');
+			const pi = document.createProcessingInstruction('target', 'data');
+			element.prepend(comment, 'text', pi);
+
+			expect(element.firstChild).toBe(comment);
+			expect(element.firstChild!.nextSibling!.nodeType).toBe(slimdom.Node.TEXT_NODE);
+			expect((element.firstChild!.nextSibling as slimdom.Text).data).toBe('text');
+			expect(element.firstChild!.nextSibling!.nextSibling).toBe(pi);
+		});
+	});
+
+	describe('.append', () => {
+		it('can add nodes at the end', () => {
+			const comment = document.createComment('test');
+			const pi = document.createProcessingInstruction('target', 'data');
+			element.append(comment, 'text', pi);
+
+			expect(element.lastChild!.previousSibling!.previousSibling).toBe(comment);
+			expect(element.lastChild!.previousSibling!.nodeType).toBe(slimdom.Node.TEXT_NODE);
+			expect((element.lastChild!.previousSibling as slimdom.Text).data).toBe('text');
+			expect(element.lastChild).toBe(pi);
+		});
+	});
 });

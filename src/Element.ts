@@ -5,7 +5,16 @@ import Document from './Document';
 import Node from './Node';
 import { getContext } from './context/Context';
 import { serializeFragment } from './dom-parsing/serializationAlgorithms';
-import { getConcatenatedTextNodesData, setTextContentByReplacing } from './util/mutationAlgorithms';
+import {
+	appendNodes,
+	prependNodes,
+	getConcatenatedTextNodesData,
+	setTextContentByReplacing,
+	insertNodesBefore,
+	insertNodesAfter,
+	replaceWithNodes,
+	removeFromParent
+} from './util/mutationAlgorithms';
 import {
 	appendAttribute,
 	changeAttribute,
@@ -125,6 +134,24 @@ export default class Element extends Node
 		return parentElement.lookupNamespaceURI(prefix);
 	}
 
+	// ChildNode
+
+	public before(...nodes: (Node | string)[]): void {
+		insertNodesBefore(this, nodes);
+	}
+
+	public after(...nodes: (Node | string)[]): void {
+		insertNodesAfter(this, nodes);
+	}
+
+	public replaceWith(...nodes: (Node | string)[]): void {
+		replaceWithNodes(this, nodes);
+	}
+
+	public remove(): void {
+		removeFromParent(this);
+	}
+
 	// ParentNode
 
 	public get children(): Element[] {
@@ -134,6 +161,14 @@ export default class Element extends Node
 	public firstElementChild: Element | null = null;
 	public lastElementChild: Element | null = null;
 	public childElementCount: number = 0;
+
+	public prepend(...nodes: (Node | string)[]): void {
+		prependNodes(this, nodes);
+	}
+
+	public append(...nodes: (Node | string)[]): void {
+		appendNodes(this, nodes);
+	}
 
 	// NonDocumentTypeChildNode
 

@@ -311,4 +311,34 @@ describe('Document', () => {
 			);
 		});
 	});
+
+	describe('.prepend', () => {
+		it('can add nodes at the start', () => {
+			const comment = document.createComment('test');
+			const pi = document.createProcessingInstruction('target', 'data');
+			document.prepend(comment, pi);
+
+			expect(document.firstChild).toBe(comment);
+			expect(document.firstChild!.nextSibling).toBe(pi);
+		});
+
+		it('can not add text', () => {
+			expect(() => document.prepend('text')).toThrow('HierarchyRequestError');
+		});
+	});
+
+	describe('.append', () => {
+		it('can add nodes at the end', () => {
+			const comment = document.createComment('test');
+			const pi = document.createProcessingInstruction('target', 'data');
+			document.append(comment, pi);
+
+			expect(document.lastChild!.previousSibling).toBe(comment);
+			expect(document.lastChild).toBe(pi);
+		});
+
+		it('can not add text', () => {
+			expect(() => document.append('text')).toThrow('HierarchyRequestError');
+		});
+	});
 });

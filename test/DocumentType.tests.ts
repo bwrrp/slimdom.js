@@ -53,4 +53,77 @@ describe('DocumentType', () => {
 		expect(doctype.lookupNamespaceURI('prf')).toBe(null);
 		expect(doctype.lookupPrefix('http://www.example.com/ns')).toBe(null);
 	});
+
+	describe('.before', () => {
+		let comment: slimdom.Comment;
+		beforeEach(() => {
+			comment = document.createComment('comment');
+		});
+
+		it('does nothing if the node does not have a parent', () => {
+			doctype.before(comment);
+			expect(comment.parentNode).toBe(null);
+		});
+
+		it('can insert nodes before the node', () => {
+			document.appendChild(doctype);
+			doctype.before(comment);
+
+			expect(doctype.previousSibling).toBe(comment);
+		});
+	});
+
+	describe('.after', () => {
+		let comment: slimdom.Comment;
+		beforeEach(() => {
+			comment = document.createComment('comment');
+		});
+
+		it('does nothing if the node does not have a parent', () => {
+			doctype.after(comment);
+			expect(comment.parentNode).toBe(null);
+		});
+
+		it('can insert nodes after the node', () => {
+			document.appendChild(doctype);
+			doctype.after(comment);
+
+			expect(doctype.nextSibling).toBe(comment);
+		});
+	});
+
+	describe('.replaceWith', () => {
+		let comment: slimdom.Comment;
+		beforeEach(() => {
+			comment = document.createComment('comment');
+		});
+
+		it('does nothing if the node does not have a parent', () => {
+			doctype.replaceWith(comment);
+			expect(comment.parentNode).toBe(null);
+		});
+
+		it('can replace the node with nodes and/or text', () => {
+			document.appendChild(doctype);
+			doctype.replaceWith(comment);
+
+			expect(doctype.parentNode).toBe(null);
+			expect(document.firstChild).toBe(comment);
+		});
+	});
+
+	describe('.remove', () => {
+		it('does nothing if the node does not have a parent', () => {
+			doctype.remove();
+			expect(doctype.parentNode).toBe(null);
+		});
+
+		it('can remove the node from its parent', () => {
+			document.appendChild(doctype);
+			doctype.remove();
+
+			expect(doctype.parentNode).toBe(null);
+			expect(document.doctype).toBe(null);
+		});
+	});
 });

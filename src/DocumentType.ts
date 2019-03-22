@@ -4,6 +4,12 @@ import Node from './Node';
 import { getContext } from './context/Context';
 import { expectArity } from './util/errorHelpers';
 import { NodeType } from './util/NodeType';
+import {
+	insertNodesBefore,
+	insertNodesAfter,
+	replaceWithNodes,
+	removeFromParent
+} from './util/mutationAlgorithms';
 
 /**
  * @public
@@ -57,6 +63,24 @@ export default class DocumentType extends Node implements ChildNode {
 		// To locate a namespace for a node using prefix, switch on node: DocumentType
 		// Return null.
 		return null;
+	}
+
+	// ChildNode
+
+	public before(...nodes: (Node | string)[]): void {
+		insertNodesBefore(this, nodes);
+	}
+
+	public after(...nodes: (Node | string)[]): void {
+		insertNodesAfter(this, nodes);
+	}
+
+	public replaceWith(...nodes: (Node | string)[]): void {
+		replaceWithNodes(this, nodes);
+	}
+
+	public remove(): void {
+		removeFromParent(this);
 	}
 
 	// DocumentType

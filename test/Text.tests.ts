@@ -233,4 +233,95 @@ describe('Text', () => {
 			});
 		});
 	});
+
+	describe('.before', () => {
+		let text: slimdom.Text;
+		let comment: slimdom.Comment;
+		beforeEach(() => {
+			text = document.createTextNode('text');
+			comment = document.createComment('comment');
+		});
+
+		it('does nothing if the node does not have a parent', () => {
+			text.before(comment);
+			expect(comment.parentNode).toBe(null);
+		});
+
+		it('can insert nodes before the node', () => {
+			const parent = document.createElement('parent');
+			parent.appendChild(text);
+			text.before('hello', comment);
+
+			expect(text.previousSibling).toBe(comment);
+			expect((text.previousSibling!.previousSibling as slimdom.Text).data).toBe('hello');
+		});
+	});
+
+	describe('.after', () => {
+		let text: slimdom.Text;
+		let comment: slimdom.Comment;
+		beforeEach(() => {
+			text = document.createTextNode('text');
+			comment = document.createComment('comment');
+		});
+
+		it('does nothing if the node does not have a parent', () => {
+			text.after(comment);
+			expect(comment.parentNode).toBe(null);
+		});
+
+		it('can insert nodes after the node', () => {
+			const parent = document.createElement('parent');
+			parent.appendChild(text);
+			text.after(comment, 'hello');
+
+			expect(text.nextSibling).toBe(comment);
+			expect((text.nextSibling!.nextSibling as slimdom.Text).data).toBe('hello');
+		});
+	});
+
+	describe('.replaceWith', () => {
+		let text: slimdom.Text;
+		let comment: slimdom.Comment;
+		beforeEach(() => {
+			text = document.createTextNode('text');
+			comment = document.createComment('comment');
+		});
+
+		it('does nothing if the node does not have a parent', () => {
+			text.replaceWith(comment);
+			expect(comment.parentNode).toBe(null);
+		});
+
+		it('can replace the node with nodes and/or text', () => {
+			const parent = document.createElement('parent');
+			parent.appendChild(text);
+			text.replaceWith(comment, 'hello');
+
+			expect(text.parentNode).toBe(null);
+			expect(parent.firstChild).toBe(comment);
+			expect((parent.lastChild as slimdom.Text).data).toBe('hello');
+		});
+	});
+
+	describe('.remove', () => {
+		let text: slimdom.Text;
+		beforeEach(() => {
+			text = document.createTextNode('text');
+		});
+
+		it('does nothing if the node does not have a parent', () => {
+			text.remove();
+			expect(text.parentNode).toBe(null);
+		});
+
+		it('can remove the node from its parent', () => {
+			const parent = document.createElement('parent');
+			parent.appendChild(text);
+			text.remove();
+
+			expect(text.parentNode).toBe(null);
+			expect(parent.firstChild).toBe(null);
+		});
+	});
 });

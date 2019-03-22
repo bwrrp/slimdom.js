@@ -10,6 +10,7 @@ import { insertIntoChildren, removeFromChildren } from './treeMutations';
 import Document from '../Document';
 import DocumentFragment from '../DocumentFragment';
 import Element from '../Element';
+import { ParentNode, ChildNode } from '../mixins';
 import Node from '../Node';
 import { getContext } from '../context/Context';
 import queueMutationRecord from '../mutation-observer/queueMutationRecord';
@@ -762,4 +763,190 @@ export function setTextContentByReplacing(contextObject: Node, newValue: string)
 
 	// 3. Replace all with node within the context object.
 	replaceAllWithNode(node, contextObject);
+}
+
+/**
+ * To convert nodes into a node, given nodes and document, run these steps:
+ *
+ * @param nodes    Nodes and/or strings to convert
+ * @param document Document used to create new nodes
+ *
+ * @returns A single node representing nodes
+ */
+function convertNodesIntoNode(nodes: (Node | string)[], document: Document): Node {
+	// 1. Let node be null.
+	// (created as needed in branches below)
+
+	// 2. Replace each string in nodes with a new Text node whose data is the string and node
+	// document is document.
+	const actualNodes: Node[] = nodes.map(nodeOrString => {
+		if (typeof nodeOrString === 'string') {
+			return document.createTextNode(nodeOrString);
+		}
+		return nodeOrString;
+	});
+
+	// 3. If nodes contains one node, set node to that node.
+	if (actualNodes.length === 1) {
+		return actualNodes[0];
+	} else {
+		// 4. Otherwise, set node to a new DocumentFragment whose node document is document, and then
+		// append each node in nodes, if any, to it.
+		const node = document.createDocumentFragment();
+		actualNodes.forEach(child => {
+			node.appendChild(child);
+		});
+		return node;
+	}
+
+	// 5. Return node.
+	// (done in branches above)
+}
+
+/**
+ * The prepend(nodes) method, when invoked, must run these steps:
+ *
+ * @param contextObject The ParentNode on which the method is invoked
+ * @param nodes         The nodes (and/or strings) to prepend
+ */
+export function prependNodes(contextObject: Node & ParentNode, nodes: (Node | string)[]): void {
+	// 1. Let node be the result of converting nodes into a node given nodes and context object’s
+	// node document.
+	const node = convertNodesIntoNode(nodes, getNodeDocument(contextObject));
+
+	// 2. Pre-insert node into context object before the context object’s first child.
+	preInsertNode(node, contextObject, contextObject.firstChild);
+}
+
+/**
+ * The append(nodes) method, when invoked, must run these steps:
+ *
+ * @param contextObject The ParentNode on which the method is invoked
+ * @param nodes         The nodes (and/or strings) to append
+ */
+export function appendNodes(contextObject: Node & ParentNode, nodes: (Node | string)[]): void {
+	// 1. Let node be the result of converting nodes into a node given nodes and context object’s
+	// node document.
+	const node = convertNodesIntoNode(nodes, getNodeDocument(contextObject));
+
+	// 2. Append node to context object
+	appendNode(node, contextObject);
+}
+
+/**
+ * The before(nodes) method, when invoked, must run these steps:
+ *
+ * @param contextObject The ChildNode on which the method is invoked
+ * @param nodes         The nodes (and/or strings) to insert
+ */
+export function insertNodesBefore(contextObject: Node & ChildNode, nodes: (Node | string)[]): void {
+	// 1. Let parent be context object’s parent.
+	const parent = contextObject.parentNode;
+
+	// 2. If parent is null, then return.
+	if (parent === null) {
+		return;
+	}
+
+	// 3. Let viablePreviousSibling be context object’s first preceding sibling not in nodes, and
+	// null otherwise.
+	let viablePreviousSibling = contextObject.previousSibling;
+	while (viablePreviousSibling !== null && nodes.indexOf(viablePreviousSibling) >= 0) {
+		viablePreviousSibling = viablePreviousSibling.previousSibling;
+	}
+
+	// 4. Let node be the result of converting nodes into a node, given nodes and context object’s
+	// node document.
+	const node = convertNodesIntoNode(nodes, getNodeDocument(contextObject));
+
+	// 5. If viablePreviousSibling is null, set it to parent’s first child, and to
+	// viablePreviousSibling’s next sibling otherwise.
+	// (it makes more sense to rename this as it will no longer be a previous sibling to the
+	// inserted nodes)
+	const referenceNode =
+		viablePreviousSibling === null ? parent.firstChild : viablePreviousSibling.nextSibling;
+
+	// 6. Pre-insert node into parent before viablePreviousSibling.
+	preInsertNode(node, parent, referenceNode);
+}
+
+/**
+ * The after(nodes) method, when invoked, must run these steps:
+ *
+ * @param contextObject The ChildNode on which the method is invoked
+ * @param nodes         The nodes (and/or strings) to insert
+ */
+export function insertNodesAfter(contextObject: Node & ChildNode, nodes: (Node | string)[]): void {
+	// 1. Let parent be context object’s parent.
+	const parent = contextObject.parentNode;
+
+	// 2. If parent is null, then return.
+	if (parent === null) {
+		return;
+	}
+
+	// 3. Let viableNextSibling be context object’s first following sibling not in nodes, and null
+	// otherwise.
+	let viableNextSibling = contextObject.nextSibling;
+	while (viableNextSibling !== null && nodes.indexOf(viableNextSibling) >= 0) {
+		viableNextSibling = viableNextSibling.nextSibling;
+	}
+
+	// 4. Let node be the result of converting nodes into a node, given nodes and context object’s
+	// node document.
+	const node = convertNodesIntoNode(nodes, getNodeDocument(contextObject));
+
+	// 5. Pre-insert node into parent before viableNextSibling.
+	preInsertNode(node, parent, viableNextSibling);
+}
+
+/**
+ * The replaceWith(nodes) method, when invoked, must run these steps:
+ *
+ * @param contextObject The ChildNode on which the method is invoked
+ * @param nodes         The nodes (and/or strings) to insert
+ */
+export function replaceWithNodes(contextObject: Node & ChildNode, nodes: (Node | string)[]): void {
+	// 1. Let parent be context object’s parent.
+	const parent = contextObject.parentNode;
+
+	// 2. If parent is null, then return.
+	if (parent === null) {
+		return;
+	}
+
+	// 3. Let viableNextSibling be context object’s first following sibling not in nodes, and null
+	// otherwise.
+	let viableNextSibling = contextObject.nextSibling;
+	while (viableNextSibling !== null && nodes.indexOf(viableNextSibling) >= 0) {
+		viableNextSibling = viableNextSibling.nextSibling;
+	}
+
+	// 4. Let node be the result of converting nodes into a node, given nodes and context object’s
+	// node document.
+	const node = convertNodesIntoNode(nodes, getNodeDocument(contextObject));
+
+	// 5. If context object’s parent is parent, replace the context object with node within parent.
+	// Note: Context object could have been inserted into node.
+	if (contextObject.parentNode === parent) {
+		replaceChildWithNode(contextObject, node, parent);
+	} else {
+		// 6. Otherwise, pre-insert node into parent before viableNextSibling.
+		preInsertNode(node, parent, viableNextSibling);
+	}
+}
+
+/**
+ * The remove() method, when invoked, must run these steps:
+ *
+ * @param contextObject The ChildNode on which the method is invoked
+ */
+export function removeFromParent(contextObject: Node & ChildNode): void {
+	// 1. If context object’s parent is null, then return.
+	if (contextObject.parentNode === null) {
+		return;
+	}
+
+	// 2. Remove the context object from context object’s parent.
+	removeNode(contextObject, contextObject.parentNode);
 }

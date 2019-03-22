@@ -68,7 +68,6 @@ The following features have not yet been implemented:
 -   No support for custom elements or the `is` option on `createElement` / `createElementNS`.
 -   No iteration helpers (`NodeIterator` / `TreeWalker` / `NodeFilter`, and the `createNodeIterator` / `createTreeWalker` methods on `Document`).
 -   No DOM modifying methods on Range (`deleteContents` / `extractContents` / `cloneContents` / `insertNode` / `surroundContents`).
--   No support for newer DOM mutation methods (`prepend` / `append` for interface `ParentNode`, `before` / `after` / `replaceWith` / `remove` for interface `ChildNode`).
 -   No `attributeFilter` for mutation observers.
 -   No `wholeText` on `Text`.
 -   No `isConnected` / `getRootNode` / `isEqualNode` / `isSameNode` / `compareDocumentPosition` on `Node`

@@ -50,7 +50,11 @@ class CDATASection extends Text {
 // @public
 abstract class CharacterData extends Node implements NonDocumentTypeChildNode, ChildNode {
     protected constructor(data: string);
+    // (undocumented)
+    after(...nodes: (Node | string)[]): void;
     appendData(data: string): void;
+    // (undocumented)
+    before(...nodes: (Node | string)[]): void;
     // (undocumented)
     data: string;
     protected _data: string;
@@ -68,7 +72,11 @@ abstract class CharacterData extends Node implements NonDocumentTypeChildNode, C
     nodeValue: string | null;
     // (undocumented)
     readonly previousElementSibling: Element | null;
+    // (undocumented)
+    remove(): void;
     replaceData(offset: number, count: number, data: string): void;
+    // (undocumented)
+    replaceWith(...nodes: (Node | string)[]): void;
     substringData(offset: number, count: number): string;
     // (undocumented)
     textContent: string | null;
@@ -91,6 +99,8 @@ class Comment extends CharacterData {
 class Document extends Node implements NonElementParentNode, ParentNode {
     constructor();
     adoptNode<TNode extends Node>(node: TNode): TNode;
+    // (undocumented)
+    append(...nodes: (Node | string)[]): void;
     // (undocumented)
     childElementCount: number;
     // (undocumented)
@@ -125,6 +135,8 @@ class Document extends Node implements NonElementParentNode, ParentNode {
     // (undocumented)
     nodeValue: string | null;
     // (undocumented)
+    prepend(...nodes: (Node | string)[]): void;
+    // (undocumented)
     textContent: string | null;
 }
 
@@ -134,6 +146,8 @@ declare const document: Document;
 // @public (undocumented)
 class DocumentFragment extends Node implements NonElementParentNode, ParentNode {
     constructor();
+    // (undocumented)
+    append(...nodes: (Node | string)[]): void;
     // (undocumented)
     childElementCount: number;
     // (undocumented)
@@ -154,12 +168,18 @@ class DocumentFragment extends Node implements NonElementParentNode, ParentNode 
     // (undocumented)
     nodeValue: string | null;
     // (undocumented)
+    prepend(...nodes: (Node | string)[]): void;
+    // (undocumented)
     textContent: string | null;
 }
 
 // @public (undocumented)
 class DocumentType extends Node implements ChildNode {
     constructor(name: string, publicId?: string, systemId?: string);
+    // (undocumented)
+    after(...nodes: (Node | string)[]): void;
+    // (undocumented)
+    before(...nodes: (Node | string)[]): void;
     _copy(document: Document): DocumentType;
     // (undocumented)
     lookupNamespaceURI(prefix: string | null): string | null;
@@ -173,6 +193,10 @@ class DocumentType extends Node implements ChildNode {
     // (undocumented)
     nodeValue: string | null;
     publicId: string;
+    // (undocumented)
+    remove(): void;
+    // (undocumented)
+    replaceWith(...nodes: (Node | string)[]): void;
     systemId: string;
     // (undocumented)
     textContent: string | null;
@@ -189,7 +213,13 @@ class DOMImplementation {
 // @public
 class Element extends Node implements ParentNode, NonDocumentTypeChildNode, ChildNode {
     constructor(namespace: string | null, prefix: string | null, localName: string);
+    // (undocumented)
+    after(...nodes: (Node | string)[]): void;
+    // (undocumented)
+    append(...nodes: (Node | string)[]): void;
     readonly attributes: Attr[];
+    // (undocumented)
+    before(...nodes: (Node | string)[]): void;
     // (undocumented)
     childElementCount: number;
     // (undocumented)
@@ -227,10 +257,16 @@ class Element extends Node implements ParentNode, NonDocumentTypeChildNode, Chil
     // (undocumented)
     readonly prefix: string | null;
     // (undocumented)
+    prepend(...nodes: (Node | string)[]): void;
+    // (undocumented)
     readonly previousElementSibling: Element | null;
+    // (undocumented)
+    remove(): void;
     removeAttribute(qualifiedName: string): void;
     removeAttributeNode(attr: Attr): Attr;
     removeAttributeNS(namespace: string | null, localName: string): void;
+    // (undocumented)
+    replaceWith(...nodes: (Node | string)[]): void;
     setAttribute(qualifiedName: string, value: string): void;
     setAttributeNode(attr: Attr): Attr | null;
     setAttributeNodeNS(attr: Attr): Attr | null;
@@ -410,7 +446,7 @@ class XMLDocument extends Document {
     _copy(document: Document): XMLDocument;
 }
 
-// @public (undocumented)
+// @public
 class XMLSerializer {
     constructor();
     serializeToString(root: Node): string;
