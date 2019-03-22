@@ -747,7 +747,10 @@ function serializeAttributes(
 				// value of attr's value attribute is the empty string, then throw an exception;
 				// namespace prefix declarations cannot be used to undeclare a namespace (use a
 				// default namespace declaration instead).
-				if (requireWellFormed && attr.value === '') {
+				// (we deviate from the spec here by only throwing for prefix declarations, the
+				// implementations of this in browsers and the spec text suggest that default
+				// namespace declarations should be allowed to reset the default namespace to null)
+				if (requireWellFormed && attr.prefix !== null && attr.value === '') {
 					throw new Error(
 						'Namespace prefix declarations cannot be used to undeclare a namespace ' +
 							'(use a default namespace declaration instead)'
