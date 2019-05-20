@@ -45,9 +45,7 @@ describe('DOMImplementation', () => {
 			const document = domImplementation.createDocument(null, 'someRootElementName');
 			expect(document.nodeType).toBe(9);
 			expect(document.firstChild).toBe(document.documentElement);
-			expect(document.documentElement!.nodeName).toBe(
-				'someRootElementName'
-			);
+			expect(document.documentElement!.nodeName).toBe('someRootElementName');
 		});
 	});
 

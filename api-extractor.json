@@ -1,18 +1,20 @@
 {
-	"$schema": "https://developer.microsoft.com/json-schemas/api-extractor/api-extractor.schema.json",
-	"compiler": {
-		"configType": "tsconfig",
-		"rootFolder": "."
+	"$schema": "https://developer.microsoft.com/json-schemas/api-extractor/v7/api-extractor.schema.json",
+
+	"mainEntryPointFilePath": "<projectFolder>/lib/index.d.ts",
+
+	"apiReport": {
+		"enabled": true,
+		"reportFolder": "<projectFolder>/api/"
 	},
-	"project": {
-		"entryPointSourceFile": "lib/index.d.ts"
-	},
-	"apiReviewFile": {
-		"apiReviewFolder": "api",
+
+	"docModel": {
 		"enabled": true
 	},
+
 	"dtsRollup": {
 		"enabled": true,
-		"mainDtsRollupPath": "slimdom.d.ts"
+		"untrimmedFilePath": "",
+		"publicTrimmedFilePath": "<projectFolder>/dist/<unscopedPackageName>.d.ts"
 	}
 }
