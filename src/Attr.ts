@@ -157,6 +157,8 @@ export default class Attr extends Node {
  * @param value     - The new value for attribute
  */
 function setExistingAttributeValue(attribute: Attr, value: string) {
+	value = String(value);
+
 	// 1. If attribute’s element is null, then set attribute’s value to value.
 	const element = attribute.ownerElement;
 	if (element === null) {

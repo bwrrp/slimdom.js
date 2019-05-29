@@ -66,6 +66,19 @@ describe('Attr', () => {
 		expect(attr.value).toBe('value');
 	});
 
+	it('only accepts string values', () => {
+		const attr = document.createAttribute('test');
+		(attr.value as any) = undefined;
+		expect(attr.nodeValue).toBe('undefined');
+		expect(attr.textContent).toBe('undefined');
+		expect(attr.value).toBe('undefined');
+
+		(attr.value as any) = /123/;
+		expect(attr.nodeValue).toBe('/123/');
+		expect(attr.textContent).toBe('/123/');
+		expect(attr.value).toBe('/123/');
+	});
+
 	it('can set its value when part of an element', () => {
 		const element = document.createElement('test');
 		element.setAttribute('attr', 'value');
