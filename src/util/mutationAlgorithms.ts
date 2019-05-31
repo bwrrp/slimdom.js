@@ -516,13 +516,15 @@ function replaceAllWithNode(node: Node | null, parent: Node): void {
 	let addedNodes: Node[];
 	if (node === null) {
 		addedNodes = [];
-	} else if (isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE)) {
-		// This case is never actually reachable from any usage of "replace all" in the spec, as the
-		// algorithm is currently only used with node being either null or a Text instance.
-		/* istanbul ignore next */
-		addedNodes = Array.from(node.childNodes);
 	} else {
-		addedNodes = [];
+		/* istanbul ignore if */
+		if (isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE)) {
+			// This case is never actually reachable from any usage of "replace all" in the spec, as the
+			// algorithm is currently only used with node being either null or a Text instance.
+			addedNodes = Array.from(node.childNodes);
+		} else {
+			addedNodes = [];
+		}
 	}
 
 	// 4. Remove all parent’s children, in tree order, with the suppress observers flag set.
