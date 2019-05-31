@@ -4,8 +4,8 @@
 		"sourceMap": true,
 		"strict": true,
 		"module": "commonjs",
-		"target": "es6",
-		"lib": ["es2015"],
+		"target": "es2017",
+		"lib": ["es2017"],
 		"types": ["node", "jest"],
 		"moduleResolution": "node"
 	},

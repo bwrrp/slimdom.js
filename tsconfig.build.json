@@ -4,14 +4,10 @@
 		"sourceMap": true,
 		"strict": true,
 		"module": "es6",
-		"target": "es5",
+		"target": "es2017",
 		"declaration": true,
-		"lib": [
-			"es2015"
-		],
+		"lib": ["es2017"],
 		"types": []
 	},
-	"include": [
-		"src/**/*"
-	]
+	"include": ["src/**/*"]
 }
