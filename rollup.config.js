@@ -1,3 +1,4 @@
+import sourcemaps from 'rollup-plugin-sourcemaps';
 import { terser } from 'rollup-plugin-terser';
 
 const { main: MAIN_DEST_FILE, module: MODULE_DEST_FILE } = require('./package.json');
@@ -17,6 +18,7 @@ export default {
 		console.error(warning.message);
 	},
 	plugins: [
+		sourcemaps(),
 		terser({
 			mangle: {
 				properties: {
