@@ -1,7 +1,7 @@
 {
   "metadata": {
     "toolPackage": "@microsoft/api-extractor",
-    "toolVersion": "7.1.6",
+    "toolVersion": "7.1.8",
     "schemaVersion": 1000
   },
   "kind": "Package",
@@ -101,7 +101,7 @@
             },
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * (non-standard) use Document#createAttribute(NS) or Element#setAttribute(NS) to create attribute nodes\n *\n * @param namespace - The namespace URI for the attribute\n *\n * @param prefix - The prefix for the attribute\n *\n * @param localName - The local name for the attribute\n *\n * @param value - The value for the attribute\n *\n * @param element - The element for the attribute, or null if the attribute is not attached to an element\n */\n",
               "excerptTokens": [
                 {
@@ -193,7 +193,6 @@
                   "text": ");"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": [
@@ -768,7 +767,7 @@
             },
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * (non-standard) use Document#createCDATASection to create a CDATA section.\n *\n * @param data - The data for the node\n */\n",
               "excerptTokens": [
                 {
@@ -792,7 +791,6 @@
                   "text": ");"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": [
@@ -965,7 +963,7 @@
             },
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * (non-standard) CharacterData should never be instantiated directly.\n *\n * @param data - The data to associate with the node\n */\n",
               "excerptTokens": [
                 {
@@ -989,7 +987,6 @@
                   "text": ");"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": [
@@ -2036,7 +2033,7 @@
             },
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * Returns a new Comment node whose data is data and node document is current global object’s associated Document.\n *\n * @param data - The data for the new comment\n */\n",
               "excerptTokens": [
                 {
@@ -2060,7 +2057,6 @@
                   "text": ");"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": [
@@ -2255,7 +2251,7 @@
             },
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * Creates a new Document.\n *\n * Note: Unlike DOMImplementation#createDocument(), this constructor does not return an XMLDocument object, but a document (Document object).\n */\n",
               "excerptTokens": [
                 {
@@ -2263,7 +2259,6 @@
                   "text": "constructor();"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": []
@@ -3745,7 +3740,7 @@
             },
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * Return a new DocumentFragment node whose node document is current global object’s associated Document.\n */\n",
               "excerptTokens": [
                 {
@@ -3753,7 +3748,6 @@
                   "text": "constructor();"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": []
@@ -4377,7 +4371,7 @@
             },
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * (non-standard) Use DOMImplementation#createDocumentType instead.\n *\n * @param name - The name of the doctype\n *\n * @param publicId - The public ID of the doctype\n *\n * @param systemId - The system ID of the doctype\n */\n",
               "excerptTokens": [
                 {
@@ -4433,7 +4427,6 @@
                   "text": ");"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": [
@@ -5049,7 +5042,7 @@
           "members": [
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * (non-standard) Use Document#implementation to access instances of this class\n *\n * @param document - The document to associate with this instance\n */\n",
               "excerptTokens": [
                 {
@@ -5073,7 +5066,6 @@
                   "text": ");"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": [
@@ -5468,7 +5460,7 @@
             },
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * (non-standard) Use Document#createElement or Document#createElementNS to create an Element.\n *\n * @param namespace - Namespace for the element\n *\n * @param prefix - Prefix for the element\n *\n * @param localName - Local name for the element\n */\n",
               "excerptTokens": [
                 {
@@ -5524,7 +5516,6 @@
                   "text": ");"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": [
@@ -7788,7 +7779,7 @@
             },
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * Constructs a MutationObserver object and sets its callback to callback. The callback is invoked with a list of MutationRecord objects as first argument and the constructed MutationObserver object as second argument. It is invoked after nodes registered with the observe() method, are mutated.\n *\n * @param callback - Function called after mutations have been observed.\n */\n",
               "excerptTokens": [
                 {
@@ -7812,7 +7803,6 @@
                   "text": ");"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": [
@@ -7998,7 +7988,7 @@
           "members": [
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * (non-standard) Constructs a MutationRecord\n *\n * @param type - The value for the type property\n *\n * @param target - The value for the target property\n */\n",
               "excerptTokens": [
                 {
@@ -8038,7 +8028,6 @@
                   "text": ");"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": [
@@ -10062,7 +10051,7 @@
             },
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * (non-standard) Use Document#createProcessingInstruction to create a processing instruction.\n *\n * @param target - The target of the processing instruction\n *\n * @param data - The data of the processing instruction\n */\n",
               "excerptTokens": [
                 {
@@ -10102,7 +10091,6 @@
                   "text": ");"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": [
@@ -10258,7 +10246,7 @@
           "members": [
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * The Range() constructor, when invoked, must return a new live range with (current global object’s associated Document, 0) as its start and end.\n */\n",
               "excerptTokens": [
                 {
@@ -10266,7 +10254,6 @@
                   "text": "constructor();"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": []
@@ -11656,7 +11643,7 @@
             },
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * Returns a new Text node whose data is data and node document is current global object’s associated Document.\n *\n * @param data - The data for the new text node\n */\n",
               "excerptTokens": [
                 {
@@ -11680,7 +11667,6 @@
                   "text": ");"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": [
@@ -12338,7 +12324,7 @@
           "members": [
             {
               "kind": "Constructor",
-              "canonicalReference": "(:constructor,instance,0)",
+              "canonicalReference": "(:constructor,0)",
               "docComment": "/**\n * Constructs a new XMLSerializer object.\n */\n",
               "excerptTokens": [
                 {
@@ -12346,7 +12332,6 @@
                   "text": "constructor();"
                 }
               ],
-              "isStatic": false,
               "releaseTag": "Public",
               "overloadIndex": 0,
               "parameters": []
