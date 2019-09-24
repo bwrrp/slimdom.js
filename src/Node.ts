@@ -22,6 +22,7 @@ import { asNullableObject, asNullableString, asObject } from './util/typeHelpers
  * @public
  */
 export default abstract class Node {
+	// Node types are exposed as properties of the constructor
 	static ELEMENT_NODE: number = NodeType.ELEMENT_NODE;
 	static ATTRIBUTE_NODE: number = NodeType.ATTRIBUTE_NODE;
 	static TEXT_NODE: number = NodeType.TEXT_NODE;
@@ -34,6 +35,20 @@ export default abstract class Node {
 	static DOCUMENT_TYPE_NODE: number = NodeType.DOCUMENT_TYPE_NODE;
 	static DOCUMENT_FRAGMENT_NODE: number = NodeType.DOCUMENT_FRAGMENT_NODE;
 	static NOTATION_NODE: number = NodeType.NOTATION_NODE; // historical
+
+	// Node types also exist as instance properties, assigned to the prototype below
+	public ELEMENT_NODE!: number;
+	public ATTRIBUTE_NODE!: number;
+	public TEXT_NODE!: number;
+	public CDATA_SECTION_NODE!: number;
+	public ENTITY_REFERENCE_NODE!: number; // historical
+	public ENTITY_NODE!: number; // historical
+	public PROCESSING_INSTRUCTION_NODE!: number;
+	public COMMENT_NODE!: number;
+	public DOCUMENT_NODE!: number;
+	public DOCUMENT_TYPE_NODE!: number;
+	public DOCUMENT_FRAGMENT_NODE!: number;
+	public NOTATION_NODE!: number; // historical
 
 	/**
 	 * Returns the type of node, represented by a number.
@@ -373,15 +388,15 @@ export default abstract class Node {
 	public abstract _copy(document: Document): Node;
 }
 
-(Node.prototype as any).ELEMENT_NODE = NodeType.ELEMENT_NODE;
-(Node.prototype as any).ATTRIBUTE_NODE = NodeType.ATTRIBUTE_NODE;
-(Node.prototype as any).TEXT_NODE = NodeType.TEXT_NODE;
-(Node.prototype as any).CDATA_SECTION_NODE = NodeType.CDATA_SECTION_NODE;
-(Node.prototype as any).ENTITY_REFERENCE_NODE = NodeType.ENTITY_REFERENCE_NODE; // historical
-(Node.prototype as any).ENTITY_NODE = NodeType.ENTITY_NODE; // historical
-(Node.prototype as any).PROCESSING_INSTRUCTION_NODE = NodeType.PROCESSING_INSTRUCTION_NODE;
-(Node.prototype as any).COMMENT_NODE = NodeType.COMMENT_NODE;
-(Node.prototype as any).DOCUMENT_NODE = NodeType.DOCUMENT_NODE;
-(Node.prototype as any).DOCUMENT_TYPE_NODE = NodeType.DOCUMENT_TYPE_NODE;
-(Node.prototype as any).DOCUMENT_FRAGMENT_NODE = NodeType.DOCUMENT_FRAGMENT_NODE;
-(Node.prototype as any).NOTATION_NODE = NodeType.NOTATION_NODE; // historical
+Node.prototype.ELEMENT_NODE = NodeType.ELEMENT_NODE;
+Node.prototype.ATTRIBUTE_NODE = NodeType.ATTRIBUTE_NODE;
+Node.prototype.TEXT_NODE = NodeType.TEXT_NODE;
+Node.prototype.CDATA_SECTION_NODE = NodeType.CDATA_SECTION_NODE;
+Node.prototype.ENTITY_REFERENCE_NODE = NodeType.ENTITY_REFERENCE_NODE; // historical
+Node.prototype.ENTITY_NODE = NodeType.ENTITY_NODE; // historical
+Node.prototype.PROCESSING_INSTRUCTION_NODE = NodeType.PROCESSING_INSTRUCTION_NODE;
+Node.prototype.COMMENT_NODE = NodeType.COMMENT_NODE;
+Node.prototype.DOCUMENT_NODE = NodeType.DOCUMENT_NODE;
+Node.prototype.DOCUMENT_TYPE_NODE = NodeType.DOCUMENT_TYPE_NODE;
+Node.prototype.DOCUMENT_FRAGMENT_NODE = NodeType.DOCUMENT_FRAGMENT_NODE;
+Node.prototype.NOTATION_NODE = NodeType.NOTATION_NODE; // historical

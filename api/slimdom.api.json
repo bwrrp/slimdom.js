@@ -6936,6 +6936,32 @@
             },
             {
               "kind": "Property",
+              "canonicalReference": "slimdom!Node#ATTRIBUTE_NODE:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "ATTRIBUTE_NODE: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "releaseTag": "Public",
+              "name": "ATTRIBUTE_NODE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
+            },
+            {
+              "kind": "Property",
               "canonicalReference": "slimdom!Node.ATTRIBUTE_NODE:member",
               "docComment": "",
               "excerptTokens": [
@@ -6959,6 +6985,32 @@
                 "endIndex": 2
               },
               "isStatic": true
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!Node#CDATA_SECTION_NODE:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "CDATA_SECTION_NODE: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "releaseTag": "Public",
+              "name": "CDATA_SECTION_NODE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
             },
             {
               "kind": "Property",
@@ -7063,6 +7115,32 @@
             },
             {
               "kind": "Property",
+              "canonicalReference": "slimdom!Node#COMMENT_NODE:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "COMMENT_NODE: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "releaseTag": "Public",
+              "name": "COMMENT_NODE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
+            },
+            {
+              "kind": "Property",
               "canonicalReference": "slimdom!Node.COMMENT_NODE:member",
               "docComment": "",
               "excerptTokens": [
@@ -7138,6 +7216,32 @@
             },
             {
               "kind": "Property",
+              "canonicalReference": "slimdom!Node#DOCUMENT_FRAGMENT_NODE:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "DOCUMENT_FRAGMENT_NODE: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "releaseTag": "Public",
+              "name": "DOCUMENT_FRAGMENT_NODE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
+            },
+            {
+              "kind": "Property",
               "canonicalReference": "slimdom!Node.DOCUMENT_FRAGMENT_NODE:member",
               "docComment": "",
               "excerptTokens": [
@@ -7161,6 +7265,32 @@
                 "endIndex": 2
               },
               "isStatic": true
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!Node#DOCUMENT_NODE:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "DOCUMENT_NODE: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "releaseTag": "Public",
+              "name": "DOCUMENT_NODE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
             },
             {
               "kind": "Property",
@@ -7190,6 +7320,32 @@
             },
             {
               "kind": "Property",
+              "canonicalReference": "slimdom!Node#DOCUMENT_TYPE_NODE:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "DOCUMENT_TYPE_NODE: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "releaseTag": "Public",
+              "name": "DOCUMENT_TYPE_NODE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
+            },
+            {
+              "kind": "Property",
               "canonicalReference": "slimdom!Node.DOCUMENT_TYPE_NODE:member",
               "docComment": "",
               "excerptTokens": [
@@ -7213,6 +7369,32 @@
                 "endIndex": 2
               },
               "isStatic": true
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!Node#ELEMENT_NODE:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "ELEMENT_NODE: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "releaseTag": "Public",
+              "name": "ELEMENT_NODE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
             },
             {
               "kind": "Property",
@@ -7242,6 +7424,32 @@
             },
             {
               "kind": "Property",
+              "canonicalReference": "slimdom!Node#ENTITY_NODE:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "ENTITY_NODE: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "releaseTag": "Public",
+              "name": "ENTITY_NODE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
+            },
+            {
+              "kind": "Property",
               "canonicalReference": "slimdom!Node.ENTITY_NODE:member",
               "docComment": "",
               "excerptTokens": [
@@ -7265,6 +7473,32 @@
                 "endIndex": 2
               },
               "isStatic": true
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!Node#ENTITY_REFERENCE_NODE:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "ENTITY_REFERENCE_NODE: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "releaseTag": "Public",
+              "name": "ENTITY_REFERENCE_NODE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
             },
             {
               "kind": "Property",
@@ -7739,6 +7973,32 @@
             },
             {
               "kind": "Property",
+              "canonicalReference": "slimdom!Node#NOTATION_NODE:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "NOTATION_NODE: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "releaseTag": "Public",
+              "name": "NOTATION_NODE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
+            },
+            {
+              "kind": "Property",
               "canonicalReference": "slimdom!Node.NOTATION_NODE:member",
               "docComment": "",
               "excerptTokens": [
@@ -7884,6 +8144,32 @@
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 3
+              },
+              "isStatic": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!Node#PROCESSING_INSTRUCTION_NODE:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "PROCESSING_INSTRUCTION_NODE: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "releaseTag": "Public",
+              "name": "PROCESSING_INSTRUCTION_NODE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
               },
               "isStatic": false
             },
@@ -8060,6 +8346,32 @@
                 }
               ],
               "name": "replaceChild"
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!Node#TEXT_NODE:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "TEXT_NODE: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "releaseTag": "Public",
+              "name": "TEXT_NODE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
             },
             {
               "kind": "Property",
