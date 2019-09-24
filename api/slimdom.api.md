@@ -313,25 +313,43 @@ export abstract class Node {
     // (undocumented)
     static ATTRIBUTE_NODE: number;
     // (undocumented)
+    ATTRIBUTE_NODE: number;
+    // (undocumented)
     static CDATA_SECTION_NODE: number;
+    // (undocumented)
+    CDATA_SECTION_NODE: number;
     childNodes: Node[];
     cloneNode(deep?: boolean): this;
     // (undocumented)
     static COMMENT_NODE: number;
+    // (undocumented)
+    COMMENT_NODE: number;
     contains(other: Node | null): boolean;
     abstract _copy(document: Document): Node;
     // (undocumented)
     static DOCUMENT_FRAGMENT_NODE: number;
     // (undocumented)
+    DOCUMENT_FRAGMENT_NODE: number;
+    // (undocumented)
     static DOCUMENT_NODE: number;
+    // (undocumented)
+    DOCUMENT_NODE: number;
     // (undocumented)
     static DOCUMENT_TYPE_NODE: number;
     // (undocumented)
+    DOCUMENT_TYPE_NODE: number;
+    // (undocumented)
     static ELEMENT_NODE: number;
+    // (undocumented)
+    ELEMENT_NODE: number;
     // (undocumented)
     static ENTITY_NODE: number;
     // (undocumented)
+    ENTITY_NODE: number;
+    // (undocumented)
     static ENTITY_REFERENCE_NODE: number;
+    // (undocumented)
+    ENTITY_REFERENCE_NODE: number;
     firstChild: Node | null;
     hasChildNodes(): boolean;
     insertBefore<TNode extends Node>(node: TNode, child: Node | null): TNode;
@@ -347,18 +365,24 @@ export abstract class Node {
     normalize(): void;
     // (undocumented)
     static NOTATION_NODE: number;
+    // (undocumented)
+    NOTATION_NODE: number;
     ownerDocument: Document | null;
     readonly parentElement: Element | null;
     parentNode: Node | null;
     previousSibling: Node | null;
     // (undocumented)
     static PROCESSING_INSTRUCTION_NODE: number;
+    // (undocumented)
+    PROCESSING_INSTRUCTION_NODE: number;
     // Warning: (ae-forgotten-export) The symbol "RegisteredObservers" needs to be exported by the entry point index.d.ts
     _registeredObservers: RegisteredObservers;
     removeChild<TChild extends Node>(child: TChild): TChild;
     replaceChild<TChild extends Node>(node: Node, child: TChild): TChild;
     // (undocumented)
     static TEXT_NODE: number;
+    // (undocumented)
+    TEXT_NODE: number;
     abstract textContent: string | null;
 }
 
