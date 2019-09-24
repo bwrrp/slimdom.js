@@ -2,11 +2,17 @@ import { default as MutationObserver } from './MutationObserver';
 import MutationRecord from './MutationRecord';
 import { removeTransientRegisteredObserversForObserver } from './RegisteredObservers';
 
-function queueCompoundMicrotask(
-	callback: (...args: any[]) => void,
-	thisArg: NotifySet,
-	...args: any[]
-): void {
+type AnyCallback = (...args: any[]) => void;
+declare const queueMicrotask: undefined | ((callback: AnyCallback) => void);
+
+/* istanbul ignore next */
+function queueCompoundMicrotask(callback: AnyCallback, thisArg: NotifySet, ...args: any[]): void {
+	if (typeof queueMicrotask === 'function') {
+		queueMicrotask(() => callback.apply(thisArg, args));
+		return;
+	}
+
+	// Fall back to Promise.then callbacks - these run as microtasks, but handle errors differently
 	Promise.resolve().then(() => callback.apply(thisArg, args));
 }
 
