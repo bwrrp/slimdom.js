@@ -13,11 +13,12 @@
 	"main": "dist/slimdom.js",
 	"module": "dist/slimdom.mjs",
 	"scripts": {
-		"build": "npm-run-all build:tsc build:bundle build:api build:docs",
-		"build:tsc": "rimraf dist && rimraf lib && tsc -P tsconfig.build.json",
-		"build:bundle": "rollup -c",
-		"build:api": "api-extractor run; copyfiles --flat temp/* api",
+		"build:clean": "rimraf dist && rimraf lib && rimraf temp",
+		"build:bundle": "tsc -P tsconfig.build.json && rollup -c",
+		"build:api": "api-extractor run",
+		"build:api-copy": "copyfiles --flat temp/* api",
 		"build:docs": "api-documenter markdown -i api -o docs",
+		"build": "npm-run-all build:clean build:bundle build:api build:api-copy build:docs",
 		"prepare": "npm run build",
 		"test": "jest --coverage --verbose",
 		"test:debug": "node --inspect --debug-brk node_modules/jest/bin/jest.js --runInBand"
