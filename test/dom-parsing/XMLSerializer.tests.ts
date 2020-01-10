@@ -289,6 +289,14 @@ describe('XMLSerializer', () => {
 		expect(serializer.serializeToString(el)).toBe('<test whitespace=" &#9;&#13;&#10;"/>');
 	});
 
+	it('correctly escapes things that look like entities but are not', () => {
+		const el = document.createElement('test');
+		el.setAttribute('whitespace', ' &#9;&#13;&#10;');
+		expect(serializer.serializeToString(el)).toBe(
+			'<test whitespace=" &amp;#9;&amp;#13;&amp;#10;"/>'
+		);
+	});
+
 	it('can serialize a ProcessingInstruction', () => {
 		expect(
 			serializer.serializeToString(document.createProcessingInstruction('target', 'data'))
