@@ -283,6 +283,12 @@ describe('XMLSerializer', () => {
 		);
 	});
 
+	it('escapes whitespace that would otherwise be lost due to attribute value normalization', () => {
+		const el = document.createElement('test');
+		el.setAttribute('whitespace', ' \t\r\n');
+		expect(serializer.serializeToString(el)).toBe('<test whitespace=" &#9;&#13;&#10;"/>');
+	});
+
 	it('can serialize a ProcessingInstruction', () => {
 		expect(
 			serializer.serializeToString(document.createProcessingInstruction('target', 'data'))

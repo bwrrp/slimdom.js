@@ -888,6 +888,12 @@ function serializeAttributeValue(
 			.replace(/</g, '&lt;')
 			// 3.4. ">" with "&gt;"
 			.replace(/>/g, '&gt;')
+			// (we deviate from the spec here to also escape whitespace characters, this matches
+			// the behavior of Chrome, Firefox and Edge, although the specific encoding varies
+			// between those browsers)
+			.replace(/\t/g, '&#9;')
+			.replace(/\n/g, '&#10;')
+			.replace(/\r/g, '&#13;')
 	);
 
 	// NOTE: This matches behavior present in browsers, and goes above and beyond the grammar
