@@ -311,9 +311,9 @@ export class MutationRecord {
 export abstract class Node {
     appendChild<TNode extends Node>(node: TNode): TNode;
     // (undocumented)
-    ATTRIBUTE_NODE: number;
-    // (undocumented)
     static ATTRIBUTE_NODE: number;
+    // (undocumented)
+    ATTRIBUTE_NODE: number;
     // (undocumented)
     static CDATA_SECTION_NODE: number;
     // (undocumented)
@@ -321,9 +321,9 @@ export abstract class Node {
     childNodes: Node[];
     cloneNode(deep?: boolean): this;
     // (undocumented)
-    COMMENT_NODE: number;
-    // (undocumented)
     static COMMENT_NODE: number;
+    // (undocumented)
+    COMMENT_NODE: number;
     contains(other: Node | null): boolean;
     abstract _copy(document: Document): Node;
     // (undocumented)
@@ -335,9 +335,9 @@ export abstract class Node {
     // (undocumented)
     DOCUMENT_NODE: number;
     // (undocumented)
-    DOCUMENT_TYPE_NODE: number;
-    // (undocumented)
     static DOCUMENT_TYPE_NODE: number;
+    // (undocumented)
+    DOCUMENT_TYPE_NODE: number;
     // (undocumented)
     static ELEMENT_NODE: number;
     // (undocumented)
@@ -347,9 +347,9 @@ export abstract class Node {
     // (undocumented)
     ENTITY_NODE: number;
     // (undocumented)
-    ENTITY_REFERENCE_NODE: number;
-    // (undocumented)
     static ENTITY_REFERENCE_NODE: number;
+    // (undocumented)
+    ENTITY_REFERENCE_NODE: number;
     firstChild: Node | null;
     hasChildNodes(): boolean;
     insertBefore<TNode extends Node>(node: TNode, child: Node | null): TNode;
@@ -364,9 +364,9 @@ export abstract class Node {
     abstract nodeValue: string | null;
     normalize(): void;
     // (undocumented)
-    NOTATION_NODE: number;
-    // (undocumented)
     static NOTATION_NODE: number;
+    // (undocumented)
+    NOTATION_NODE: number;
     ownerDocument: Document | null;
     readonly parentElement: Element | null;
     parentNode: Node | null;
@@ -380,9 +380,9 @@ export abstract class Node {
     removeChild<TChild extends Node>(child: TChild): TChild;
     replaceChild<TChild extends Node>(node: Node, child: TChild): TChild;
     // (undocumented)
-    TEXT_NODE: number;
-    // (undocumented)
     static TEXT_NODE: number;
+    // (undocumented)
+    TEXT_NODE: number;
     abstract textContent: string | null;
 }
 
