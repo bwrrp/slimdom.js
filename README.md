@@ -3,7 +3,6 @@
 [![NPM version](https://badge.fury.io/js/slimdom.svg)](https://badge.fury.io/js/slimdom)
 [![Build Status](https://travis-ci.org/bwrrp/slimdom.js.svg?branch=master)](https://travis-ci.org/bwrrp/slimdom.js)
 
-
 Fast, tiny, standards-compliant XML DOM implementation for node and the browser.
 
 This is a (partial) implementation of the [DOM living standard][domstandard], as last updated 1 March 2019, and the [DOM Parsing and Serialization W3C Editor's Draft][domparsing], as last updated 11 February 2019. See the 'Features' and 'Limitations' sections below for details on what's included and what's not.
