@@ -2,7 +2,6 @@
 
 [![NPM version](https://badge.fury.io/js/slimdom.svg)](https://badge.fury.io/js/slimdom)
 [![Build Status](https://travis-ci.org/bwrrp/slimdom.js.svg?branch=master)](https://travis-ci.org/bwrrp/slimdom.js)
-[![Greenkeeper badge](https://badges.greenkeeper.io/bwrrp/slimdom.js.svg)](https://greenkeeper.io/)
 
 Fast, tiny, standards-compliant XML DOM implementation for node and the browser.
 
