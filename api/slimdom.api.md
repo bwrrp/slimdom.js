@@ -19,19 +19,22 @@ export class Attr extends Node {
     // (undocumented)
     readonly namespaceURI: string | null;
     // (undocumented)
-    readonly nodeName: string;
+    get nodeName(): string;
     // (undocumented)
-    readonly nodeType: number;
+    get nodeType(): number;
     // (undocumented)
-    nodeValue: string | null;
+    get nodeValue(): string | null;
+    set nodeValue(newValue: string | null);
     // (undocumented)
     ownerElement: Element | null;
     // (undocumented)
     readonly prefix: string | null;
     // (undocumented)
-    textContent: string | null;
+    get textContent(): string | null;
+    set textContent(newValue: string | null);
     // (undocumented)
-    value: string;
+    get value(): string;
+    set value(value: string);
     }
 
 // @public (undocumented)
@@ -39,14 +42,14 @@ export class CDATASection extends Text {
     constructor(data: string);
     _copy(document: Document): CDATASection;
     // (undocumented)
-    readonly nodeName: string;
+    get nodeName(): string;
     // (undocumented)
-    readonly nodeType: number;
+    get nodeType(): number;
 }
 
 // Warning: (ae-forgotten-export) The symbol "NonDocumentTypeChildNode" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "ChildNode" needs to be exported by the entry point index.d.ts
-// 
+//
 // @public
 export abstract class CharacterData extends Node implements NonDocumentTypeChildNode, ChildNode {
     protected constructor(data: string);
@@ -56,22 +59,24 @@ export abstract class CharacterData extends Node implements NonDocumentTypeChild
     // (undocumented)
     before(...nodes: (Node | string)[]): void;
     // (undocumented)
-    data: string;
+    get data(): string;
+    set data(newValue: string);
     protected _data: string;
     deleteData(offset: number, count: number): void;
     insertData(offset: number, data: string): void;
     // (undocumented)
-    readonly length: number;
+    get length(): number;
     // (undocumented)
     lookupNamespaceURI(prefix: string | null): string | null;
     // (undocumented)
     lookupPrefix(namespace: string | null): string | null;
     // (undocumented)
-    readonly nextElementSibling: Element | null;
+    get nextElementSibling(): Element | null;
     // (undocumented)
-    nodeValue: string | null;
+    get nodeValue(): string | null;
+    set nodeValue(newValue: string | null);
     // (undocumented)
-    readonly previousElementSibling: Element | null;
+    get previousElementSibling(): Element | null;
     // (undocumented)
     remove(): void;
     replaceData(offset: number, count: number, data: string): void;
@@ -79,7 +84,8 @@ export abstract class CharacterData extends Node implements NonDocumentTypeChild
     replaceWith(...nodes: (Node | string)[]): void;
     substringData(offset: number, count: number): string;
     // (undocumented)
-    textContent: string | null;
+    get textContent(): string | null;
+    set textContent(newValue: string | null);
 }
 
 // @public (undocumented)
@@ -87,14 +93,14 @@ export class Comment extends CharacterData {
     constructor(data?: string);
     _copy(document: Document): Comment;
     // (undocumented)
-    readonly nodeName: string;
+    get nodeName(): string;
     // (undocumented)
-    readonly nodeType: number;
+    get nodeType(): number;
 }
 
 // Warning: (ae-forgotten-export) The symbol "NonElementParentNode" needs to be exported by the entry point index.d.ts
 // Warning: (ae-forgotten-export) The symbol "ParentNode" needs to be exported by the entry point index.d.ts
-// 
+//
 // @public
 export class Document extends Node implements NonElementParentNode, ParentNode {
     constructor();
@@ -104,7 +110,7 @@ export class Document extends Node implements NonElementParentNode, ParentNode {
     // (undocumented)
     childElementCount: number;
     // (undocumented)
-    readonly children: Element[];
+    get children(): Element[];
     _copy(document: Document): Document;
     createAttribute(localName: string): Attr;
     createAttributeNS(namespace: string | null, qualifiedName: string): Attr;
@@ -129,15 +135,17 @@ export class Document extends Node implements NonElementParentNode, ParentNode {
     // (undocumented)
     lookupPrefix(namespace: string | null): string | null;
     // (undocumented)
-    readonly nodeName: string;
+    get nodeName(): string;
     // (undocumented)
-    readonly nodeType: number;
+    get nodeType(): number;
     // (undocumented)
-    nodeValue: string | null;
+    get nodeValue(): string | null;
+    set nodeValue(_newValue: string | null);
     // (undocumented)
     prepend(...nodes: (Node | string)[]): void;
     // (undocumented)
-    textContent: string | null;
+    get textContent(): string | null;
+    set textContent(_newValue: string | null);
 }
 
 // @public
@@ -151,7 +159,7 @@ export class DocumentFragment extends Node implements NonElementParentNode, Pare
     // (undocumented)
     childElementCount: number;
     // (undocumented)
-    readonly children: Element[];
+    get children(): Element[];
     _copy(document: Document): DocumentFragment;
     // (undocumented)
     firstElementChild: Element | null;
@@ -162,15 +170,17 @@ export class DocumentFragment extends Node implements NonElementParentNode, Pare
     // (undocumented)
     lookupPrefix(namespace: string | null): string | null;
     // (undocumented)
-    readonly nodeName: string;
+    get nodeName(): string;
     // (undocumented)
-    readonly nodeType: number;
+    get nodeType(): number;
     // (undocumented)
-    nodeValue: string | null;
+    get nodeValue(): string | null;
+    set nodeValue(newValue: string | null);
     // (undocumented)
     prepend(...nodes: (Node | string)[]): void;
     // (undocumented)
-    textContent: string | null;
+    get textContent(): string | null;
+    set textContent(newValue: string | null);
 }
 
 // @public (undocumented)
@@ -187,11 +197,12 @@ export class DocumentType extends Node implements ChildNode {
     lookupPrefix(namespace: string | null): string | null;
     name: string;
     // (undocumented)
-    readonly nodeName: string;
+    get nodeName(): string;
     // (undocumented)
-    readonly nodeType: number;
+    get nodeType(): number;
     // (undocumented)
-    nodeValue: string | null;
+    get nodeValue(): string | null;
+    set nodeValue(_newValue: string | null);
     publicId: string;
     // (undocumented)
     remove(): void;
@@ -199,7 +210,8 @@ export class DocumentType extends Node implements ChildNode {
     replaceWith(...nodes: (Node | string)[]): void;
     systemId: string;
     // (undocumented)
-    textContent: string | null;
+    get textContent(): string | null;
+    set textContent(_newValue: string | null);
 }
 
 // @public (undocumented)
@@ -223,7 +235,7 @@ export class Element extends Node implements ParentNode, NonDocumentTypeChildNod
     // (undocumented)
     childElementCount: number;
     // (undocumented)
-    readonly children: Element[];
+    get children(): Element[];
     _copy(document: Document): Element;
     // (undocumented)
     firstElementChild: Element | null;
@@ -234,7 +246,7 @@ export class Element extends Node implements ParentNode, NonDocumentTypeChildNod
     hasAttribute(qualifiedName: string): boolean;
     hasAttributeNS(namespace: string | null, localName: string): boolean;
     hasAttributes(): boolean;
-    readonly innerHTML: string;
+    get innerHTML(): string;
     // (undocumented)
     lastElementChild: Element | null;
     // (undocumented)
@@ -246,20 +258,21 @@ export class Element extends Node implements ParentNode, NonDocumentTypeChildNod
     // (undocumented)
     readonly namespaceURI: string | null;
     // (undocumented)
-    readonly nextElementSibling: Element | null;
+    get nextElementSibling(): Element | null;
     // (undocumented)
-    readonly nodeName: string;
+    get nodeName(): string;
     // (undocumented)
-    readonly nodeType: number;
+    get nodeType(): number;
     // (undocumented)
-    nodeValue: string | null;
-    readonly outerHTML: string;
+    get nodeValue(): string | null;
+    set nodeValue(newValue: string | null);
+    get outerHTML(): string;
     // (undocumented)
     readonly prefix: string | null;
     // (undocumented)
     prepend(...nodes: (Node | string)[]): void;
     // (undocumented)
-    readonly previousElementSibling: Element | null;
+    get previousElementSibling(): Element | null;
     // (undocumented)
     remove(): void;
     removeAttribute(qualifiedName: string): void;
@@ -274,7 +287,8 @@ export class Element extends Node implements ParentNode, NonDocumentTypeChildNod
     // (undocumented)
     readonly tagName: string;
     // (undocumented)
-    textContent: string | null;
+    get textContent(): string | null;
+    set textContent(newValue: string | null);
     toggleAttribute(qualifiedName: string, force?: boolean): boolean;
 }
 
@@ -359,16 +373,17 @@ export abstract class Node {
     // (undocumented)
     abstract lookupPrefix(namespace: string | null): string | null;
     nextSibling: Node | null;
-    abstract readonly nodeName: string;
-    abstract readonly nodeType: number;
-    abstract nodeValue: string | null;
+    abstract get nodeName(): string;
+    abstract get nodeType(): number;
+    abstract get nodeValue(): string | null;
+    abstract set nodeValue(value: string | null);
     normalize(): void;
     // (undocumented)
     static NOTATION_NODE: number;
     // (undocumented)
     NOTATION_NODE: number;
     ownerDocument: Document | null;
-    readonly parentElement: Element | null;
+    get parentElement(): Element | null;
     parentNode: Node | null;
     previousSibling: Node | null;
     // (undocumented)
@@ -383,7 +398,8 @@ export abstract class Node {
     static TEXT_NODE: number;
     // (undocumented)
     TEXT_NODE: number;
-    abstract textContent: string | null;
+    abstract get textContent(): string | null;
+    abstract set textContent(value: string | null);
 }
 
 // @public
@@ -391,23 +407,23 @@ export class ProcessingInstruction extends CharacterData {
     constructor(target: string, data: string);
     _copy(document: Document): ProcessingInstruction;
     // (undocumented)
-    readonly nodeName: string;
+    get nodeName(): string;
     // (undocumented)
-    readonly nodeType: number;
+    get nodeType(): number;
     // (undocumented)
     target: string;
 }
 
 // Warning: (ae-forgotten-export) The symbol "AbstractRange" needs to be exported by the entry point index.d.ts
-// 
+//
 // @public
 export class Range implements AbstractRange {
     constructor();
     cloneRange(): Range;
     collapse(toStart?: boolean): void;
     // (undocumented)
-    readonly collapsed: boolean;
-    readonly commonAncestorContainer: Node;
+    get collapsed(): boolean;
+    get commonAncestorContainer(): Node;
     // (undocumented)
     compareBoundaryPoints(how: number, sourceRange: Range): number;
     comparePoint(node: Node, offset: number): number;
@@ -450,11 +466,11 @@ export class Text extends CharacterData {
     constructor(data?: string);
     _copy(document: Document): Text;
     // (undocumented)
-    readonly nodeName: string;
+    get nodeName(): string;
     // (undocumented)
-    readonly nodeType: number;
+    get nodeType(): number;
     splitText(offset: number): Text;
-    readonly wholeText: string;
+    get wholeText(): string;
 }
 
 // @public

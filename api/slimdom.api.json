@@ -1,7 +1,7 @@
 {
   "metadata": {
     "toolPackage": "@microsoft/api-extractor",
-    "toolVersion": "7.5.2",
+    "toolVersion": "7.9.22",
     "schemaVersion": 1003,
     "oldestForwardsCompatibleVersion": 1001
   },
@@ -351,7 +351,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeName: "
+                  "text": "get nodeName(): "
                 },
                 {
                   "kind": "Content",
@@ -377,7 +377,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeType: "
+                  "text": "get nodeType(): "
                 },
                 {
                   "kind": "Content",
@@ -403,7 +403,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "nodeValue: "
+                  "text": "get nodeValue(): "
                 },
                 {
                   "kind": "Content",
@@ -412,6 +412,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset nodeValue(newValue: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -486,7 +490,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "textContent: "
+                  "text": "get textContent(): "
                 },
                 {
                   "kind": "Content",
@@ -495,6 +499,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset textContent(newValue: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -512,7 +520,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "value: "
+                  "text": "get value(): "
                 },
                 {
                   "kind": "Content",
@@ -521,6 +529,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset value(value: string);"
                 }
               ],
               "releaseTag": "Public",
@@ -643,7 +655,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeName: "
+                  "text": "get nodeName(): "
                 },
                 {
                   "kind": "Content",
@@ -669,7 +681,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeType: "
+                  "text": "get nodeType(): "
                 },
                 {
                   "kind": "Content",
@@ -952,7 +964,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "data: "
+                  "text": "get data(): "
                 },
                 {
                   "kind": "Content",
@@ -961,6 +973,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset data(newValue: string);"
                 }
               ],
               "releaseTag": "Public",
@@ -1096,7 +1112,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly length: "
+                  "text": "get length(): "
                 },
                 {
                   "kind": "Content",
@@ -1210,7 +1226,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nextElementSibling: "
+                  "text": "get nextElementSibling(): "
                 },
                 {
                   "kind": "Reference",
@@ -1241,7 +1257,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "nodeValue: "
+                  "text": "get nodeValue(): "
                 },
                 {
                   "kind": "Content",
@@ -1250,6 +1266,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset nodeValue(newValue: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -1267,7 +1287,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly previousElementSibling: "
+                  "text": "get previousElementSibling(): "
                 },
                 {
                   "kind": "Reference",
@@ -1512,7 +1532,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "textContent: "
+                  "text": "get textContent(): "
                 },
                 {
                   "kind": "Content",
@@ -1521,6 +1541,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset textContent(newValue: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -1652,7 +1676,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeName: "
+                  "text": "get nodeName(): "
                 },
                 {
                   "kind": "Content",
@@ -1678,7 +1702,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeType: "
+                  "text": "get nodeType(): "
                 },
                 {
                   "kind": "Content",
@@ -1960,7 +1984,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly children: "
+                  "text": "get children(): "
                 },
                 {
                   "kind": "Reference",
@@ -2774,7 +2798,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeName: "
+                  "text": "get nodeName(): "
                 },
                 {
                   "kind": "Content",
@@ -2800,7 +2824,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeType: "
+                  "text": "get nodeType(): "
                 },
                 {
                   "kind": "Content",
@@ -2826,7 +2850,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "nodeValue: "
+                  "text": "get nodeValue(): "
                 },
                 {
                   "kind": "Content",
@@ -2835,6 +2859,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset nodeValue(_newValue: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -2905,7 +2933,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "textContent: "
+                  "text": "get textContent(): "
                 },
                 {
                   "kind": "Content",
@@ -2914,6 +2942,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset textContent(_newValue: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -3152,7 +3184,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly children: "
+                  "text": "get children(): "
                 },
                 {
                   "kind": "Reference",
@@ -3333,7 +3365,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeName: "
+                  "text": "get nodeName(): "
                 },
                 {
                   "kind": "Content",
@@ -3359,7 +3391,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeType: "
+                  "text": "get nodeType(): "
                 },
                 {
                   "kind": "Content",
@@ -3385,7 +3417,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "nodeValue: "
+                  "text": "get nodeValue(): "
                 },
                 {
                   "kind": "Content",
@@ -3394,6 +3426,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset nodeValue(newValue: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -3464,7 +3500,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "textContent: "
+                  "text": "get textContent(): "
                 },
                 {
                   "kind": "Content",
@@ -3473,6 +3509,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset textContent(newValue: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -3867,7 +3907,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeName: "
+                  "text": "get nodeName(): "
                 },
                 {
                   "kind": "Content",
@@ -3893,7 +3933,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeType: "
+                  "text": "get nodeType(): "
                 },
                 {
                   "kind": "Content",
@@ -3919,7 +3959,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "nodeValue: "
+                  "text": "get nodeValue(): "
                 },
                 {
                   "kind": "Content",
@@ -3928,6 +3968,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset nodeValue(_newValue: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -4078,7 +4122,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "textContent: "
+                  "text": "get textContent(): "
                 },
                 {
                   "kind": "Content",
@@ -4087,6 +4131,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset textContent(_newValue: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -4738,7 +4786,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly children: "
+                  "text": "get children(): "
                 },
                 {
                   "kind": "Reference",
@@ -5147,7 +5195,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly innerHTML: "
+                  "text": "get innerHTML(): "
                 },
                 {
                   "kind": "Content",
@@ -5344,7 +5392,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nextElementSibling: "
+                  "text": "get nextElementSibling(): "
                 },
                 {
                   "kind": "Reference",
@@ -5375,7 +5423,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeName: "
+                  "text": "get nodeName(): "
                 },
                 {
                   "kind": "Content",
@@ -5401,7 +5449,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeType: "
+                  "text": "get nodeType(): "
                 },
                 {
                   "kind": "Content",
@@ -5427,7 +5475,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "nodeValue: "
+                  "text": "get nodeValue(): "
                 },
                 {
                   "kind": "Content",
@@ -5436,6 +5484,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset nodeValue(newValue: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -5453,7 +5505,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly outerHTML: "
+                  "text": "get outerHTML(): "
                 },
                 {
                   "kind": "Content",
@@ -5558,7 +5610,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly previousElementSibling: "
+                  "text": "get previousElementSibling(): "
                 },
                 {
                   "kind": "Reference",
@@ -6078,7 +6130,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "textContent: "
+                  "text": "get textContent(): "
                 },
                 {
                   "kind": "Content",
@@ -6087,6 +6139,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nset textContent(newValue: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -7872,7 +7928,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "abstract readonly nodeName: "
+                  "text": "abstract get nodeName(): "
                 },
                 {
                   "kind": "Content",
@@ -7898,7 +7954,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "abstract readonly nodeType: "
+                  "text": "abstract get nodeType(): "
                 },
                 {
                   "kind": "Content",
@@ -7924,7 +7980,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "abstract nodeValue: "
+                  "text": "abstract get nodeValue(): "
                 },
                 {
                   "kind": "Content",
@@ -7933,6 +7989,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nabstract set nodeValue(value: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -8061,7 +8121,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly parentElement: "
+                  "text": "get parentElement(): "
                 },
                 {
                   "kind": "Reference",
@@ -8406,7 +8466,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "abstract textContent: "
+                  "text": "abstract get textContent(): "
                 },
                 {
                   "kind": "Content",
@@ -8415,6 +8475,10 @@
                 {
                   "kind": "Content",
                   "text": ";"
+                },
+                {
+                  "kind": "Content",
+                  "text": "\n\nabstract set textContent(value: string | null);"
                 }
               ],
               "releaseTag": "Public",
@@ -8548,7 +8612,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeName: "
+                  "text": "get nodeName(): "
                 },
                 {
                   "kind": "Content",
@@ -8574,7 +8638,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeType: "
+                  "text": "get nodeType(): "
                 },
                 {
                   "kind": "Content",
@@ -8742,7 +8806,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly collapsed: "
+                  "text": "get collapsed(): "
                 },
                 {
                   "kind": "Content",
@@ -8768,7 +8832,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly commonAncestorContainer: "
+                  "text": "get commonAncestorContainer(): "
                 },
                 {
                   "kind": "Reference",
@@ -9798,7 +9862,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeName: "
+                  "text": "get nodeName(): "
                 },
                 {
                   "kind": "Content",
@@ -9824,7 +9888,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly nodeType: "
+                  "text": "get nodeType(): "
                 },
                 {
                   "kind": "Content",
@@ -9895,7 +9959,7 @@
               "excerptTokens": [
                 {
                   "kind": "Content",
-                  "text": "readonly wholeText: "
+                  "text": "get wholeText(): "
                 },
                 {
                   "kind": "Content",

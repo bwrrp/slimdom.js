@@ -8,6 +8,7 @@ function undefinedAsNull<T>(value: T | undefined): T | null {
 export default class SlimdomTreeAdapter implements parse5.TreeAdapter {
 	private _globalDocument = new slimdom.Document();
 	private _mode: parse5.DocumentMode = 'no-quirks';
+	private _sourceLocationByNode: Map<slimdom.Node, parse5.Location | parse5.StartTagLocation | parse5.ElementLocation> = new Map();
 
 	createDocument(): parse5.Document {
 		return this._globalDocument.implementation.createDocument(null, '');
@@ -213,5 +214,20 @@ export default class SlimdomTreeAdapter implements parse5.TreeAdapter {
 
 	isElementNode(node: parse5.Node): boolean {
 		return node && (node as slimdom.Node).nodeType === slimdom.Node.ELEMENT_NODE;
+	}
+
+	// Source code location
+	setNodeSourceCodeLocation(node: parse5.Node, location: parse5.Location | parse5.StartTagLocation | parse5.ElementLocation): void {
+		// Typings here are not fully up to date...
+		this._sourceLocationByNode.set(node as slimdom.Node, location);
+	}
+
+	getNodeSourceCodeLocation(node: parse5.Node): parse5.Location | parse5.StartTagLocation | parse5.ElementLocation {
+		return this._sourceLocationByNode.get(node as slimdom.Node)!;
+	}
+
+	// TODO: parse5 typings are not fully up to date - endLocation should be parse5.EndLocation
+	updateNodeSourceCodeLocation (node: parse5.Node, endLocation: parse5.Location) {
+		this.setNodeSourceCodeLocation(node, Object.assign(this.getNodeSourceCodeLocation(node), endLocation));
 	}
 }
