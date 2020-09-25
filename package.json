@@ -31,6 +31,7 @@
 		"url": "git://github.com/bwrrp/slimdom.js.git"
 	},
 	"devDependencies": {
+		"@fontoxml/fonto-benchmark-runner": "0.0.4",
 		"@microsoft/api-documenter": "^7.7.4",
 		"@microsoft/api-extractor": "^7.7.2",
 		"@types/jest": "^24.0.25",
