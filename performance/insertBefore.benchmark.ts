@@ -7,6 +7,7 @@ let document, root: Node;
 const MAX_ELEMENTS = 25000;
 const INCREMENTS = 2500;
 
+// Benchmark to determine if insertBefore is independent of total-elements
 for (let i = 2500; i <= MAX_ELEMENTS; i += INCREMENTS) {
 	benchmarkRunner.addBenchmark(
 		`${i} Elements`,
