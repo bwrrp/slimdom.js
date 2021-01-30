@@ -2620,6 +2620,121 @@
               "isStatic": false
             },
             {
+              "kind": "Method",
+              "canonicalReference": "slimdom!Document#getElementsByTagName:member(1)",
+              "docComment": "/**\n * Returns the list of elements with the given qualified name.\n *\n * @param qualifiedName - Qualified name of the elements to collect.\n *\n * @returns The list of elements with matching qualified name.\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "getElementsByTagName(qualifiedName: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Element",
+                  "canonicalReference": "slimdom!default:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": "[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 3,
+                "endIndex": 5
+              },
+              "releaseTag": "Public",
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "qualifiedName",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  }
+                }
+              ],
+              "name": "getElementsByTagName"
+            },
+            {
+              "kind": "Method",
+              "canonicalReference": "slimdom!Document#getElementsByTagNameNS:member(1)",
+              "docComment": "/**\n * Returns the list of elements with the given namespace and local name.\n *\n * @param namespace - Namespace URI of the elements to collect.\n *\n * @param localName - Local name of the elements to collect\n *\n * @returns The list of elements with matching namespace and local name.\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "getElementsByTagNameNS(namespace: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string | null"
+                },
+                {
+                  "kind": "Content",
+                  "text": ", localName: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "string"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Element",
+                  "canonicalReference": "slimdom!default:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": "[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 5,
+                "endIndex": 7
+              },
+              "releaseTag": "Public",
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "namespace",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  }
+                },
+                {
+                  "parameterName": "localName",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 3,
+                    "endIndex": 4
+                  }
+                }
+              ],
+              "name": "getElementsByTagNameNS"
+            },
+            {
               "kind": "Property",
               "canonicalReference": "slimdom!Document#implementation:member",
               "docComment": "/**\n * Returns a reference to the DOMImplementation object associated with the document.\n */\n",
