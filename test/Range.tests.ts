@@ -389,4 +389,60 @@ describe('Range', () => {
 			});
 		});
 	});
+
+	describe('WeakRef', () => {
+		describe('fallback for older environments', () => {
+			let oldWeakRef: any;
+			beforeAll(() => {
+				oldWeakRef = (global as any).WeakRef;
+				delete (global as any).WeakRef;
+			});
+			afterAll(() => {
+				(global as any).WeakRef = oldWeakRef;
+			});
+
+			it('still works in older environments that do not support WeakRef', () => {
+				range.selectNode(element);
+				document.removeChild(element);
+				expect(range.startOffset).toBe(0);
+				expect(range.endOffset).toBe(0);
+				range.detach();
+			});
+		});
+
+		describe('automatic cleanup', () => {
+			// We can't force GC, so let's do the next best thing and stub WeakRef instead so we can
+			// at least test the code that handles the deref returning undefined
+			let oldWeakRef: any;
+			let isFakeGarbageCollected: boolean;
+			beforeAll(() => {
+				oldWeakRef = (global as any).WeakRef;
+				(global as any).WeakRef = class StubWeakRef<T> {
+					constructor(private target: T) {}
+					deref(): T | undefined {
+						if (isFakeGarbageCollected) {
+							return undefined;
+						}
+						return this.target;
+					}
+				};
+			});
+			afterAll(() => {
+				(global as any).WeakRef = oldWeakRef;
+			});
+
+			beforeEach(() => {
+				isFakeGarbageCollected = false;
+			});
+
+			it('uses WeakRef if available to automatically clean up', () => {
+				range.selectNode(element);
+				isFakeGarbageCollected = true;
+				document.removeChild(element);
+				// Range should not have been updated because our fake WeakRef said it was GC'ed
+				expect(range.startOffset).toBe(0);
+				expect(range.endOffset).toBe(1);
+			});
+		});
+	});
 });

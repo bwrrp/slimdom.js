@@ -213,7 +213,7 @@ export function insertNode(
 	if (child !== null) {
 		const childIndex = getNodeIndex(child);
 		const context = getContext(node);
-		context._ranges.forEach((range) => {
+		context.forEachRange((range) => {
 			// 2.1. For each live range whose start node is parent and start offset is greater than
 			// child’s index, increase its start offset by count.
 			if (range.startContainer === parent && range.startOffset > childIndex) {
@@ -581,7 +581,7 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 	const index = getNodeIndex(node);
 
 	const context = getContext(node);
-	context._ranges.forEach((range) => {
+	context.forEachRange((range) => {
 		// 2. For each live range whose start node is an inclusive descendant of node, set its start
 		// to (parent, index).
 		if (node.contains(range.startContainer)) {

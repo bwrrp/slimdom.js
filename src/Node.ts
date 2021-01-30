@@ -188,7 +188,7 @@ export default abstract class Node {
 				const currentNode = siblingsToRemove[i];
 				const currentNodeIndex = index + i + 1;
 
-				context._ranges.forEach((range) => {
+				context.forEachRange((range) => {
 					// 6.1. For each live range whose start node is currentNode, add length to its
 					// start offset and set its start node to node.
 					if (range.startContainer === currentNode) {

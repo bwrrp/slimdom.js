@@ -1,4 +1,3 @@
-import Document from './Document';
 import Node from './Node';
 import { getContext } from './context/Context';
 import {
@@ -12,7 +11,6 @@ import { NodeType, isNodeOfType } from './util/NodeType';
 import {
 	determineLengthOfNode,
 	getInclusiveAncestors,
-	getNodeDocument,
 	getNodeIndex,
 	getRootOfNode,
 } from './util/treeHelpers';
@@ -98,7 +96,7 @@ export default class Range implements AbstractRange {
 		this.startOffset = 0;
 		this.endContainer = context.document;
 		this.endOffset = 0;
-		context._ranges.push(this);
+		context.addRange(this);
 	}
 
 	/**
@@ -443,17 +441,15 @@ export default class Range implements AbstractRange {
 	/**
 	 * Stops tracking the range.
 	 *
-	 * (non-standard) According to the spec, this method must do nothing. However, as it is not
-	 * possible to rely on garbage collection to determine when to stop updating a range for node
-	 * mutations, this implementation requires calling detach to stop such updates from affecting
-	 * the range.
+	 * (non-standard) According to the spec, this method must do nothing. However, it is not yet
+	 * possible in all browsers to allow garbage collection while keeping track of active ranges to
+	 * be updated by mutations. Therefore, unless your code will only run in environments that
+	 * implement the WeakRef proposal (https://github.com/tc39/proposal-weakrefs), make sure to call
+	 * this method to stop updating the range and free up its resources.
 	 */
 	detach(): void {
 		const context = getContext(this);
-		const index = context._ranges.indexOf(this);
-		if (index >= 0) {
-			context._ranges.splice(index, 1);
-		}
+		context.removeRange(this);
 	}
 
 	/**

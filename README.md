@@ -43,7 +43,7 @@ const xml = slimdom.serializeToWellFormedString(document);
 
 Some DOM API's, such as the `DocumentFragment` constructor, require the presence of a global document, for instance to set their initial `ownerDocument` property. In these cases, slimdom will use the instance exposed through `slimdom.document`. Although you could mutate this document, it is recommended to always create your own documents (using the `Document` constructor) to avoid conflicts with other code using slimdom in your application.
 
-When using a `Range`, make sure to call `detach` when you don't need it anymore. As we do not have a way to detect when a Range is no longer used, this library needs to be notified when it can stop updating the range for mutations to the surrounding nodes.
+When using a `Range`, make sure to call `detach` when you don't need it anymore. Unless you are only targeting environments that implement the WeakRef proposal, we do not have a way to detect when we can stop updating the range for mutations to the surrounding nodes. In environments that support WeakRef, calling detach is optional.
 
 ## Features and limitations
 

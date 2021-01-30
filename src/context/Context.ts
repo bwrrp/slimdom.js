@@ -13,7 +13,8 @@ import Text from '../Text';
 import XMLDocument from '../XMLDocument';
 
 import NotifySet from '../mutation-observer/NotifyList';
-import { NodeType } from '../util/NodeType';
+
+import { createWeakRef, WeakRef } from './WeakRef';
 
 export type AttrConstructor = new (
 	namespace: string | null,
@@ -49,7 +50,6 @@ export interface Context {
 	document: Document;
 
 	_notifySet: NotifySet;
-	_ranges: Range[];
 
 	Attr: AttrConstructor;
 	CDATASection: CDATASectionConstructor;
@@ -63,6 +63,10 @@ export interface Context {
 	Range: RangeConstructor;
 	Text: TextConstructor;
 	XMLDocument: XMLDocumentConstructor;
+
+	forEachRange(cb: (range: Range) => void): void;
+	addRange(range: Range): void;
+	removeRange(range: Range): void;
 }
 
 /**
@@ -79,7 +83,6 @@ export class DefaultContext implements Context {
 	 * invoking their callbacks when control returns to the event loop.
 	 */
 	public _notifySet: NotifySet = new NotifySet();
-	public _ranges: Range[] = [];
 
 	public Attr!: AttrConstructor;
 	public CDATASection!: CDATASectionConstructor;
@@ -93,6 +96,39 @@ export class DefaultContext implements Context {
 	public Range!: RangeConstructor;
 	public Text!: TextConstructor;
 	public XMLDocument!: XMLDocumentConstructor;
+
+	private _ranges: WeakRef<Range>[] = [];
+
+	public forEachRange(cb: (range: Range) => void): void {
+		let numRanges = this._ranges.length;
+		for (let i = numRanges - 1; i >= 0; --i) {
+			const r = this._ranges[i].deref();
+			if (r === undefined) {
+				// Weak ref lost, remove
+				this._ranges[i] = this._ranges[numRanges - 1];
+				this._ranges.pop();
+				numRanges -= 1;
+			} else {
+				cb(r);
+			}
+		}
+	}
+
+	public addRange(range: Range): void {
+		this._ranges.push(createWeakRef(range));
+	}
+
+	public removeRange(range: Range): void {
+		let numRanges = this._ranges.length;
+		for (let i = numRanges - 1; i >= 0; --i) {
+			const r = this._ranges[i].deref();
+			if (r === undefined || r === range) {
+				this._ranges[i] = this._ranges[numRanges - 1];
+				this._ranges.pop();
+				numRanges -= 1;
+			}
+		}
+	}
 }
 
 // TODO: make it possible to create multiple contexts by binding constructors to each instance

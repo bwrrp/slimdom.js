@@ -251,7 +251,7 @@ export function replaceData(
 	(node as any)._data = newData;
 
 	const context = getContext(node);
-	context._ranges.forEach((range) => {
+	context.forEachRange((range) => {
 		// 8. For each live range whose start node is node and start offset is greater than offset
 		// but less than or equal to offset plus count, set its start offset to offset.
 		if (
