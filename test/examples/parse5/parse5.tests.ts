@@ -1,9 +1,13 @@
 import * as parse5 from 'parse5';
 import * as slimdom from '../../../src/index';
-import SlimdomTreeAdapter from './SlimdomTreeAdapter';
+
+// DomTreeAdapter needs to be imported this way
+import DomTreeAdapter = require('dom-treeadapter');
 
 function parseHTML(html: string): slimdom.Document {
-	return parse5.parse(html, { treeAdapter: new SlimdomTreeAdapter() }) as slimdom.Document;
+	const document = new slimdom.Document();
+	const treeAdapter = DomTreeAdapter(document);
+	return parse5.parse(html, { treeAdapter }) as slimdom.Document;
 }
 
 describe('Example: parse5 integration', () => {

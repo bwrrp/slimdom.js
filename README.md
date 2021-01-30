@@ -60,7 +60,7 @@ The following features have not yet been implemented:
 
 -   No XML parsing (no `DOMParser`, `innerHTML` and `outerHTML` are read-only, no `insertAdjacentHTML` on `Element`, no `createContextualFragment` on `Range`). If you need to parse XML, consider using [slimdom-sax-parser][slimdom-sax-parser].
 -   No CSS selectors, so no `querySelector` / `querySelectorAll` on `ParentNode`, no `closest` / `matches` / `webkitMatchesSelector` on `Element`. The older non-CSS query methods (`getElementById` for interface `NonElementParentNode`, and `getElementsByTagName` / `getElementsByTagNameNS` / `getElementsByClassName` on `Document`) have not yet been implemented either. To query the DOM, consider using [FontoXPath][fontoxpath].
--   No HTML parsing / serialization, but see [this example][parse5-example] which shows how to connect the [parse5][parse5] HTML parser.
+-   No HTML parsing / serialization, but see [this example][parse5-example] which shows how to connect the [parse5][parse5] HTML parser with the help of the [dom-treeadapter][dom-treeadapter] library.
 -   No special treatment of HTML documents, including `HTMLElement` and its subclasses. This also includes HTML casing behavior for attributes and tagNames, as well as the `id` / `className` / `classList` properties on `Element` and `compatMode` / `contentType` on `Document`.
 -   No events, no `createEvent` on `Document`.
 -   No support for shadow DOM, `Slotable` / `ShadowRoot`, no `slot` / `attachShadow` / `shadowRoot` on `Element`.
@@ -77,6 +77,7 @@ The following features have not yet been implemented:
 [fontoxpath]: https://github.com/FontoXML/fontoxpath/
 [parse5-example]: https://github.com/bwrrp/slimdom.js/tree/master/test/examples/parse5
 [parse5]: https://github.com/inikulin/parse5
+[dom-treeadapter]: https://github.com/RReverser/dom-treeadapter
 
 Do not rely on the behavior or presence of any methods and properties not specified in the DOM standard. For example, do not use JavaScript array methods exposed on properties that should expose a NodeList and do not use Element as a constructor. This behavior is _not_ considered public API and may change without warning in a future release.
 
