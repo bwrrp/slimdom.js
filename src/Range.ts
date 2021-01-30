@@ -6,7 +6,7 @@ import {
 	throwIndexSizeError,
 	throwInvalidNodeTypeError,
 	throwNotSupportedError,
-	throwWrongDocumentError
+	throwWrongDocumentError,
 } from './util/errorHelpers';
 import { NodeType, isNodeOfType } from './util/NodeType';
 import {
@@ -14,7 +14,7 @@ import {
 	getInclusiveAncestors,
 	getNodeDocument,
 	getNodeIndex,
-	getRootOfNode
+	getRootOfNode,
 } from './util/treeHelpers';
 import { asObject, asUnsignedLong } from './util/typeHelpers';
 

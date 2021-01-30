@@ -8,7 +8,7 @@ import {
 	appendNodes,
 	prependNodes,
 	getConcatenatedTextNodesData,
-	setTextContentByReplacing
+	setTextContentByReplacing,
 } from './util/mutationAlgorithms';
 import { NodeType } from './util/NodeType';
 import { treatNullAsEmptyString } from './util/typeHelpers';

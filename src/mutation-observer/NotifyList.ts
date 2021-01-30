@@ -72,7 +72,7 @@ export default class NotifySet {
 
 		// 5. For each mo of notifySet, execute a compound microtask subtask to run these steps:
 		// [HTML]
-		notifySet.forEach(mo => {
+		notifySet.forEach((mo) => {
 			queueCompoundMicrotask(
 				(mo: MutationObserver) => {
 					// 5.1. Let queue be a copy of mo’s record queue.

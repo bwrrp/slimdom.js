@@ -11,14 +11,14 @@ import {
 	matchesNameProduction,
 	HTML_NAMESPACE,
 	XML_NAMESPACE,
-	XMLNS_NAMESPACE
+	XMLNS_NAMESPACE,
 } from '../util/namespaceHelpers';
 import { isNodeOfType, NodeType } from '../util/NodeType';
 import { getNodeDocument } from '../util/treeHelpers';
 import {
 	recordNamespaceInformation,
 	LocalPrefixesMap,
-	NamespacePrefixMap
+	NamespacePrefixMap,
 } from './NamespacePrefixMap';
 
 /*
@@ -74,7 +74,7 @@ const HTML_VOID_ELEMENTS = [
 	'param',
 	'source',
 	'track',
-	'wbr'
+	'wbr',
 ];
 
 // 3.2. Serializing
@@ -658,7 +658,7 @@ function serializeAttributes(
 		if (
 			requireWellFormed &&
 			localNameSet.find(
-				tuple =>
+				(tuple) =>
 					tuple.localName === attr.localName && tuple.namespaceURI === attr.namespaceURI
 			)
 		) {

@@ -175,7 +175,7 @@ export default class MutationObserver {
 	disconnect() {
 		// 1. For each node of the context object’s node list, remove any registered observer from
 		// node's registered observer list for which the context object is the observer.
-		this._nodes.forEach(node => node._registeredObservers.removeForObserver(this));
+		this._nodes.forEach((node) => node._registeredObservers.removeForObserver(this));
 		this._nodes.length = 0;
 
 		// 2. Empty the context object’s record queue.

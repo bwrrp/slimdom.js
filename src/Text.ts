@@ -140,7 +140,7 @@ function splitText(node: Text, offset: number): Text {
 
 		const indexOfNodePlusOne = getNodeIndex(node) + 1;
 		const context = getContext(node);
-		context._ranges.forEach(range => {
+		context._ranges.forEach((range) => {
 			// 7.2. For each live range whose start node is node and start offset is greater than
 			// offset, set its start node to new node and decrease its start offset by offset.
 			if (range.startContainer === node && range.startOffset > offset) {

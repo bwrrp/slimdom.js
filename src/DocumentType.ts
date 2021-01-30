@@ -8,7 +8,7 @@ import {
 	insertNodesBefore,
 	insertNodesAfter,
 	replaceWithNodes,
-	removeFromParent
+	removeFromParent,
 } from './util/mutationAlgorithms';
 
 /**

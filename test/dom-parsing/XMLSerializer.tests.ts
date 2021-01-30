@@ -456,7 +456,7 @@ describe('serializeToWellFormedString', () => {
 
 	it('can serialize a very large amount of data', () => {
 		const data = Array.from({ length: 10_000_000 })
-			.map(_ => '&')
+			.map((_) => '&')
 			.join('');
 		const el = document.createElement('meep');
 		el.appendChild(document.createTextNode(data));

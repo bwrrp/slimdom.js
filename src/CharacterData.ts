@@ -2,7 +2,7 @@ import {
 	NonDocumentTypeChildNode,
 	ChildNode,
 	getNextElementSibling,
-	getPreviousElementSibling
+	getPreviousElementSibling,
 } from './mixins';
 import Element from './Element';
 import Node from './Node';
@@ -14,7 +14,7 @@ import {
 	insertNodesBefore,
 	insertNodesAfter,
 	replaceWithNodes,
-	removeFromParent
+	removeFromParent,
 } from './util/mutationAlgorithms';
 
 /**
@@ -22,7 +22,8 @@ import {
  *
  * @public
  */
-export default abstract class CharacterData extends Node
+export default abstract class CharacterData
+	extends Node
 	implements NonDocumentTypeChildNode, ChildNode {
 	// Node
 
@@ -239,7 +240,7 @@ export function replaceData(
 	// 4. Queue a mutation record of "characterData" for node with null, null, node's data, « »,
 	// « », null, and null.
 	queueMutationRecord('characterData', node, {
-		oldValue: node.data
+		oldValue: node.data,
 	});
 
 	// 5. Insert data into node’s data after offset code units.
@@ -250,7 +251,7 @@ export function replaceData(
 	(node as any)._data = newData;
 
 	const context = getContext(node);
-	context._ranges.forEach(range => {
+	context._ranges.forEach((range) => {
 		// 8. For each live range whose start node is node and start offset is greater than offset
 		// but less than or equal to offset plus count, set its start offset to offset.
 		if (

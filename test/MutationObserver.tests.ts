@@ -37,7 +37,7 @@ describe('MutationObserver', () => {
 		expect(records.length).toBe(expected.length);
 		expected.forEach((expectedRecord, i) => {
 			const actualRecord = records[i];
-			Object.keys(expectedRecord).forEach(key => {
+			Object.keys(expectedRecord).forEach((key) => {
 				const expectedValue = (expectedRecord as any)[key];
 				const actualValue = (actualRecord as any)[key];
 				if (Array.isArray(expectedValue)) {
@@ -61,7 +61,7 @@ describe('MutationObserver', () => {
 				observer.observe(document, {
 					attributes: false,
 					attributeOldValue: true,
-					childList: true
+					childList: true,
 				})
 			).toThrow(TypeError);
 		});
@@ -72,7 +72,7 @@ describe('MutationObserver', () => {
 				observer.observe(document, {
 					characterData: false,
 					characterDataOldValue: true,
-					childList: true
+					childList: true,
 				})
 			).toThrow(TypeError);
 		});
@@ -80,7 +80,7 @@ describe('MutationObserver', () => {
 
 	type TestCase = (observer: slimdom.MutationObserver) => ExpectedRecord[] | null;
 	const cases: { [description: string]: TestCase } = {
-		'responds to text changes': observer => {
+		'responds to text changes': (observer) => {
 			const element = document.createElement('test');
 			const text = element.appendChild(document.createTextNode('text'));
 			observer.observe(element, { subtree: true, characterData: true });
@@ -90,7 +90,7 @@ describe('MutationObserver', () => {
 			return [{ type: 'characterData', oldValue: null, target: text }];
 		},
 
-		'records previous text values': observer => {
+		'records previous text values': (observer) => {
 			const element = document.createElement('test');
 			const text = element.appendChild(document.createTextNode('text'));
 			observer.observe(element, { subtree: true, characterDataOldValue: true });
@@ -100,7 +100,7 @@ describe('MutationObserver', () => {
 			return [{ type: 'characterData', oldValue: 'text', target: text }];
 		},
 
-		'responds to attribute changes': observer => {
+		'responds to attribute changes': (observer) => {
 			const element = document.createElement('test');
 			element.setAttribute('attr', 'value');
 			observer.observe(element, { attributes: true });
@@ -115,19 +115,19 @@ describe('MutationObserver', () => {
 					target: element,
 					attributeName: 'attr',
 					attributeNamespace: null,
-					oldValue: null
+					oldValue: null,
 				},
 				{
 					type: 'attributes',
 					target: element,
 					attributeName: 'attr',
 					attributeNamespace: 'http://www.example.com/ns',
-					oldValue: null
-				}
+					oldValue: null,
+				},
 			];
 		},
 
-		'records previous attribute values': observer => {
+		'records previous attribute values': (observer) => {
 			const element = document.createElement('test');
 			element.setAttribute('attr', 'value');
 			observer.observe(element, { attributeOldValue: true });
@@ -142,19 +142,19 @@ describe('MutationObserver', () => {
 					target: element,
 					attributeName: 'attr',
 					attributeNamespace: null,
-					oldValue: 'value'
+					oldValue: 'value',
 				},
 				{
 					type: 'attributes',
 					target: element,
 					attributeName: 'attr',
 					attributeNamespace: 'http://www.example.com/ns',
-					oldValue: null
-				}
+					oldValue: null,
+				},
 			];
 		},
 
-		'responds to insertions (appendChild)': observer => {
+		'responds to insertions (appendChild)': (observer) => {
 			const comment = document.appendChild(document.createComment('test'));
 			const element = document.createElement('child');
 			observer.observe(document, { childList: true });
@@ -168,12 +168,12 @@ describe('MutationObserver', () => {
 					addedNodes: [element],
 					removedNodes: [],
 					previousSibling: comment,
-					nextSibling: null
-				}
+					nextSibling: null,
+				},
 			];
 		},
 
-		'responds to insertions (replaceChild)': observer => {
+		'responds to insertions (replaceChild)': (observer) => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const oldChild = parent.appendChild(document.createElement('old'));
 			const newChild = document.createElement('new');
@@ -187,12 +187,12 @@ describe('MutationObserver', () => {
 					addedNodes: [newChild],
 					removedNodes: [oldChild],
 					nextSibling: null,
-					previousSibling: null
-				}
+					previousSibling: null,
+				},
 			];
 		},
 
-		'responds to moves (insertBefore)': observer => {
+		'responds to moves (insertBefore)': (observer) => {
 			const comment = document.appendChild(document.createComment('comment'));
 			const element = document.appendChild(document.createElement('element'));
 			const text = element.appendChild(document.createTextNode('text'));
@@ -207,7 +207,7 @@ describe('MutationObserver', () => {
 					addedNodes: [],
 					removedNodes: [comment],
 					nextSibling: element,
-					previousSibling: null
+					previousSibling: null,
 				},
 				{
 					type: 'childList',
@@ -215,12 +215,12 @@ describe('MutationObserver', () => {
 					addedNodes: [comment],
 					removedNodes: [],
 					nextSibling: text,
-					previousSibling: null
-				}
+					previousSibling: null,
+				},
 			];
 		},
 
-		'responds to non-moves (insertBefore itself)': observer => {
+		'responds to non-moves (insertBefore itself)': (observer) => {
 			const parent = document.createElement('parent');
 			const previousSibling = parent.appendChild(document.createElement('previousSibling'));
 			const element = parent.appendChild(document.createElement('element'));
@@ -236,7 +236,7 @@ describe('MutationObserver', () => {
 					addedNodes: [],
 					removedNodes: [element],
 					nextSibling: nextSibling,
-					previousSibling: previousSibling
+					previousSibling: previousSibling,
 				},
 				{
 					type: 'childList',
@@ -244,12 +244,12 @@ describe('MutationObserver', () => {
 					addedNodes: [element],
 					removedNodes: [],
 					nextSibling: nextSibling,
-					previousSibling: previousSibling
-				}
+					previousSibling: previousSibling,
+				},
 			];
 		},
 
-		'responds to non-moves (insertBefore its next sibling)': observer => {
+		'responds to non-moves (insertBefore its next sibling)': (observer) => {
 			const parent = document.createElement('parent');
 			const previousSibling = parent.appendChild(document.createElement('previousSibling'));
 			const element = parent.appendChild(document.createElement('element'));
@@ -265,7 +265,7 @@ describe('MutationObserver', () => {
 					addedNodes: [],
 					removedNodes: [element],
 					nextSibling: nextSibling,
-					previousSibling: previousSibling
+					previousSibling: previousSibling,
 				},
 				{
 					type: 'childList',
@@ -273,12 +273,12 @@ describe('MutationObserver', () => {
 					addedNodes: [element],
 					removedNodes: [],
 					nextSibling: nextSibling,
-					previousSibling: previousSibling
-				}
+					previousSibling: previousSibling,
+				},
 			];
 		},
 
-		'does not respond to attribute changes if the attributes option is not set': observer => {
+		'does not respond to attribute changes if the attributes option is not set': (observer) => {
 			const element = document.createElement('test');
 			observer.observe(element, { attributes: false, childList: true });
 			element.setAttribute('test', 'value');
@@ -286,7 +286,9 @@ describe('MutationObserver', () => {
 			return null;
 		},
 
-		'does not respond to character data changes if the characterData option is not set': observer => {
+		'does not respond to character data changes if the characterData option is not set': (
+			observer
+		) => {
 			const text = document.createTextNode('test');
 			observer.observe(text, { childList: true, characterData: false });
 			text.nodeValue = 'prrrt';
@@ -294,7 +296,7 @@ describe('MutationObserver', () => {
 			return null;
 		},
 
-		'does not respond to childList changes if the childList option is not set': observer => {
+		'does not respond to childList changes if the childList option is not set': (observer) => {
 			const element = document.createElement('test');
 			observer.observe(element, { attributes: true, childList: false });
 			element.appendChild(document.createElement('child'));
@@ -302,7 +304,7 @@ describe('MutationObserver', () => {
 			return null;
 		},
 
-		'does not respond to subtree mutations if the subtree option is not set': observer => {
+		'does not respond to subtree mutations if the subtree option is not set': (observer) => {
 			const element = document.appendChild(document.createElement('test'));
 			observer.observe(document, { attributes: true, childList: true });
 			element.appendChild(document.createElement('child'));
@@ -311,7 +313,9 @@ describe('MutationObserver', () => {
 			return null;
 		},
 
-		'only responds once to subtree mutations, even when observing multiple ancestors': observer => {
+		'only responds once to subtree mutations, even when observing multiple ancestors': (
+			observer
+		) => {
 			const element = document.appendChild(document.createElement('element'));
 			observer.observe(document, { childList: true, subtree: true });
 			observer.observe(element, { childList: true, subtree: true });
@@ -324,19 +328,21 @@ describe('MutationObserver', () => {
 					addedNodes: [comment],
 					removedNodes: [],
 					previousSibling: null,
-					nextSibling: null
-				}
+					nextSibling: null,
+				},
 			];
 		},
 
-		'continues tracking under a removed node until javascript re-enters the event loop': observer => {
+		'continues tracking under a removed node until javascript re-enters the event loop': (
+			observer
+		) => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const child = parent.appendChild(document.createElement('child'));
 			const text = child.appendChild(document.createTextNode('text'));
 			observer.observe(document, {
 				childList: true,
 				characterDataOldValue: true,
-				subtree: true
+				subtree: true,
 			});
 			document.removeChild(parent);
 			parent.removeChild(child);
@@ -346,29 +352,29 @@ describe('MutationObserver', () => {
 				{
 					type: 'childList',
 					target: document,
-					removedNodes: [parent]
+					removedNodes: [parent],
 				},
 				{
 					type: 'childList',
 					target: parent,
-					removedNodes: [child]
+					removedNodes: [child],
 				},
 				{
 					type: 'characterData',
 					target: text,
-					oldValue: 'text'
-				}
+					oldValue: 'text',
+				},
 			];
 		},
 
-		'does not add transient registered observers for non-subtree observers': observer => {
+		'does not add transient registered observers for non-subtree observers': (observer) => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const child = parent.appendChild(document.createElement('child'));
 			const text = child.appendChild(document.createTextNode('text'));
 			observer.observe(document, {
 				childList: true,
 				characterDataOldValue: true,
-				subtree: false
+				subtree: false,
 			});
 			document.removeChild(parent);
 			parent.removeChild(child);
@@ -378,25 +384,25 @@ describe('MutationObserver', () => {
 				{
 					type: 'childList',
 					target: document,
-					removedNodes: [parent]
-				}
+					removedNodes: [parent],
+				},
 			];
 		},
 
-		'removes transient observers when observe is called for the same observer': observer => {
+		'removes transient observers when observe is called for the same observer': (observer) => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const child = parent.appendChild(document.createElement('child'));
 			const text = child.appendChild(document.createTextNode('text'));
 			observer.observe(document, {
 				childList: true,
 				characterDataOldValue: true,
-				subtree: true
+				subtree: true,
 			});
 			document.removeChild(parent);
 			observer.observe(document, {
 				childList: true,
 				characterDataOldValue: true,
-				subtree: true
+				subtree: true,
 			});
 			parent.removeChild(child);
 			text.data = 'test';
@@ -405,31 +411,33 @@ describe('MutationObserver', () => {
 				{
 					type: 'childList',
 					target: document,
-					removedNodes: [parent]
-				}
+					removedNodes: [parent],
+				},
 			];
 		},
 
-		'does not remove transient observers when observe is called for a different observer': observer => {
+		'does not remove transient observers when observe is called for a different observer': (
+			observer
+		) => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const child = parent.appendChild(document.createElement('child'));
 			const text = child.appendChild(document.createTextNode('text'));
 			observer.observe(document, {
 				childList: true,
 				characterDataOldValue: true,
-				subtree: true
+				subtree: true,
 			});
 			const otherObserver = new slimdom.MutationObserver(callback);
 			otherObserver.observe(document, {
 				childList: true,
 				characterDataOldValue: true,
-				subtree: true
+				subtree: true,
 			});
 			document.removeChild(parent);
 			otherObserver.observe(document, {
 				childList: true,
 				characterDataOldValue: true,
-				subtree: true
+				subtree: true,
 			});
 			parent.removeChild(child);
 			text.data = 'test';
@@ -438,30 +446,32 @@ describe('MutationObserver', () => {
 				{
 					type: 'childList',
 					target: document,
-					removedNodes: [parent]
-				}
+					removedNodes: [parent],
+				},
 			]);
 
 			return [
 				{
 					type: 'childList',
 					target: document,
-					removedNodes: [parent]
+					removedNodes: [parent],
 				},
 				{
 					type: 'childList',
 					target: parent,
-					removedNodes: [child]
+					removedNodes: [child],
 				},
 				{
 					type: 'characterData',
 					target: text,
-					oldValue: 'text'
-				}
+					oldValue: 'text',
+				},
 			];
 		},
 
-		'does not remove transient observers when observe is called for a different subtree': observer => {
+		'does not remove transient observers when observe is called for a different subtree': (
+			observer
+		) => {
 			const parent = document.appendChild(document.createElement('parent'));
 			const child1 = parent.appendChild(document.createElement('child1'));
 			const child2 = parent.appendChild(document.createElement('child2'));
@@ -477,22 +487,22 @@ describe('MutationObserver', () => {
 				{
 					type: 'childList',
 					target: parent,
-					removedNodes: [child1]
+					removedNodes: [child1],
 				},
 				{
 					type: 'childList',
 					target: child1,
-					addedNodes: [comment1]
+					addedNodes: [comment1],
 				},
 				{
 					type: 'childList',
 					target: child2,
-					addedNodes: [comment2]
-				}
+					addedNodes: [comment2],
+				},
 			];
 		},
 
-		'does not observe after being disconnected': observer => {
+		'does not observe after being disconnected': (observer) => {
 			observer.observe(document, { childList: true });
 			observer.disconnect();
 			document.appendChild(document.createComment('test'));
@@ -500,7 +510,7 @@ describe('MutationObserver', () => {
 			return null;
 		},
 
-		'does not affect other observers when disconnected': observer => {
+		'does not affect other observers when disconnected': (observer) => {
 			const otherObserver = new slimdom.MutationObserver(callback);
 			otherObserver.observe(document, { childList: true, subtree: true });
 			observer.observe(document, { childList: true });
@@ -511,24 +521,24 @@ describe('MutationObserver', () => {
 				{
 					type: 'childList',
 					target: document,
-					addedNodes: [comment]
-				}
+					addedNodes: [comment],
+				},
 			]);
 
 			return null;
-		}
+		},
 	};
 
 	// Mutation Observer callbacks run in a microtask, which run before normal tasks such as a
 	// setTimeout callback
-	function waitForNextTask() {
-		return new Promise(resolve => {
+	function waitForNextTask(): Promise<void> {
+		return new Promise((resolve) => {
 			setTimeout(() => resolve(), 0);
 		});
 	}
 
 	describe('synchronous usage', () => {
-		Object.keys(cases).forEach(description => {
+		Object.keys(cases).forEach((description) => {
 			const testCase = cases[description];
 			it(description, () => {
 				const expected = testCase(observer) || [];
@@ -553,7 +563,7 @@ describe('MutationObserver', () => {
 			observer.disconnect();
 		});
 
-		Object.keys(cases).forEach(description => {
+		Object.keys(cases).forEach((description) => {
 			const testCase = cases[description];
 			it(description, () => {
 				const expected = testCase(observer);

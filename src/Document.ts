@@ -16,7 +16,7 @@ import createElementNS from './util/createElementNS';
 import {
 	expectArity,
 	throwInvalidCharacterError,
-	throwNotSupportedError
+	throwNotSupportedError,
 } from './util/errorHelpers';
 import { adoptNode, appendNodes, prependNodes } from './util/mutationAlgorithms';
 import { NodeType, isNodeOfType } from './util/NodeType';

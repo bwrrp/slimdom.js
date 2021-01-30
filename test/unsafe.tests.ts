@@ -2,7 +2,7 @@ import {
 	Document,
 	unsafeCreateAttribute,
 	unsafeCreateElement,
-	unsafeAppendAttribute
+	unsafeAppendAttribute,
 } from '../src/index';
 
 describe('unsafe methods', () => {
@@ -28,7 +28,7 @@ describe('unsafe methods', () => {
 			el.setAttribute('test', 'value');
 			const attr = doc.createAttribute('test');
 			unsafeAppendAttribute(attr, el);
-			expect([...el.attributes].map(attr => attr.name)).toEqual(['test', 'test']);
+			expect([...el.attributes].map((attr) => attr.name)).toEqual(['test', 'test']);
 		});
 	});
 });

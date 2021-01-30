@@ -8,10 +8,17 @@ function undefinedAsNull<T>(value: T | undefined): T | null {
 export default class SlimdomTreeAdapter implements parse5.TreeAdapter {
 	private _globalDocument = new slimdom.Document();
 	private _mode: parse5.DocumentMode = 'no-quirks';
-	private _sourceLocationByNode: Map<slimdom.Node, parse5.Location | parse5.StartTagLocation | parse5.ElementLocation> = new Map();
+	private _sourceLocationByNode: Map<
+		slimdom.Node,
+		parse5.Location | parse5.StartTagLocation | parse5.ElementLocation
+	> = new Map();
 
 	createDocument(): parse5.Document {
-		return this._globalDocument.implementation.createDocument(null, '');
+		// TODO: interfaces are not fully compatible any more, find an alternative approach?
+		return (this._globalDocument.implementation.createDocument(
+			null,
+			''
+		) as unknown) as parse5.Document;
 	}
 
 	createDocumentFragment(): parse5.DocumentFragment {
@@ -32,7 +39,7 @@ export default class SlimdomTreeAdapter implements parse5.TreeAdapter {
 			namespaceURI,
 			prefix
 		);
-		attrs.forEach(attr => {
+		attrs.forEach((attr) => {
 			// Create and append Attr node without validation, as per HTML parser spec
 			const attribute = slimdom.unsafeCreateAttribute(
 				undefinedAsNull(attr.namespace),
@@ -140,7 +147,7 @@ export default class SlimdomTreeAdapter implements parse5.TreeAdapter {
 
 	adoptAttributes(recipient: parse5.Element, attrs: parse5.Attribute[]): void {
 		const element = recipient as slimdom.Element;
-		attrs.forEach(attr => {
+		attrs.forEach((attr) => {
 			if (!element.hasAttributeNS(undefinedAsNull(attr.namespace), attr.name)) {
 				element.setAttributeNS(
 					undefinedAsNull(attr.namespace),
@@ -164,11 +171,11 @@ export default class SlimdomTreeAdapter implements parse5.TreeAdapter {
 	}
 
 	getAttrList(element: parse5.Element): parse5.Attribute[] {
-		return (element as slimdom.Element).attributes.map(attr => ({
+		return (element as slimdom.Element).attributes.map((attr) => ({
 			name: attr.localName,
 			namespace: attr.namespaceURI || undefined,
 			prefix: attr.prefix || undefined,
-			value: attr.value
+			value: attr.value,
 		}));
 	}
 
@@ -217,17 +224,25 @@ export default class SlimdomTreeAdapter implements parse5.TreeAdapter {
 	}
 
 	// Source code location
-	setNodeSourceCodeLocation(node: parse5.Node, location: parse5.Location | parse5.StartTagLocation | parse5.ElementLocation): void {
+	setNodeSourceCodeLocation(
+		node: parse5.Node,
+		location: parse5.Location | parse5.StartTagLocation | parse5.ElementLocation
+	): void {
 		// Typings here are not fully up to date...
 		this._sourceLocationByNode.set(node as slimdom.Node, location);
 	}
 
-	getNodeSourceCodeLocation(node: parse5.Node): parse5.Location | parse5.StartTagLocation | parse5.ElementLocation {
+	getNodeSourceCodeLocation(
+		node: parse5.Node
+	): parse5.Location | parse5.StartTagLocation | parse5.ElementLocation {
 		return this._sourceLocationByNode.get(node as slimdom.Node)!;
 	}
 
 	// TODO: parse5 typings are not fully up to date - endLocation should be parse5.EndLocation
-	updateNodeSourceCodeLocation (node: parse5.Node, endLocation: parse5.Location) {
-		this.setNodeSourceCodeLocation(node, Object.assign(this.getNodeSourceCodeLocation(node), endLocation));
+	updateNodeSourceCodeLocation(node: parse5.Node, endLocation: parse5.Location) {
+		this.setNodeSourceCodeLocation(
+			node,
+			Object.assign(this.getNodeSourceCodeLocation(node), endLocation)
+		);
 	}
 }

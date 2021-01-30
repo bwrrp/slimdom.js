@@ -33,7 +33,7 @@ export default class RegisteredObservers {
 		// observer is the context object:
 		const registeredObservers = this._registeredObservers;
 		let hasRegisteredObserverForObserver = false;
-		registeredObservers.forEach(registered => {
+		registeredObservers.forEach((registered) => {
 			if (registered.observer !== observer) {
 				return;
 			}
@@ -119,7 +119,7 @@ export default class RegisteredObservers {
 	) {
 		// (continuing from queueMutationRecord)
 		// 3. ...and then for each registered of node's registered observer list:
-		this._registeredObservers.forEach(registeredObserver => {
+		this._registeredObservers.forEach((registeredObserver) => {
 			registeredObserver.collectInterestedObservers(
 				type,
 				target,
@@ -137,7 +137,7 @@ export default class RegisteredObservers {
 	 * @param node - Node to append the transient registered observers to
 	 */
 	public appendTransientRegisteredObservers(node: Node): void {
-		this._registeredObservers.forEach(registeredObserver => {
+		this._registeredObservers.forEach((registeredObserver) => {
 			if (registeredObserver.options.subtree) {
 				node._registeredObservers.registerTransient(registeredObserver);
 			}
@@ -163,7 +163,7 @@ export default class RegisteredObservers {
  * @param observer - The mutation observer object to remove transient registered observers for
  */
 export function removeTransientRegisteredObserversForObserver(observer: MutationObserver): void {
-	observer._transients.forEach(transientRegisteredObserver => {
+	observer._transients.forEach((transientRegisteredObserver) => {
 		transientRegisteredObserver.node._registeredObservers.removeTransientRegisteredObserver(
 			transientRegisteredObserver
 		);

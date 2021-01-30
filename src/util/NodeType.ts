@@ -12,7 +12,7 @@ export const enum NodeType {
 	DOCUMENT_NODE = 9,
 	DOCUMENT_TYPE_NODE = 10,
 	DOCUMENT_FRAGMENT_NODE = 11,
-	NOTATION_NODE = 12 // historical
+	NOTATION_NODE = 12, // historical
 }
 
 /**
@@ -24,5 +24,5 @@ export const enum NodeType {
  * @returns Whether node.nodeType is one of the specified values
  */
 export function isNodeOfType(node: Node, ...types: NodeType[]): boolean {
-	return types.some(t => node.nodeType === t);
+	return types.some((t) => node.nodeType === t);
 }

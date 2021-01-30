@@ -13,25 +13,25 @@ import {
 	insertNodesBefore,
 	insertNodesAfter,
 	replaceWithNodes,
-	removeFromParent
+	removeFromParent,
 } from './util/mutationAlgorithms';
 import {
 	appendAttribute,
 	changeAttribute,
 	removeAttribute,
-	replaceAttribute
+	replaceAttribute,
 } from './util/attrMutations';
 import {
 	expectArity,
 	throwInUseAttributeError,
 	throwInvalidCharacterError,
-	throwNotFoundError
+	throwNotFoundError,
 } from './util/errorHelpers';
 import {
 	matchesNameProduction,
 	validateAndExtract,
 	locateNamespacePrefix,
-	XMLNS_NAMESPACE
+	XMLNS_NAMESPACE,
 } from './util/namespaceHelpers';
 import { NodeType } from './util/NodeType';
 import { asNullableString, asObject, treatNullAsEmptyString } from './util/typeHelpers';
@@ -41,7 +41,8 @@ import { asNullableString, asObject, treatNullAsEmptyString } from './util/typeH
  *
  * @public
  */
-export default class Element extends Node
+export default class Element
+	extends Node
 	implements ParentNode, NonDocumentTypeChildNode, ChildNode {
 	// Node
 
@@ -695,7 +696,7 @@ function getAttributeByName(qualifiedName: string, element: Element): Attr | nul
 
 	// 2. Return the first attribute in element’s attribute list whose qualified name is
 	// qualifiedName, and null otherwise.
-	return element.attributes.find(attr => attr.name === qualifiedName) || null;
+	return element.attributes.find((attr) => attr.name === qualifiedName) || null;
 }
 
 /**
@@ -722,7 +723,7 @@ function getAttributeByNamespaceAndLocalName(
 	// name is localName, if any, and null otherwise.
 	return (
 		element.attributes.find(
-			attr => attr.namespaceURI === namespace && attr.localName === localName
+			(attr) => attr.namespaceURI === namespace && attr.localName === localName
 		) || null
 	);
 }

@@ -254,7 +254,7 @@ export function locateNamespacePrefix(element: Element, namespace: string | null
 	// 2. If element has an attribute whose namespace prefix is "xmlns" and value is namespace, then
 	// return element’s first such attribute’s local name.
 	const attr = Array.from(element.attributes).find(
-		attr => attr.prefix === 'xmlns' && attr.value === namespace
+		(attr) => attr.prefix === 'xmlns' && attr.value === namespace
 	);
 	if (attr) {
 		return attr.localName;

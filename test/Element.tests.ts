@@ -165,11 +165,11 @@ describe('Element', () => {
 		): boolean {
 			return (
 				attributes.length === expected.length &&
-				attributes.every(attr =>
-					expected.some(pair => pair.name === attr.name && pair.value === attr.value)
+				attributes.every((attr) =>
+					expected.some((pair) => pair.name === attr.name && pair.value === attr.value)
 				) &&
-				expected.every(pair =>
-					attributes.some(attr => attr.name === pair.name && attr.value === pair.value)
+				expected.every((pair) =>
+					attributes.some((attr) => attr.name === pair.name && attr.value === pair.value)
 				)
 			);
 		}
@@ -179,7 +179,7 @@ describe('Element', () => {
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
 					{ name: 'test', value: '123' },
-					{ name: 'prf:lastAttribute', value: 'last' }
+					{ name: 'prf:lastAttribute', value: 'last' },
 				])
 			).toBe(true);
 		});
@@ -192,7 +192,7 @@ describe('Element', () => {
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
 					{ name: 'test', value: '456' },
-					{ name: 'prf:lastAttribute', value: 'last' }
+					{ name: 'prf:lastAttribute', value: 'last' },
 				])
 			).toBe(true);
 
@@ -205,7 +205,7 @@ describe('Element', () => {
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
 					{ name: 'test', value: '456' },
-					{ name: 'prf:lastAttribute', value: 'new value' }
+					{ name: 'prf:lastAttribute', value: 'new value' },
 				])
 			).toBe(true);
 		});
@@ -218,7 +218,7 @@ describe('Element', () => {
 			expect(
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
-					{ name: 'prf:lastAttribute', value: 'last' }
+					{ name: 'prf:lastAttribute', value: 'last' },
 				])
 			).toBe(true);
 			element.removeAttributeNS('http://www.example.com/ns', 'lastAttribute');
@@ -241,7 +241,7 @@ describe('Element', () => {
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
 					{ name: 'test', value: '123' },
-					{ name: 'prf:lastAttribute', value: 'last' }
+					{ name: 'prf:lastAttribute', value: 'last' },
 				])
 			).toBe(true);
 		});
@@ -288,7 +288,7 @@ describe('Element', () => {
 					{ name: 'test', value: '123' },
 					{ name: 'prf:lastAttribute', value: 'last' },
 					{ name: 'attr', value: 'some value' },
-					{ name: 'prf:aaa', value: '' }
+					{ name: 'prf:aaa', value: '' },
 				])
 			).toBe(true);
 
@@ -307,7 +307,7 @@ describe('Element', () => {
 			expect(
 				hasAttributes(element.attributes, [
 					{ name: 'firstAttribute', value: 'first' },
-					{ name: 'prf:lastAttribute', value: 'last' }
+					{ name: 'prf:lastAttribute', value: 'last' },
 				])
 			).toBe(true);
 			expect(() => element.removeAttributeNode(attr)).toThrow('NotFoundError');

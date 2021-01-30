@@ -15,7 +15,7 @@ export function changeAttribute(attribute: Attr, element: Element, value: string
 	queueMutationRecord('attributes', element, {
 		name: attribute.localName,
 		namespace: attribute.namespaceURI,
-		oldValue: attribute.value
+		oldValue: attribute.value,
 	});
 
 	// 2. If element is custom, then enqueue a custom element callback reaction with element,
@@ -43,7 +43,7 @@ export function appendAttribute(attribute: Attr, element: Element): void {
 	queueMutationRecord('attributes', element, {
 		name: attribute.localName,
 		namespace: attribute.namespaceURI,
-		oldValue: null
+		oldValue: null,
 	});
 
 	// 2. If element is custom, then enqueue a custom element callback reaction with element,
@@ -74,7 +74,7 @@ export function removeAttribute(attribute: Attr, element: Element): void {
 	queueMutationRecord('attributes', element, {
 		name: attribute.localName,
 		namespace: attribute.namespaceURI,
-		oldValue: attribute.value
+		oldValue: attribute.value,
 	});
 
 	// 2. If element is custom, then enqueue a custom element callback reaction with element,
@@ -106,7 +106,7 @@ export function replaceAttribute(oldAttr: Attr, newAttr: Attr, element: Element)
 	queueMutationRecord('attributes', element, {
 		name: oldAttr.localName,
 		namespace: oldAttr.namespaceURI,
-		oldValue: oldAttr.value
+		oldValue: oldAttr.value,
 	});
 
 	// 2. If element is custom, then enqueue a custom element callback reaction with element,

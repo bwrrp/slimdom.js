@@ -4,7 +4,7 @@ import {
 	determineLengthOfNode,
 	getNodeDocument,
 	getNodeIndex,
-	forEachInclusiveDescendant
+	forEachInclusiveDescendant,
 } from './treeHelpers';
 import { insertIntoChildren, removeFromChildren } from './treeMutations';
 import Document from '../Document';
@@ -92,7 +92,7 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
 					);
 				}
 				if (
-					Array.from(fragment.childNodes).some(child =>
+					Array.from(fragment.childNodes).some((child) =>
 						isNodeOfType(child, NodeType.TEXT_NODE)
 					)
 				) {
@@ -213,7 +213,7 @@ export function insertNode(
 	if (child !== null) {
 		const childIndex = getNodeIndex(child);
 		const context = getContext(node);
-		context._ranges.forEach(range => {
+		context._ranges.forEach((range) => {
 			// 2.1. For each live range whose start node is parent and start offset is greater than
 			// child’s index, increase its start offset by count.
 			if (range.startContainer === parent && range.startOffset > childIndex) {
@@ -235,7 +235,7 @@ export function insertNode(
 	// 4. If node is a DocumentFragment node, remove its children with the suppress observers flag
 	// set.
 	if (isDocumentFragment) {
-		nodes.forEach(n => removeNode(n, node, true));
+		nodes.forEach((n) => removeNode(n, node, true));
 	}
 
 	// 5. If node is a DocumentFragment node, then queue a tree mutation record for node with « »,
@@ -243,7 +243,7 @@ export function insertNode(
 	// observers flag.
 	if (isDocumentFragment) {
 		queueMutationRecord('childList', node, {
-			removedNodes: nodes
+			removedNodes: nodes,
 		});
 	}
 
@@ -251,7 +251,7 @@ export function insertNode(
 	const previousSibling = child === null ? parent.lastChild : child.previousSibling;
 
 	// 7. For each node in nodes, in tree order:
-	nodes.forEach(node => {
+	nodes.forEach((node) => {
 		// 7.1. If child is null, then append node to parent’s children.
 		// 7.2. Otherwise, insert node into parent’s children before child’s index.
 		insertIntoChildren(node, parent, child);
@@ -288,7 +288,7 @@ export function insertNode(
 		queueMutationRecord('childList', parent, {
 			addedNodes: nodes,
 			nextSibling: child,
-			previousSibling: previousSibling
+			previousSibling: previousSibling,
 		});
 	}
 }
@@ -390,7 +390,7 @@ export function replaceChildWithNode<TChild extends Node>(
 					);
 				}
 				if (
-					Array.from(fragment.childNodes).some(child =>
+					Array.from(fragment.childNodes).some((child) =>
 						isNodeOfType(child, NodeType.TEXT_NODE)
 					)
 				) {
@@ -489,7 +489,7 @@ export function replaceChildWithNode<TChild extends Node>(
 		addedNodes: nodes,
 		removedNodes: removedNodes,
 		nextSibling: referenceChild,
-		previousSibling: previousSibling
+		previousSibling: previousSibling,
 	});
 
 	// 16. Return child.
@@ -528,7 +528,7 @@ function replaceAllWithNode(node: Node | null, parent: Node): void {
 	}
 
 	// 4. Remove all parent’s children, in tree order, with the suppress observers flag set.
-	removedNodes.forEach(child => {
+	removedNodes.forEach((child) => {
 		removeNode(child, parent, true);
 	});
 
@@ -541,7 +541,7 @@ function replaceAllWithNode(node: Node | null, parent: Node): void {
 	// 6. Queue a tree mutation record for parent with addedNodes, removedNodes, null, and null.
 	queueMutationRecord('childList', parent, {
 		addedNodes,
-		removedNodes
+		removedNodes,
 	});
 
 	// This algorithm does not make any checks with regards to the node tree constraints.
@@ -581,7 +581,7 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 	const index = getNodeIndex(node);
 
 	const context = getContext(node);
-	context._ranges.forEach(range => {
+	context._ranges.forEach((range) => {
 		// 2. For each live range whose start node is an inclusive descendant of node, set its start
 		// to (parent, index).
 		if (node.contains(range.startContainer)) {
@@ -670,7 +670,7 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 		queueMutationRecord('childList', parent, {
 			removedNodes: [node],
 			nextSibling: oldNextSibling,
-			previousSibling: oldPreviousSibling
+			previousSibling: oldPreviousSibling,
 		});
 	}
 
@@ -701,7 +701,7 @@ export function adoptNode(node: Node, document: Document): void {
 	}
 
 	// 3.1. For each inclusiveDescendant in node’s shadow-including inclusive descendants:
-	forEachInclusiveDescendant(node, node => {
+	forEachInclusiveDescendant(node, (node) => {
 		// 3.1.1. Set inclusiveDescendant’s node document to document.
 		// (calling code ensures that node is never a Document)
 		node.ownerDocument = document;
@@ -735,7 +735,7 @@ export function adoptNode(node: Node, document: Document): void {
  */
 export function getConcatenatedTextNodesData(node: Node): string {
 	const data: string[] = [];
-	forEachInclusiveDescendant(node, descendant => {
+	forEachInclusiveDescendant(node, (descendant) => {
 		// CDATASection is a subtype of Text
 		if (!isNodeOfType(descendant, NodeType.TEXT_NODE, NodeType.CDATA_SECTION_NODE)) {
 			return;
@@ -781,7 +781,7 @@ function convertNodesIntoNode(nodes: (Node | string)[], document: Document): Nod
 
 	// 2. Replace each string in nodes with a new Text node whose data is the string and node
 	// document is document.
-	const actualNodes: Node[] = nodes.map(nodeOrString => {
+	const actualNodes: Node[] = nodes.map((nodeOrString) => {
 		if (typeof nodeOrString === 'string') {
 			return document.createTextNode(nodeOrString);
 		}
@@ -795,7 +795,7 @@ function convertNodesIntoNode(nodes: (Node | string)[], document: Document): Nod
 		// 4. Otherwise, set node to a new DocumentFragment whose node document is document, and then
 		// append each node in nodes, if any, to it.
 		const node = document.createDocumentFragment();
-		actualNodes.forEach(child => {
+		actualNodes.forEach((child) => {
 			node.appendChild(child);
 		});
 		return node;
