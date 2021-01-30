@@ -72,6 +72,8 @@ This library does not implement CSS selectors, which means no `querySelector` / 
 
 To query a slimdom document using XPath or XQuery, use [FontoXPath][fontoxpath].
 
+To query a slimdom document using CSS, see [this example][sizzle-example] which shows how to use [sizzle][sizzle] to run queries using CSS selectors.
+
 ### HTML & browser-specific features and behavior
 
 Emulating a full browser environment is not the goal of this library. Consider using [jsdom][jsdom] instead if you need that.
@@ -100,6 +102,8 @@ The following features are missing simply because I have not yet had a need for 
 [parse5-example]: https://github.com/bwrrp/slimdom.js/tree/main/test/examples/parse5
 [parse5]: https://github.com/inikulin/parse5
 [dom-treeadapter]: https://github.com/RReverser/dom-treeadapter
+[sizzle-example]: https://github.com/bwrrp/slimdom.js/tree/master/test/examples/sizzle
+[sizzle]: https://github.com/jquery/sizzle
 [jsdom]: https://github.com/jsdom/jsdom
 
 ## Contributing
