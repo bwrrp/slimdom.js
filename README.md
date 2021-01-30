@@ -90,7 +90,6 @@ This library omits properties and methods that exist mainly for web compatibilit
 
 The following features are missing simply because I have not yet had a need for them. If you do need one, feel free to create a feature request issue or even submit a pull request.
 
--   Older non-CSS, non-HTML query methods (`getElementsByTagName` / `getElementsByTagNameNS` on `Document`).
 -   Iteration helpers (`NodeIterator` / `TreeWalker` / `NodeFilter`, and the `createNodeIterator` / `createTreeWalker` methods on `Document`).
 -   DOM-modifying methods on Range (`deleteContents` / `extractContents` / `cloneContents` / `insertNode` / `surroundContents`).
 -   `attributeFilter` for mutation observers.

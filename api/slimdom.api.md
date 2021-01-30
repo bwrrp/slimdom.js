@@ -126,6 +126,8 @@ export class Document extends Node implements NonElementParentNode, ParentNode {
     documentElement: Element | null;
     // (undocumented)
     firstElementChild: Element | null;
+    getElementsByTagName(qualifiedName: string): Element[];
+    getElementsByTagNameNS(namespace: string | null, localName: string): Element[];
     readonly implementation: DOMImplementation;
     importNode<TNode extends Node>(node: TNode, deep?: boolean): TNode;
     // (undocumented)
