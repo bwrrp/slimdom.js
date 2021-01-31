@@ -278,6 +278,47 @@ describe('MutationObserver', () => {
 			];
 		},
 
+		'responds to setting textContent': (observer) => {
+			const parent = document.createElement('parent');
+			const oldChild = parent.appendChild(document.createElement('old'));
+			observer.observe(parent, { childList: true });
+
+			parent.textContent = 'new text';
+			const textNode = parent.firstChild!;
+
+			return [
+				{
+					type: 'childList',
+					target: parent,
+					addedNodes: [textNode],
+					removedNodes: [oldChild],
+					nextSibling: null,
+					previousSibling: null,
+				},
+			];
+		},
+
+		'does not respond to setting textContent to empty if there were no children': (
+			observer
+		) => {
+			const parent = document.createElement('parent');
+			observer.observe(parent, { childList: true });
+
+			parent.textContent = '';
+
+			return null;
+		},
+
+		'does not respond to inserting an empty document fragment': (observer) => {
+			const element = document.createElement('test');
+			const fragment = document.createDocumentFragment();
+			observer.observe(element, { childList: true, subtree: true });
+			observer.observe(fragment, { childList: true, subtree: true });
+			element.appendChild(fragment);
+
+			return null;
+		},
+
 		'does not respond to attribute changes if the attributes option is not set': (observer) => {
 			const element = document.createElement('test');
 			observer.observe(element, { attributes: false, childList: true });

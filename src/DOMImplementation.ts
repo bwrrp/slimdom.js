@@ -43,7 +43,7 @@ export default class DOMImplementation {
 
 		// 2. Return a new doctype, with qualifiedName as its name, publicId as its public ID, and
 		// systemId as its system ID, and with its node document set to the associated document of
-		// the context object.
+		// this.
 		const context = getContext(this._document);
 		const doctype = new context.DocumentType(qualifiedName, publicId, systemId);
 		doctype.ownerDocument = this._document;
@@ -97,7 +97,7 @@ export default class DOMImplementation {
 			document.appendChild(element);
 		}
 
-		// 6. document’s origin is context object’s associated document’s origin.
+		// 6. document’s origin is this’s associated document’s origin.
 		// (origin not implemented)
 
 		// 7. document’s content type is determined by namespace:
@@ -159,7 +159,7 @@ export default class DOMImplementation {
 		// the html element created earlier.
 		htmlElement.appendChild(createElement(doc, 'body', HTML_NAMESPACE));
 
-		// 8. doc’s origin is context object’s associated document’s origin.
+		// 8. doc’s origin is this’s associated document’s origin.
 		// (origin not implemented)
 
 		// 9. Return doc.

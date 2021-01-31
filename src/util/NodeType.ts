@@ -5,14 +5,14 @@ export const enum NodeType {
 	ATTRIBUTE_NODE = 2,
 	TEXT_NODE = 3,
 	CDATA_SECTION_NODE = 4,
-	ENTITY_REFERENCE_NODE = 5, // historical
-	ENTITY_NODE = 6, // historical
+	ENTITY_REFERENCE_NODE = 5, // legacy
+	ENTITY_NODE = 6, // legacy
 	PROCESSING_INSTRUCTION_NODE = 7,
 	COMMENT_NODE = 8,
 	DOCUMENT_NODE = 9,
 	DOCUMENT_TYPE_NODE = 10,
 	DOCUMENT_FRAGMENT_NODE = 11,
-	NOTATION_NODE = 12, // historical
+	NOTATION_NODE = 12, // legacy
 }
 
 /**

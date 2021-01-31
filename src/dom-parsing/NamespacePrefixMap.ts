@@ -171,7 +171,7 @@ export function recordNamespaceInformation(
 				continue;
 			}
 
-			// 2.3.2. Otherwise, the attribute prefix is not null and attr is a namespace prefix
+			// 2.3.2. Otherwise, the attribute prefix is non-null and attr is a namespace prefix
 			// definition. Run the following steps:
 			// 2.3.2.1. Let prefix definition be the value of attr's localName.
 			const prefixDefinition = attr.localName;

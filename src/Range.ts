@@ -24,19 +24,73 @@ import { asObject, asUnsignedLong } from './util/typeHelpers';
  * @public
  */
 export interface AbstractRange {
+	readonly startContainer: Node;
+	readonly startOffset: number;
+	readonly endContainer: Node;
+	readonly endOffset: number;
+	readonly collapsed: boolean;
+}
+
+interface StaticRangeInit {
 	startContainer: Node;
 	startOffset: number;
 	endContainer: Node;
 	endOffset: number;
-	collapsed: boolean;
 }
 
 /**
  * Interface StaticRange
  *
+ * Updating live ranges in response to node tree mutations can be expensive. For every node tree
+ * change, all affected Range objects need to be updated. Even if the application is uninterested in
+ * some live ranges, it still has to pay the cost of keeping them up-to-date when a mutation occurs.
+ *
+ * A StaticRange object is a lightweight range that does not update when the node tree mutates. It
+ * is therefore not subject to the same maintenance cost as live ranges.
+ *
  * @public
  */
-export interface StaticRange extends AbstractRange {}
+export class StaticRange implements AbstractRange {
+	public readonly startContainer: Node;
+	public readonly startOffset: number;
+	public readonly endContainer: Node;
+	public readonly endOffset: number;
+	public readonly collapsed: boolean;
+
+	/**
+	 * The StaticRange(init) constructor, when invoked, must run these steps:
+	 *
+	 * @param init - Dictionary representing the properties to set on the StaticRange
+	 */
+	constructor(init: StaticRangeInit) {
+		// 1. If init’s startContainer or endContainer is a DocumentType or Attr node, then throw an
+		// "InvalidNodeTypeError" DOMException.
+		if (
+			isNodeOfType(init.startContainer, NodeType.DOCUMENT_TYPE_NODE, NodeType.ATTRIBUTE_NODE)
+		) {
+			throwInvalidNodeTypeError(
+				'StaticRange startContainer must not be a doctype or attribute node'
+			);
+		}
+		if (isNodeOfType(init.endContainer, NodeType.DOCUMENT_TYPE_NODE, NodeType.ATTRIBUTE_NODE)) {
+			throwInvalidNodeTypeError(
+				'StaticRange endContainer must not be a doctype or attribute node'
+			);
+		}
+
+		// 2. Let staticRange be a new StaticRange object.
+		// 3. Set staticRange’s start to (init’s startContainer, init’s startOffset) and end to
+		// (init’s endContainer, init’s endOffset).
+		this.startContainer = init.startContainer;
+		this.startOffset = init.startOffset;
+		this.endContainer = init.endContainer;
+		this.endOffset = init.endOffset;
+		this.collapsed =
+			this.startContainer === this.endContainer && this.startOffset === this.endOffset;
+
+		// 4. Return staticRange.
+	}
+}
 
 /**
  * A range is collapsed if its start node is its end node and its start offset is its end offset.
@@ -122,12 +176,12 @@ export default class Range implements AbstractRange {
 
 		// 3. Let bp be the boundary point (node, offset).
 		// 4.a. If these steps were invoked as "set the start"
-		// 4.a.1. If bp is after the range’s end, or if range’s root is not equal to node’s root,
+		// 4.a.1. If range’s root is not equal to node’s root, or if bp is after the range’s end,
 		// set range’s end to bp.
-		const rootOfNode = getRootOfNode(node);
 		const rootOfRange = getRootOfRange(this);
+		const rootOfNode = getRootOfNode(node);
 		if (
-			rootOfNode !== rootOfRange ||
+			rootOfRange !== rootOfNode ||
 			compareBoundaryPointPositions(node, offset, this.endContainer, this.endOffset) ===
 				POSITION_AFTER
 		) {
@@ -139,7 +193,7 @@ export default class Range implements AbstractRange {
 		this.startOffset = offset;
 
 		// 4.b. If these steps were invoked as "set the end"
-		// 4.b.1. If bp is before the range’s start, or if range’s root is not equal to node’s root,
+		// 4.b.1. If range’s root is not equal to node’s root, or if bp is before the range’s start,
 		// set range’s start to bp.
 		// 4.b.2. Set range’s end to bp.
 		// (see Range#setEnd for this branch)
@@ -168,18 +222,18 @@ export default class Range implements AbstractRange {
 
 		// 3. Let bp be the boundary point (node, offset).
 		// 4.a. If these steps were invoked as "set the start"
-		// 4.a.1. If bp is after the range’s end, or if range’s root is not equal to node’s root,
+		// 4.a.1. If range’s root is not equal to node’s root, or if bp is after the range’s end,
 		// set range’s end to bp.
 		// 4.a.2. Set range’s start to bp.
 		// (see Range#setStart for this branch)
 
 		// 4.b. If these steps were invoked as "set the end"
-		// 4.b.1. If bp is before the range’s start, or if range’s root is not equal to node’s root,
+		// 4.b.1. If range’s root is not equal to node’s root, or if bp is before the range’s start,
 		// set range’s start to bp.
-		const rootOfNode = getRootOfNode(node);
 		const rootOfRange = getRootOfRange(this);
+		const rootOfNode = getRootOfNode(node);
 		if (
-			rootOfNode !== rootOfRange ||
+			rootOfRange !== rootOfNode ||
 			compareBoundaryPointPositions(node, offset, this.startContainer, this.startOffset) ===
 				POSITION_BEFORE
 		) {
@@ -208,7 +262,7 @@ export default class Range implements AbstractRange {
 			return throwInvalidNodeTypeError('Can not set range before node without a parent');
 		}
 
-		// 3. Set the start of the context object to boundary point (parent, node’s index).
+		// 3. Set the start of this to boundary point (parent, node’s index).
 		this.setStart(parent, getNodeIndex(node));
 	}
 
@@ -229,7 +283,7 @@ export default class Range implements AbstractRange {
 			return throwInvalidNodeTypeError('Can not set range before node without a parent');
 		}
 
-		// 3. Set the start of the context object to boundary point (parent, node’s index plus one).
+		// 3. Set the start of this to boundary point (parent, node’s index plus one).
 		this.setStart(parent, getNodeIndex(node) + 1);
 	}
 
@@ -250,7 +304,7 @@ export default class Range implements AbstractRange {
 			return throwInvalidNodeTypeError('Can not set range before node without a parent');
 		}
 
-		// 3. Set the end of the context object to boundary point (parent, node’s index).
+		// 3. Set the end of this to boundary point (parent, node’s index).
 		this.setEnd(parent, getNodeIndex(node));
 	}
 
@@ -271,7 +325,7 @@ export default class Range implements AbstractRange {
 			return throwInvalidNodeTypeError('Can not set range before node without a parent');
 		}
 
-		// 3. Set the end of the context object to boundary point (parent, node’s index plus one).
+		// 3. Set the end of this to boundary point (parent, node’s index plus one).
 		this.setEnd(parent, getNodeIndex(node) + 1);
 	}
 
@@ -356,7 +410,7 @@ export default class Range implements AbstractRange {
 			throwNotSupportedError('Unsupported comparison type');
 		}
 
-		// 2. If context object’s root is not the same as sourceRange’s root, then throw a
+		// 2. If this’s root is not the same as sourceRange’s root, then throw a
 		// WrongDocumentError.
 		if (getRootOfRange(this) !== getRootOfRange(sourceRange)) {
 			throwWrongDocumentError('Can not compare positions of ranges in different trees');
@@ -366,7 +420,7 @@ export default class Range implements AbstractRange {
 		switch (how) {
 			// START_TO_START:
 			case Range.START_TO_START:
-				// Let this point be the context object’s start. Let other point be sourceRange’s
+				// Let this point be this’s start. Let other point be sourceRange’s
 				// start.
 				return compareBoundaryPointPositions(
 					// this point
@@ -379,7 +433,7 @@ export default class Range implements AbstractRange {
 
 			// START_TO_END:
 			case Range.START_TO_END:
-				// Let this point be the context object’s end. Let other point be sourceRange’s
+				// Let this point be this’s end. Let other point be sourceRange’s
 				// start.
 				return compareBoundaryPointPositions(
 					// this point
@@ -392,7 +446,7 @@ export default class Range implements AbstractRange {
 
 			// END_TO_END:
 			case Range.END_TO_END:
-				// Let this point be the context object’s end. Let other point be sourceRange’s end.
+				// Let this point be this’s end. Let other point be sourceRange’s end.
 				return compareBoundaryPointPositions(
 					// this point
 					this.endContainer,
@@ -404,7 +458,7 @@ export default class Range implements AbstractRange {
 
 			// END_TO_START:
 			default:
-				// Let this point be the context object’s start. Let other point be sourceRange’s
+				// Let this point be this’s start. Let other point be sourceRange’s
 				// end.
 				return compareBoundaryPointPositions(
 					// this point
@@ -424,9 +478,9 @@ export default class Range implements AbstractRange {
 	}
 
 	/**
-	 * Returns a range with the same start and end as the context object.
+	 * Returns a range with the same start and end as this.
 	 *
-	 * @returns A copy of the context object
+	 * @returns A copy of this
 	 */
 	cloneRange(): Range {
 		const context = getContext(this);
@@ -454,7 +508,7 @@ export default class Range implements AbstractRange {
 
 	/**
 	 * Returns true if the given point is after or equal to the start point and before or equal to
-	 * the end point of the context object.
+	 * the end point of this.
 	 *
 	 * @param node   - Node of point to check
 	 * @param offset - Offset of point to check
@@ -466,7 +520,7 @@ export default class Range implements AbstractRange {
 		node = asObject(node, Node);
 		offset = asUnsignedLong(offset);
 
-		// 1. If node’s root is different from the context object’s root, return false.
+		// 1. If node’s root is different from this’s root, return false.
 		if (getRootOfNode(node) !== getRootOfRange(this)) {
 			return false;
 		}
@@ -509,7 +563,7 @@ export default class Range implements AbstractRange {
 		node = asObject(node, Node);
 		offset = asUnsignedLong(offset);
 
-		// 1. If node’s root is different from the context object’s root, then throw a
+		// 1. If node’s root is different from this’s root, then throw a
 		// WrongDocumentError.
 		if (getRootOfNode(node) !== getRootOfRange(this)) {
 			throwWrongDocumentError('Can not compare point to range in different trees');
@@ -556,7 +610,7 @@ export default class Range implements AbstractRange {
 		expectArity(arguments, 1);
 		node = asObject(node, Node);
 
-		// 1. If node’s root is different from the context object’s root, return false.
+		// 1. If node’s root is different from this’s root, return false.
 		if (getRootOfNode(node) !== getRootOfRange(this)) {
 			return false;
 		}

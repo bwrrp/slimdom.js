@@ -10,6 +10,7 @@ export { default as Element } from './Element';
 export { default as Node } from './Node';
 export { default as ProcessingInstruction } from './ProcessingInstruction';
 export { default as Range } from './Range';
+export { StaticRange } from './Range';
 export { default as Text } from './Text';
 export { default as XMLDocument } from './XMLDocument';
 export { default as XMLSerializer } from './dom-parsing/XMLSerializer';

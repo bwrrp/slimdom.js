@@ -40,7 +40,7 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
 		throwHierarchyRequestError('node must not be an inclusive ancestor of parent');
 	}
 
-	// 3. If child is not null and its parent is not parent, then throw a NotFoundError.
+	// 3. If child is non-null and its parent is not parent, then throw a NotFoundError.
 	if (child && child.parentNode !== parent) {
 		throwNotFoundError('child is not a child of parent');
 	}
@@ -99,7 +99,7 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
 					throwHierarchyRequestError('can not insert a Text node under a Document');
 				}
 				// Otherwise, if node has one element child and either parent has an element child,
-				// child is a doctype, or child is not null and a doctype is following child.
+				// child is a doctype, or child is non-null and a doctype is following child.
 				if (
 					fragment.firstElementChild &&
 					(parentDocument.documentElement ||
@@ -117,7 +117,7 @@ function ensurePreInsertionValidity(node: Node, parent: Node, child: Node | null
 
 			// element
 			case NodeType.ELEMENT_NODE:
-				// parent has an element child, child is a doctype, or child is not null and a
+				// parent has an element child, child is a doctype, or child is non-null and a
 				// doctype is following child.
 				if (
 					parentDocument.documentElement ||
@@ -171,21 +171,18 @@ export function preInsertNode<TNode extends Node>(
 	// 1. Ensure pre-insertion validity of node into parent before child.
 	ensurePreInsertionValidity(node, parent, child);
 
-	// 2. Let reference child be child.
+	// 2. Let referenceChild be child.
 	let referenceChild = child;
 
-	// 3. If reference child is node, set it to node’s next sibling.
+	// 3. If referenceChild is node, set it to node’s next sibling.
 	if (referenceChild === node) {
 		referenceChild = node.nextSibling;
 	}
 
-	// 4. Adopt node into parent’s node document.
-	adoptNode(node, getNodeDocument(parent));
-
-	// 5. Insert node into parent before reference child.
+	// 4. Insert node into parent before referenceChild.
 	insertNode(node, parent, referenceChild);
 
-	// 6. Return node.
+	// 5. Return node.
 	return node;
 }
 
@@ -204,12 +201,31 @@ export function insertNode(
 	child: Node | null,
 	suppressObservers: boolean = false
 ): void {
-	// 1. Let count be the number of children of node if it is a DocumentFragment node, and one
-	// otherwise.
+	// 1. Let nodes be node’s children if node is a DocumentFragment node; otherwise « node ».
 	const isDocumentFragment = isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE);
-	const count = isDocumentFragment ? determineLengthOfNode(node) : 1;
+	const nodes = isDocumentFragment ? Array.from(node.childNodes) : [node];
 
-	// 2. If child is non-null, then:
+	// 2. Let count be nodes's size.
+	const count = nodes.length;
+
+	// 3. If count is 0, then return.
+	if (count === 0) {
+		return;
+	}
+
+	// 4. If node is a DocumentFragment node, then:
+	if (isDocumentFragment) {
+		// 4.1 Remove its children with the suppress observers flag set.
+		nodes.forEach((n) => removeNode(n, true));
+
+		// 4.2 Queue a tree mutation record for node with « », nodes, null, and null.
+		// Note: This step intentionally does not pay attention to the suppress observers flag.
+		queueMutationRecord('childList', node, {
+			removedNodes: nodes,
+		});
+	}
+
+	// 5. If child is non-null, then:
 	if (child !== null) {
 		const childIndex = getNodeIndex(child);
 		const context = getContext(node);
@@ -228,43 +244,31 @@ export function insertNode(
 		});
 	}
 
-	// 3. Let nodes be node’s children if node is a DocumentFragment node, and a list containing
-	// solely node otherwise.
-	const nodes = isDocumentFragment ? Array.from(node.childNodes) : [node];
-
-	// 4. If node is a DocumentFragment node, remove its children with the suppress observers flag
-	// set.
-	if (isDocumentFragment) {
-		nodes.forEach((n) => removeNode(n, node, true));
-	}
-
-	// 5. If node is a DocumentFragment node, then queue a tree mutation record for node with « »,
-	// nodes, null and null. This step intentionally does not pay attention to the suppress
-	// observers flag.
-	if (isDocumentFragment) {
-		queueMutationRecord('childList', node, {
-			removedNodes: nodes,
-		});
-	}
-
 	// 6. Let previousSibling be child’s previous sibling or parent’s last child if child is null.
-	const previousSibling = child === null ? parent.lastChild : child.previousSibling;
+	let previousSibling = child === null ? parent.lastChild : child.previousSibling;
+
+	// Non-standard: it appears the standard as of 27 January 2021 does not account for
+	// previousSibling now possibly being node, which can happen, for instance, when doing
+	// parent.insertBefore(child, child);
+	if (previousSibling === node) {
+		previousSibling = node.previousSibling;
+	}
 
 	// 7. For each node in nodes, in tree order:
 	nodes.forEach((node) => {
-		// 7.1. If child is null, then append node to parent’s children.
-		// 7.2. Otherwise, insert node into parent’s children before child’s index.
+		// 7.1. Adopt node into parent's node document.
+		adoptNode(node, getNodeDocument(parent));
+
+		// 7.2. If child is null, then append node to parent’s children.
+		// 7.3. Otherwise, insert node into parent’s children before child’s index.
 		insertIntoChildren(node, parent, child);
 
-		// 7.3. If parent is a shadow host and node is a slotable, then assign a slot for node.
+		// 7.4. If parent is a shadow host and node is a slottable, then assign a slot for node.
 		// (shadow dom not implemented)
-
-		// 7.4. If node is a Text node, run the child text content change steps for parent.
-		// (child text content change steps not implemented)
 
 		// 7.5. If parent's root is a shadow root, and parent is a slot whose assigned nodes is the
 		// empty list, then run signal a slot change for parent.
-		// 7.6. Run assign slotables for a tree with node’s tree.
+		// 7.6. Run assign slottables for a tree with node’s tree.
 		// (shadow dom not implemented)
 
 		// 7.7. For each shadow-including inclusive descendant inclusiveDescendant of node, in
@@ -291,6 +295,9 @@ export function insertNode(
 			previousSibling: previousSibling,
 		});
 	}
+
+	// 9. Run the children changed steps for parent
+	// (children changed steps not implemented)
 }
 
 /**
@@ -447,10 +454,10 @@ export function replaceChildWithNode<TChild extends Node>(
 		// The above statements differ from the pre-insert algorithm.
 	}
 
-	// 7. Let reference child be child’s next sibling.
+	// 7. Let referenceChild be child’s next sibling.
 	let referenceChild = child.nextSibling;
 
-	// 8. If reference child is node, set it to node’s next sibling.
+	// 8. If referenceChild is node, set it to node’s next sibling.
 	if (referenceChild === node) {
 		referenceChild = node.nextSibling;
 	}
@@ -458,33 +465,31 @@ export function replaceChildWithNode<TChild extends Node>(
 	// 9. Let previousSibling be child’s previous sibling.
 	const previousSibling = child.previousSibling;
 
-	// 10. Adopt node into parent’s node document.
-	adoptNode(node, getNodeDocument(parent));
-
-	// 11. Let removedNodes be the empty list.
+	// 10. Let removedNodes be the empty set.
 	let removedNodes: Node[] = [];
 
-	// 12. If child’s parent is not null, then:
+	// 11. If child’s parent is non-null, then:
+	/* istanbul ignore else */
 	if (child.parentNode !== null) {
-		// 12.1. Set removedNodes to a list solely containing child.
+		// 11.1. Set removedNodes to « child ».
 		removedNodes.push(child);
 
-		// 12.2. Remove child from its parent with the suppress observers flag set.
-		removeNode(child, child.parentNode, true);
+		// 11.2. Remove child with the suppress observers flag set.
+		removeNode(child, true);
 	}
 	// The above can only be false if child is node.
+	// (TODO: this is no longer the case, at least until whatwg/dom#819 is merged)
 
-	// 13. Let nodes be node’s children if node is a DocumentFragment node, and a list containing
-	// solely node otherwise.
+	// 12. Let nodes be node’s children if node is a DocumentFragment node; otherwise « node ».
 	const nodes = isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE)
 		? Array.from(node.childNodes)
 		: [node];
 
-	// 14. Insert node into parent before reference child with the suppress observers flag set.
+	// 13. Insert node into parent before referenceChild with the suppress observers flag set.
 	insertNode(node, parent, referenceChild, true);
 
-	// 15. Queue a tree mutation record for parent with nodes, removedNodes, previousSibling and
-	// reference child.
+	// 14. Queue a tree mutation record for parent with nodes, removedNodes, previousSibling and
+	// referenceChild.
 	queueMutationRecord('childList', parent, {
 		addedNodes: nodes,
 		removedNodes: removedNodes,
@@ -492,7 +497,7 @@ export function replaceChildWithNode<TChild extends Node>(
 		previousSibling: previousSibling,
 	});
 
-	// 16. Return child.
+	// 15. Return child.
 	return child;
 }
 
@@ -503,46 +508,43 @@ export function replaceChildWithNode<TChild extends Node>(
  * @param parent Parent to replace under
  */
 function replaceAllWithNode(node: Node | null, parent: Node): void {
-	// 1. If node is not null, adopt node into parent’s node document.
-	if (node !== null) {
-		adoptNode(node, getNodeDocument(parent));
-	}
-
-	// 2. Let removedNodes be parent’s children.
+	// 1. Let removedNodes be parent’s children.
 	const removedNodes = Array.from(parent.childNodes);
 
-	// 3. Let addedNodes be the empty list if node is null, node’s children if node is a
-	// DocumentFragment node, and a list containing node otherwise.
-	let addedNodes: Node[];
-	if (node === null) {
-		addedNodes = [];
-	} else {
-		/* istanbul ignore if */
+	// 2. Let addedNodes be the empty set.
+	let addedNodes: Node[] = [];
+
+	if (node !== null) {
+		// 3. If node is a DocumentFragment node, then set addedNodes to node's children.
 		if (isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE)) {
-			// This case is never actually reachable from any usage of "replace all" in the spec, as the
-			// algorithm is currently only used with node being either null or a Text instance.
-			addedNodes = Array.from(node.childNodes);
+			node.childNodes.forEach((child) => {
+				addedNodes.push(child);
+			});
 		} else {
-			addedNodes = [];
+			// 4. Otherwise, if node is non-null, set addedNodes to « node ».
+			addedNodes.push(node);
 		}
 	}
 
-	// 4. Remove all parent’s children, in tree order, with the suppress observers flag set.
+	// 5. Remove all parent’s children, in tree order, with the suppress observers flag set.
 	removedNodes.forEach((child) => {
-		removeNode(child, parent, true);
+		removeNode(child, true);
 	});
 
-	// 5. If node is not null, then insert node into parent before null with the suppress observers
+	// 6. If node is non-null, then insert node into parent before null with the suppress observers
 	// flag set.
 	if (node !== null) {
 		insertNode(node, parent, null, true);
 	}
 
-	// 6. Queue a tree mutation record for parent with addedNodes, removedNodes, null, and null.
-	queueMutationRecord('childList', parent, {
-		addedNodes,
-		removedNodes,
-	});
+	// 7. If either addedNodes or removedNodes is not empty, then queue a tree mutation record for
+	// parent with addedNodes, removedNodes, null, and null.
+	if (addedNodes.length > 0 || removedNodes.length > 0) {
+		queueMutationRecord('childList', parent, {
+			addedNodes,
+			removedNodes,
+		});
+	}
 
 	// This algorithm does not make any checks with regards to the node tree constraints.
 	// Specification authors need to use it wisely.
@@ -562,97 +564,102 @@ export function preRemoveChild<TChild extends Node>(child: TChild, parent: Node)
 		throwNotFoundError('child is not a child of parent');
 	}
 
-	// 2. Remove child from parent.
-	removeNode(child, parent);
+	// 2. Remove child.
+	removeNode(child);
 
 	// 3. Return child.
 	return child;
 }
 
 /**
- * To remove a node from a parent, with an optional suppress observers flag, run these steps:
+ * To remove a node, with an optional suppress observers flag, run these steps:
  *
  * @param node              - Child to remove
- * @param parent            - Parent to remove child from
  * @param suppressObservers - Whether to skip enqueueing a mutation record for this mutation
  */
-export function removeNode(node: Node, parent: Node, suppressObservers: boolean = false): void {
-	// 1. Let index be node’s index.
+export function removeNode(node: Node, suppressObservers: boolean = false): void {
+	// 1. Let parent be node's parent
+	// 2. Assert: parent is non-null.
+	const parent = node.parentNode!;
+
+	// 3. Let index be node’s index.
 	const index = getNodeIndex(node);
 
 	const context = getContext(node);
 	context.forEachRange((range) => {
-		// 2. For each live range whose start node is an inclusive descendant of node, set its start
+		// 4. For each live range whose start node is an inclusive descendant of node, set its start
 		// to (parent, index).
 		if (node.contains(range.startContainer)) {
 			range.startContainer = parent;
 			range.startOffset = index;
 		}
 
-		// 3. For each live range whose end node is an inclusive descendant of node, set its end to
+		// 5. For each live range whose end node is an inclusive descendant of node, set its end to
 		// (parent, index).
 		if (node.contains(range.endContainer)) {
 			range.endContainer = parent;
 			range.endOffset = index;
 		}
 
-		// 4. For each live range whose start node is parent and start offset is greater than index,
+		// 6. For each live range whose start node is parent and start offset is greater than index,
 		// decrease its start offset by one.
 		if (range.startContainer === parent && range.startOffset > index) {
 			range.startOffset -= 1;
 		}
 
-		// 5. For each live range whose end node is parent and end offset is greater than index,
+		// 7. For each live range whose end node is parent and end offset is greater than index,
 		// decrease its end offset by one.
 		if (range.endContainer === parent && range.endOffset > index) {
 			range.endOffset -= 1;
 		}
 	});
 
-	// 6. For each NodeIterator object iterator whose root’s node document is node’s node document,
+	// 8. For each NodeIterator object iterator whose root’s node document is node’s node document,
 	// run the NodeIterator pre-removing steps given node and iterator.
 	// (NodeIterator not implemented)
 
-	// 7. Let oldPreviousSibling be node’s previous sibling.
+	// 9. Let oldPreviousSibling be node’s previous sibling.
 	const oldPreviousSibling = node.previousSibling;
 
-	// 8. Let oldNextSibling be node’s next sibling.
+	// 10. Let oldNextSibling be node’s next sibling.
 	const oldNextSibling = node.nextSibling;
 
-	// 9. Remove node from its parent’s children.
+	// 11. Remove node from its parent’s children.
 	removeFromChildren(node, parent);
 
-	// 10. If node is assigned, then run assign slotables for node’s assigned slot.
+	// 12. If node is assigned, then run assign slottables for node’s assigned slot.
 	// (shadow dom not implemented)
 
-	// 11. If parent's root is a shadow root, and parent is a slot whose assigned nodes is the empty
+	// 13. If parent's root is a shadow root, and parent is a slot whose assigned nodes is the empty
 	// list, then run signal a slot change for parent.
 	// (shadow dom not implemented)
 
-	// 12. If node has an inclusive descendant that is a slot, then:
-	// 12.1. Run assign slotables for a tree with parent’s tree.
-	// 12.2. Run assign slotables for a tree with node’s tree.
+	// 14. If node has an inclusive descendant that is a slot, then:
+	// 14.1. Run assign slottables for a tree with parent’s tree.
+	// 14.2. Run assign slottables for a tree with node’s tree.
 	// (shadow dom not implemented)
 
-	// 13. Run the removing steps with node and parent.
+	// 15. Run the removing steps with node and parent.
 	// (removing steps not implemented)
 
-	// 14. If node is custom, then enqueue a custom element callback reaction with node, callback
-	// name "disconnectedCallback", and an empty argument list.
+	// 16. Let isParentConnected be parent's connected.
+	// 17. If node is custom and isParentConnected is true, then enqueue a custom element callback
+	// reaction with node, callback name "disconnectedCallback", and an empty argument list.
 	// It is intentional for now that custom elements do not get parent passed. This might change in
 	// the future if there is a need.
 	// (custom elements not implemented)
 
-	// 15. For each shadow-including descendant descendant of node, in shadow-including tree order,
+	// 18. For each shadow-including descendant descendant of node, in shadow-including tree order,
 	// then:
-	// 15.1. Run the removing steps with descendant.
+	// 18.1. Run the removing steps with descendant.
 	// (shadow dom not implemented)
 
-	// 15.2. If descendant is custom, then enqueue a custom element callback reaction with
-	// descendant, callback name "disconnectedCallback", and an empty argument list.
+	// 18.2. If descendant is custom and isParentConnected is true, then enqueue a custom element
+	// callback reaction with descendant, callback name "disconnectedCallback", and an empty
+	// argument list.
 	// (custom elements not implemented)
 
-	// 16. For each inclusive ancestor inclusiveAncestor of parent, and then for each registered of
+	// 19. For each inclusive ancestor inclusiveAncestor of parent, and then for each registered of
 	// inclusiveAncestor's registered observer list, if registered's options's subtree is true, then
 	// append a new transient registered observer whose observer is registered's observer, options
 	// is registered's options, and source is registered to node's registered observer list.
@@ -664,7 +671,7 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 		inclusiveAncestor._registeredObservers.appendTransientRegisteredObservers(node);
 	}
 
-	// 17. If suppress observers flag is unset, queue a tree mutation record for parent with « »,
+	// 20. If suppress observers flag is unset, queue a tree mutation record for parent with « »,
 	// « node », oldPreviousSibling, and oldNextSibling
 	if (!suppressObservers) {
 		queueMutationRecord('childList', parent, {
@@ -674,8 +681,8 @@ export function removeNode(node: Node, parent: Node, suppressObservers: boolean 
 		});
 	}
 
-	// 18. If node is a Text node, then run the child text content change steps for parent.
-	// (child text content change steps not implemented)
+	// 21. Run the children changed steps for parent
+	// (children changed steps not implemented)
 }
 
 /**
@@ -690,9 +697,9 @@ export function adoptNode(node: Node, document: Document): void {
 	// 1. Let oldDocument be node’s node document.
 	const oldDocument = getNodeDocument(node);
 
-	// 2. If node’s parent is not null, remove node from its parent.
+	// 2. If node’s parent is non-null, remove node.
 	if (node.parentNode) {
-		removeNode(node, node.parentNode);
+		removeNode(node);
 	}
 
 	// 3. If document is not oldDocument, then:
@@ -726,14 +733,15 @@ export function adoptNode(node: Node, document: Document): void {
 }
 
 /**
- * Implementation of the textContent getter for DocumentFragment and Element.
+ * The descendant text content of a node node is the concatenation of the data of all the Text node
+ * descendants of node, in tree order.
  *
  * @param node Root node
  *
  * @returns  The concatenation of data of all the Text node descendants of the given node, in tree
  *           order
  */
-export function getConcatenatedTextNodesData(node: Node): string {
+export function getDescendantTextContent(node: Node): string {
 	const data: string[] = [];
 	forEachInclusiveDescendant(node, (descendant) => {
 		// CDATASection is a subtype of Text
@@ -749,22 +757,22 @@ export function getConcatenatedTextNodesData(node: Node): string {
 /**
  * Implementation of the textContent setter for DocumentFragment and Element
  *
- * @param contextObject Node for which to set textContent
- * @param newValue      New textContent value
+ * @param parent    Node for which to set textContent
+ * @param newValue  New textContent value
  */
-export function setTextContentByReplacing(contextObject: Node, newValue: string): void {
+export function stringReplaceAll(parent: Node, newValue: string): void {
 	// 1. Let node be null.
 	let node = null;
 
-	// 2. If the given value is not the empty string, set node to a new Text node whose data is the
-	// given value and node document is context object’s node document.
+	// 2. If the given value is not the empty string, then set node to a new Text node whose data is
+	// the given value and node document is parent’s node document.
 	if (newValue !== '') {
-		const context = getContext(contextObject);
+		const context = getContext(parent);
 		node = new context.Text(newValue);
 	}
 
-	// 3. Replace all with node within the context object.
-	replaceAllWithNode(node, contextObject);
+	// 3. Replace all with node within the this.
+	replaceAllWithNode(node, parent);
 }
 
 /**
@@ -808,58 +816,76 @@ function convertNodesIntoNode(nodes: (Node | string)[], document: Document): Nod
 /**
  * The prepend(nodes) method, when invoked, must run these steps:
  *
- * @param contextObject The ParentNode on which the method is invoked
- * @param nodes         The nodes (and/or strings) to prepend
+ * @param thisObject - The ParentNode on which the method is invoked
+ * @param nodes      - The nodes (and/or strings) to prepend
  */
-export function prependNodes(contextObject: Node & ParentNode, nodes: (Node | string)[]): void {
-	// 1. Let node be the result of converting nodes into a node given nodes and context object’s
-	// node document.
-	const node = convertNodesIntoNode(nodes, getNodeDocument(contextObject));
+export function prependNodes(thisObject: Node & ParentNode, nodes: (Node | string)[]): void {
+	// 1. Let node be the result of converting nodes into a node given nodes and this’s node
+	// document.
+	const node = convertNodesIntoNode(nodes, getNodeDocument(thisObject));
 
-	// 2. Pre-insert node into context object before the context object’s first child.
-	preInsertNode(node, contextObject, contextObject.firstChild);
+	// 2. Pre-insert node into this before the this’s first child.
+	preInsertNode(node, thisObject, thisObject.firstChild);
 }
 
 /**
  * The append(nodes) method, when invoked, must run these steps:
  *
- * @param contextObject The ParentNode on which the method is invoked
- * @param nodes         The nodes (and/or strings) to append
+ * @param thisObject - The ParentNode on which the method is invoked
+ * @param nodes      - The nodes (and/or strings) to append
  */
-export function appendNodes(contextObject: Node & ParentNode, nodes: (Node | string)[]): void {
-	// 1. Let node be the result of converting nodes into a node given nodes and context object’s
-	// node document.
-	const node = convertNodesIntoNode(nodes, getNodeDocument(contextObject));
+export function appendNodes(thisObject: Node & ParentNode, nodes: (Node | string)[]): void {
+	// 1. Let node be the result of converting nodes into a node given nodes and this’s node
+	// document.
+	const node = convertNodesIntoNode(nodes, getNodeDocument(thisObject));
 
-	// 2. Append node to context object
-	appendNode(node, contextObject);
+	// 2. Append node to this
+	appendNode(node, thisObject);
+}
+
+/**
+ * The replaceChildren(nodes) method, when invoked, must run these steps:
+ *
+ * @param thisObject - The ParentNode on which the method is invoked
+ * @param nodes      - The nodes (and/or strings) to replace the children with
+ */
+export function replaceChildren(thisObject: Node & ParentNode, nodes: (Node | string)[]): void {
+	// 1. Let node be the result of converting nodes into a node given nodes and this's node
+	// document.
+	const node = convertNodesIntoNode(nodes, getNodeDocument(thisObject));
+
+	// 2. Ensure pre-insertion validity of node into this before null.
+	ensurePreInsertionValidity(node, thisObject, null);
+
+	// 3. Replace all with node within this.
+	replaceAllWithNode(node, thisObject);
 }
 
 /**
  * The before(nodes) method, when invoked, must run these steps:
  *
- * @param contextObject The ChildNode on which the method is invoked
- * @param nodes         The nodes (and/or strings) to insert
+ * @param thisObject - The ChildNode on which the method is invoked
+ * @param nodes        The nodes (and/or strings) to insert
  */
-export function insertNodesBefore(contextObject: Node & ChildNode, nodes: (Node | string)[]): void {
-	// 1. Let parent be context object’s parent.
-	const parent = contextObject.parentNode;
+export function insertNodesBefore(thisObject: Node & ChildNode, nodes: (Node | string)[]): void {
+	// 1. Let parent be this’s parent.
+	const parent = thisObject.parentNode;
 
 	// 2. If parent is null, then return.
 	if (parent === null) {
 		return;
 	}
 
-	// 3. Let viablePreviousSibling be context object’s first preceding sibling not in nodes, and
+	// 3. Let viablePreviousSibling be this’s first preceding sibling not in nodes, and
 	// null otherwise.
-	let viablePreviousSibling = contextObject.previousSibling;
+	let viablePreviousSibling = thisObject.previousSibling;
 	while (viablePreviousSibling !== null && nodes.indexOf(viablePreviousSibling) >= 0) {
 		viablePreviousSibling = viablePreviousSibling.previousSibling;
 	}
 
-	// 4. Let node be the result of converting nodes into a node, given nodes and context object’s
+	// 4. Let node be the result of converting nodes into a node, given nodes and this’s
 	// node document.
-	const node = convertNodesIntoNode(nodes, getNodeDocument(contextObject));
+	const node = convertNodesIntoNode(nodes, getNodeDocument(thisObject));
 
 	// 5. If viablePreviousSibling is null, set it to parent’s first child, and to
 	// viablePreviousSibling’s next sibling otherwise.
@@ -875,28 +901,28 @@ export function insertNodesBefore(contextObject: Node & ChildNode, nodes: (Node 
 /**
  * The after(nodes) method, when invoked, must run these steps:
  *
- * @param contextObject The ChildNode on which the method is invoked
- * @param nodes         The nodes (and/or strings) to insert
+ * @param thisObject - The ChildNode on which the method is invoked
+ * @param nodes      - The nodes (and/or strings) to insert
  */
-export function insertNodesAfter(contextObject: Node & ChildNode, nodes: (Node | string)[]): void {
-	// 1. Let parent be context object’s parent.
-	const parent = contextObject.parentNode;
+export function insertNodesAfter(thisObject: Node & ChildNode, nodes: (Node | string)[]): void {
+	// 1. Let parent be this’s parent.
+	const parent = thisObject.parentNode;
 
 	// 2. If parent is null, then return.
 	if (parent === null) {
 		return;
 	}
 
-	// 3. Let viableNextSibling be context object’s first following sibling not in nodes, and null
+	// 3. Let viableNextSibling be this’s first following sibling not in nodes, and null
 	// otherwise.
-	let viableNextSibling = contextObject.nextSibling;
+	let viableNextSibling = thisObject.nextSibling;
 	while (viableNextSibling !== null && nodes.indexOf(viableNextSibling) >= 0) {
 		viableNextSibling = viableNextSibling.nextSibling;
 	}
 
-	// 4. Let node be the result of converting nodes into a node, given nodes and context object’s
+	// 4. Let node be the result of converting nodes into a node, given nodes and this’s
 	// node document.
-	const node = convertNodesIntoNode(nodes, getNodeDocument(contextObject));
+	const node = convertNodesIntoNode(nodes, getNodeDocument(thisObject));
 
 	// 5. Pre-insert node into parent before viableNextSibling.
 	preInsertNode(node, parent, viableNextSibling);
@@ -905,33 +931,33 @@ export function insertNodesAfter(contextObject: Node & ChildNode, nodes: (Node |
 /**
  * The replaceWith(nodes) method, when invoked, must run these steps:
  *
- * @param contextObject The ChildNode on which the method is invoked
- * @param nodes         The nodes (and/or strings) to insert
+ * @param thisObject - The ChildNode on which the method is invoked
+ * @param nodes      - The nodes (and/or strings) to insert
  */
-export function replaceWithNodes(contextObject: Node & ChildNode, nodes: (Node | string)[]): void {
-	// 1. Let parent be context object’s parent.
-	const parent = contextObject.parentNode;
+export function replaceWithNodes(thisObject: Node & ChildNode, nodes: (Node | string)[]): void {
+	// 1. Let parent be this’s parent.
+	const parent = thisObject.parentNode;
 
 	// 2. If parent is null, then return.
 	if (parent === null) {
 		return;
 	}
 
-	// 3. Let viableNextSibling be context object’s first following sibling not in nodes, and null
+	// 3. Let viableNextSibling be this’s first following sibling not in nodes, and null
 	// otherwise.
-	let viableNextSibling = contextObject.nextSibling;
+	let viableNextSibling = thisObject.nextSibling;
 	while (viableNextSibling !== null && nodes.indexOf(viableNextSibling) >= 0) {
 		viableNextSibling = viableNextSibling.nextSibling;
 	}
 
-	// 4. Let node be the result of converting nodes into a node, given nodes and context object’s
+	// 4. Let node be the result of converting nodes into a node, given nodes and this’s
 	// node document.
-	const node = convertNodesIntoNode(nodes, getNodeDocument(contextObject));
+	const node = convertNodesIntoNode(nodes, getNodeDocument(thisObject));
 
-	// 5. If context object’s parent is parent, replace the context object with node within parent.
-	// Note: Context object could have been inserted into node.
-	if (contextObject.parentNode === parent) {
-		replaceChildWithNode(contextObject, node, parent);
+	// 5. If this’s parent is parent, replace the this with node within parent.
+	// Note: this could have been inserted into node.
+	if (thisObject.parentNode === parent) {
+		replaceChildWithNode(thisObject, node, parent);
 	} else {
 		// 6. Otherwise, pre-insert node into parent before viableNextSibling.
 		preInsertNode(node, parent, viableNextSibling);
@@ -941,14 +967,14 @@ export function replaceWithNodes(contextObject: Node & ChildNode, nodes: (Node |
 /**
  * The remove() method, when invoked, must run these steps:
  *
- * @param contextObject The ChildNode on which the method is invoked
+ * @param thisObject The ChildNode on which the method is invoked
  */
-export function removeFromParent(contextObject: Node & ChildNode): void {
-	// 1. If context object’s parent is null, then return.
-	if (contextObject.parentNode === null) {
+export function removeFromParent(thisObject: Node & ChildNode): void {
+	// 1. If this’s parent is null, then return.
+	if (thisObject.parentNode === null) {
 		return;
 	}
 
-	// 2. Remove the context object from context object’s parent.
-	removeNode(contextObject, contextObject.parentNode);
+	// 2. Remove the this.
+	removeNode(thisObject);
 }

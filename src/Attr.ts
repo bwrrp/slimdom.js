@@ -31,7 +31,7 @@ export default class Attr extends Node {
 	public set nodeValue(newValue: string | null) {
 		newValue = treatNullAsEmptyString(newValue);
 
-		// Set an existing attribute value with context object and new value.
+		// Set an existing attribute value with this and new value.
 		setExistingAttributeValue(this, newValue);
 	}
 
@@ -42,7 +42,7 @@ export default class Attr extends Node {
 	public set textContent(newValue: string | null) {
 		newValue = treatNullAsEmptyString(newValue);
 
-		// Set an existing attribute value with context object and new value.
+		// Set an existing attribute value with this and new value.
 		setExistingAttributeValue(this, newValue);
 	}
 
@@ -52,7 +52,7 @@ export default class Attr extends Node {
 		// 1. If namespace is null or the empty string, then return null.
 		// (not necessary due to recursion)
 
-		// 2. Switch on the context object:
+		// 2. Switch on this:
 		// Attr - Return the result of locating a namespace prefix for its element, if its element
 		// is non-null, and null otherwise.
 		if (this.ownerElement !== null) {
@@ -68,7 +68,7 @@ export default class Attr extends Node {
 		// 1. If prefix is the empty string, then set it to null.
 		// (not necessary due to recursion)
 
-		// 2. Return the result of running locate a namespace for the context object using prefix.
+		// 2. Return the result of running locate a namespace for this using prefix.
 
 		// To locate a namespace for a node using prefix, switch on node: Attr
 		// 1. If its element is null, then return null.
@@ -128,11 +128,11 @@ export default class Attr extends Node {
 	}
 
 	/**
-	 * (non-standard) Creates a copy of the context object, not including its children.
+	 * (non-standard) Creates a copy of this, not including its children.
 	 *
 	 * @param document - The node document to associate with the copy
 	 *
-	 * @returns A shallow copy of the context object
+	 * @returns A shallow copy of this
 	 */
 	public _copy(document: Document): Attr {
 		// Set copy’s namespace, namespace prefix, local name, and value, to those of node.
@@ -164,7 +164,7 @@ function setExistingAttributeValue(attribute: Attr, value: string) {
 	if (element === null) {
 		(attribute as any)._value = value;
 	} else {
-		// 2. Otherwise, change attribute from attribute’s element to value.
-		changeAttribute(attribute, element, value);
+		// 2. Otherwise, change attribute to value.
+		changeAttribute(attribute, value);
 	}
 }

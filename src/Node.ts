@@ -27,28 +27,28 @@ export default abstract class Node {
 	static ATTRIBUTE_NODE: number = NodeType.ATTRIBUTE_NODE;
 	static TEXT_NODE: number = NodeType.TEXT_NODE;
 	static CDATA_SECTION_NODE: number = NodeType.CDATA_SECTION_NODE;
-	static ENTITY_REFERENCE_NODE: number = NodeType.ENTITY_REFERENCE_NODE; // historical
-	static ENTITY_NODE: number = NodeType.ENTITY_NODE; // historical
+	static ENTITY_REFERENCE_NODE: number = NodeType.ENTITY_REFERENCE_NODE; // legacy
+	static ENTITY_NODE: number = NodeType.ENTITY_NODE; // legacy
 	static PROCESSING_INSTRUCTION_NODE: number = NodeType.PROCESSING_INSTRUCTION_NODE;
 	static COMMENT_NODE: number = NodeType.COMMENT_NODE;
 	static DOCUMENT_NODE: number = NodeType.DOCUMENT_NODE;
 	static DOCUMENT_TYPE_NODE: number = NodeType.DOCUMENT_TYPE_NODE;
 	static DOCUMENT_FRAGMENT_NODE: number = NodeType.DOCUMENT_FRAGMENT_NODE;
-	static NOTATION_NODE: number = NodeType.NOTATION_NODE; // historical
+	static NOTATION_NODE: number = NodeType.NOTATION_NODE; // legacy
 
 	// Node types also exist as instance properties, assigned to the prototype below
 	public ELEMENT_NODE!: number;
 	public ATTRIBUTE_NODE!: number;
 	public TEXT_NODE!: number;
 	public CDATA_SECTION_NODE!: number;
-	public ENTITY_REFERENCE_NODE!: number; // historical
-	public ENTITY_NODE!: number; // historical
+	public ENTITY_REFERENCE_NODE!: number; // legacy
+	public ENTITY_NODE!: number; // legacy
 	public PROCESSING_INSTRUCTION_NODE!: number;
 	public COMMENT_NODE!: number;
 	public DOCUMENT_NODE!: number;
 	public DOCUMENT_TYPE_NODE!: number;
 	public DOCUMENT_FRAGMENT_NODE!: number;
-	public NOTATION_NODE!: number; // historical
+	public NOTATION_NODE!: number; // legacy
 
 	/**
 	 * Returns the type of node, represented by a number.
@@ -80,7 +80,7 @@ export default abstract class Node {
 	}
 
 	/**
-	 * Returns true if the context object has children, and false otherwise.
+	 * Returns true if this has children, and false otherwise.
 	 */
 	public hasChildNodes(): boolean {
 		return !!this.childNodes.length;
@@ -137,7 +137,7 @@ export default abstract class Node {
 	 * subtree, no text nodes in the subtree are empty and there are no adjacent text nodes.
 	 */
 	public normalize(): void {
-		// for each descendant exclusive Text node node of context object:
+		// for each descendant exclusive Text node node of this:
 		let node = this.firstChild;
 		let index = 0;
 		const document = getNodeDocument(this);
@@ -157,7 +157,7 @@ export default abstract class Node {
 			// 2. If length is zero, then remove node and continue with the next exclusive Text
 			// node, if any.
 			if (length === 0) {
-				removeNode(node, this);
+				removeNode(node);
 				--index;
 				node = nextNode;
 				continue;
@@ -229,17 +229,13 @@ export default abstract class Node {
 
 			// 7. Remove node’s contiguous exclusive Text nodes (excluding itself), in tree order.
 			while (siblingsToRemove.length) {
-				removeNode(siblingsToRemove.shift() as Node, this);
+				removeNode(siblingsToRemove.shift() as Node);
 			}
 
 			// Move to next node
 			node = node.nextSibling;
 			++index;
 		}
-
-		// Note: normalize() does not need to run any child text content change steps, since
-		// although it messes with Text nodes extensively, it does so specifically in a way that
-		// preserves the child text content.
 	}
 
 	/**
@@ -254,7 +250,7 @@ export default abstract class Node {
 	}
 
 	/**
-	 * Returns true if other is an inclusive descendant of context object, and false otherwise
+	 * Returns true if other is an inclusive descendant of this, and false otherwise
 	 * (including when other is null).
 	 *
 	 * @param childNode - Node to check
@@ -305,7 +301,7 @@ export default abstract class Node {
 			namespace = null;
 		}
 
-		// 2. Let defaultNamespace be the result of running locate a namespace for context object
+		// 2. Let defaultNamespace be the result of running locate a namespace for this
 		// using null.
 		const defaultNamespace = this.lookupNamespaceURI(null);
 
@@ -314,7 +310,7 @@ export default abstract class Node {
 	}
 
 	/**
-	 * Inserts the specified node before child within context object.
+	 * Inserts the specified node before child within this.
 	 *
 	 * If child is null, the new node is appended after the last child node of the current node.
 	 *
@@ -333,7 +329,7 @@ export default abstract class Node {
 	}
 
 	/**
-	 * Adds node to the end of the list of children of the context object.
+	 * Adds node to the end of the list of children of this.
 	 *
 	 * If the node already exists it is removed from its current parent node, then added.
 	 *
@@ -349,7 +345,7 @@ export default abstract class Node {
 	}
 
 	/**
-	 * Replaces child with node within context object and returns child.
+	 * Replaces child with node within this and returns child.
 	 *
 	 * @param node  - Node to insert
 	 * @param child - Node to remove
@@ -365,7 +361,7 @@ export default abstract class Node {
 	}
 
 	/**
-	 * Removes child from context object and returns the removed node.
+	 * Removes child from this and returns the removed node.
 	 *
 	 * @param child - Child of the current node to remove
 	 *
@@ -379,11 +375,11 @@ export default abstract class Node {
 	}
 
 	/**
-	 * (non-standard) Creates a copy of the context object, not including its children.
+	 * (non-standard) Creates a copy of this, not including its children.
 	 *
 	 * @param document - The node document to associate with the copy
 	 *
-	 * @returns A shallow copy of the context object
+	 * @returns A shallow copy of this
 	 */
 	public abstract _copy(document: Document): Node;
 }
@@ -392,11 +388,11 @@ Node.prototype.ELEMENT_NODE = NodeType.ELEMENT_NODE;
 Node.prototype.ATTRIBUTE_NODE = NodeType.ATTRIBUTE_NODE;
 Node.prototype.TEXT_NODE = NodeType.TEXT_NODE;
 Node.prototype.CDATA_SECTION_NODE = NodeType.CDATA_SECTION_NODE;
-Node.prototype.ENTITY_REFERENCE_NODE = NodeType.ENTITY_REFERENCE_NODE; // historical
-Node.prototype.ENTITY_NODE = NodeType.ENTITY_NODE; // historical
+Node.prototype.ENTITY_REFERENCE_NODE = NodeType.ENTITY_REFERENCE_NODE; // legacy
+Node.prototype.ENTITY_NODE = NodeType.ENTITY_NODE; // legacy
 Node.prototype.PROCESSING_INSTRUCTION_NODE = NodeType.PROCESSING_INSTRUCTION_NODE;
 Node.prototype.COMMENT_NODE = NodeType.COMMENT_NODE;
 Node.prototype.DOCUMENT_NODE = NodeType.DOCUMENT_NODE;
 Node.prototype.DOCUMENT_TYPE_NODE = NodeType.DOCUMENT_TYPE_NODE;
 Node.prototype.DOCUMENT_FRAGMENT_NODE = NodeType.DOCUMENT_FRAGMENT_NODE;
-Node.prototype.NOTATION_NODE = NodeType.NOTATION_NODE; // historical
+Node.prototype.NOTATION_NODE = NodeType.NOTATION_NODE; // legacy
