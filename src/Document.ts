@@ -18,7 +18,7 @@ import {
 	throwInvalidCharacterError,
 	throwNotSupportedError,
 } from './util/errorHelpers';
-import { adoptNode, appendNodes, prependNodes } from './util/mutationAlgorithms';
+import { adoptNode, appendNodes, prependNodes, replaceChildren } from './util/mutationAlgorithms';
 import { NodeType, isNodeOfType } from './util/NodeType';
 import { matchesNameProduction, validateAndExtract } from './util/namespaceHelpers';
 import { asNullableString, asObject } from './util/typeHelpers';
@@ -62,7 +62,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		// 1. If namespace is null or the empty string, then return null.
 		// (not necessary due to recursion)
 
-		// 2. Switch on the context object:
+		// 2. Switch on this:
 		// Document - Return the result of locating a namespace prefix for its document element, if
 		// its document element is non-null, and null otherwise.
 		if (this.documentElement !== null) {
@@ -78,7 +78,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		// 1. If prefix is the empty string, then set it to null.
 		// (not necessary due to recursion)
 
-		// 2. Return the result of running locate a namespace for the context object using prefix.
+		// 2. Return the result of running locate a namespace for this using prefix.
 
 		// To locate a namespace for a node using prefix, switch on node: Document
 		// 1. If its document element is null, then return null.
@@ -106,6 +106,10 @@ export default class Document extends Node implements NonElementParentNode, Pare
 
 	public append(...nodes: (Node | string)[]): void {
 		appendNodes(this, nodes);
+	}
+
+	public replaceChildren(...nodes: (Node | string)[]): void {
+		replaceChildren(this, nodes);
 	}
 
 	// Document
@@ -237,19 +241,19 @@ export default class Document extends Node implements NonElementParentNode, Pare
 			throwInvalidCharacterError('The local name is not a valid Name');
 		}
 
-		// 2. If the context object is an HTML document, then set localName to localName in ASCII
+		// 2. If this is an HTML document, then set localName to localName in ASCII
 		// lowercase.
 		// (html documents not implemented)
 
 		// 3. Let is be the value of is member of options, or null if no such member exists.
 		// (custom elements not implemented)
 
-		// 4. Let namespace be the HTML namespace, if the context object is an HTML document or
-		// context object’s content type is "application/xhtml+xml", and null otherwise.
+		// 4. Let namespace be the HTML namespace, if this is an HTML document or
+		// this’s content type is "application/xhtml+xml", and null otherwise.
 		// (html documents not implemented)
 		const namespace: string | null = null;
 
-		// 5. Let element be the result of creating an element given the context object, localName,
+		// 5. Let element be the result of creating an element given this, localName,
 		// namespace, null, is, and with the synchronous custom elements flag set.
 		const element = createElement(this, localName, namespace, null);
 
@@ -273,13 +277,13 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		namespace = asNullableString(namespace);
 		qualifiedName = String(qualifiedName);
 
-		// return the result of running the internal createElementNS steps, given context object,
+		// return the result of running the internal createElementNS steps, given this,
 		// namespace, qualifiedName, and options.
 		return createElementNS(this, namespace, qualifiedName);
 	}
 
 	/**
-	 * Returns a new DocumentFragment node with its node document set to the context object.
+	 * Returns a new DocumentFragment node with its node document set to this.
 	 *
 	 * @returns The new document fragment
 	 */
@@ -309,7 +313,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	}
 
 	/**
-	 * Returns a new CDATA section with the given data and node document set to the context object.
+	 * Returns a new CDATA section with the given data and node document set to this.
 	 *
 	 * @param data - Data for the new CDATA section
 	 *
@@ -319,7 +323,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		expectArity(arguments, 1);
 		data = String(data);
 
-		// 1. If context object is an HTML document, then throw a NotSupportedError.
+		// 1. If this is an HTML document, then throw a NotSupportedError.
 		// (html documents not implemented)
 
 		// 2. If data contains the string "]]>", then throw an InvalidCharacterError.
@@ -328,7 +332,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		}
 
 		// 3. Return a new CDATASection node with its data set to data and node document set to the
-		// context object.
+		// this.
 		const context = getContext(this);
 		const cdataSection = new context.CDATASection(data);
 		cdataSection.ownerDocument = this;
@@ -355,7 +359,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 
 	/**
 	 * Creates a new processing instruction node, with target set to target, data set to data, and
-	 * node document set to the context object.
+	 * node document set to this.
 	 *
 	 * @param target - Target for the new processing instruction
 	 * @param data   - Data for the new processing instruction
@@ -378,7 +382,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		}
 
 		// 3. Return a new ProcessingInstruction node, with target set to target, data set to data,
-		// and node document set to the context object.
+		// and node document set to this.
 		const context = getContext(this);
 		const pi = new context.ProcessingInstruction(target, data);
 		pi.ownerDocument = this;
@@ -404,7 +408,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 			throwNotSupportedError('importing a Document node is not supported');
 		}
 
-		// 2. Return a clone of node, with context object and the clone children flag set if deep is
+		// 2. Return a clone of node, with this and the clone children flag set if deep is
 		// true.
 		return cloneNode(node, deep, this);
 	}
@@ -426,12 +430,13 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		}
 
 		// 2. If node is a shadow root, then throw a HierarchyRequestError.
+		// 3. If node is a DocumentFragment whose host is non-null, then return.
 		// (shadow dom not implemented)
 
-		// 3. Adopt node into the context object.
+		// 4. Adopt node into this.
 		adoptNode(node, this);
 
-		// 4. Return node.
+		// 5. Return node.
 		return node;
 	}
 
@@ -452,7 +457,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 			throwInvalidCharacterError('The local name is not a valid Name');
 		}
 
-		// 2. If the context object is an HTML document, then set localName to localName in ASCII
+		// 2. If this is an HTML document, then set localName to localName in ASCII
 		// lowercase.
 		// (html documents not implemented)
 
@@ -485,7 +490,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		);
 
 		// 2. Return a new attribute whose namespace is namespace, namespace prefix is prefix, local
-		// name is localName, and node document is context object.
+		// name is localName, and node document is this.
 		const context = getContext(this);
 		const attr = new context.Attr(validatedNamespace, prefix, localName, '', null);
 		attr.ownerDocument = this;
@@ -508,11 +513,11 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	}
 
 	/**
-	 * (non-standard) Creates a copy of the context object, not including its children.
+	 * (non-standard) Creates a copy of this, not including its children.
 	 *
 	 * @param document - The node document to associate with the copy
 	 *
-	 * @returns A shallow copy of the context object
+	 * @returns A shallow copy of this
 	 */
 	public _copy(document: Document): Document {
 		// Set copy’s encoding, content type, URL, origin, type, and mode, to those of node.

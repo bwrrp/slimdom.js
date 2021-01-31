@@ -765,4 +765,16 @@ describe('Element', () => {
 			expect(element.lastChild).toBe(pi);
 		});
 	});
+
+	describe('.replaceChildren', () => {
+		it('can replace all children', () => {
+			const comment = element.appendChild(document.createComment('test'));
+			const pi = document.createProcessingInstruction('target', 'data');
+			element.replaceChildren(pi);
+
+			expect(element.firstChild).toBe(pi);
+			expect(element.lastChild).toBe(pi);
+			expect(comment.parentNode).toBe(null);
+		});
+	});
 });

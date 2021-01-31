@@ -30,7 +30,7 @@ export default class RegisteredObservers {
 	public register(observer: MutationObserver, options: MutationObserverInit) {
 		// (continuing from MutationObserver#observe)
 		// 7. For each registered registered of target’s registered observer list, if registered's
-		// observer is the context object:
+		// observer is this:
 		const registeredObservers = this._registeredObservers;
 		let hasRegisteredObserverForObserver = false;
 		registeredObservers.forEach((registered) => {
@@ -40,7 +40,7 @@ export default class RegisteredObservers {
 
 			hasRegisteredObserverForObserver = true;
 
-			// 7.1. For each node of the context object's node list, remove all transient registered
+			// 7.1. For each node of this's node list, remove all transient registered
 			// observers whose source is registered from node's registered observer list.
 			removeTransientRegisteredObserversForSource(registered);
 
@@ -50,10 +50,10 @@ export default class RegisteredObservers {
 
 		// 8. Otherwise:
 		if (!hasRegisteredObserverForObserver) {
-			// 8.1. Append a new registered observer whose observer is the context object and
+			// 8.1. Append a new registered observer whose observer is this and
 			// options is options to target's registered observer list.
 			this._registeredObservers.push(new RegisteredObserver(observer, this._node, options));
-			// 8.2. Append target to the context object's node list.
+			// 8.2. Append target to this's node list.
 			observer._nodes.push(this._node);
 		}
 	}

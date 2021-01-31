@@ -7,8 +7,9 @@ import { expectArity } from './util/errorHelpers';
 import {
 	appendNodes,
 	prependNodes,
-	getConcatenatedTextNodesData,
-	setTextContentByReplacing,
+	getDescendantTextContent,
+	stringReplaceAll,
+	replaceChildren,
 } from './util/mutationAlgorithms';
 import { NodeType } from './util/NodeType';
 import { treatNullAsEmptyString } from './util/typeHelpers';
@@ -36,14 +37,13 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 	}
 
 	public get textContent(): string | null {
-		// Return the concatenation of data of all the Text node descendants of
-		// the context object, in tree order
-		return getConcatenatedTextNodesData(this);
+		// Return the descendant text content of this
+		return getDescendantTextContent(this);
 	}
 
 	public set textContent(newValue: string | null) {
 		newValue = treatNullAsEmptyString(newValue);
-		setTextContentByReplacing(this, newValue);
+		stringReplaceAll(this, newValue);
 	}
 
 	public lookupPrefix(namespace: string | null): string | null {
@@ -52,7 +52,7 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 		// 1. If namespace is null or the empty string, then return null.
 		// (not necessary due to return value)
 
-		// 2. Switch on the context object:
+		// 2. Switch on this:
 		// DocumentFragment - Return null
 		return null;
 	}
@@ -63,7 +63,7 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 		// 1. If prefix is the empty string, then set it to null.
 		// (not necessary due to return value)
 
-		// 2. Return the result of running locate a namespace for the context object using prefix.
+		// 2. Return the result of running locate a namespace for this using prefix.
 
 		// To locate a namespace for a node using prefix, switch on node: DocumentFragment
 		// Return null.
@@ -88,6 +88,10 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 		appendNodes(this, nodes);
 	}
 
+	public replaceChildren(...nodes: (Node | string)[]): void {
+		replaceChildren(this, nodes);
+	}
+
 	/**
 	 * Return a new DocumentFragment node whose node document is current global object’s associated
 	 * Document.
@@ -100,11 +104,11 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 	}
 
 	/**
-	 * (non-standard) Creates a copy of the context object, not including its children.
+	 * (non-standard) Creates a copy of this, not including its children.
 	 *
 	 * @param document - The node document to associate with the copy
 	 *
-	 * @returns A shallow copy of the context object
+	 * @returns A shallow copy of this
 	 */
 	public _copy(document: Document): DocumentFragment {
 		const context = getContext(document);

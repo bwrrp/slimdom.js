@@ -37,7 +37,7 @@ export default class RegisteredObserver {
 	 * @param observer - The observer being registered
 	 * @param node     - The node being observed
 	 * @param options  - Options for the registration
-	 * @param source   - If not null, creates a transient registered observer for the given
+	 * @param source   - If non-null, creates a transient registered observer for the given
 	 *                   registered observer
 	 */
 	constructor(

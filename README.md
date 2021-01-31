@@ -5,7 +5,7 @@
 
 Fast, tiny, standards-compliant XML DOM implementation for node and the browser.
 
-This is a (partial) implementation of the [DOM living standard][domstandard], as last updated 1 March 2019, and the [DOM Parsing and Serialization W3C Editor's Draft][domparsing], as last updated 11 February 2019. See the 'Features and Limitations' section below for details on what's included and what's not.
+This is a (partial) implementation of the [DOM living standard][domstandard], as last updated 27 January 2021, and the [DOM Parsing and Serialization W3C Editor's Draft][domparsing], as last updated 20 April 2020. See the 'Features and Limitations' section below for details on what's included and what's not.
 
 [domstandard]: https://dom.spec.whatwg.org/
 [domparsing]: https://w3c.github.io/DOM-Parsing/
@@ -68,7 +68,7 @@ If you need to parse HTML, see [this example][parse5-example] which shows how to
 
 ### CSS Selectors and XPath
 
-This library does not implement CSS selectors, which means no `querySelector` / `querySelectorAll` on `ParentNode` and no `closest` / `matches` / `webkitMatchesSelector` on `Element`.
+This library does not implement CSS selectors, which means no `querySelector` / `querySelectorAll` on `ParentNode` and no `closest` / `matches` / `webkitMatchesSelector` on `Element`. This library also does not implement XPath, which means no `XPathResult` / `XPathExpression` / `XPathEvaluator` interfaces and no `createExpression` / `createNSResolver` / `evaluate` on `Document`.
 
 To query a slimdom document using XPath or XQuery, use [FontoXPath][fontoxpath].
 
@@ -82,11 +82,11 @@ This implementation offers no special treatment of HTML documents, which means t
 
 This library also does not currently implement events, including the `Event` / `EventTarget` interfaces. It also currently does not contain an implementation of `AbortController` / `AbortSignal`. As these may have wider applications than browser-specific use cases, please file an issue if you have a use for these in your application and would like support for them to be added.
 
-There is currently no support for shadow DOM, so no `Slotable` / `ShadowRoot` interfaces and no `slot` / `attachShadow` / `shadowRoot` on `Element`. Slimdom also does not support the APIs for custom elements using the `is` option on `createElement` / `createElementNS`.
+There is currently no support for shadow DOM, so no `Slottable` / `ShadowRoot` interfaces and no `slot` / `attachShadow` / `shadowRoot` on `Element`. Slimdom also does not support the APIs for custom elements using the `is` option on `createElement` / `createElementNS`.
 
-This library has no notion of URLs (`baseURI` on `Node`, and `URL` / `documentURI` / `origin` on `Document`), nor of encodings (`characterSet` / `charset` / `inputEncoding` on `Document`). This library only deals with JavaScript strings, not raw byte streams.
+This library has no notion of URLs (`baseURI` on `Node`, and `URL` / `documentURI` on `Document`), nor of encodings (`characterSet` / `charset` / `inputEncoding` on `Document`). This library only deals with JavaScript strings, not raw byte streams.
 
-This library omits properties and methods that exist mainly for web compatibility reasons (`insertAdjacentElement` / `insertAdjacentText` on `Element`, `hasFeature` on `DOMImplementation`, and `specified` on `Attr`).
+This library omits properties and methods that exist mainly for web compatibility reasons (`insertAdjacentElement` / `insertAdjacentText` on `Element`, `hasFeature` on `DOMImplementation`, and `specified` on `Attr`). This also includes all interfaces and interface members listed as removed in the [DOM living standard][domstandard].
 
 ### Miscellaneous
 

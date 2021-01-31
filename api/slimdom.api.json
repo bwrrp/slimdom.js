@@ -40,7 +40,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Attr#_copy:member(1)",
-              "docComment": "/**\n * (non-standard) Creates a copy of the context object, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of the context object\n */\n",
+              "docComment": "/**\n * (non-standard) Creates a copy of this, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of this\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -588,7 +588,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!CDATASection#_copy:member(1)",
-              "docComment": "/**\n * (non-standard) Creates a copy of the context object, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of the context object\n */\n",
+              "docComment": "/**\n * (non-standard) Creates a copy of this, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of this\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1630,7 +1630,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Comment#_copy:member(1)",
-              "docComment": "/**\n * (non-standard) Creates a copy of the context object, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of the context object\n */\n",
+              "docComment": "/**\n * (non-standard) Creates a copy of this, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of this\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -1812,7 +1812,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Document#_copy:member(1)",
-              "docComment": "/**\n * (non-standard) Creates a copy of the context object, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of the context object\n */\n",
+              "docComment": "/**\n * (non-standard) Creates a copy of this, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of this\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2160,7 +2160,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Document#createCDATASection:member(1)",
-              "docComment": "/**\n * Returns a new CDATA section with the given data and node document set to the context object.\n *\n * @param data - Data for the new CDATA section\n *\n * @returns The new CDATA section\n */\n",
+              "docComment": "/**\n * Returns a new CDATA section with the given data and node document set to this.\n *\n * @param data - Data for the new CDATA section\n *\n * @returns The new CDATA section\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2252,7 +2252,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Document#createDocumentFragment:member(1)",
-              "docComment": "/**\n * Returns a new DocumentFragment node with its node document set to the context object.\n *\n * @returns The new document fragment\n */\n",
+              "docComment": "/**\n * Returns a new DocumentFragment node with its node document set to this.\n *\n * @returns The new document fragment\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -2389,7 +2389,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Document#createProcessingInstruction:member(1)",
-              "docComment": "/**\n * Creates a new processing instruction node, with target set to target, data set to data, and node document set to the context object.\n *\n * @param target - Target for the new processing instruction\n *\n * @param data - Data for the new processing instruction\n *\n * @returns The new processing instruction\n */\n",
+              "docComment": "/**\n * Creates a new processing instruction node, with target set to target, data set to data, and node document set to this.\n *\n * @param target - Target for the new processing instruction\n *\n * @param data - Data for the new processing instruction\n *\n * @returns The new processing instruction\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -3106,6 +3106,60 @@
               "name": "prepend"
             },
             {
+              "kind": "Method",
+              "canonicalReference": "slimdom!Document#replaceChildren:member(1)",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "replaceChildren(...nodes: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "("
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Node",
+                  "canonicalReference": "slimdom!default:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | string)[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Content",
+                  "text": "void"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 5,
+                "endIndex": 6
+              },
+              "releaseTag": "Public",
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "nodes",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 4
+                  }
+                }
+              ],
+              "name": "replaceChildren"
+            },
+            {
               "kind": "Property",
               "canonicalReference": "slimdom!Document#textContent:member",
               "docComment": "",
@@ -3221,7 +3275,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!DocumentFragment#_copy:member(1)",
-              "docComment": "/**\n * (non-standard) Creates a copy of the context object, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of the context object\n */\n",
+              "docComment": "/**\n * (non-standard) Creates a copy of this, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of this\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -3686,6 +3740,60 @@
               "name": "prepend"
             },
             {
+              "kind": "Method",
+              "canonicalReference": "slimdom!DocumentFragment#replaceChildren:member(1)",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "replaceChildren(...nodes: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "("
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Node",
+                  "canonicalReference": "slimdom!default:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | string)[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Content",
+                  "text": "void"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 5,
+                "endIndex": 6
+              },
+              "releaseTag": "Public",
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "nodes",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 4
+                  }
+                }
+              ],
+              "name": "replaceChildren"
+            },
+            {
               "kind": "Property",
               "canonicalReference": "slimdom!DocumentFragment#textContent:member",
               "docComment": "",
@@ -3770,7 +3878,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!DocumentType#_copy:member(1)",
-              "docComment": "/**\n * (non-standard) Creates a copy of the context object, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of the context object\n */\n",
+              "docComment": "/**\n * (non-standard) Creates a copy of this, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of this\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -6056,6 +6164,60 @@
             },
             {
               "kind": "Method",
+              "canonicalReference": "slimdom!Element#replaceChildren:member(1)",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "replaceChildren(...nodes: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "("
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Node",
+                  "canonicalReference": "slimdom!default:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": " | string)[]"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Content",
+                  "text": "void"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 5,
+                "endIndex": 6
+              },
+              "releaseTag": "Public",
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "nodes",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 4
+                  }
+                }
+              ],
+              "name": "replaceChildren"
+            },
+            {
+              "kind": "Method",
               "canonicalReference": "slimdom!Element#replaceWith:member(1)",
               "docComment": "",
               "excerptTokens": [
@@ -7121,7 +7283,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Node#_copy:member(1)",
-              "docComment": "/**\n * (non-standard) Creates a copy of the context object, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of the context object\n */\n",
+              "docComment": "/**\n * (non-standard) Creates a copy of this, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of this\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7196,7 +7358,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Node#appendChild:member(1)",
-              "docComment": "/**\n * Adds node to the end of the list of children of the context object.\n *\n * If the node already exists it is removed from its current parent node, then added.\n *\n * @param node - Node to append\n *\n * @returns The node that was inserted\n */\n",
+              "docComment": "/**\n * Adds node to the end of the list of children of this.\n *\n * If the node already exists it is removed from its current parent node, then added.\n *\n * @param node - Node to append\n *\n * @returns The node that was inserted\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7502,7 +7664,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Node#contains:member(1)",
-              "docComment": "/**\n * Returns true if other is an inclusive descendant of context object, and false otherwise (including when other is null).\n *\n * @param childNode - Node to check\n *\n * @returns Whether childNode is an inclusive descendant of the current node\n */\n",
+              "docComment": "/**\n * Returns true if other is an inclusive descendant of this, and false otherwise (including when other is null).\n *\n * @param childNode - Node to check\n *\n * @returns Whether childNode is an inclusive descendant of the current node\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7908,7 +8070,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Node#hasChildNodes:member(1)",
-              "docComment": "/**\n * Returns true if the context object has children, and false otherwise.\n */\n",
+              "docComment": "/**\n * Returns true if this has children, and false otherwise.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -7937,7 +8099,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Node#insertBefore:member(1)",
-              "docComment": "/**\n * Inserts the specified node before child within context object.\n *\n * If child is null, the new node is appended after the last child node of the current node.\n *\n * @param node - Node to insert\n *\n * @param child - Childnode of the current node before which to insert, or null to append newNode at the end\n *\n * @returns The node that was inserted\n */\n",
+              "docComment": "/**\n * Inserts the specified node before child within this.\n *\n * If child is null, the new node is appended after the last child node of the current node.\n *\n * @param node - Node to insert\n *\n * @param child - Childnode of the current node before which to insert, or null to append newNode at the end\n *\n * @returns The node that was inserted\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -8573,7 +8735,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Node#removeChild:member(1)",
-              "docComment": "/**\n * Removes child from context object and returns the removed node.\n *\n * @param child - Child of the current node to remove\n *\n * @returns The node that was removed\n */\n",
+              "docComment": "/**\n * Removes child from this and returns the removed node.\n *\n * @param child - Child of the current node to remove\n *\n * @returns The node that was removed\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -8640,7 +8802,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Node#replaceChild:member(1)",
-              "docComment": "/**\n * Replaces child with node within context object and returns child.\n *\n * @param node - Node to insert\n *\n * @param child - Node to remove\n *\n * @returns The node that was removed\n */\n",
+              "docComment": "/**\n * Replaces child with node within this and returns child.\n *\n * @param node - Node to insert\n *\n * @param child - Node to remove\n *\n * @returns The node that was removed\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -8833,7 +8995,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!ProcessingInstruction#_copy:member(1)",
-              "docComment": "/**\n * (non-standard) Creates a copy of the context object, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of the context object\n */\n",
+              "docComment": "/**\n * (non-standard) Creates a copy of this, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of this\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -9049,7 +9211,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Range#cloneRange:member(1)",
-              "docComment": "/**\n * Returns a range with the same start and end as the context object.\n *\n * @returns A copy of the context object\n */\n",
+              "docComment": "/**\n * Returns a range with the same start and end as this.\n *\n * @returns A copy of this\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -9485,7 +9647,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Range#isPointInRange:member(1)",
-              "docComment": "/**\n * Returns true if the given point is after or equal to the start point and before or equal to the end point of the context object.\n *\n * @param node - Node of point to check\n *\n * @param offset - Offset of point to check\n *\n * @returns Whether the point is in the range\n */\n",
+              "docComment": "/**\n * Returns true if the given point is after or equal to the start point and before or equal to the end point of this.\n *\n * @param node - Node of point to check\n *\n * @param offset - Offset of point to check\n *\n * @returns Whether the point is in the range\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -10104,6 +10266,204 @@
         },
         {
           "kind": "Class",
+          "canonicalReference": "slimdom!StaticRange:class",
+          "docComment": "/**\n * Interface StaticRange\n *\n * Updating live ranges in response to node tree mutations can be expensive. For every node tree change, all affected Range objects need to be updated. Even if the application is uninterested in some live ranges, it still has to pay the cost of keeping them up-to-date when a mutation occurs.\n *\n * A StaticRange object is a lightweight range that does not update when the node tree mutates. It is therefore not subject to the same maintenance cost as live ranges.\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export declare class StaticRange implements "
+            },
+            {
+              "kind": "Reference",
+              "text": "AbstractRange",
+              "canonicalReference": "slimdom!AbstractRange:interface"
+            },
+            {
+              "kind": "Content",
+              "text": " "
+            }
+          ],
+          "releaseTag": "Public",
+          "name": "StaticRange",
+          "members": [
+            {
+              "kind": "Constructor",
+              "canonicalReference": "slimdom!StaticRange:constructor(1)",
+              "docComment": "/**\n * The StaticRange(init) constructor, when invoked, must run these steps:\n *\n * @param init - Dictionary representing the properties to set on the StaticRange\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "constructor(init: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "StaticRangeInit",
+                  "canonicalReference": "slimdom!~StaticRangeInit:interface"
+                },
+                {
+                  "kind": "Content",
+                  "text": ");"
+                }
+              ],
+              "releaseTag": "Public",
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "init",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  }
+                }
+              ]
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!StaticRange#collapsed:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "readonly collapsed: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "boolean"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "collapsed",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!StaticRange#endContainer:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "readonly endContainer: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Node",
+                  "canonicalReference": "slimdom!default:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "endContainer",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!StaticRange#endOffset:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "readonly endOffset: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "endOffset",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!StaticRange#startContainer:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "readonly startContainer: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Node",
+                  "canonicalReference": "slimdom!default:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "startContainer",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!StaticRange#startOffset:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "readonly startOffset: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "startOffset",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": false
+            }
+          ],
+          "implementsTokenRanges": [
+            {
+              "startIndex": 1,
+              "endIndex": 3
+            }
+          ]
+        },
+        {
+          "kind": "Class",
           "canonicalReference": "slimdom!Text:class",
           "docComment": "/**\n * 3.11. Interface Text\n *\n * @public\n */\n",
           "excerptTokens": [
@@ -10127,7 +10487,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Text#_copy:member(1)",
-              "docComment": "/**\n * (non-standard) Creates a copy of the context object, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of the context object\n */\n",
+              "docComment": "/**\n * (non-standard) Creates a copy of this, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of this\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -10304,7 +10664,7 @@
             {
               "kind": "Property",
               "canonicalReference": "slimdom!Text#wholeText:member",
-              "docComment": "/**\n * Returns the combined data of all direct Text node siblings.\n *\n * @returns the concatenation of the data of the contiguous Text nodes of the context object, in tree order.\n */\n",
+              "docComment": "/**\n * Returns the combined data of all direct Text node siblings.\n *\n * @returns the concatenation of the data of the contiguous Text nodes of this, in tree order.\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -10619,7 +10979,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!XMLDocument#_copy:member(1)",
-              "docComment": "/**\n * (non-standard) Creates a copy of the context object, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of the context object\n */\n",
+              "docComment": "/**\n * (non-standard) Creates a copy of this, not including its children.\n *\n * @param document - The node document to associate with the copy\n *\n * @returns A shallow copy of this\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",

@@ -34,7 +34,7 @@ export default abstract class CharacterData
 	public set nodeValue(newValue: string | null) {
 		newValue = treatNullAsEmptyString(newValue);
 
-		// Set an existing attribute value with context object and new value.
+		// Set an existing attribute value with this and new value.
 		replaceData(this, 0, this.length, newValue);
 	}
 
@@ -45,7 +45,7 @@ export default abstract class CharacterData
 	public set textContent(newValue: string | null) {
 		newValue = treatNullAsEmptyString(newValue);
 
-		// Set an existing attribute value with context object and new value.
+		// Set an existing attribute value with this and new value.
 		replaceData(this, 0, this.length, newValue);
 	}
 
@@ -55,7 +55,7 @@ export default abstract class CharacterData
 		// 1. If namespace is null or the empty string, then return null.
 		// (not necessary due to recursion)
 
-		// 2. Switch on the context object:
+		// 2. Switch on this:
 		// Any other node - Return the result of locating a namespace prefix for its parent element,
 		// if its parent element is non-null, and null otherwise.
 		const parentElement = this.parentElement;
@@ -72,7 +72,7 @@ export default abstract class CharacterData
 		// 1. If prefix is the empty string, then set it to null.
 		// (not necessary due to recursion)
 
-		// 2. Return the result of running locate a namespace for the context object using prefix.
+		// 2. Return the result of running locate a namespace for this using prefix.
 
 		// To locate a namespace for a node using prefix, switch on node: Any other node
 		// 1. If its parent element is null, then return null.
@@ -129,7 +129,7 @@ export default abstract class CharacterData
 		// [TreatNullAs=EmptyString]
 		newValue = treatNullAsEmptyString(newValue);
 
-		// replace data with node context object, offset 0, count context object’s length, and data
+		// replace data with node this, offset 0, count this’s length, and data
 		// new value.
 		replaceData(this, 0, this.length, newValue);
 	}
@@ -285,9 +285,8 @@ export function replaceData(
 		}
 	});
 
-	// 12. If node is a Text node and its parent is not null, run the child text content change
-	// steps for node’s parent.
-	// (child text content change steps not implemented)
+	// 12. If node's parent is non-null, then run the children changed steps for node’s parent.
+	// (children changed steps not implemented)
 }
 
 /**
