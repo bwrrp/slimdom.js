@@ -1,7 +1,7 @@
 # slimdom
 
 [![NPM version](https://badge.fury.io/js/slimdom.svg)](https://badge.fury.io/js/slimdom)
-[![Build Status](https://travis-ci.org/bwrrp/slimdom.js.svg?branch=master)](https://travis-ci.org/bwrrp/slimdom.js)
+[![CI](https://github.com/bwrrp/slimdom.js/workflows/CI/badge.svg)](https://github.com/bwrrp/slimdom.js/actions?query=workflow%3ACI)
 
 Fast, tiny, standards-compliant XML DOM implementation for node and the browser.
 
@@ -98,7 +98,7 @@ The following features are missing simply because I have not yet had a need for 
 
 [slimdom-sax-parser]: https://github.com/wvbe/slimdom-sax-parser
 [fontoxpath]: https://github.com/FontoXML/fontoxpath/
-[parse5-example]: https://github.com/bwrrp/slimdom.js/tree/master/test/examples/parse5
+[parse5-example]: https://github.com/bwrrp/slimdom.js/tree/main/test/examples/parse5
 [parse5]: https://github.com/inikulin/parse5
 [dom-treeadapter]: https://github.com/RReverser/dom-treeadapter
 [jsdom]: https://github.com/jsdom/jsdom
