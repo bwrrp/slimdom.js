@@ -10,8 +10,8 @@
 		"XMLSerializer",
 		"w3c"
 	],
-	"main": "dist/slimdom.js",
-	"module": "dist/slimdom.mjs",
+	"main": "dist/slimdom.umd.js",
+	"module": "dist/slimdom.esm.js",
 	"scripts": {
 		"build:clean": "rimraf dist && rimraf lib && rimraf temp",
 		"build:bundle": "tsc -P tsconfig.build.json && rollup -c",
