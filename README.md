@@ -58,6 +58,8 @@ This library is currently aimed at providing a lightweight and consistent experi
 
 Do not rely on the behavior or presence of any methods and properties not specified in the DOM standard. For example, do not use JavaScript array methods exposed on properties that should expose a NodeList and do not use Element as a constructor. This behavior is _not_ considered public API and may change without warning in a future release.
 
+This library implements the changes from [whatwg/dom#819][dom-adopt-pr], as the specification as currently described has known bugs around adoption.
+
 ### Parsing
 
 This library does not implement the `DOMParser` interface, nor `insertAdjacentHTML` on `Element`, nor `createContextualFragment` on `Range`. The `innerHTML` and `outerHTML` properties are read-only,
@@ -80,7 +82,7 @@ Emulating a full browser environment is not the goal of this library. Consider u
 
 This implementation offers no special treatment of HTML documents, which means there are no implementations of `HTMLElement` and its subclasses. This also affects HTML-specific casing behavior for attributes and tagNames. The `id` / `className` / `classList` properties on `Element` and `compatMode` / `contentType` on `Document` have not been implemented. HTML-specific query methods (`getElementById` for interface `NonElementParentNode`, `getElementsByClassName` on `Document`) are also missing.
 
-This library also does not currently implement events, including the `Event` / `EventTarget` interfaces. It also currently does not contain an implementation of `AbortController` / `AbortSignal`. As these may have wider applications than browser-specific use cases, please file an issue if you have a use for these in your application and would like support for them to be added.
+This library does not currently implement events, including the `Event` / `EventTarget` interfaces. It also currently does not contain an implementation of `AbortController` / `AbortSignal`. As these may have wider applications than browser-specific use cases, please file an issue if you have a use for these in your application and would like support for them to be added.
 
 There is currently no support for shadow DOM, so no `Slottable` / `ShadowRoot` interfaces and no `slot` / `attachShadow` / `shadowRoot` on `Element`. Slimdom also does not support the APIs for custom elements using the `is` option on `createElement` / `createElementNS`.
 
@@ -97,6 +99,7 @@ The following features are missing simply because I have not yet had a need for 
 -   `attributeFilter` for mutation observers.
 -   `isConnected` / `getRootNode` / `isEqualNode` / `isSameNode` / `compareDocumentPosition` on `Node`
 
+[dom-adopt-pr]: https://github.com/whatwg/dom/pull/819
 [slimdom-sax-parser]: https://github.com/wvbe/slimdom-sax-parser
 [fontoxpath]: https://github.com/FontoXML/fontoxpath/
 [parse5-example]: https://github.com/bwrrp/slimdom.js/tree/main/test/examples/parse5

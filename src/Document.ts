@@ -430,8 +430,9 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		}
 
 		// 2. If node is a shadow root, then throw a HierarchyRequestError.
-		// 3. If node is a DocumentFragment whose host is non-null, then return.
-		// (shadow dom not implemented)
+		// 3. If node is a DocumentFragment node and its host is non-null, then return node.
+		// Note: unfortunately this does not throw for web compatibility.
+		// (shadow dom and HTML templates not implemented)
 
 		// 4. Adopt node into this.
 		adoptNode(node, this);

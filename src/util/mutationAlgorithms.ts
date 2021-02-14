@@ -1,11 +1,6 @@
 import { throwHierarchyRequestError, throwNotFoundError } from './errorHelpers';
 import { NodeType, isNodeOfType } from './NodeType';
-import {
-	determineLengthOfNode,
-	getNodeDocument,
-	getNodeIndex,
-	forEachInclusiveDescendant,
-} from './treeHelpers';
+import { getNodeDocument, getNodeIndex, forEachInclusiveDescendant } from './treeHelpers';
 import { insertIntoChildren, removeFromChildren } from './treeMutations';
 import Document from '../Document';
 import DocumentFragment from '../DocumentFragment';
@@ -179,10 +174,13 @@ export function preInsertNode<TNode extends Node>(
 		referenceChild = node.nextSibling;
 	}
 
-	// 4. Insert node into parent before referenceChild.
+	// 4. Adopt node into parent's node document.
+	adoptNode(node, getNodeDocument(parent));
+
+	// 5. Insert node into parent before referenceChild.
 	insertNode(node, parent, referenceChild);
 
-	// 5. Return node.
+	// 6. Return node.
 	return node;
 }
 
@@ -247,40 +245,30 @@ export function insertNode(
 	// 6. Let previousSibling be child’s previous sibling or parent’s last child if child is null.
 	let previousSibling = child === null ? parent.lastChild : child.previousSibling;
 
-	// Non-standard: it appears the standard as of 27 January 2021 does not account for
-	// previousSibling now possibly being node, which can happen, for instance, when doing
-	// parent.insertBefore(child, child);
-	if (previousSibling === node) {
-		previousSibling = node.previousSibling;
-	}
-
 	// 7. For each node in nodes, in tree order:
 	nodes.forEach((node) => {
-		// 7.1. Adopt node into parent's node document.
-		adoptNode(node, getNodeDocument(parent));
-
-		// 7.2. If child is null, then append node to parent’s children.
-		// 7.3. Otherwise, insert node into parent’s children before child’s index.
+		// 7.1. If child is null, then append node to parent’s children.
+		// 7.2. Otherwise, insert node into parent’s children before child’s index.
 		insertIntoChildren(node, parent, child);
 
-		// 7.4. If parent is a shadow host and node is a slottable, then assign a slot for node.
+		// 7.3. If parent is a shadow host and node is a slottable, then assign a slot for node.
 		// (shadow dom not implemented)
 
-		// 7.5. If parent's root is a shadow root, and parent is a slot whose assigned nodes is the
+		// 7.4. If parent's root is a shadow root, and parent is a slot whose assigned nodes is the
 		// empty list, then run signal a slot change for parent.
-		// 7.6. Run assign slottables for a tree with node’s tree.
+		// 7.5. Run assign slottables for a tree with node’s tree.
 		// (shadow dom not implemented)
 
-		// 7.7. For each shadow-including inclusive descendant inclusiveDescendant of node, in
+		// 7.6. For each shadow-including inclusive descendant inclusiveDescendant of node, in
 		// shadow-including tree order:
-		// 7.7.1. Run the insertion steps with inclusiveDescendant.
+		// 7.6.1. Run the insertion steps with inclusiveDescendant.
 		// (insertion steps not implemented)
 
-		// 7.7.2. If inclusiveDescendant is connected, then:
-		// 7.7.2.1. If inclusiveDescendant is custom, then enqueue a custom element callback
+		// 7.6.2. If inclusiveDescendant is connected, then:
+		// 7.6.2.1. If inclusiveDescendant is custom, then enqueue a custom element callback
 		// reaction with inclusiveDescendant, callback name "connectedCallback", and an empty
 		// argument list.
-		// 7.7.2.2. Otherwise, try to upgrade inclusiveDescendant. If this successfully upgrades
+		// 7.6.2.2. Otherwise, try to upgrade inclusiveDescendant. If this successfully upgrades
 		// inclusiveDescendant, its connectedCallback will be enqueued automatically during the
 		// upgrade an element algorithm.
 		// (custom elements not implemented)
@@ -465,11 +453,13 @@ export function replaceChildWithNode<TChild extends Node>(
 	// 9. Let previousSibling be child’s previous sibling.
 	const previousSibling = child.previousSibling;
 
-	// 10. Let removedNodes be the empty set.
+	// 10. Adopt node into parent's node document
+	adoptNode(node, getNodeDocument(parent));
+
+	// 11. Let removedNodes be the empty set.
 	let removedNodes: Node[] = [];
 
-	// 11. If child’s parent is non-null, then:
-	/* istanbul ignore else */
+	// 12. If child’s parent is non-null, then:
 	if (child.parentNode !== null) {
 		// 11.1. Set removedNodes to « child ».
 		removedNodes.push(child);
@@ -478,17 +468,16 @@ export function replaceChildWithNode<TChild extends Node>(
 		removeNode(child, true);
 	}
 	// The above can only be false if child is node.
-	// (TODO: this is no longer the case, at least until whatwg/dom#819 is merged)
 
-	// 12. Let nodes be node’s children if node is a DocumentFragment node; otherwise « node ».
+	// 13. Let nodes be node’s children if node is a DocumentFragment node; otherwise « node ».
 	const nodes = isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE)
 		? Array.from(node.childNodes)
 		: [node];
 
-	// 13. Insert node into parent before referenceChild with the suppress observers flag set.
+	// 14. Insert node into parent before referenceChild with the suppress observers flag set.
 	insertNode(node, parent, referenceChild, true);
 
-	// 14. Queue a tree mutation record for parent with nodes, removedNodes, previousSibling and
+	// 15. Queue a tree mutation record for parent with nodes, removedNodes, previousSibling and
 	// referenceChild.
 	queueMutationRecord('childList', parent, {
 		addedNodes: nodes,
@@ -497,7 +486,7 @@ export function replaceChildWithNode<TChild extends Node>(
 		previousSibling: previousSibling,
 	});
 
-	// 15. Return child.
+	// 16. Return child.
 	return child;
 }
 
@@ -508,36 +497,41 @@ export function replaceChildWithNode<TChild extends Node>(
  * @param parent Parent to replace under
  */
 function replaceAllWithNode(node: Node | null, parent: Node): void {
-	// 1. Let removedNodes be parent’s children.
+	// 1. If node is non-null, then adopt node into parent's node document
+	if (node !== null) {
+		adoptNode(node, getNodeDocument(parent));
+	}
+
+	// 2. Let removedNodes be parent’s children.
 	const removedNodes = Array.from(parent.childNodes);
 
-	// 2. Let addedNodes be the empty set.
+	// 3. Let addedNodes be the empty set.
 	let addedNodes: Node[] = [];
 
 	if (node !== null) {
-		// 3. If node is a DocumentFragment node, then set addedNodes to node's children.
+		// 4. If node is a DocumentFragment node, then set addedNodes to node's children.
 		if (isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE)) {
 			node.childNodes.forEach((child) => {
 				addedNodes.push(child);
 			});
 		} else {
-			// 4. Otherwise, if node is non-null, set addedNodes to « node ».
+			// 5. Otherwise, if node is non-null, set addedNodes to « node ».
 			addedNodes.push(node);
 		}
 	}
 
-	// 5. Remove all parent’s children, in tree order, with the suppress observers flag set.
+	// 6. Remove all parent’s children, in tree order, with the suppress observers flag set.
 	removedNodes.forEach((child) => {
 		removeNode(child, true);
 	});
 
-	// 6. If node is non-null, then insert node into parent before null with the suppress observers
+	// 7. If node is non-null, then insert node into parent before null with the suppress observers
 	// flag set.
 	if (node !== null) {
 		insertNode(node, parent, null, true);
 	}
 
-	// 7. If either addedNodes or removedNodes is not empty, then queue a tree mutation record for
+	// 8. If either addedNodes or removedNodes is not empty, then queue a tree mutation record for
 	// parent with addedNodes, removedNodes, null, and null.
 	if (addedNodes.length > 0 || removedNodes.length > 0) {
 		queueMutationRecord('childList', parent, {
@@ -688,13 +682,18 @@ export function removeNode(node: Node, suppressObservers: boolean = false): void
 /**
  * 3.5. Interface Document
  *
- * To adopt a node into a document, run these steps:
+ * To adopt a node into a document, with an optional forceDocumentFragmentAdoption, run these steps:
+ *
+ * (forceDocumentFragmentAdoption is only set to true for HTML template, so is not implemented here)
  *
  * @param node     - Node to adopt
  * @param document - Document to adopt node into
  */
 export function adoptNode(node: Node, document: Document): void {
-	// 1. Let oldDocument be node’s node document.
+	// 1. If forceDocumentFragmentAdoption is not given, then set it false.
+	// (value unused)
+
+	// 2. Let oldDocument be node’s node document.
 	const oldDocument = getNodeDocument(node);
 
 	// 2. If node’s parent is non-null, remove node.
@@ -708,15 +707,21 @@ export function adoptNode(node: Node, document: Document): void {
 	}
 
 	// 3.1. For each inclusiveDescendant in node’s shadow-including inclusive descendants:
-	forEachInclusiveDescendant(node, (node) => {
-		// 3.1.1. Set inclusiveDescendant’s node document to document.
-		// (calling code ensures that node is never a Document)
-		node.ownerDocument = document;
+	forEachInclusiveDescendant(node, (inclusiveDescendant) => {
+		// 3.1.1. If forceDocumentFragmentAdoption is false, inclusiveDescendant is a
+		// DocumentFragment node, inclusiveDescendant is node, and node's host is non-null, then
+		// continue
+		// Note: this is only reasonable as long as all adopt callers remove the children of node.
+		// (shadow dom and HTML templates not implemented)
 
-		// 3.1.2. If inclusiveDescendant is an element, then set the node document of each attribute
+		// 3.1.2. Set inclusiveDescendant’s node document to document.
+		// (calling code ensures that node is never a Document)
+		inclusiveDescendant.ownerDocument = document;
+
+		// 3.1.3. If inclusiveDescendant is an element, then set the node document of each attribute
 		// in inclusiveDescendant’s attribute list to document.
-		if (isNodeOfType(node, NodeType.ELEMENT_NODE)) {
-			for (const attr of (node as Element).attributes) {
+		if (isNodeOfType(inclusiveDescendant, NodeType.ELEMENT_NODE)) {
+			for (const attr of (inclusiveDescendant as Element).attributes) {
 				attr.ownerDocument = document;
 			}
 		}
