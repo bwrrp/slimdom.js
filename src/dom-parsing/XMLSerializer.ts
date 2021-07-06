@@ -48,7 +48,7 @@ export default class XMLSerializer {
 export function serializeToWellFormedString(root: Node): string {
 	root = asObject(root, Node);
 
-	// Produce an XML serialization of root passing a value of false for the require well-formed
+	// Produce an XML serialization of root passing a value of true for the require well-formed
 	// parameter, and return the result.
 	const result: string[] = [];
 	produceXmlSerialization(root, true, result);
