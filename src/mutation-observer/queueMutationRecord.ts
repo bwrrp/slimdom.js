@@ -11,12 +11,10 @@ import Node from '../Node';
  * namespace namespace, oldValue oldValue, addedNodes addedNodes, removedNodes removedNodes,
  *
  * To queue a tree mutation record for target with addedNodes, removedNodes, previousSibling, and
- * nextSibling, queue a mutation record of "childList" for target with null, null, null, addedNodes,
- * removedNodes, previousSibling, and nextSibling.
- *
- * To queue an attribute mutation record for target with name, namespace, and oldValue, queue a
- * mutation record of "attributes" for target with name, namespace, oldValue, « », « », null, and
- * null.
+ * nextSibling, run these steps:
+ *  - Assert: either addedNodes or removedNodes is not empty.
+ *  - Queue a mutation record of "childList" for target with null, null, null, addedNodes,
+ *    removedNodes, previousSibling, and nextSibling.
  *
  * @param type   - The type of mutation record to queue
  * @param target - The target node
@@ -84,6 +82,6 @@ export default function queueMutationRecord(type: string, target: Node, data: Mu
 		context._notifySet.appendRecord(observer, record);
 	});
 
-	// 5. Queue a mutation observer compound microtask.
-	context._notifySet.queueMutationObserverCompoundMicrotask();
+	// 5. Queue a mutation observer microtask.
+	context._notifySet.queueMutationObserverMicrotask();
 }

@@ -172,7 +172,7 @@ export function validateQualifiedName(qualifiedName: string): void {
 	// (QName is basically (Name without ':') ':' (Name without ':'), so just check the position of
 	// the ':')
 	if (!isValidQName(qualifiedName) || !matchesNameProduction(qualifiedName)) {
-		throwInvalidCharacterError('The qualified name is not a valid Name or QName');
+		throwInvalidCharacterError('The qualified name is not a valid QName');
 	}
 }
 
@@ -245,7 +245,7 @@ export function validateAndExtract(
  * @returns The prefix, or null if there isn't one
  */
 export function locateNamespacePrefix(element: Element, namespace: string | null): string | null {
-	// 1. If element’s namespace is namespace and its namespace prefix is not null, then return its
+	// 1. If element’s namespace is namespace and its namespace prefix is non-null, then return its
 	// namespace prefix.
 	if (element.namespaceURI === namespace && element.prefix !== null) {
 		return element.prefix;
@@ -260,7 +260,7 @@ export function locateNamespacePrefix(element: Element, namespace: string | null
 		return attr.localName;
 	}
 
-	// 3. If element’s parent element is not null, then return the result of running locate a
+	// 3. If element’s parent element is non-null, then return the result of running locate a
 	// namespace prefix on that element using namespace.
 	if (element.parentElement !== null) {
 		return locateNamespacePrefix(element.parentElement, namespace);

@@ -157,14 +157,14 @@ export default class MutationObserver {
 		}
 
 		// 7. For each registered registered of target’s registered observer list, if registered's
-		// observer is the context object:
-		// 7.1. For each node of the context object's node list, remove all transient registered
+		// observer is this:
+		// 7.1. For each node of this's node list, remove all transient registered
 		// observers whose source is registered from node's registered observer list.
 		// 7.2. Set registered’s options to options.
 		// 8. Otherwise:
-		// 8.1. Append a new registered observer whose observer is the context object and options is
+		// 8.1. Append a new registered observer whose observer is this and options is
 		// options to target's registered observer list.
-		// 8.2. Append target to the context object's node list.
+		// 8.2. Append target to this's node list.
 		target._registeredObservers.register(this, options);
 	}
 
@@ -173,12 +173,12 @@ export default class MutationObserver {
 	 * observe() method is used again, observer's callback will not be invoked.
 	 */
 	disconnect() {
-		// 1. For each node of the context object’s node list, remove any registered observer from
-		// node's registered observer list for which the context object is the observer.
+		// 1. For each node of this’s node list, remove any registered observer from
+		// node's registered observer list for which this is the observer.
 		this._nodes.forEach((node) => node._registeredObservers.removeForObserver(this));
 		this._nodes.length = 0;
 
-		// 2. Empty the context object’s record queue.
+		// 2. Empty this’s record queue.
 		this._recordQueue.length = 0;
 	}
 
@@ -188,9 +188,9 @@ export default class MutationObserver {
 	 * @returns An Array of MutationRecord objects that were recorded.
 	 */
 	takeRecords(): MutationRecord[] {
-		// 1. Let records be a clone of the context object's record queue.
+		// 1. Let records be a clone of this's record queue.
 		const records = this._recordQueue.concat();
-		// 2. Empty the context object's record queue
+		// 2. Empty this's record queue
 		this._recordQueue.length = 0;
 		// 3. Return records
 		return records;

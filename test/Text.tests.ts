@@ -235,7 +235,7 @@ describe('Text', () => {
 	});
 
 	describe('wholeText', () => {
-		it('returns the concatenation of the data of the contiguous text nodes of the context object', () => {
+		it('returns the concatenation of the data of the contiguous text nodes of this', () => {
 			const element = document.createElement('parent');
 			element.append('These', ' ', 'are', ' some text nodes');
 			expect((element.childNodes[0] as slimdom.Text).wholeText).toBe(

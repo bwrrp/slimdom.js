@@ -146,6 +146,8 @@ export class Document extends Node implements NonElementParentNode, ParentNode {
     // (undocumented)
     prepend(...nodes: (Node | string)[]): void;
     // (undocumented)
+    replaceChildren(...nodes: (Node | string)[]): void;
+    // (undocumented)
     get textContent(): string | null;
     set textContent(_newValue: string | null);
 }
@@ -180,6 +182,8 @@ export class DocumentFragment extends Node implements NonElementParentNode, Pare
     set nodeValue(newValue: string | null);
     // (undocumented)
     prepend(...nodes: (Node | string)[]): void;
+    // (undocumented)
+    replaceChildren(...nodes: (Node | string)[]): void;
     // (undocumented)
     get textContent(): string | null;
     set textContent(newValue: string | null);
@@ -280,6 +284,8 @@ export class Element extends Node implements ParentNode, NonDocumentTypeChildNod
     removeAttribute(qualifiedName: string): void;
     removeAttributeNode(attr: Attr): Attr;
     removeAttributeNS(namespace: string | null, localName: string): void;
+    // (undocumented)
+    replaceChildren(...nodes: (Node | string)[]): void;
     // (undocumented)
     replaceWith(...nodes: (Node | string)[]): void;
     setAttribute(qualifiedName: string, value: string): void;
@@ -462,6 +468,22 @@ export class Range implements AbstractRange {
 
 // @public
 export function serializeToWellFormedString(root: Node): string;
+
+// @public
+export class StaticRange implements AbstractRange {
+    // Warning: (ae-forgotten-export) The symbol "StaticRangeInit" needs to be exported by the entry point index.d.ts
+    constructor(init: StaticRangeInit);
+    // (undocumented)
+    readonly collapsed: boolean;
+    // (undocumented)
+    readonly endContainer: Node;
+    // (undocumented)
+    readonly endOffset: number;
+    // (undocumented)
+    readonly startContainer: Node;
+    // (undocumented)
+    readonly startOffset: number;
+}
 
 // @public
 export class Text extends CharacterData {

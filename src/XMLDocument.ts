@@ -6,11 +6,11 @@ import { getContext } from './context/Context';
  */
 export default class XMLDocument extends Document {
 	/**
-	 * (non-standard) Creates a copy of the context object, not including its children.
+	 * (non-standard) Creates a copy of this, not including its children.
 	 *
 	 * @param document - The node document to associate with the copy
 	 *
-	 * @returns A shallow copy of the context object
+	 * @returns A shallow copy of this
 	 */
 	public _copy(document: Document): XMLDocument {
 		// Set copy’s encoding, content type, URL, origin, type, and mode, to those of node.

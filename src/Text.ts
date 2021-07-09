@@ -53,11 +53,11 @@ export default class Text extends CharacterData {
 	}
 
 	/**
-	 * (non-standard) Creates a copy of the context object, not including its children.
+	 * (non-standard) Creates a copy of this, not including its children.
 	 *
 	 * @param document - The node document to associate with the copy
 	 *
-	 * @returns A shallow copy of the context object
+	 * @returns A shallow copy of this
 	 */
 	public _copy(document: Document): Text {
 		// Set copy’s data, to that of node.
@@ -70,7 +70,7 @@ export default class Text extends CharacterData {
 	/**
 	 * Returns the combined data of all direct Text node siblings.
 	 *
-	 * @returns the concatenation of the data of the contiguous Text nodes of the context object, in
+	 * @returns the concatenation of the data of the contiguous Text nodes of this, in
 	 *          tree order.
 	 */
 	public get wholeText(): string {
@@ -133,7 +133,7 @@ function splitText(node: Text, offset: number): Text {
 	// 6. Let parent be node’s parent.
 	const parent = node.parentNode;
 
-	// 7. If parent is not null, then:
+	// 7. If parent is non-null, then:
 	if (parent !== null) {
 		// 7.1. Insert new node into parent before node’s next sibling.
 		insertNode(newNode, parent, node.nextSibling);

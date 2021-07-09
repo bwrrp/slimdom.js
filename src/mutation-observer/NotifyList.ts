@@ -6,7 +6,11 @@ type AnyCallback = (...args: any[]) => void;
 declare const queueMicrotask: undefined | ((callback: AnyCallback) => void);
 
 /* istanbul ignore next */
-function queueCompoundMicrotask(callback: AnyCallback, thisArg: NotifySet, ...args: any[]): void {
+function queueMicrotaskWithAppropriateApi(
+	callback: AnyCallback,
+	thisArg: NotifySet,
+	...args: any[]
+): void {
 	if (typeof queueMicrotask === 'function') {
 		queueMicrotask(() => callback.apply(thisArg, args));
 		return;
@@ -22,7 +26,7 @@ function queueCompoundMicrotask(callback: AnyCallback, thisArg: NotifySet, ...ar
  */
 export default class NotifySet {
 	private _notifySet: Set<MutationObserver> = new Set();
-	private _compoundMicrotaskQueued: boolean = false;
+	private _mutationObserverMicrotaskQueued: boolean = false;
 
 	/**
 	 * Appends a given MutationRecord to the recordQueue of the given MutationObserver and schedules
@@ -37,18 +41,19 @@ export default class NotifySet {
 	}
 
 	/**
-	 * To queue a mutation observer compound microtask, run these steps:
+	 * To queue a mutation observer microtask, run these steps:
 	 */
-	public queueMutationObserverCompoundMicrotask() {
-		// 1. If mutation observer compound microtask queued flag is set, then return.
-		if (this._compoundMicrotaskQueued) {
+	public queueMutationObserverMicrotask() {
+		// 1. If the surrounding agent's mutation observer microtask queued is true, then return.
+		if (this._mutationObserverMicrotaskQueued) {
 			return;
 		}
 
-		// 2. Set mutation observer compound microtask queued flag.
-		// 3. Queue a compound microtask to notify mutation observers.
-		this._compoundMicrotaskQueued = true;
-		queueCompoundMicrotask(() => {
+		// 2. Set the surrounding agent's mutation observer microtask queued to true.
+		this._mutationObserverMicrotaskQueued = true;
+
+		// 3. Queue a microtask to notify mutation observers.
+		queueMicrotaskWithAppropriateApi(() => {
 			this._notifyMutationObservers();
 		}, this);
 	}
@@ -57,8 +62,8 @@ export default class NotifySet {
 	 * To notify mutation observers, run these steps:
 	 */
 	private _notifyMutationObservers() {
-		// 1. Unset mutation observer compound microtask queued flag.
-		this._compoundMicrotaskQueued = false;
+		// 1. Set the surrounding agent's mutation observer microtask queued to false.
+		this._mutationObserverMicrotaskQueued = false;
 
 		// 2. Let notifySet be a clone of the surrounding agent's mutation observers
 		const notifySet = Array.from(this._notifySet);
@@ -70,23 +75,25 @@ export default class NotifySet {
 		// 4. Empty the surrounding agent's signal slots.
 		// (shadow dom not implemented)
 
-		// 5. For each mo of notifySet, execute a compound microtask subtask to run these steps:
+		// 5. For each mo of notifySet:
 		// [HTML]
 		notifySet.forEach((mo) => {
-			queueCompoundMicrotask(
+			queueMicrotaskWithAppropriateApi(
 				(mo: MutationObserver) => {
-					// 5.1. Let queue be a copy of mo’s record queue.
+					// 5.1. Let records be a clone of mo’s record queue.
 					// 5.2. Empty mo’s record queue.
-					const queue = mo.takeRecords();
+					const records = mo.takeRecords();
 
 					// 5.3. For each node of mo's node list, remove all transient registered
 					// observers whose observer is mo from node's registered observer list.
 					removeTransientRegisteredObserversForObserver(mo);
 
 					// 5.4. If records is not empty, then invoke mo’s callback with « records, mo »,
-					// and mo. If this throws an exception, then report the exception.
-					if (queue.length) {
-						mo._callback(queue, mo);
+					// and mo. If this throws an exception, catch it, and report the exception.
+					// (A try/catch is not necessary here, as this microtask does nothing else and
+					// letting the exception through will likely cause the environment to report it)
+					if (records.length > 0) {
+						mo._callback(records, mo);
 					}
 				},
 				this,

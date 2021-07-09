@@ -33,11 +33,11 @@ export default class Comment extends CharacterData {
 	}
 
 	/**
-	 * (non-standard) Creates a copy of the context object, not including its children.
+	 * (non-standard) Creates a copy of this, not including its children.
 	 *
 	 * @param document - The node document to associate with the copy
 	 *
-	 * @returns A shallow copy of the context object
+	 * @returns A shallow copy of this
 	 */
 	public _copy(document: Document): Comment {
 		// Set copy’s data, to that of node.

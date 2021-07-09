@@ -47,7 +47,7 @@ export default class DocumentType extends Node implements ChildNode {
 		// 1. If namespace is null or the empty string, then return null.
 		// (not necessary due to return value)
 
-		// 2. Switch on the context object:
+		// 2. Switch on this:
 		// DocumentType - Return null
 		return null;
 	}
@@ -58,7 +58,7 @@ export default class DocumentType extends Node implements ChildNode {
 		// 1. If prefix is the empty string, then set it to null.
 		// (not necessary due to return value)
 
-		// 2. Return the result of running locate a namespace for the context object using prefix.
+		// 2. Return the result of running locate a namespace for this using prefix.
 
 		// To locate a namespace for a node using prefix, switch on node: DocumentType
 		// Return null.
@@ -116,11 +116,11 @@ export default class DocumentType extends Node implements ChildNode {
 	}
 
 	/**
-	 * (non-standard) Creates a copy of the context object, not including its children.
+	 * (non-standard) Creates a copy of this, not including its children.
 	 *
 	 * @param document - The node document to associate with the copy
 	 *
-	 * @returns A shallow copy of the context object
+	 * @returns A shallow copy of this
 	 */
 	public _copy(document: Document): DocumentType {
 		// Set copy’s name, public ID, and system ID, to those of node.

@@ -7,13 +7,14 @@ import { getContext } from './context/Context';
 import { serializeFragment } from './dom-parsing/serializationAlgorithms';
 import {
 	appendNodes,
-	prependNodes,
-	getConcatenatedTextNodesData,
-	setTextContentByReplacing,
-	insertNodesBefore,
+	getDescendantTextContent,
 	insertNodesAfter,
-	replaceWithNodes,
+	insertNodesBefore,
+	prependNodes,
 	removeFromParent,
+	replaceChildren,
+	replaceWithNodes,
+	stringReplaceAll,
 } from './util/mutationAlgorithms';
 import {
 	appendAttribute,
@@ -63,14 +64,13 @@ export default class Element
 	}
 
 	public get textContent(): string | null {
-		// Return the concatenation of data of all the Text node descendants of
-		// the context object, in tree order
-		return getConcatenatedTextNodesData(this);
+		// Return the descendant text content of this
+		return getDescendantTextContent(this);
 	}
 
 	public set textContent(newValue: string | null) {
 		newValue = treatNullAsEmptyString(newValue);
-		setTextContentByReplacing(this, newValue);
+		stringReplaceAll(this, newValue);
 	}
 
 	public lookupPrefix(namespace: string | null): string | null {
@@ -82,7 +82,7 @@ export default class Element
 			return null;
 		}
 
-		// 2. Switch on the context object:
+		// 2. Switch on this:
 		// Element - Return the result of locating a namespace prefix for it using namespace.
 		return locateNamespacePrefix(this, namespace);
 	}
@@ -96,10 +96,10 @@ export default class Element
 			prefix = null;
 		}
 
-		// 2. Return the result of running locate a namespace for the context object using prefix.
+		// 2. Return the result of running locate a namespace for this using prefix.
 
 		// To locate a namespace for a node using prefix, switch on node: Element
-		// 1. If its namespace is not null and its namespace prefix is prefix, then return
+		// 1. If its namespace is non-null and its namespace prefix is prefix, then return
 		// namespace.
 		if (this.namespaceURI !== null && this.prefix === prefix) {
 			return this.namespaceURI;
@@ -169,6 +169,10 @@ export default class Element
 
 	public append(...nodes: (Node | string)[]): void {
 		appendNodes(this, nodes);
+	}
+
+	public replaceChildren(...nodes: (Node | string)[]): void {
+		replaceChildren(this, nodes);
 	}
 
 	// NonDocumentTypeChildNode
@@ -259,7 +263,7 @@ export default class Element
 		localName = String(localName);
 
 		// 1. Let attr be the result of getting an attribute given namespace, localName, and the
-		// context object.
+		// this.
 		const attr = getAttributeByNamespaceAndLocalName(namespace, localName, this);
 
 		// 2. If attr is null, return null.
@@ -288,17 +292,17 @@ export default class Element
 			throwInvalidCharacterError('The qualified name does not match the Name production');
 		}
 
-		// 2. If the context object is in the HTML namespace and its node document is an HTML
+		// 2. If this is in the HTML namespace and its node document is an HTML
 		// document, then set qualifiedName to qualifiedName in ASCII lowercase.
 		// (html documents not implemented)
 
-		// 3. Let attribute be the first attribute in context object’s attribute list whose
+		// 3. Let attribute be the first attribute in this’s attribute list whose
 		// qualified name is qualifiedName, and null otherwise.
 		const attribute = getAttributeByName(qualifiedName, this);
 
 		// 4. If attribute is null, create an attribute whose local name is qualifiedName, value is
-		// value, and node document is context object’s node document, then append this attribute to
-		// context object, and then return.
+		// value, and node document is this’s node document, then append this attribute to
+		// this, and then return.
 		if (attribute === null) {
 			const context = getContext(this);
 			const attribute = new context.Attr(null, null, qualifiedName, value, this);
@@ -307,8 +311,8 @@ export default class Element
 			return;
 		}
 
-		// 5. Change attribute from context object to value.
-		changeAttribute(attribute, this, value);
+		// 5. Change attribute to value.
+		changeAttribute(attribute, value);
 	}
 
 	/**
@@ -331,7 +335,7 @@ export default class Element
 			qualifiedName
 		);
 
-		// 2. Set an attribute value for the context object using localName, value, and also prefix
+		// 2. Set an attribute value for this using localName, value, and also prefix
 		// and namespace.
 		setAttributeValue(this, localName, value, prefix, validatedNamespace);
 	}
@@ -379,11 +383,11 @@ export default class Element
 			throwInvalidCharacterError('The qualified name does not match the Name production');
 		}
 
-		// 2. If the context object is in the HTML namespace and its node document is an HTML
+		// 2. If this is in the HTML namespace and its node document is an HTML
 		// document, then set qualifiedName to qualifiedName in ASCII lowercase.
 		// (html documents not implemented)
 
-		// 3. Let attribute be the first attribute in the context object’s attribute list whose
+		// 3. Let attribute be the first attribute in this’s attribute list whose
 		// qualified name is qualifiedName, and null otherwise.
 		const attribute = getAttributeByName(qualifiedName, this);
 
@@ -392,11 +396,11 @@ export default class Element
 			// 4.1. If force is not given or is true,
 			if (force === undefined || force === true) {
 				// ...create an attribute whose local name is qualifiedName, value is the empty
-				// string, and node document is the context object’s node document,
+				// string, and node document is this’s node document,
 				const context = getContext(this);
 				const attribute = new context.Attr(null, null, qualifiedName, '', this);
 				attribute.ownerDocument = this.ownerDocument;
-				// ...then append this attribute to the context object,
+				// ...then append this attribute to this,
 				appendAttribute(attribute, this);
 				// ...and then return true.
 				return true;
@@ -408,7 +412,7 @@ export default class Element
 
 		// 5. Otherwise, if force is not given or is false,
 		if (force === undefined || force === false) {
-			// ...remove an attribute given qualifiedName and the context object,
+			// ...remove an attribute given qualifiedName and this,
 			removeAttributeByName(qualifiedName, this);
 			// ...and then return false.
 			return false;
@@ -427,11 +431,11 @@ export default class Element
 		expectArity(arguments, 1);
 		qualifiedName = String(qualifiedName);
 
-		// 1. If the context object is in the HTML namespace and its node document is an HTML
+		// 1. If this is in the HTML namespace and its node document is an HTML
 		// document, then set qualifiedName to qualifiedName in ASCII lowercase.
 		// (html documents not implemented)
 
-		// 2. Return true if the context object has an attribute whose qualified name is
+		// 2. Return true if this has an attribute whose qualified name is
 		// qualifiedName, and false otherwise.
 		return getAttributeByName(qualifiedName, this) !== null;
 	}
@@ -449,7 +453,7 @@ export default class Element
 
 		// 1. If namespace is the empty string, set it to null.
 		// (handled by getAttributeByNamespaceAndLocalName, called below)
-		// 2. Return true if the context object has an attribute whose namespace is namespace and
+		// 2. Return true if this has an attribute whose namespace is namespace and
 		// local name is localName, and false otherwise.
 		return getAttributeByNamespaceAndLocalName(namespace, localName, this) !== null;
 	}
@@ -523,13 +527,13 @@ export default class Element
 		expectArity(arguments, 1);
 		attr = asObject(attr, Attr);
 
-		// 1. If context object’s attribute list does not contain attr, then throw a NotFoundError.
+		// 1. If this’s attribute list does not contain attr, then throw a NotFoundError.
 		if (this.attributes.indexOf(attr) < 0) {
 			throwNotFoundError('the specified attribute does not exist');
 		}
 
-		// 2. Remove attr from context object.
-		removeAttribute(attr, this);
+		// 2. Remove attr.
+		removeAttribute(attr);
 
 		// 3. Return attr.
 		return attr;
@@ -567,7 +571,7 @@ export default class Element
 	 * Returns a fragment of HTML or XML that represents the element's contents.
 	 */
 	public get innerHTML() {
-		// Return the result of invoking the fragment serializing algorithm on the context object
+		// Return the result of invoking the fragment serializing algorithm on this
 		// providing true for the require well-formed flag (this might throw an exception instead of
 		// returning a string).
 		return serializeFragment(this, true);
@@ -578,7 +582,7 @@ export default class Element
 	 */
 	public get outerHTML() {
 		// Return the result of invoking the fragment serializing algorithm on a fictional node
-		// whose only child is the context object providing true for the require well-formed flag
+		// whose only child is this providing true for the require well-formed flag
 		// (this might throw an exception instead of returning a string).
 		return serializeFragment(this, true, true);
 	}
@@ -621,7 +625,12 @@ export function createElement(
 	// to the HTML namespace, namespace prefix set to prefix, local name set to localName, custom
 	// element state set to "undefined", custom element definition set to null, is value set to is,
 	// and node document set to document.
-	// 5.3. If the synchronous custom elements flag is set, upgrade element using definition.
+	// 5.3. If the synchronous custom elements flag is set, then run this step while catching any
+	// exceptions:
+	// 5.3.1. Upgrade element using definition.
+	// 5.3.catch. If this step threw an exception, then:
+	// 5.3.catch.1. Report the exception.
+	// 5.3.catch.2. Set result's custom element state to "failed".
 	// 5.4. Otherwise, enqueue a custom element upgrade reaction given result and definition.
 	// (custom elements not implemented)
 
@@ -630,20 +639,13 @@ export function createElement(
 	// exceptions:
 	// 6.1.1. Let C be definition’s constructor.
 	// 6.1.2. Set result to the result of constructing C, with no arguments.
-	// 6.1.3. If result does not implement the HTMLElement interface, then throw a TypeError.
-	// This is meant to be a brand check to ensure that the object was allocated by the HTML element
-	// constructor. See webidl #97 about making this more precise.
-	// If this check passes, then result will already have its custom element state and custom
-	// element definition initialized.
-	// 6.1.4. If result’s attribute list is not empty, then throw a NotSupportedError.
-	// 6.1.5. If result has children, then throw a NotSupportedError.
-	// 6.1.6. If result’s parent is not null, then throw a NotSupportedError.
-	// 6.1.7. If result’s node document is not document, then throw a NotSupportedError.
-	// 6.1.8. If result’s namespace is not the HTML namespace, then throw a NotSupportedError.
-	// As of the time of this writing, every element that implements the HTMLElement interface is
-	// also in the HTML namespace, so this check is currently redundant with the above brand check.
-	// However, this is not guaranteed to be true forever in the face of potential specification
-	// changes, such as converging certain SVG and HTML interfaces.
+	// 6.1.3. Assert: result’s custom element state and custom element definition are initialized.
+	// 6.1.4. Assert: result’s namespace is the HTML namespace.
+	// IDL enforces that result is an HTMLElement object, which all use the HTML namespace.
+	// 6.1.5. If result’s attribute list is not empty, then throw a NotSupportedError.
+	// 6.1.6. If result has children, then throw a NotSupportedError.
+	// 6.1.7. If result’s parent is non-null, then throw a NotSupportedError.
+	// 6.1.8. If result’s node document is not document, then throw a NotSupportedError.
 	// 6.1.9. If result’s local name is not equal to localName, then throw a NotSupportedError.
 	// 6.1.10. Set result’s namespace prefix to prefix.
 	// 6.1.11. Set result’s is value to null.
@@ -752,9 +754,9 @@ function setAttribute(attr: Attr, element: Element): Attr | null {
 		return attr;
 	}
 
-	// 4. If oldAttr is non-null, replace it by attr in element.
+	// 4. If oldAttr is non-null, then replace oldAttr with attr.
 	if (oldAttr !== null) {
-		replaceAttribute(oldAttr, attr, element);
+		replaceAttribute(oldAttr, attr);
 	} else {
 		// 5. Otherwise, append attr to element.
 		appendAttribute(attr, element);
@@ -800,8 +802,8 @@ function setAttributeValue(
 		return;
 	}
 
-	// 5. Change attribute from element to value.
-	changeAttribute(attribute, element, value);
+	// 5. Change attribute to value.
+	changeAttribute(attribute, value);
 }
 
 /**
@@ -816,9 +818,9 @@ function removeAttributeByName(qualifiedName: string, element: Element): Attr | 
 	// 1. Let attr be the result of getting an attribute given qualifiedName and element.
 	const attr = getAttributeByName(qualifiedName, element);
 
-	// 2. If attr is non-null, remove it from element.
+	// 2. If attr is non-null, then remove attr.
 	if (attr !== null) {
-		removeAttribute(attr, element);
+		removeAttribute(attr);
 	}
 
 	// 3. Return attr.
@@ -843,9 +845,9 @@ function removeAttributeByNamespaceAndLocalName(
 	// 1. Let attr be the result of getting an attribute given namespace, localName, and element.
 	const attr = getAttributeByNamespaceAndLocalName(namespace, localName, element);
 
-	// 2. If attr is non-null, remove it from element.
+	// 2. If attr is non-null, then remove attr.
 	if (attr !== null) {
-		removeAttribute(attr, element);
+		removeAttribute(attr);
 	}
 
 	// 3. Return attr.

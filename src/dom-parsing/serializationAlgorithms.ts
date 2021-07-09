@@ -369,7 +369,7 @@ function serializeElementNode(
 
 	// 11. If inherited ns is equal to ns, then:
 	if (inheritedNs === ns) {
-		// 11.1. If local default namespace is not null, then set ignore namespace definition
+		// 11.1. If local default namespace is non-null, then set ignore namespace definition
 		// attribute to true.
 		if (localDefaultNamespace !== null) {
 			ignoreNamespaceDefinitionAttribute = true;
@@ -412,7 +412,7 @@ function serializeElementNode(
 			candidatePrefix = prefix;
 		}
 
-		// 12.4. Found a suitable namespace prefix: if candidate prefix is not null (a namespace
+		// 12.4. Found a suitable namespace prefix: if candidate prefix is non-null (a namespace
 		// prefix is defined which maps to ns), then:
 		if (candidatePrefix !== null) {
 			// NOTE: The following may serialize a different prefix than the Element's existing
@@ -424,7 +424,7 @@ function serializeElementNode(
 			// namespace prefix definition that defines the node's namespace.
 			qualifiedName += candidatePrefix + ':' + element.localName;
 
-			// 12.4.2. If the local default namespace is not null (there exists a locally-defined
+			// 12.4.2. If the local default namespace is non-null (there exists a locally-defined
 			// default namespace declaration attribute) and its value is not the XML namespace, then
 			// let inherited ns get the value of local default namespace unless the local default
 			// namespace is the empty string in which case let it get null (the context namespace is
@@ -438,7 +438,7 @@ function serializeElementNode(
 			// 12.4.3. Append the value of qualified name to markup.
 			result.push(qualifiedName);
 		} else if (prefix !== null) {
-			// 12.5. Otherwise, if prefix is not null, then:
+			// 12.5. Otherwise, if prefix is non-null, then:
 			// NOTE: By this step, there is no namespace or prefix mapping declaration in this node
 			// (or any parent node visited by this algorithm) that defines prefix otherwise the step
 			// labelled Found a suitable namespace prefix would have been followed. The sub-steps
@@ -480,7 +480,7 @@ function serializeElementNode(
 				'"'
 			);
 
-			// 12.5.5.7. If local default namespace is not null (there exists a locally-defined
+			// 12.5.5.7. If local default namespace is non-null (there exists a locally-defined
 			// default namespace declaration attribute), then let inherited ns get the value of
 			// local default namespace unless the local default namespace is the empty string in
 			// which case let it get null.
@@ -492,7 +492,7 @@ function serializeElementNode(
 			(localDefaultNamespace !== null && localDefaultNamespace !== ns)
 		) {
 			// 12.6. Otherwise, if local default namespace is null, or local default namespace is
-			// not null and its value is not equal to ns, then:
+			// non-null and its value is not equal to ns, then:
 			// NOTE: At this point, the namespace for this node still needs to be serialized, but
 			// there's no prefix (or candidate prefix) availble; the following uses the default
 			// namespace declaration to define the namespace --optionally replacing an existing
@@ -678,7 +678,7 @@ function serializeAttributes(
 		// 3.4. Let candidate prefix be null.
 		let candidatePrefix: string | null = null;
 
-		// 3.5. If attribute namespace is not null, then run these sub-steps:
+		// 3.5. If attribute namespace is non-null, then run these sub-steps:
 		if (attributeNamespace !== null) {
 			// 3.5.1. Let candidate prefix be the result of retrieving a preferred prefix string
 			// from map given namespace attribute namespace with preferred prefix being attr's
@@ -705,7 +705,7 @@ function serializeAttributes(
 					continue;
 				}
 
-				// - the attr's prefix is not null and either
+				// - the attr's prefix is non-null and either
 				//   - the attr's localName is not a key contained in the local prefixes map, or
 				//   - the attr's localName is present in the local prefixes map but the value of
 				//     the key does not match attr's value
@@ -807,7 +807,7 @@ function serializeAttributes(
 		// 3.6. Append a " " (U+0020 SPACE) to result.
 		result.push(' ');
 
-		// 3.7. If candidate prefix is not null, then append to result the concatenation of
+		// 3.7. If candidate prefix is non-null, then append to result the concatenation of
 		// candidate prefix with ":" (U+003A COLON).
 		if (candidatePrefix !== null) {
 			result.push(candidatePrefix, ':');
