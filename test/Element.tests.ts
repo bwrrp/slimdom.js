@@ -30,6 +30,19 @@ describe('Element', () => {
 		expect(element.prefix).toBe('prf');
 	});
 
+	it('follows XML 1.0 fifth edition rules regarding allowed characters', () => {
+		function nameThrows(name: string) {
+			expect(() => document.createElement(name)).toThrow('InvalidCharacterError');
+		}
+		function nameAllowed(name: string) {
+			expect(document.createElement(name).nodeName).toBe(name);
+		}
+		nameThrows('\u00d7');
+		nameAllowed('\u00d8');
+		nameAllowed('\u0132sbeer');
+		nameAllowed('\u{1f4a9}');
+	});
+
 	it('can not change its nodeValue', () => {
 		element.nodeValue = 'test';
 		expect(element.nodeValue).toBe(null);
