@@ -158,8 +158,8 @@ export default class Document extends Node implements NonElementParentNode, Pare
 			const element = node as Element;
 
 			if (
-				// 1. If qualifiedName is "*" (U+002A), return a HTMLCollection rooted at root,
-				//    whose filter matches only descendant elements.
+				// 1. If qualifiedName is U+002A (*), return a HTMLCollection rooted at root, whose
+				// filter matches only descendant elements.
 				qualifiedName === '\u002a' ||
 				// 2. Otherwise, if root’s node document is an HTML document,
 				//    return a HTMLCollection rooted at root, whose filter matches the following
@@ -207,11 +207,11 @@ export default class Document extends Node implements NonElementParentNode, Pare
 			const element = node as Element;
 
 			if (
-				// 2. If both namespace and localName are "*" (U+002A), return a HTMLCollection
+				// 2. If both namespace and localName are U+002A (*), then return a HTMLCollection
 				//    rooted at root, whose filter matches descendant elements.
-				// 3. Otherwise, if namespace is "*" (U+002A), return a HTMLCollection rooted at
+				// 3. Otherwise, if namespace is U+002A (*), then return a HTMLCollection rooted at
 				//    root, whose filter matches descendant elements whose local name is localName.
-				// 4. Otherwise, if localName is "*" (U+002A), return a HTMLCollection rooted at
+				// 4. Otherwise, if localName is U+002A (*), then return a HTMLCollection rooted at
 				//    root, whose filter matches descendant elements whose namespace is namespace.
 				// 5. Otherwise, return a HTMLCollection rooted at root, whose filter matches
 				//    descendant elements whose namespace is namespace and local name is localName.
@@ -295,8 +295,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	}
 
 	/**
-	 * Returns a new Text node with its data set to data and node document set to the context
-	 * object.
+	 * Returns a new Text node with its data set to data and node document set to this.
 	 *
 	 * @param data - Data for the new text node
 	 *
@@ -340,8 +339,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 	}
 
 	/**
-	 * Returns a new Comment node with its data set to data and node document set to the context
-	 * object.
+	 * Returns a new Comment node with its data set to data and node document set to this.
 	 *
 	 * @param data - Data for the new comment
 	 *

@@ -77,26 +77,26 @@ export default class RegisteredObserver {
 
 		// 3.1. Let options be registered's options.
 		// 3.2. If none of the following are true
-		// node is not target and options’ subtree is false
+		// node is not target and options["subtree"] is false
 		if (this.node !== target && !this.options.subtree) {
 			return;
 		}
 
-		// type is "attributes" and options’ attributes is not true
+		// type is "attributes" and options["attributes"] is not true
 		if (type === 'attributes' && !this.options.attributes) {
 			return;
 		}
 
-		// type is "attributes", options’ attributeFilter is present, and options’ attributeFilter
+		// type is "attributes", options["attributeFilter"] exists, and options["attributeFilter"]
 		// does not contain name or namespace is non-null
 		// (attributeFilter not implemented)
 
-		// type is "characterData" and options’ characterData is not true
+		// type is "characterData" and options["characterData"] is not true
 		if (type === 'characterData' && !this.options.characterData) {
 			return;
 		}
 
-		// type is "childList" and options’ childList is false
+		// type is "childList" and options["childList"] is false
 		if (type === 'childList' && !this.options.childList) {
 			return;
 		}
@@ -113,8 +113,8 @@ export default class RegisteredObserver {
 			pairedStrings.push(undefined);
 		}
 
-		// 3.2.3. If either type is "attributes" and options’ attributeOldValue is true, or type is
-		// "characterData" and options’ characterDataOldValue is true, then set
+		// 3.2.3. If either type is "attributes" and options["attributeOldValue"] is true, or type
+		// is "characterData" and options["characterDataOldValue"] is true, then set
 		// interestedObservers[mo] to oldValue.
 		if (
 			(type === 'attributes' && this.options.attributeOldValue) ||

@@ -115,19 +115,19 @@ export default class MutationObserver {
 		options.childList = !!options.childList;
 		options.subtree = !!options.subtree;
 
-		// 1. If either options’ attributeOldValue or attributeFilter is present and options’
-		// attributes is omitted, set options’ attributes to true.
+		// 1. If either options["attributeOldValue"] or options["attributeFilter"] exists, and
+		// options["attributes"] does not exist, then set options["attributes"] to true.
 		if (options.attributeOldValue !== undefined && options.attributes === undefined) {
 			options.attributes = true;
 		}
 
-		// 2. If options’ characterDataOldValue is present and options’ characterData is omitted,
-		// set options’ characterData to true.
+		// 2. If options["characterDataOldValue"] exists and options["characterData"] does not
+		// exist, then set options["characterData"] to true.
 		if (options.characterDataOldValue !== undefined && options.characterData === undefined) {
 			options.characterData = true;
 		}
-		// 3. If none of options’ childList, attributes, and characterData is true, throw a
-		// TypeError.
+		// 3. If none of options["childList"], options["attributes"], and options["characterData"]
+		// is true, then throw a TypeError.
 		if (!(options.childList || options.attributes || options.characterData)) {
 			throw new TypeError(
 				'The options object must set at least one of "attributes", "characterData", or ' +
@@ -135,8 +135,8 @@ export default class MutationObserver {
 			);
 		}
 
-		// 4. If options’ attributeOldValue is true and options’ attributes is false, throw a
-		// TypeError.
+		// 4. If options["attributeOldValue"] is true and options["attributes"] is false, then throw
+		// a TypeError.
 		if (options.attributeOldValue && !options.attributes) {
 			throw new TypeError(
 				'The options object may only set "attributeOldValue" to true when "attributes" ' +
@@ -144,11 +144,11 @@ export default class MutationObserver {
 			);
 		}
 
-		// 5. If options’ attributeFilter is present and options’ attributes is false, throw a
+		// 5. If options["attributeFilter"] exists and options["attributes"] is false, then throw a
 		// TypeError. (attributeFilter not yet implemented)
 
-		// 6. If options’ characterDataOldValue is true and options’ characterData is false, throw a
-		// TypeError.
+		// 6. If options["characterDataOldValue"] is true and options["characterData"] is false,
+		// then throw a TypeError.
 		if (options.characterDataOldValue && !options.characterData) {
 			throw new TypeError(
 				'The options object may only set "characterDataOldValue" to true when ' +

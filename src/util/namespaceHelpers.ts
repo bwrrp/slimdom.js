@@ -80,7 +80,7 @@ function isValidQName(name: string): boolean {
  * @param qualifiedName - Qualified name to validate
  */
 export function validateQualifiedName(qualifiedName: string): void {
-	// throw an InvalidCharacterError if qualifiedName does not match the Name or QName production.
+	// throw an InvalidCharacterError if qualifiedName does not match the QName production.
 	// (QName is basically (Name without ':') ':' (Name without ':'), so just check the position of
 	// the ':')
 	if (!isValidQName(qualifiedName) || !matchesNameProduction(qualifiedName)) {
@@ -114,7 +114,7 @@ export function validateAndExtract(
 	// 4.  Let localName be qualifiedName.
 	let localName = qualifiedName;
 
-	// 5. If qualifiedName contains a ":" (U+003E), then split the string on it and set prefix to
+	// 5. If qualifiedName contains a ":" (U+003A), then split the string on it and set prefix to
 	// the part before and localName to the part after.
 	const index = qualifiedName.indexOf(':');
 	if (index >= 0) {
