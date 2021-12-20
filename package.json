@@ -67,7 +67,10 @@
 		"coverageReporters": [
 			"html",
 			"text"
-		]
+		],
+		"globals": {
+			"window": {}
+		}
 	},
 	"prettier": {
 		"printWidth": 100,

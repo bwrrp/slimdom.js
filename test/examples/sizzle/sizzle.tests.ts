@@ -1,5 +1,7 @@
 import * as slimdom from '../../../src/index';
 
+import './windowStub';
+
 import Sizzle = require('sizzle');
 
 describe('Example: sizzle integration', () => {

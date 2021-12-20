@@ -538,19 +538,19 @@ describe('MutationObserver', () => {
 	}
 
 	describe('synchronous usage', () => {
-		Object.keys(cases).forEach((description) => {
+		for (const description of Object.keys(cases)) {
 			const testCase = cases[description];
-			it(description, () => {
+			it(description, async () => {
 				const expected = testCase(observer) || [];
 
 				const records = observer.takeRecords();
 				assertRecords(records, expected);
 
-				return waitForNextTask().then(() => {
-					expect(callbackCalled).toBe(false);
-				});
+				await waitForNextTask();
+
+				expect(callbackCalled).toBe(false);
 			});
-		});
+		}
 	});
 
 	describe('asynchronous usage', () => {
@@ -563,22 +563,22 @@ describe('MutationObserver', () => {
 			observer.disconnect();
 		});
 
-		Object.keys(cases).forEach((description) => {
+		for (const description of Object.keys(cases)) {
 			const testCase = cases[description];
-			it(description, () => {
+			it(description, async () => {
 				const expected = testCase(observer);
 
-				waitForNextTask().then(() => {
-					if (expected !== null) {
-						expect(callbackCalled).toBe(true);
-						expect(calls.length).toBe(1);
-						expect(calls[0].observer).toBe(observer);
-						assertRecords(calls[0].records, expected);
-					} else {
-						expect(callbackCalled).toBe(false);
-					}
-				});
+				await waitForNextTask();
+
+				if (expected !== null) {
+					expect(callbackCalled).toBe(true);
+					expect(calls.length).toBe(1);
+					expect(calls[0].observer).toBe(observer);
+					assertRecords(calls[0].records, expected);
+				} else {
+					expect(callbackCalled).toBe(false);
+				}
 			});
-		});
+		}
 	});
 });
