@@ -21,10 +21,11 @@ export default function createElementNS(
 ): Element {
 	// 1. Let namespace, prefix, and localName be the result of passing namespace and qualifiedName
 	// to validate and extract.
-	const { namespace: validatedNamespace, prefix, localName } = validateAndExtract(
-		namespace,
-		qualifiedName
-	);
+	const {
+		namespace: validatedNamespace,
+		prefix,
+		localName,
+	} = validateAndExtract(namespace, qualifiedName);
 
 	// 2. Let is be the value of is member of options, or null if no such member exists.
 	// (custom elements not implemented)

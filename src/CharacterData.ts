@@ -24,7 +24,8 @@ import {
  */
 export default abstract class CharacterData
 	extends Node
-	implements NonDocumentTypeChildNode, ChildNode {
+	implements NonDocumentTypeChildNode, ChildNode
+{
 	// Node
 
 	public get nodeValue(): string | null {

@@ -35,7 +35,7 @@ export class Attr extends Node {
     // (undocumented)
     get value(): string;
     set value(value: string);
-    }
+}
 
 // @public (undocumented)
 export class CDATASection extends Text {
@@ -222,7 +222,7 @@ export class DOMImplementation {
     createDocument(namespace: string | null, qualifiedName: string | null, doctype?: DocumentType | null): XMLDocument;
     createDocumentType(qualifiedName: string, publicId: string, systemId: string): DocumentType;
     createHTMLDocument(title?: string | null): Document;
-    }
+}
 
 // @public
 export class Element extends Node implements ParentNode, NonDocumentTypeChildNode, ChildNode {
@@ -494,7 +494,6 @@ export class XMLSerializer {
     constructor();
     serializeToString(root: Node): string;
 }
-
 
 // (No @packageDocumentation comment for this package)
 

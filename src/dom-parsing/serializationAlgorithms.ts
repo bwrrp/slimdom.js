@@ -13,8 +13,7 @@ import {
 	XML_NAMESPACE,
 	XMLNS_NAMESPACE,
 } from '../util/namespaceHelpers';
-import { isNodeOfType, NodeType } from '../util/NodeType';
-import { getNodeDocument } from '../util/treeHelpers';
+import { NodeType } from '../util/NodeType';
 import {
 	recordNamespaceInformation,
 	LocalPrefixesMap,
@@ -35,7 +34,8 @@ const Char = regenerate()
 
 return `^(${Char.toString()})*$`;
 */
-const CHAR_REGEX_XML_1_0_FIFTH_EDITION = /^(?:[\t\n\r -\uD7FF\uE000-\uFFFD]|[\uD800-\uDB7F][\uDC00-\uDFFF])*$/;
+const CHAR_REGEX_XML_1_0_FIFTH_EDITION =
+	/^(?:[\t\n\r -\uD7FF\uE000-\uFFFD]|[\uD800-\uDB7F][\uDC00-\uDFFF])*$/;
 
 /*
 // PUBIDCHAR_REGEX_XML_1_0_FIFTH_EDITION generated using regenerate:
@@ -165,7 +165,7 @@ export function produceXmlSerialization(
 			result
 		);
 	} catch (error) {
-		return throwInvalidStateError(error.message);
+		return throwInvalidStateError((error as Error).message);
 	}
 }
 

@@ -43,7 +43,8 @@ import { asNullableString, asObject, treatNullAsEmptyString } from './util/typeH
  */
 export default class Element
 	extends Node
-	implements ParentNode, NonDocumentTypeChildNode, ChildNode {
+	implements ParentNode, NonDocumentTypeChildNode, ChildNode
+{
 	// Node
 
 	public get nodeType(): number {
@@ -326,10 +327,11 @@ export default class Element
 
 		// 1. Let namespace, prefix, and localName be the result of passing namespace and
 		// qualifiedName to validate and extract.
-		const { namespace: validatedNamespace, prefix, localName } = validateAndExtract(
-			namespace,
-			qualifiedName
-		);
+		const {
+			namespace: validatedNamespace,
+			prefix,
+			localName,
+		} = validateAndExtract(namespace, qualifiedName);
 
 		// 2. Set an attribute value for the context object using localName, value, and also prefix
 		// and namespace.

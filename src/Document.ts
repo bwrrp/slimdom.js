@@ -479,10 +479,11 @@ export default class Document extends Node implements NonElementParentNode, Pare
 
 		// 1. Let namespace, prefix, and localName be the result of passing namespace and
 		// qualifiedName to validate and extract.
-		const { namespace: validatedNamespace, prefix, localName } = validateAndExtract(
-			namespace,
-			qualifiedName
-		);
+		const {
+			namespace: validatedNamespace,
+			prefix,
+			localName,
+		} = validateAndExtract(namespace, qualifiedName);
 
 		// 2. Return a new attribute whose namespace is namespace, namespace prefix is prefix, local
 		// name is localName, and node document is context object.
