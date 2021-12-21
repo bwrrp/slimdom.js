@@ -5,7 +5,7 @@ import { getContext } from './context/Context';
 import { changeAttribute } from './util/attrMutations';
 import { expectArity } from './util/errorHelpers';
 import { NodeType } from './util/NodeType';
-import { treatNullAsEmptyString } from './util/typeHelpers';
+import { ifNullActAsIfEmptyString } from './util/typeHelpers';
 
 /**
  * 3.9.2. Interface Attr
@@ -29,7 +29,7 @@ export default class Attr extends Node {
 	}
 
 	public set nodeValue(newValue: string | null) {
-		newValue = treatNullAsEmptyString(newValue);
+		newValue = ifNullActAsIfEmptyString(newValue);
 
 		// Set an existing attribute value with this and new value.
 		setExistingAttributeValue(this, newValue);
@@ -40,7 +40,7 @@ export default class Attr extends Node {
 	}
 
 	public set textContent(newValue: string | null) {
-		newValue = treatNullAsEmptyString(newValue);
+		newValue = ifNullActAsIfEmptyString(newValue);
 
 		// Set an existing attribute value with this and new value.
 		setExistingAttributeValue(this, newValue);

@@ -6,7 +6,7 @@ import { getContext } from './context/Context';
 import createElementNS from './util/createElementNS';
 import { expectArity } from './util/errorHelpers';
 import { HTML_NAMESPACE, validateQualifiedName } from './util/namespaceHelpers';
-import { asNullableObject, asNullableString, treatNullAsEmptyString } from './util/typeHelpers';
+import { asNullableObject, asNullableString, legacyNullToEmptyString } from './util/typeHelpers';
 
 /**
  * @public
@@ -69,8 +69,8 @@ export default class DOMImplementation {
 	): XMLDocument {
 		expectArity(arguments, 2);
 		namespace = asNullableString(namespace);
-		// [TreatNullAs=EmptyString] for qualifiedName
-		qualifiedName = treatNullAsEmptyString(qualifiedName);
+		// [LegacyNullToEmptyString] for qualifiedName
+		qualifiedName = legacyNullToEmptyString(qualifiedName);
 		doctype = asNullableObject(doctype, DocumentType);
 
 		// 1. Let document be a new XMLDocument.

@@ -4,9 +4,19 @@ export function asUnsignedLong(number: number): number {
 	return number >>> 0;
 }
 
-export function treatNullAsEmptyString(value: string | null): string {
+export function legacyNullToEmptyString(value: string | null): string {
 	// Treat null as empty string
 	if (value === null) {
+		return '';
+	}
+
+	// Coerce other values to string
+	return String(value);
+}
+
+export function ifNullActAsIfEmptyString(value: string | null | undefined): string {
+	// Treat both undefined and null as empty string
+	if (value === undefined || value === null) {
 		return '';
 	}
 

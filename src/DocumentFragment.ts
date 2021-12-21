@@ -12,7 +12,7 @@ import {
 	replaceChildren,
 } from './util/mutationAlgorithms';
 import { NodeType } from './util/NodeType';
-import { treatNullAsEmptyString } from './util/typeHelpers';
+import { ifNullActAsIfEmptyString } from './util/typeHelpers';
 
 /**
  * @public
@@ -42,7 +42,7 @@ export default class DocumentFragment extends Node implements NonElementParentNo
 	}
 
 	public set textContent(newValue: string | null) {
-		newValue = treatNullAsEmptyString(newValue);
+		newValue = ifNullActAsIfEmptyString(newValue);
 		stringReplaceAll(this, newValue);
 	}
 

@@ -35,7 +35,7 @@ import {
 	XMLNS_NAMESPACE,
 } from './util/namespaceHelpers';
 import { NodeType } from './util/NodeType';
-import { asNullableString, asObject, treatNullAsEmptyString } from './util/typeHelpers';
+import { asNullableString, asObject, ifNullActAsIfEmptyString } from './util/typeHelpers';
 import {
 	getListOfElementsWithNamespaceAndLocalName,
 	getListOfElementsWithQualifiedName,
@@ -74,7 +74,7 @@ export default class Element
 	}
 
 	public set textContent(newValue: string | null) {
-		newValue = treatNullAsEmptyString(newValue);
+		newValue = ifNullActAsIfEmptyString(newValue);
 		stringReplaceAll(this, newValue);
 	}
 

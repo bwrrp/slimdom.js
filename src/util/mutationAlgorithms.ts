@@ -795,10 +795,11 @@ function convertNodesIntoNode(nodes: (Node | string)[], document: Document): Nod
 	// 2. Replace each string in nodes with a new Text node whose data is the string and node
 	// document is document.
 	const actualNodes: Node[] = nodes.map((nodeOrString) => {
-		if (typeof nodeOrString === 'string') {
-			return document.createTextNode(nodeOrString);
+		// IDL actually coerces every non-node (e.g., null) into a string here
+		if (nodeOrString instanceof Node) {
+			return nodeOrString;
 		}
-		return nodeOrString;
+		return document.createTextNode(String(nodeOrString));
 	});
 
 	// 3. If nodes contains one node, set node to that node.
