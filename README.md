@@ -25,7 +25,7 @@ or
 yarn add slimdom
 ```
 
-The package includes both a commonJS-compatible UMD bundle (`dist/slimdom.js`) and an ES6 module (`dist/slimdom.mjs`). This means it should work in most JavaScript environments that support the ES2017 standard or newer.
+The package includes both a commonJS-compatible UMD bundle (`dist/slimdom.umd.js`) and an ES6 module (`dist/slimdom.esm.js`). This means it should work in most JavaScript environments that support the ES2017 standard or newer.
 
 ## Usage
 
