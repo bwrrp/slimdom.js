@@ -165,7 +165,9 @@ export function produceXmlSerialization(
 			result
 		);
 	} catch (error) {
-		return throwInvalidStateError((error as Error).message);
+		const message =
+			error instanceof Error ? error.message : 'An error occurred during serialization.';
+		return throwInvalidStateError(message);
 	}
 }
 
@@ -326,7 +328,9 @@ function serializeElementNode(
 		requireWellFormed &&
 		(element.localName.indexOf(':') >= 0 || !matchesNameProduction(element.localName))
 	) {
-		throw new Error('The serialization of this node would not be a well-formed element');
+		throw new Error(
+			`Can not serialize an element because the localName "${element.localName}" is not allowed.`
+		);
 	}
 
 	// 2. Let markup be the string "<" (U+003C LESS-THAN SIGN).
@@ -403,8 +407,8 @@ function serializeElementNode(
 			// prefix "xmlns" will not legally round-trip in a conforming XML parser.
 			if (requireWellFormed) {
 				throw new Error(
-					'An Element with prefix "xmlns" will not legally round-trip in a conforming ' +
-						'XML parser'
+					'Can not serialize an element with prefix "xmlns" because it will ' +
+						'not legally round-trip in a conforming XML parser.'
 				);
 			}
 
@@ -663,8 +667,7 @@ function serializeAttributes(
 			)
 		) {
 			throw new Error(
-				'The serialization of this attr would fail to produce a well-formed element ' +
-					'serialization'
+				`Can not serialize a duplicate attribute for namespaceURI "${attr.namespaceURI}", localName "${attr.localName}".`
 			);
 		}
 
@@ -739,7 +742,7 @@ function serializeAttributes(
 					throw new Error(
 						'The serialization of this attribute would produce invalid XML because ' +
 							'the XMLNS namespace is reserved and cannot be applied as an ' +
-							"element's namespace via XML parsing"
+							"element's namespace via XML parsing."
 					);
 				}
 
@@ -752,8 +755,8 @@ function serializeAttributes(
 				// namespace declarations should be allowed to reset the default namespace to null)
 				if (requireWellFormed && attr.prefix !== null && attr.value === '') {
 					throw new Error(
-						'Namespace prefix declarations cannot be used to undeclare a namespace ' +
-							'(use a default namespace declaration instead)'
+						'Namespace prefix declarations cannot be used to undeclare a namespace. ' +
+							'Use a default namespace declaration instead.'
 					);
 				}
 
@@ -823,7 +826,9 @@ function serializeAttributes(
 				!matchesNameProduction(attr.localName) ||
 				(attr.localName === 'xmlns' && attributeNamespace === null))
 		) {
-			throw new Error('The serialization of this attr would not be a well-formed attribute');
+			throw new Error(
+				`Can not serialize an attribute because the localName "${attr.localName}" is not allowed.`
+			);
 		}
 
 		// 3.9. Append the following strings to result, in the order listed:
@@ -866,8 +871,7 @@ function serializeAttributeValue(
 		!CHAR_REGEX_XML_1_0_FIFTH_EDITION.test(attributeValue)
 	) {
 		throw new Error(
-			'The serialization of this attribute value would fail to produce a well-formed ' +
-				'element serialization'
+			'Can not serialize an attribute value because it contains invalid characters.'
 		);
 	}
 
@@ -954,7 +958,7 @@ function serializeDocumentNode(
 	// documentElement (the documentElement attribute's value is null), then throw an exception; the
 	// serialization of this node would not be a well-formed document.
 	if (requireWellFormed && document.documentElement === null) {
-		throw new Error('The serialization of this node would not be a well-formed document');
+		throw new Error('Can not serialize a document with no documentElement.');
 	}
 
 	// 2. Otherwise, run the following steps:
@@ -1010,7 +1014,7 @@ function serializeCommentNode(
 			comment.data.indexOf('--') >= 0 ||
 			comment.data.endsWith('-'))
 	) {
-		throw new Error("The serialization of this node's data would not be well-formed");
+		throw new Error('Can not serialize a comment because it contains invalid characters.');
 	}
 
 	// 2. Otherwise, return the concatenation of "<!--", node's data, and "-->".
@@ -1066,7 +1070,7 @@ function serializeTextNode(
 	// characters that are not matched by the XML Char production, then throw an exception; the
 	// serialization of this node's data would not be well-formed.
 	if (requireWellFormed && !CHAR_REGEX_XML_1_0_FIFTH_EDITION.test(text.data)) {
-		throw new Error("The serialization of this node's data would not be well-formed");
+		throw new Error('Can not serialize a text node because it contains invalid characters.');
 	}
 
 	// 2. Let markup be the value of node's data.
@@ -1147,7 +1151,7 @@ function serializeDocumentTypeNode(
 	// serialization of this node would not be a well-formed document type declaration.
 	if (requireWellFormed && !PUBIDCHAR_REGEX_XML_1_0_FIFTH_EDITION.test(dt.publicId)) {
 		throw new Error(
-			'The serialization of this node would not be a well-formed document type declaration'
+			'Can not serialize a document type because the publicId contains invalid characters.'
 		);
 	}
 
@@ -1161,7 +1165,7 @@ function serializeDocumentTypeNode(
 			(dt.systemId.indexOf('"') >= 0 && dt.systemId.indexOf("'") >= 0))
 	) {
 		throw new Error(
-			'The serialization of this node would not be a well-formed document type declaration'
+			'Can not serialize a document type because the systemId contains invalid characters.'
 		);
 	}
 
@@ -1237,8 +1241,17 @@ function serializeProcessingInstructionNode(
 	// 1. If the require well-formed flag is set (its value is true), and node's target contains a
 	// ":" (U+003A COLON) character or is an ASCII case-insensitive match for the string "xml", then
 	// throw an exception; the serialization of this node's target would not be well-formed.
-	if (requireWellFormed && (pi.target.indexOf(':') >= 0 || pi.target.toLowerCase() === 'xml')) {
-		throw new Error("The serialization of this node's target would not be well-formed");
+	if (requireWellFormed) {
+		if (pi.target.indexOf(':') >= 0) {
+			throw new Error(
+				`Can not serialize a processing instruction because the target "${pi.target}" may not contain ":".`
+			);
+		}
+		if (pi.target.toLowerCase() === 'xml') {
+			throw new Error(
+				'Can not serialize a processing instruction because "xml" may not be used as target.'
+			);
+		}
 	}
 
 	// 2. If the require well-formed flag is set (its value is true), and node's data contains
@@ -1249,7 +1262,9 @@ function serializeProcessingInstructionNode(
 		requireWellFormed &&
 		(!CHAR_REGEX_XML_1_0_FIFTH_EDITION.test(pi.data) || pi.data.indexOf('?>') >= 0)
 	) {
-		throw new Error("The serialization of this node's data would not be well-formed");
+		throw new Error(
+			'Can not serialize a processing instruction because the data contains invalid characters.'
+		);
 	}
 
 	// 3. Let markup be the concatenation of the following, in the order listed:
