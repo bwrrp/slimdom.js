@@ -22,7 +22,10 @@ import { adoptNode, appendNodes, prependNodes, replaceChildren } from './util/mu
 import { NodeType, isNodeOfType } from './util/NodeType';
 import { matchesNameProduction, validateAndExtract } from './util/namespaceHelpers';
 import { asNullableString, asObject } from './util/typeHelpers';
-import { forEachInclusiveDescendant } from './util/treeHelpers';
+import {
+	getListOfElementsWithNamespaceAndLocalName,
+	getListOfElementsWithQualifiedName,
+} from './util/treeHelpers';
 
 /**
  * 3.5. Interface Document
@@ -150,35 +153,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		expectArity(arguments, 1);
 		qualifiedName = String(qualifiedName);
 
-		const elements: Element[] = [];
-		forEachInclusiveDescendant(this, (node) => {
-			if (node.nodeType !== NodeType.ELEMENT_NODE) {
-				return;
-			}
-			const element = node as Element;
-
-			if (
-				// 1. If qualifiedName is U+002A (*), return a HTMLCollection rooted at root, whose
-				// filter matches only descendant elements.
-				qualifiedName === '\u002a' ||
-				// 2. Otherwise, if root’s node document is an HTML document,
-				//    return a HTMLCollection rooted at root, whose filter matches the following
-				//    descendant elements:
-				//    - Whose namespace is the HTML namespace and whose qualified name is qualifiedName,
-				//      in ASCII lowercase.
-				//    - Whose namespace is not the HTML namespace and whose qualified name is
-				//      qualifiedName.
-				// (html documents not implemented)
-
-				// 3. Otherwise, return a HTMLCollection rooted at root, whose filter matches
-				//    descendant elements whose qualified name is qualifiedName.
-				element.nodeName === qualifiedName
-			) {
-				elements.push(element);
-			}
-		});
-
-		return elements;
+		return getListOfElementsWithQualifiedName(qualifiedName, this);
 	}
 
 	/**
@@ -194,35 +169,7 @@ export default class Document extends Node implements NonElementParentNode, Pare
 		namespace = asNullableString(namespace);
 		localName = String(localName);
 
-		// 1. If namespace is the empty string, set it to null.
-		if (namespace === '') {
-			namespace = null;
-		}
-
-		const elements: Element[] = [];
-		forEachInclusiveDescendant(this, (node) => {
-			if (node.nodeType !== NodeType.ELEMENT_NODE) {
-				return;
-			}
-			const element = node as Element;
-
-			if (
-				// 2. If both namespace and localName are U+002A (*), then return a HTMLCollection
-				//    rooted at root, whose filter matches descendant elements.
-				// 3. Otherwise, if namespace is U+002A (*), then return a HTMLCollection rooted at
-				//    root, whose filter matches descendant elements whose local name is localName.
-				// 4. Otherwise, if localName is U+002A (*), then return a HTMLCollection rooted at
-				//    root, whose filter matches descendant elements whose namespace is namespace.
-				// 5. Otherwise, return a HTMLCollection rooted at root, whose filter matches
-				//    descendant elements whose namespace is namespace and local name is localName.
-				(namespace === '\u002a' || element.namespaceURI === namespace) &&
-				(localName === '\u002a' || element.localName === localName)
-			) {
-				elements.push(element);
-			}
-		});
-
-		return elements;
+		return getListOfElementsWithNamespaceAndLocalName(namespace, localName, this);
 	}
 
 	/**

@@ -790,4 +790,103 @@ describe('Element', () => {
 			expect(comment.parentNode).toBe(null);
 		});
 	});
+
+	describe('.replaceChildren', () => {
+		it('can replace all children', () => {
+			const child = element.appendChild(document.createElement('test'));
+			const comment = document.createComment('test');
+			const pi = document.createProcessingInstruction('target', 'data');
+
+			element.replaceChildren(comment, pi);
+
+			expect(child.parentNode).toBe(null);
+			expect(element.firstChild).toBe(comment);
+			expect(element.lastChild).toBe(pi);
+		});
+	});
+
+	describe('.getElementsByTagName', () => {
+		it('can find all descendants matching the given qualifiedName', () => {
+			const root = document.appendChild(document.createElement('root'));
+			const e1 = root.appendChild(document.createElementNS('namespace', 'pre:elem'));
+			const e2 = root.appendChild(document.createElementNS('namespace', 'pre:elem'));
+			const other = root.appendChild(document.createElementNS(null, 'other'));
+			const e3 = other.appendChild(document.createElementNS('otherns', 'pre:elem'));
+			const e4 = other.appendChild(document.createElementNS('otherns', 'pre:elem'));
+			const e5 = other.appendChild(document.createElementNS('otherns', 'x:elem'));
+			const e6 = other.appendChild(document.createElementNS('otherns', 'x:elem'));
+
+			expect(root.getElementsByTagName('root')).toEqual([]);
+			expect(root.getElementsByTagName('pre:elem')).toEqual([e1, e2, e3, e4]);
+			expect(root.getElementsByTagName('other')).toEqual([other]);
+			expect(root.getElementsByTagName('x:elem')).toEqual([e5, e6]);
+		});
+
+		it('can find all descendant elements using the special name "*"', () => {
+			const root = document.appendChild(document.createElement('root'));
+			const e1 = root.appendChild(document.createElementNS('namespace', 'pre:elem'));
+			const e2 = root.appendChild(document.createElementNS('namespace', 'pre:elem'));
+			const other = root.appendChild(document.createElementNS(null, 'other'));
+			const e3 = other.appendChild(document.createElementNS('otherns', 'pre:elem'));
+			const e4 = other.appendChild(document.createElementNS('otherns', 'pre:elem'));
+			const e5 = other.appendChild(document.createElementNS('otherns', 'x:elem'));
+			const e6 = other.appendChild(document.createElementNS('otherns', 'x:elem'));
+
+			expect(root.getElementsByTagName('*')).toEqual([e1, e2, other, e3, e4, e5, e6]);
+			expect(other.getElementsByTagName('*')).toEqual([e3, e4, e5, e6]);
+		});
+	});
+
+	describe('.getElementsByTagNameNS', () => {
+		it('can find all descendants matching the given namespace and localName', () => {
+			const root = document.appendChild(document.createElement('root'));
+			const e1 = root.appendChild(document.createElementNS('namespace', 'pre:elem'));
+			const e2 = root.appendChild(document.createElementNS('namespace', 'pre:elem'));
+			const other = root.appendChild(document.createElementNS(null, 'other'));
+			const e3 = other.appendChild(document.createElementNS('otherns', 'pre:elem'));
+			const e4 = other.appendChild(document.createElementNS('otherns', 'pre:elem'));
+			const e5 = other.appendChild(document.createElementNS('otherns', 'x:elem'));
+			const e6 = other.appendChild(document.createElementNS('otherns', 'x:elem'));
+
+			expect(root.getElementsByTagNameNS(null, 'root')).toEqual([]);
+			expect(root.getElementsByTagNameNS('zoinks', 'root')).toEqual([]);
+			expect(root.getElementsByTagNameNS('namespace', 'elem')).toEqual([e1, e2]);
+			expect(root.getElementsByTagNameNS('otherns', 'elem')).toEqual([e3, e4, e5, e6]);
+			expect(root.getElementsByTagNameNS('', 'other')).toEqual([other]);
+		});
+
+		it('can find all descendant elements using the special namespace "*"', () => {
+			const root = document.appendChild(document.createElement('root'));
+			const e1 = root.appendChild(document.createElementNS('namespace', 'pre:elem'));
+			const e2 = root.appendChild(document.createElementNS('namespace', 'pre:elem'));
+			const other = root.appendChild(document.createElementNS(null, 'other'));
+			const e3 = other.appendChild(document.createElementNS('otherns', 'pre:elem'));
+			const e4 = other.appendChild(document.createElementNS('otherns', 'pre:elem'));
+			const e5 = other.appendChild(document.createElementNS('otherns', 'x:elem'));
+			const e6 = other.appendChild(document.createElementNS('otherns', 'x:elem'));
+
+			expect(root.getElementsByTagNameNS('*', 'root')).toEqual([]);
+			expect(root.getElementsByTagNameNS('*', 'elem')).toEqual([e1, e2, e3, e4, e5, e6]);
+			expect(root.getElementsByTagNameNS('*', 'other')).toEqual([other]);
+		});
+
+		it('can find all descendant elements using the special localName "*"', () => {
+			const root = document.appendChild(document.createElement('root'));
+			const e1 = root.appendChild(document.createElementNS('namespace', 'pre:elem'));
+			const e2 = root.appendChild(document.createElementNS('namespace', 'pre:elem'));
+			const other = root.appendChild(document.createElementNS(null, 'other'));
+			const e3 = other.appendChild(document.createElementNS('otherns', 'pre:elem'));
+			const e4 = other.appendChild(document.createElementNS('otherns', 'pre:elem'));
+			const e5 = other.appendChild(document.createElementNS('otherns', 'x:elem'));
+			const e6 = other.appendChild(document.createElementNS('otherns', 'x:elem'));
+
+			expect(root.getElementsByTagNameNS(null, '*')).toEqual([other]);
+			expect(root.getElementsByTagNameNS('', '*')).toEqual([other]);
+			expect(root.getElementsByTagNameNS('zoinks', '*')).toEqual([]);
+			expect(root.getElementsByTagNameNS('namespace', '*')).toEqual([e1, e2]);
+			expect(root.getElementsByTagNameNS('otherns', '*')).toEqual([e3, e4, e5, e6]);
+			expect(root.getElementsByTagNameNS('*', '*')).toEqual([e1, e2, other, e3, e4, e5, e6]);
+			expect(other.getElementsByTagNameNS('*', '*')).toEqual([e3, e4, e5, e6]);
+		});
+	});
 });

@@ -80,7 +80,7 @@ To query a slimdom document using CSS, see [this example][sizzle-example] which 
 
 Emulating a full browser environment is not the goal of this library. Consider using [jsdom][jsdom] instead if you need that.
 
-This implementation offers no special treatment of HTML documents, which means there are no implementations of `HTMLElement` and its subclasses. This also affects HTML-specific casing behavior for attributes and tagNames. The `id` / `className` / `classList` properties on `Element` and `compatMode` / `contentType` on `Document` have not been implemented. HTML-specific query methods (`getElementById` for interface `NonElementParentNode`, `getElementsByClassName` on `Document`) are also missing.
+This implementation offers no special treatment of HTML documents, which means there are no implementations of `HTMLElement` and its subclasses. This also affects HTML-specific casing behavior for attributes and tagNames. The `id` / `className` / `classList` properties on `Element` and `compatMode` / `contentType` on `Document` have not been implemented. HTML-specific query methods (`getElementById` for interface `NonElementParentNode`, `getElementsByClassName` on `Document` and `Element`) are also missing.
 
 This library does not currently implement events, including the `Event` / `EventTarget` interfaces. It also currently does not contain an implementation of `AbortController` / `AbortSignal`. As these may have wider applications than browser-specific use cases, please file an issue if you have a use for these in your application and would like support for them to be added.
 

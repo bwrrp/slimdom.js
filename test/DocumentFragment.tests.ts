@@ -153,14 +153,15 @@ describe('DocumentFragment', () => {
 
 	describe('.replaceChildren', () => {
 		it('can replace all children', () => {
-			const comment = fragment.appendChild(document.createComment('test'));
+			const element = fragment.appendChild(document.createElement('test'));
+			const comment = document.createComment('test');
 			const pi = document.createProcessingInstruction('target', 'data');
-			fragment.replaceChildren(pi, 'text');
 
-			expect(fragment.firstChild).toBe(pi);
-			expect(fragment.lastChild!.nodeType).toBe(slimdom.Node.TEXT_NODE);
-			expect(fragment.lastChild!.nodeValue).toBe('text');
-			expect(comment.parentNode).toBe(null);
+			fragment.replaceChildren(comment, pi);
+
+			expect(element.parentNode).toBe(null);
+			expect(fragment.firstChild).toBe(comment);
+			expect(fragment.lastChild).toBe(pi);
 		});
 	});
 });

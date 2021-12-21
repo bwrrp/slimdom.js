@@ -445,13 +445,15 @@ describe('Document', () => {
 
 	describe('.replaceChildren', () => {
 		it('can replace all children', () => {
-			const comment = document.appendChild(document.createComment('test'));
+			const element = document.appendChild(document.createElement('test'));
+			const comment = document.createComment('test');
 			const pi = document.createProcessingInstruction('target', 'data');
-			document.replaceChildren(pi);
 
-			expect(document.firstChild).toBe(pi);
+			document.replaceChildren(comment, pi);
+
+			expect(element.parentNode).toBe(null);
+			expect(document.firstChild).toBe(comment);
 			expect(document.lastChild).toBe(pi);
-			expect(comment.parentNode).toBe(null);
 		});
 	});
 });

@@ -22,6 +22,10 @@ export interface ParentNode {
 	firstElementChild: Element | null;
 	lastElementChild: Element | null;
 	childElementCount: number;
+
+	prepend(...nodes: (Node | string)[]): void;
+	append(...nodes: (Node | string)[]): void;
+	replaceChildren(...nodes: (Node | string)[]): void;
 }
 // Document implements ParentNode;
 // DocumentFragment implements ParentNode;
@@ -113,7 +117,12 @@ export function getNextElementSibling(node: Node): Element | null {
 /**
  * 3.2.8. Mixin ChildNode
  */
-export interface ChildNode {}
+export interface ChildNode {
+	before(...nodes: (Node | string)[]): void;
+	after(...nodes: (Node | string)[]): void;
+	replaceWith(...nodes: (Node | string)[]): void;
+	remove(): void;
+}
 // DocumentType implements ChildNode;
 // Element implements ChildNode;
 // CharacterData implements ChildNode;

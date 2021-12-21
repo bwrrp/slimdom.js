@@ -36,6 +36,10 @@ import {
 } from './util/namespaceHelpers';
 import { NodeType } from './util/NodeType';
 import { asNullableString, asObject, treatNullAsEmptyString } from './util/typeHelpers';
+import {
+	getListOfElementsWithNamespaceAndLocalName,
+	getListOfElementsWithQualifiedName,
+} from './util/treeHelpers';
 
 /**
  * 3.9. Interface Element
@@ -539,6 +543,36 @@ export default class Element
 
 		// 3. Return attr.
 		return attr;
+	}
+
+	/**
+	 * Returns the list of elements with the given qualified name.
+	 *
+	 * @param qualifiedName - Qualified name of the elements to collect.
+	 *
+	 * @returns  The list of elements with matching qualified name.
+	 */
+	public getElementsByTagName(qualifiedName: string): Element[] {
+		expectArity(arguments, 1);
+		qualifiedName = String(qualifiedName);
+
+		return getListOfElementsWithQualifiedName(qualifiedName, this);
+	}
+
+	/**
+	 * Returns the list of elements with the given namespace and local name.
+	 *
+	 * @param namespace - Namespace URI of the elements to collect.
+	 * @param localName - Local name of the elements to collect
+	 *
+	 * @returns  The list of elements with matching namespace and local name.
+	 */
+	public getElementsByTagNameNS(namespace: string | null, localName: string): Element[] {
+		expectArity(arguments, 2);
+		namespace = asNullableString(namespace);
+		localName = String(localName);
+
+		return getListOfElementsWithNamespaceAndLocalName(namespace, localName, this);
 	}
 
 	/**
