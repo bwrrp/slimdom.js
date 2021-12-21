@@ -5,10 +5,11 @@
 
 Fast, tiny, standards-compliant XML DOM implementation for node and the browser.
 
-This is a (partial) implementation of the [DOM living standard][domstandard], as last updated 19 December 2021, and the [DOM Parsing and Serialization W3C Editor's Draft][domparsing], as last updated 20 April 2020. See the 'Features and Limitations' section below for details on what's included and what's not.
+This is a (partial) implementation of the [DOM living standard][domstandard], as last updated 19 December 2021, and the [DOM Parsing and Serialization W3C Editor's Draft][domparsing], as last updated 20 April 2020. It follows the [fifth edition of the XML 1.0 specification][xmlstandard]. See the 'Features and Limitations' section below for details on what's included and what's not.
 
 [domstandard]: https://dom.spec.whatwg.org/
 [domparsing]: https://w3c.github.io/DOM-Parsing/
+[xmlstandard]: https://www.w3.org/TR/xml/
 
 ## Installation
 
