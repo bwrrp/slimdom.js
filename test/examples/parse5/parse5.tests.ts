@@ -21,9 +21,9 @@ describe('Example: parse5 integration', () => {
 </body>
 </html>`);
 
-		expect(doc.doctype!.name).toBe('html');
-		expect(doc.documentElement!.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
-		expect(doc.documentElement!.localName).toBe('html');
+		expect(doc.doctype?.name).toBe('html');
+		expect(doc.documentElement?.namespaceURI).toBe('http://www.w3.org/1999/xhtml');
+		expect(doc.documentElement?.localName).toBe('html');
 
 		// HTML parsers treat whitespace a bit differently
 		expect(slimdom.serializeToWellFormedString(doc)).toBe(
