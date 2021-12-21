@@ -16,6 +16,7 @@ export { default as XMLDocument } from './XMLDocument';
 export { default as XMLSerializer } from './dom-parsing/XMLSerializer';
 export { default as MutationObserver } from './mutation-observer/MutationObserver';
 export { default as MutationRecord } from './mutation-observer/MutationRecord';
+export { DOMException } from './util/errorHelpers';
 
 // Standard DOM does not expose a way to serialize arbitrary nodes as well-formed XML
 export { serializeToWellFormedString } from './dom-parsing/XMLSerializer';
