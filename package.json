@@ -1,6 +1,6 @@
 {
 	"name": "slimdom",
-	"version": "3.0.1",
+	"version": "3.0.0",
 	"description": "Fast, tiny, standards-compliant XML DOM implementation for node and the browser",
 	"author": "Stef Busking",
 	"license": "MIT",
@@ -10,8 +10,16 @@
 		"XMLSerializer",
 		"w3c"
 	],
-	"main": "dist/slimdom.umd.js",
-	"module": "dist/slimdom.esm.js",
+	"main": "./dist/slimdom.umd.js",
+	"module": "./dist/slimdom.esm.js",
+	"exports": {
+		".": {
+			"require": "./dist/slimdom.umd.js",
+			"import": "./dist/slimdom.esm.js",
+			"default": "./dist/slimdom.esm.js"
+		}
+	},
+	"types": "./dist/slimdom.d.ts",
 	"scripts": {
 		"build:clean": "rimraf dist && rimraf lib && rimraf temp",
 		"build:bundle": "tsc -P tsconfig.build.json && rollup -c",
@@ -26,7 +34,6 @@
 	"files": [
 		"dist"
 	],
-	"types": "./dist/slimdom.d.ts",
 	"repository": {
 		"type": "git",
 		"url": "git://github.com/bwrrp/slimdom.js.git"
