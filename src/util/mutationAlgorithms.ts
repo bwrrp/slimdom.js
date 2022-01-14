@@ -502,7 +502,7 @@ export function replaceChildWithNode<TChild extends Node>(
  * @param node   New node to insert, or null to remove all nodes under parent
  * @param parent Parent to replace under
  */
-function replaceAllWithNode(node: Node | null, parent: Node): void {
+export function replaceAllWithNode(node: Node | null, parent: Node): void {
 	// 1. If node is non-null, then adopt node into parent's node document
 	if (node !== null) {
 		adoptNode(node, getNodeDocument(parent));

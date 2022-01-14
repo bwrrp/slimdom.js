@@ -10141,7 +10141,7 @@
             {
               "kind": "Method",
               "canonicalReference": "slimdom!Range#insertNode:member(1)",
-              "docComment": "",
+              "docComment": "/**\n * Insert node at the start of this range\n *\n * @param node - Node to insert\n */\n",
               "excerptTokens": [
                 {
                   "kind": "Content",
@@ -10797,6 +10797,52 @@
                 "endIndex": 2
               },
               "isStatic": false
+            },
+            {
+              "kind": "Method",
+              "canonicalReference": "slimdom!Range#surroundContents:member(1)",
+              "docComment": "/**\n * Wraps the contents of this range in the given new parent\n *\n * This only works if the only partially contained nodes are text nodes. Any existing children of newParent will be removed.\n *\n * @param newParent - Node to insert\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "surroundContents(newParent: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Node",
+                  "canonicalReference": "slimdom!default:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Content",
+                  "text": "void"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 3,
+                "endIndex": 4
+              },
+              "releaseTag": "Public",
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "newParent",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  }
+                }
+              ],
+              "name": "surroundContents"
             },
             {
               "kind": "Method",

@@ -687,6 +687,62 @@ describe('Range', () => {
 		});
 	});
 
+	describe('surroundContents', () => {
+		it('throws if range partially contains non-Text nodes', () => {
+			const child = element.appendChild(document.createElement('child'));
+			range.setStart(element, 0);
+			range.setEnd(child, 0);
+			expect(() => range.surroundContents(document.createElement('wrapper'))).toThrow(
+				'InvalidStateError'
+			);
+		});
+
+		it('throws when given a document, doctype or fragment as wrapper', () => {
+			range.selectNodeContents(element);
+			expect(() =>
+				range.surroundContents(document.implementation.createDocument(null, null))
+			).toThrow('InvalidNodeTypeError');
+			expect(() =>
+				range.surroundContents(document.implementation.createDocumentType('html', '', ''))
+			).toThrow('InvalidNodeTypeError');
+			expect(() => range.surroundContents(document.createDocumentFragment())).toThrow(
+				'InvalidNodeTypeError'
+			);
+		});
+
+		it('can wrap', () => {
+			range.selectNodeContents(element);
+			range.surroundContents(document.createElement('wrapper'));
+			expect(slimdom.serializeToWellFormedString(element)).toBe(
+				'<root><wrapper>text</wrapper></root>'
+			);
+		});
+
+		it('can split text', () => {
+			element.appendChild(document.createElement('child'));
+			const after = element.appendChild(document.createTextNode('after'));
+			range.setStart(text, 2);
+			range.setEnd(after, 2);
+			range.surroundContents(document.createElement('wrapper'));
+			expect(slimdom.serializeToWellFormedString(element)).toBe(
+				'<root>te<wrapper>xt<child/>af</wrapper>ter</root>'
+			);
+		});
+
+		it('removes the old children of the parent', () => {
+			const child = element.appendChild(document.createElement('child'));
+			const inside = child.appendChild(document.createTextNode('inside'));
+			const after = element.appendChild(document.createTextNode('after'));
+			range.setStart(text, 2);
+			range.setEnd(after, 2);
+			range.surroundContents(child);
+			expect(slimdom.serializeToWellFormedString(element)).toBe(
+				'<root>te<child>xtaf</child>ter</root>'
+			);
+			expect(inside.parentNode).toBe(null);
+		});
+	});
+
 	it('can be cloned', () => {
 		range.selectNodeContents(element);
 		const clone = range.cloneRange();

@@ -6,6 +6,7 @@ import {
 	throwHierarchyRequestError,
 	throwIndexSizeError,
 	throwInvalidNodeTypeError,
+	throwInvalidStateError,
 	throwNotSupportedError,
 	throwWrongDocumentError,
 } from './util/errorHelpers';
@@ -19,7 +20,12 @@ import {
 	getRootOfNode,
 } from './util/treeHelpers';
 import { asObject, asUnsignedLong } from './util/typeHelpers';
-import { appendNode, insertNodeIntoRange, removeNode } from './util/mutationAlgorithms';
+import {
+	appendNode,
+	insertNodeIntoRange,
+	removeNode,
+	replaceAllWithNode,
+} from './util/mutationAlgorithms';
 
 /**
  * Interface AbstractRange
@@ -934,8 +940,71 @@ export default class Range implements AbstractRange {
 		return extractRange(this, true);
 	}
 
+	/**
+	 * Insert node at the start of this range
+	 *
+	 * @param node - Node to insert
+	 */
 	insertNode(node: Node): void {
 		insertNodeIntoRange(node, this);
+	}
+
+	/**
+	 * Wraps the contents of this range in the given new parent
+	 *
+	 * This only works if the only partially contained nodes are text nodes. Any existing children
+	 * of newParent will be removed.
+	 *
+	 * @param newParent - Node to insert
+	 */
+	surroundContents(newParent: Node): void {
+		// 1. If a non-Text node is partially contained in this, then throw an "InvalidStateError"
+		// DOMException.
+		const startNonTextNode = isTextNode(this.startContainer)
+			? this.startContainer.parentNode
+			: this.startContainer;
+		const endNonTextNode = isTextNode(this.endContainer)
+			? this.endContainer.parentNode
+			: this.endContainer;
+		if (startNonTextNode !== endNonTextNode) {
+			throwInvalidStateError(
+				'Can not use surroundContents on a range that has partially selected a non-Text node'
+			);
+		}
+
+		// 2. If newParent is a Document, DocumentType, or DocumentFragment node, then throw an
+		// "InvalidNodeTypeError" DOMException.
+		// Note: For historical reasons CharacterData nodes are not checked here and end up throwing
+		// later on as a side effect.
+		if (
+			isNodeOfType(
+				newParent,
+				NodeType.DOCUMENT_NODE,
+				NodeType.DOCUMENT_TYPE_NODE,
+				NodeType.DOCUMENT_FRAGMENT_NODE
+			)
+		) {
+			throwInvalidNodeTypeError(
+				'Can not use Document, DocumentType, or DocumentFragment as a parent node in surroundContents'
+			);
+		}
+
+		// 3. Let fragment be the result of extracting this.
+		const fragment = extractRange(this, false);
+
+		// 4. If newParent has children, then replace all with null within newParent.
+		if (newParent.firstChild) {
+			replaceAllWithNode(null, newParent);
+		}
+
+		// 5. Insert newParent into this.
+		insertNodeIntoRange(newParent, this);
+
+		// 6. Append fragment to newParent.
+		appendNode(fragment, newParent);
+
+		// 7. Select newParent within this.
+		this.selectNode(newParent);
 	}
 
 	/**
