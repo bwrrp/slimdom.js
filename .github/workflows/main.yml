@@ -19,4 +19,7 @@ jobs:
               with:
                   node-version: ${{ matrix.node-version }}
             - run: npm install
+            - run: npm run download-wpt
             - run: npm test
+              env:
+                  WEB_PLATFORM_TESTS_PATH: ./temp/wpt

@@ -27,8 +27,10 @@
 		"build:api-copy": "copyfiles --flat temp/* api",
 		"build:docs": "api-documenter markdown -i api -o docs",
 		"build": "npm-run-all build:clean build:bundle build:api build:api-copy build:docs",
+		"download-wpt": "ts-node test/web-platform-tests/download-wpt.ts https://github.com/web-platform-tests/wpt.git temp/wpt",
 		"prepare": "npm run build",
 		"test": "jest --coverage --verbose",
+		"test:quiet": "jest --clearCache && jest",
 		"test:debug": "node --inspect --debug-brk node_modules/jest/bin/jest.js --runInBand"
 	},
 	"files": [
@@ -55,30 +57,8 @@
 		"rollup-plugin-terser": "^7.0.2",
 		"sizzle": "^2.3.6",
 		"ts-jest": "~27.1.2",
+		"ts-node": "^10.4.0",
 		"typescript": "^4.5.4"
-	},
-	"jest": {
-		"transform": {
-			"^.+\\.tsx?$": "ts-jest"
-		},
-		"testRegex": "(\\.(tests))\\.(tsx?|jsx?)$",
-		"moduleFileExtensions": [
-			"ts",
-			"tsx",
-			"js",
-			"json",
-			"jsx"
-		],
-		"collectCoverageFrom": [
-			"src/**/*.ts"
-		],
-		"coverageReporters": [
-			"html",
-			"text"
-		],
-		"globals": {
-			"window": {}
-		}
 	},
 	"prettier": {
 		"printWidth": 100,

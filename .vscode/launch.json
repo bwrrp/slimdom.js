@@ -7,11 +7,20 @@
 			"request": "launch",
 			"program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
 			"stopOnEntry": false,
-			"args": ["--runInBand"],
-			"runtimeArgs": ["--inspect=:9070"],
+			"args": [
+				"--runInBand",
+				"temp/wpt/dom/nodes/MutationObserver-childList.html"
+			],
+			"env": {
+				"WEB_PLATFORM_TESTS_PATH": "${workspaceRoot}/temp/wpt"
+			},
+			"runtimeArgs": [
+				"--inspect=:9070"
+			],
 			"sourceMaps": true,
 			"port": 9070,
-			"protocol": "inspector"
+			"protocol": "inspector",
+			"console": "integratedTerminal"
 		}
 	]
 }
