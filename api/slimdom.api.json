@@ -9913,6 +9913,35 @@
             },
             {
               "kind": "Method",
+              "canonicalReference": "slimdom!Range#deleteContents:member(1)",
+              "docComment": "/**\n * Removes the contents of the range\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "deleteContents(): "
+                },
+                {
+                  "kind": "Content",
+                  "text": "void"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "releaseTag": "Public",
+              "overloadIndex": 1,
+              "parameters": [],
+              "name": "deleteContents"
+            },
+            {
+              "kind": "Method",
               "canonicalReference": "slimdom!Range#detach:member(1)",
               "docComment": "/**\n * Stops tracking the range.\n *\n * (non-standard) According to the spec, this method must do nothing. However, it is not yet possible in all browsers to allow garbage collection while keeping track of active ranges to be updated by mutations. Therefore, unless your code will only run in environments that implement the WeakRef proposal (https://github.com/tc39/proposal-weakrefs), make sure to call this method to stop updating the range and free up its resources.\n */\n",
               "excerptTokens": [

@@ -7,7 +7,7 @@ import {
 	throwNotSupportedError,
 	throwWrongDocumentError,
 } from './util/errorHelpers';
-import { NodeType, isNodeOfType, isTextNode } from './util/NodeType';
+import { NodeType, isNodeOfType, isTextNode, isCharacterDataNode } from './util/NodeType';
 import {
 	determineLengthOfNode,
 	forEachInclusiveDescendant,
@@ -16,6 +16,7 @@ import {
 	getRootOfNode,
 } from './util/treeHelpers';
 import { asObject, asUnsignedLong } from './util/typeHelpers';
+import { removeNode } from './util/mutationAlgorithms';
 
 /**
  * Interface AbstractRange
@@ -533,6 +534,97 @@ export default class Range implements AbstractRange {
 		// equal: Return 0.
 		// after: Return 1.
 		// (handled in switch above)
+	}
+
+	/**
+	 * Removes the contents of the range
+	 */
+	deleteContents(): void {
+		// 1.  If this is collapsed, then return.
+		if (this.collapsed) {
+			return;
+		}
+
+		// 2. Let original start node, original start offset, original end node, and original end
+		// offset be this's start node, start offset, end node, and end offset, respectively.
+		const originalStartNode = this.startContainer;
+		const originalStartOffset = this.startOffset;
+		const originalEndNode = this.endContainer;
+		const originalEndOffset = this.endOffset;
+
+		// 3. If original start node is original end node and it is a CharacterData node, then
+		// replace data with node original start node, offset original start offset, count original
+		// end offset minus original start offset, and data the empty string, and then return.
+		if (originalStartNode === originalEndNode && isCharacterDataNode(originalStartNode)) {
+			originalStartNode.replaceData(
+				originalStartOffset,
+				originalEndOffset - originalStartOffset,
+				''
+			);
+			return;
+		}
+
+		// 4. Let nodes to remove be a list of all the nodes that are contained in this, in tree
+		// order, omitting any node whose parent is also contained in this.
+		const nodesToRemove: Node[] = [];
+		forEachNodeContainedInRange(this, (node) => {
+			nodesToRemove.push(node);
+		});
+
+		// 5. If original start node is an inclusive ancestor of original end node, set new node to
+		// original start node and new offset to original start offset.
+		let newNode: Node;
+		let newOffset: number;
+		if (originalStartNode.contains(originalEndNode)) {
+			newNode = originalStartNode;
+			newOffset = originalStartOffset;
+		} else {
+			// 6. Otherwise:
+			// 6.1. Let reference node equal original start node.
+			let referenceNode = originalStartNode;
+
+			// 6.2. While reference node's parent is not null and is not an inclusive ancestor of
+			// original end node, set reference node to its parent.
+			while (
+				referenceNode.parentNode !== null &&
+				!referenceNode.parentNode.contains(originalEndNode)
+			) {
+				referenceNode = referenceNode.parentNode;
+			}
+
+			// 6.3. Set new node to the parent of reference node, and new offset to one plus the
+			// index of reference node.
+			// Note: If reference node’s parent were null, it would be the root of this, so would be
+			// an inclusive ancestor of original end node, and we could not reach this point.
+			newNode = referenceNode.parentNode!;
+			newOffset = 1 + getNodeIndex(referenceNode);
+		}
+
+		// 7. If original start node is a CharacterData node, then replace data with node original
+		// start node, offset original start offset, count original start node's length minus
+		// original start offset, data the empty string.
+		if (isCharacterDataNode(originalStartNode)) {
+			originalStartNode.replaceData(
+				originalStartOffset,
+				originalStartNode.length - originalStartOffset,
+				''
+			);
+		}
+
+		// 8. For each node in nodes to remove, in tree order, remove node.
+		nodesToRemove.forEach((node) => {
+			removeNode(node);
+		});
+
+		// 9. If original end node is a CharacterData node, then replace data with node original end
+		// node, offset 0, count original end offset and data the empty string.
+		if (isCharacterDataNode(originalEndNode)) {
+			originalEndNode.replaceData(0, originalEndOffset, '');
+		}
+
+		// 10. Set start and end to (new node, new offset).
+		this.setStart(newNode, newOffset);
+		this.collapse(true);
 	}
 
 	/**

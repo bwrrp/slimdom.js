@@ -450,6 +450,7 @@ export class Range implements AbstractRange {
     // (undocumented)
     compareBoundaryPoints(how: number, sourceRange: Range): number;
     comparePoint(node: Node, offset: number): number;
+    deleteContents(): void;
     detach(): void;
     // (undocumented)
     static END_TO_END: number;

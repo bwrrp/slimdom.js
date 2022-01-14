@@ -179,6 +179,149 @@ describe('Range', () => {
 		});
 	});
 
+	describe('deleteContents', () => {
+		let element: slimdom.Element;
+		let before: slimdom.Text;
+		let inside: slimdom.Text;
+		let after: slimdom.Text;
+		beforeEach(() => {
+			element = document.createElement('element');
+			before = element.appendChild(document.createTextNode('before'));
+			inside = element
+				.appendChild(document.createElement('child'))
+				.appendChild(document.createTextNode('inside'));
+			after = element.appendChild(document.createTextNode('after'));
+			document.documentElement!.replaceWith(element);
+		});
+
+		it('can remove the documentElement', () => {
+			range.selectNode(element);
+			range.deleteContents();
+			expect(document.documentElement).toBe(null);
+			expect(range.startContainer).toBe(document);
+			expect(range.startOffset).toBe(0);
+		});
+
+		it('can remove the contents of the documentElement', () => {
+			range.selectNodeContents(element);
+			range.deleteContents();
+			expect(document.documentElement?.outerHTML).toBe('<element/>');
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(0);
+		});
+
+		it('can remove from text node to end', () => {
+			range.setStart(inside, 1);
+			range.setEnd(element, 3);
+			range.deleteContents();
+			expect(document.documentElement?.outerHTML).toBe(
+				'<element>before<child>i</child></element>'
+			);
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(2);
+		});
+
+		it('can remove within a text node', () => {
+			range.setStart(inside, 1);
+			range.setEnd(inside, 3);
+			range.deleteContents();
+			expect(document.documentElement?.outerHTML).toBe(
+				'<element>before<child>iide</child>after</element>'
+			);
+			expect(range.startContainer).toBe(inside);
+			expect(range.startOffset).toBe(1);
+		});
+
+		it('can remove across multiple text nodes', () => {
+			range.setStart(before, 2);
+			range.setEnd(inside, 3);
+			range.deleteContents();
+			expect(document.documentElement?.outerHTML).toBe(
+				'<element>be<child>ide</child>after</element>'
+			);
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(1);
+		});
+
+		it('can remove across multiple text nodes and elements', () => {
+			range.setStart(before, 2);
+			range.setEnd(after, 2);
+			range.deleteContents();
+			expect(document.documentElement?.outerHTML).toBe('<element>beter</element>');
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(1);
+		});
+
+		it('can remove across multiple nodes from element containers', () => {
+			range.setStart(element, 0);
+			range.setEnd(element, 2);
+			range.deleteContents();
+			expect(document.documentElement?.outerHTML).toBe('<element>after</element>');
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(0);
+		});
+
+		it('can remove across multiple nodes from a single element container', () => {
+			range.setStart(element, 0);
+			range.setEnd(element, 2);
+			range.deleteContents();
+			expect(document.documentElement?.outerHTML).toBe('<element>after</element>');
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(0);
+		});
+
+		it('can remove across multiple nodes from multiple element containers (end at end)', () => {
+			range.setStart(element, 0);
+			range.setEnd(inside.parentNode!, 1);
+			range.deleteContents();
+			expect(document.documentElement?.outerHTML).toBe('<element><child/>after</element>');
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(0);
+		});
+
+		it('can remove across multiple nodes from multiple element containers (end at begin)', () => {
+			range.setStart(element, 0);
+			range.setEnd(inside.parentNode!, 0);
+			range.deleteContents();
+			expect(document.documentElement?.outerHTML).toBe(
+				'<element><child>inside</child>after</element>'
+			);
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(0);
+		});
+
+		it('can remove across multiple nodes from multiple element containers (start at begin)', () => {
+			range.setStart(inside.parentNode!, 0);
+			range.setEnd(element, 3);
+			range.deleteContents();
+			expect(document.documentElement?.outerHTML).toBe('<element>before<child/></element>');
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(2);
+		});
+
+		it('can remove across multiple nodes from multiple element containers (start at end)', () => {
+			range.setStart(inside.parentNode!, 1);
+			range.setEnd(element, 3);
+			range.deleteContents();
+			expect(document.documentElement?.outerHTML).toBe(
+				'<element>before<child>inside</child></element>'
+			);
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(2);
+		});
+
+		it('does not remove anything for a collapsed range', () => {
+			range.setStart(inside.parentNode!, 1);
+			range.collapse();
+			range.deleteContents();
+			expect(document.documentElement?.outerHTML).toBe(
+				'<element>before<child>inside</child>after</element>'
+			);
+			expect(range.startContainer).toBe(element.firstElementChild);
+			expect(range.startOffset).toBe(1);
+		});
+	});
+
 	it('can be cloned', () => {
 		range.selectNodeContents(element);
 		const clone = range.cloneRange();

@@ -1,3 +1,4 @@
+import CharacterData from '../CharacterData';
 import Node from '../Node';
 import Text from '../Text';
 
@@ -26,6 +27,23 @@ export const enum NodeType {
  */
 export function isNodeOfType(node: Node, ...types: NodeType[]): boolean {
 	return types.some((t) => node.nodeType === t);
+}
+
+/**
+ * Checks whether node implements CharacterData
+ *
+ * @param node - The node to test
+ *
+ * @returns Whether node is a Text (or CDataSection) node
+ */
+export function isCharacterDataNode(node: Node): node is CharacterData {
+	return isNodeOfType(
+		node,
+		NodeType.COMMENT_NODE,
+		NodeType.PROCESSING_INSTRUCTION_NODE,
+		NodeType.TEXT_NODE,
+		NodeType.CDATA_SECTION_NODE
+	);
 }
 
 /**
