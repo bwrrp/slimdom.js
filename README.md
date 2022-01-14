@@ -93,10 +93,9 @@ This library omits properties and methods that exist mainly for web compatibilit
 
 ### Miscellaneous
 
-The following features are missing simply because I have not yet had a need for them. If you do need one, feel free to create a feature request issue or even submit a pull request.
+The following features are missing simply because I have not yet had, or heard of, a need for them. If you do need one of these, feel free to create a feature request issue or even submit a pull request.
 
 -   Iteration helpers (`NodeIterator` / `TreeWalker` / `NodeFilter`, and the `createNodeIterator` / `createTreeWalker` methods on `Document`).
--   DOM-modifying methods on Range (`deleteContents` / `extractContents` / `cloneContents` / `insertNode` / `surroundContents`).
 -   `attributeFilter` for mutation observers.
 -   `isConnected` / `getRootNode` / `isEqualNode` / `isSameNode` / `compareDocumentPosition` on `Node`
 

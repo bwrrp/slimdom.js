@@ -946,6 +946,9 @@ export default class Range implements AbstractRange {
 	 * @param node - Node to insert
 	 */
 	insertNode(node: Node): void {
+		expectArity(arguments, 1);
+		node = asObject(node, Node);
+
 		insertNodeIntoRange(node, this);
 	}
 
@@ -958,6 +961,9 @@ export default class Range implements AbstractRange {
 	 * @param newParent - Node to insert
 	 */
 	surroundContents(newParent: Node): void {
+		expectArity(arguments, 1);
+		newParent = asObject(newParent, Node);
+
 		// 1. If a non-Text node is partially contained in this, then throw an "InvalidStateError"
 		// DOMException.
 		const startNonTextNode = isTextNode(this.startContainer)
