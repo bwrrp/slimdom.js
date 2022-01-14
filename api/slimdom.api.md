@@ -442,6 +442,7 @@ export class ProcessingInstruction extends CharacterData {
 // @public
 export class Range implements AbstractRange {
     constructor();
+    cloneContents(): DocumentFragment;
     cloneRange(): Range;
     collapse(toStart?: boolean): void;
     // (undocumented)

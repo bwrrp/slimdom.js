@@ -165,12 +165,15 @@ function forEachNodeContainedInRange(range: AbstractRange, callback: (node: Node
 
 /**
  * To extract a live range range, run these steps:
+ * To clone the contents of a live range range, run these steps:
+ * (algorithms merged as they are very similar)
  *
- * @param range - the live range to extract
+ * @param range   - the live range to extract (or clone) contents of
+ * @param isClone - whether to clone the contents of the range or extract them
  *
- * @returns a DocumentFragment with the extracted contents
+ * @returns a DocumentFragment with the extracted or cloned contents
  */
-function extractLiveRange(range: Range): DocumentFragment {
+function extractRange(range: Range, isClone: boolean): DocumentFragment {
 	// 1. Let fragment be a new DocumentFragment node whose node document is range's start node's
 	// node document.
 	const document = getNodeDocument(range.startContainer);
@@ -204,13 +207,16 @@ function extractLiveRange(range: Range): DocumentFragment {
 		// 4.3. Append clone to fragment.
 		appendNode(clone, fragment);
 
-		// 4.4. Replace data with node original start node, offset original start offset, count
-		// original end offset minus original start offset, and data the empty string.
-		originalStartNode.replaceData(
-			originalStartOffset,
-			originalEndOffset - originalStartOffset,
-			''
-		);
+		if (!isClone) {
+			// 4.4. Replace data with node original start node, offset original start offset, count
+			// original end offset minus original start offset, and data the empty string.
+			// (step not used when cloning contents)
+			originalStartNode.replaceData(
+				originalStartOffset,
+				originalEndOffset - originalStartOffset,
+				''
+			);
+		}
 
 		// 4.5. Return fragment.
 		return fragment;
@@ -282,20 +288,26 @@ function extractLiveRange(range: Range): DocumentFragment {
 		// doctype can never be partially contained. It cannot be a boundary point of a range, and
 		// it cannot be the ancestor of anything.
 		if (isNodeOfType(child, NodeType.DOCUMENT_TYPE_NODE)) {
-			throwHierarchyRequestError('Can not extract a doctype using extractContents');
+			throwHierarchyRequestError(
+				isClone
+					? 'Can not clone a doctype using cloneContents'
+					: 'Can not extract a doctype using extractContents'
+			);
 		}
 		containedChildren.push(child);
 	}
 
 	// 13. If original start node is an inclusive ancestor of original end node, set new node to
 	// original start node and new offset to original start offset.
+	// (variables not used when cloning contents, as the range does not move)
 	let newNode: Node;
 	let newOffset: number;
-	if (startContainsEnd) {
+	if (startContainsEnd || isClone) {
 		newNode = originalStartNode;
 		newOffset = originalStartOffset;
 	} else {
 		// 14. Otherwise:
+		// (steps not used when cloning contents)
 
 		// 14.1. Let reference node equal original start node.
 		// 14.2. While reference node's parent is not null and is not an inclusive ancestor of
@@ -330,13 +342,16 @@ function extractLiveRange(range: Range): DocumentFragment {
 		// 15.3. Append clone to fragment.
 		appendNode(clone, fragment);
 
-		// 15.4 Replace data with node original start node, offset original start offset, count
-		// original start node's length minus original start offset, and data the empty string.
-		firstPartiallyContainedChild.replaceData(
-			originalStartOffset,
-			firstPartiallyContainedChild.length - originalStartOffset,
-			''
-		);
+		if (!isClone) {
+			// 15.4 Replace data with node original start node, offset original start offset, count
+			// original start node's length minus original start offset, and data the empty string.
+			// (step not used when cloning contents)
+			firstPartiallyContainedChild.replaceData(
+				originalStartOffset,
+				firstPartiallyContainedChild.length - originalStartOffset,
+				''
+			);
+		}
 	} else if (firstPartiallyContainedChild !== null) {
 		// 16. Otherwise, if first partially contained child is not null:
 
@@ -356,17 +371,26 @@ function extractLiveRange(range: Range): DocumentFragment {
 			determineLengthOfNode(firstPartiallyContainedChild)
 		);
 
-		// 16.4. Let subfragment be the result of extracting subrange.
-		const subfragment = extractLiveRange(subrange);
+		// 16.4. Let subfragment be the result of extracting / cloning the contents of subrange.
+		const subfragment = extractRange(subrange, isClone);
 		subrange.detach();
 
 		// 16.5. Append subfragment to clone.
 		appendNode(subfragment, clone);
 	}
 
-	// 17. For each contained child in contained children, append contained child to fragment.
+	// 17. For each contained child in contained children
 	containedChildren.forEach((containedChild) => {
-		appendNode(containedChild, fragment);
+		if (isClone) {
+			// 17.1. Let clone be a clone of contained child with the clone children flag set.
+			const clone = containedChild.cloneNode(true);
+
+			// 17.2. Append clone to fragment.
+			appendNode(clone, fragment);
+		} else {
+			// append contained child to fragment.
+			appendNode(containedChild, fragment);
+		}
 	});
 
 	// 18. If last partially contained child is a CharacterData node, then:
@@ -383,9 +407,12 @@ function extractLiveRange(range: Range): DocumentFragment {
 		// 18.3. Append clone to fragment.
 		appendNode(clone, fragment);
 
-		// 18.4. Replace data with node original end node, offset 0, count original end offset, and
-		// data the empty string.
-		lastPartiallyContainedChild.replaceData(0, originalEndOffset, '');
+		if (!isClone) {
+			// 18.4. Replace data with node original end node, offset 0, count original end offset,
+			// and data the empty string.
+			// (step not used when cloning contents)
+			lastPartiallyContainedChild.replaceData(0, originalEndOffset, '');
+		}
 	} else if (lastPartiallyContainedChild !== null) {
 		// 19. Otherwise, if last partially contained child is not null:
 
@@ -401,17 +428,20 @@ function extractLiveRange(range: Range): DocumentFragment {
 		subrange.setStart(lastPartiallyContainedChild, 0);
 		subrange.setEnd(originalEndNode, originalEndOffset);
 
-		// 19.4. Let subfragment be the result of extracting subrange.
-		const subfragment = extractLiveRange(subrange);
+		// 19.4. Let subfragment be the result of extracting / cloning the contents of subrange.
+		const subfragment = extractRange(subrange, isClone);
 		subrange.detach();
 
 		// 19.5. Append subfragment to clone.
 		appendNode(subfragment, clone);
 	}
 
-	// 20. Set range’s start and end to (new node, new offset).
-	range.setStart(newNode, newOffset);
-	range.collapse(true);
+	if (!isClone) {
+		// 20. Set range’s start and end to (new node, new offset).
+		// (step not used when cloning contents)
+		range.setStart(newNode, newOffset);
+		range.collapse(true);
+	}
 
 	// 21. Return fragment.
 	return fragment;
@@ -890,7 +920,16 @@ export default class Range implements AbstractRange {
 	 * @returns DocumentFragment containing the Range's previous contents
 	 */
 	extractContents(): DocumentFragment {
-		return extractLiveRange(this);
+		return extractRange(this, false);
+	}
+
+	/**
+	 * Clone the contents of this range into a new DocumentFragment
+	 *
+	 * @returns DocumentFragment containing a copy of the Range's contents
+	 */
+	cloneContents(): DocumentFragment {
+		return extractRange(this, true);
 	}
 
 	/**

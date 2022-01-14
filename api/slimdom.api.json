@@ -9661,6 +9661,36 @@
             },
             {
               "kind": "Method",
+              "canonicalReference": "slimdom!Range#cloneContents:member(1)",
+              "docComment": "/**\n * Clone the contents of this range into a new DocumentFragment\n *\n * @returns DocumentFragment containing a copy of the Range's contents\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "cloneContents(): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "DocumentFragment",
+                  "canonicalReference": "slimdom!default:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "releaseTag": "Public",
+              "overloadIndex": 1,
+              "parameters": [],
+              "name": "cloneContents"
+            },
+            {
+              "kind": "Method",
               "canonicalReference": "slimdom!Range#cloneRange:member(1)",
               "docComment": "/**\n * Returns a range with the same start and end as this.\n *\n * @returns A copy of this\n */\n",
               "excerptTokens": [

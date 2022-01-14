@@ -398,7 +398,7 @@ describe('Range', () => {
 			expect(range.startOffset).toBe(1);
 		});
 
-		it('can remove across multiple nodes from a single element container', () => {
+		it('can extract across multiple nodes from a single element container', () => {
 			range.setStart(element, 0);
 			range.setEnd(element, 2);
 			const fragment = range.extractContents();
@@ -468,6 +468,146 @@ describe('Range', () => {
 			);
 			expect(range.startContainer).toBe(element.firstElementChild);
 			expect(range.startOffset).toBe(1);
+		});
+
+		it('throws when trying to extract a doctype', () => {
+			document.insertBefore(
+				document.implementation.createDocumentType('html', '', ''),
+				document.documentElement
+			);
+			range.selectNodeContents(document);
+			expect(() => range.extractContents()).toThrow('HierarchyRequestError');
+		});
+	});
+
+	describe('cloneContents', () => {
+		let element: slimdom.Element;
+		let before: slimdom.Text;
+		let inside: slimdom.Text;
+		let after: slimdom.Text;
+		beforeEach(() => {
+			element = document.createElement('element');
+			before = element.appendChild(document.createTextNode('before'));
+			inside = element
+				.appendChild(document.createElement('child'))
+				.appendChild(document.createTextNode('inside'));
+			after = element.appendChild(document.createTextNode('after'));
+			document.documentElement!.replaceWith(element);
+		});
+
+		afterEach(() => {
+			// Document should be unchanged by clone
+			expect(slimdom.serializeToWellFormedString(document)).toBe(
+				'<element>before<child>inside</child>after</element>'
+			);
+		});
+
+		it('can clone the documentElement', () => {
+			range.selectNode(element);
+			const fragment = range.cloneContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe(
+				'<element>before<child>inside</child>after</element>'
+			);
+			expect(slimdom.serializeToWellFormedString(document)).toBe(
+				'<element>before<child>inside</child>after</element>'
+			);
+		});
+
+		it('can clone the contents of the documentElement', () => {
+			range.selectNodeContents(element);
+			const fragment = range.cloneContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe(
+				'before<child>inside</child>after'
+			);
+		});
+
+		it('can clone from text node to end', () => {
+			range.setStart(inside, 1);
+			range.setEnd(element, 3);
+			const fragment = range.cloneContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe('<child>nside</child>after');
+		});
+
+		it('can clone within a text node', () => {
+			range.setStart(inside, 1);
+			range.setEnd(inside, 3);
+			const fragment = range.cloneContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe('ns');
+		});
+
+		it('can clone across multiple text nodes', () => {
+			range.setStart(before, 2);
+			range.setEnd(inside, 3);
+			const fragment = range.cloneContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe('fore<child>ins</child>');
+		});
+
+		it('can clone across multiple text nodes and elements', () => {
+			range.setStart(before, 2);
+			range.setEnd(after, 2);
+			const fragment = range.cloneContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe(
+				'fore<child>inside</child>af'
+			);
+		});
+
+		it('can clone across multiple nodes from a single element container', () => {
+			range.setStart(element, 0);
+			range.setEnd(element, 2);
+			const fragment = range.cloneContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe(
+				'before<child>inside</child>'
+			);
+		});
+
+		it('can clone across multiple nodes from multiple element containers (end at end)', () => {
+			range.setStart(element, 0);
+			range.setEnd(inside.parentNode!, 1);
+			const fragment = range.cloneContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe(
+				'before<child>inside</child>'
+			);
+		});
+
+		it('can clone across multiple nodes from multiple element containers (end at begin)', () => {
+			range.setStart(element, 0);
+			range.setEnd(inside.parentNode!, 0);
+			const fragment = range.cloneContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe('before<child/>');
+		});
+
+		it('can clone across multiple nodes from multiple element containers (start at begin)', () => {
+			range.setStart(inside.parentNode!, 0);
+			range.setEnd(element, 3);
+			const fragment = range.cloneContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe(
+				'<child>inside</child>after'
+			);
+		});
+
+		it('can clone across multiple nodes from multiple element containers (start at end)', () => {
+			range.setStart(inside.parentNode!, 1);
+			range.setEnd(element, 3);
+			const fragment = range.cloneContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe('<child/>after');
+		});
+
+		it('does not clone anything for a collapsed range', () => {
+			range.setStart(inside.parentNode!, 1);
+			range.collapse();
+			const fragment = range.cloneContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe('');
+		});
+
+		it('throws when trying to clone a doctype', () => {
+			const doctype = document.insertBefore(
+				document.implementation.createDocumentType('html', '', ''),
+				document.documentElement
+			);
+			range.selectNodeContents(document);
+			expect(() => range.cloneContents()).toThrow('HierarchyRequestError');
+			// Remove it again to make afterEach happy
+			doctype.remove();
 		});
 	});
 
