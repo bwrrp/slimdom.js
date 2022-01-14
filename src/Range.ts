@@ -19,7 +19,7 @@ import {
 	getRootOfNode,
 } from './util/treeHelpers';
 import { asObject, asUnsignedLong } from './util/typeHelpers';
-import { appendNode, removeNode } from './util/mutationAlgorithms';
+import { appendNode, insertNodeIntoRange, removeNode } from './util/mutationAlgorithms';
 
 /**
  * Interface AbstractRange
@@ -271,16 +271,18 @@ function extractRange(range: Range, isClone: boolean): DocumentFragment {
 
 	// 11. Let contained children be a list of all children of common ancestor that are contained in
 	// range, in tree order.
+	// (if firstPartiallyContainedChild is null, originalStartNode contains originalEndNode, so
+	// there has to be a child at originalStartOffset)
 	const containedChildren: Node[] = [];
 	const firstChildAfterStart = firstPartiallyContainedChild
 		? firstPartiallyContainedChild.nextSibling
-		: originalStartNode.childNodes[originalStartOffset] || null;
+		: originalStartNode.childNodes[originalStartOffset];
 	const firstChildAfterEnd =
 		lastPartiallyContainedChild || originalEndNode.childNodes[originalEndOffset] || null;
 	for (
 		var child = firstChildAfterStart;
 		child && child !== firstChildAfterEnd;
-		child = child?.nextSibling
+		child = child!.nextSibling
 	) {
 		// 12. If any member of contained children is a doctype, then throw a "HierarchyRequestError"
 		// DOMException.
@@ -930,6 +932,10 @@ export default class Range implements AbstractRange {
 	 */
 	cloneContents(): DocumentFragment {
 		return extractRange(this, true);
+	}
+
+	insertNode(node: Node): void {
+		insertNodeIntoRange(node, this);
 	}
 
 	/**

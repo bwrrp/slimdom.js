@@ -611,6 +611,82 @@ describe('Range', () => {
 		});
 	});
 
+	describe('insertNode', () => {
+		let fragment: slimdom.DocumentFragment;
+		beforeEach(() => {
+			fragment = document.createDocumentFragment();
+			fragment.appendChild(document.createTextNode('before'));
+			fragment
+				.appendChild(document.createElement('child'))
+				.appendChild(document.createTextNode('inside'));
+			fragment.appendChild(document.createTextNode('after'));
+		});
+
+		it('throws when inserting under a processing instruction, comment, or parent-less text node', () => {
+			const pi = document.appendChild(document.createProcessingInstruction('target', 'data'));
+			const comment = document.appendChild(document.createComment('comment'));
+			const text = document.createTextNode('text');
+			range.setStart(pi, 0);
+			range.collapse(true);
+			expect(() => range.insertNode(fragment)).toThrow('HierarchyRequestError');
+			range.setStart(comment, 0);
+			range.collapse(true);
+			expect(() => range.insertNode(fragment)).toThrow('HierarchyRequestError');
+			range.setStart(text, 0);
+			range.collapse(true);
+			expect(() => range.insertNode(fragment)).toThrow('HierarchyRequestError');
+		});
+
+		it('can insert into an element at the start', () => {
+			range.setStart(element, 0);
+			range.collapse(true);
+			range.insertNode(fragment);
+			expect(slimdom.serializeToWellFormedString(element)).toBe(
+				'<root>before<child>inside</child>aftertext</root>'
+			);
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(0);
+			expect(range.endContainer).toBe(element);
+			expect(range.endOffset).toBe(3);
+		});
+
+		it('can insert into an element at the end', () => {
+			range.setStart(element, 1);
+			range.collapse(true);
+			range.insertNode(fragment);
+			expect(slimdom.serializeToWellFormedString(element)).toBe(
+				'<root>textbefore<child>inside</child>after</root>'
+			);
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(1);
+			expect(range.endContainer).toBe(element);
+			expect(range.endOffset).toBe(4);
+		});
+
+		it('can insert into a text node, splitting it', () => {
+			range.setStart(text, 2);
+			range.collapse(true);
+			range.insertNode(fragment);
+			expect(slimdom.serializeToWellFormedString(element)).toBe(
+				'<root>tebefore<child>inside</child>afterxt</root>'
+			);
+			expect(range.startContainer).toBe(text);
+			expect(range.startOffset).toBe(2);
+			expect(range.endContainer).toBe(element);
+			expect(range.endOffset).toBe(4);
+		});
+
+		it('can move a node', () => {
+			range.selectNodeContents(element);
+			range.insertNode(text);
+			expect(slimdom.serializeToWellFormedString(element)).toBe('<root>text</root>');
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(0);
+			expect(range.endContainer).toBe(element);
+			expect(range.endOffset).toBe(1);
+		});
+	});
+
 	it('can be cloned', () => {
 		range.selectNodeContents(element);
 		const clone = range.cloneRange();

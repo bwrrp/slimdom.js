@@ -1,14 +1,20 @@
+import { getContext } from '../context/Context';
+import queueMutationRecord from '../mutation-observer/queueMutationRecord';
 import { throwHierarchyRequestError, throwNotFoundError } from './errorHelpers';
-import { NodeType, isNodeOfType } from './NodeType';
-import { getNodeDocument, getNodeIndex, forEachInclusiveDescendant } from './treeHelpers';
+import { NodeType, isNodeOfType, isTextNode } from './NodeType';
+import {
+	getNodeDocument,
+	getNodeIndex,
+	forEachInclusiveDescendant,
+	determineLengthOfNode,
+} from './treeHelpers';
 import { insertIntoChildren, removeFromChildren } from './treeMutations';
 import Document from '../Document';
 import DocumentFragment from '../DocumentFragment';
 import Element from '../Element';
 import { ParentNode, ChildNode } from '../mixins';
 import Node from '../Node';
-import { getContext } from '../context/Context';
-import queueMutationRecord from '../mutation-observer/queueMutationRecord';
+import Range from '../Range';
 import Text from '../Text';
 
 // 3.2.3. Mutation algorithms
@@ -983,4 +989,81 @@ export function removeFromParent(thisObject: Node & ChildNode): void {
 
 	// 2. Remove the this.
 	removeNode(thisObject);
+}
+
+/**
+ * To insert a node node into a live range range, run these steps:
+ *
+ * @param node  - the node to insert
+ * @param range - the live range to insert into
+ */
+export function insertNodeIntoRange(node: Node, range: Range): void {
+	// 1. If range's start node is a ProcessingInstruction or Comment node, is a Text node whose
+	// parent is null, or is node, then throw a "HierarchyRequestError" DOMException.
+	const startContainer = range.startContainer;
+	if (isNodeOfType(startContainer, NodeType.PROCESSING_INSTRUCTION_NODE)) {
+		throwHierarchyRequestError('Can not insert into a processing instruction');
+	}
+	if (isNodeOfType(startContainer, NodeType.COMMENT_NODE)) {
+		throwHierarchyRequestError('Can not insert into a comment');
+	}
+	if (isTextNode(startContainer) && startContainer.parentNode === null) {
+		throwHierarchyRequestError('Can not insert into a text node without a parent');
+	}
+
+	// 2. Let referenceNode be null.
+	let referenceNode: Node | null = null;
+
+	// 3. If range's start node is a Text node, set referenceNode to that Text node.
+	if (isTextNode(startContainer)) {
+		referenceNode = startContainer;
+	} else {
+		// 4. Otherwise, set referenceNode to the child of start node whose index is start offset,
+		// and null if there is no such child.
+		referenceNode = startContainer.childNodes[range.startOffset] || null;
+	}
+
+	// 5. Let parent be range's start node if referenceNode is null, and referenceNode's parent
+	// otherwise.
+	const parent = referenceNode === null ? startContainer : referenceNode.parentNode!;
+
+	// 6. Ensure pre-insertion validity of node into parent before referenceNode.
+	ensurePreInsertionValidity(node, parent, referenceNode);
+
+	// 7. If range's start node is a Text node, set referenceNode to the result of splitting it with
+	// offset range's start offset.
+	if (isTextNode(startContainer)) {
+		referenceNode = startContainer.splitText(range.startOffset);
+	}
+
+	// 8. If node is referenceNode, set referenceNode to its next sibling.
+	if (node === referenceNode) {
+		referenceNode = referenceNode.nextSibling;
+	}
+
+	// 9. If node's parent is non-null, then remove node.
+	if (node.parentNode !== null) {
+		removeNode(node);
+	}
+
+	// 10. Let newOffset be parent's length if referenceNode is null, and referenceNode's index
+	// otherwise.
+	let newOffset =
+		referenceNode === null ? determineLengthOfNode(parent) : getNodeIndex(referenceNode);
+
+	// 11. Increase newOffset by node's length if node is a DocumentFragment node, and one
+	// otherwise.
+	if (isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE)) {
+		newOffset += determineLengthOfNode(node);
+	} else {
+		newOffset += 1;
+	}
+
+	// 12. Pre-insert node into parent before referenceNode.
+	preInsertNode(node, parent, referenceNode);
+
+	// 13. If range is collapsed, then set range’s end to (parent, newOffset).
+	if (range.collapsed) {
+		range.setEnd(parent, newOffset);
+	}
 }
