@@ -460,6 +460,7 @@ export class Range implements AbstractRange {
     endContainer: Node;
     // (undocumented)
     endOffset: number;
+    extractContents(): DocumentFragment;
     intersectsNode(node: Node): boolean;
     isPointInRange(node: Node, offset: number): boolean;
     // (undocumented)

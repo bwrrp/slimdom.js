@@ -10080,6 +10080,36 @@
             },
             {
               "kind": "Method",
+              "canonicalReference": "slimdom!Range#extractContents:member(1)",
+              "docComment": "/**\n * Move the contents of this range into a new DocumentFragment\n *\n * @returns DocumentFragment containing the Range's previous contents\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "extractContents(): "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "DocumentFragment",
+                  "canonicalReference": "slimdom!default:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "releaseTag": "Public",
+              "overloadIndex": 1,
+              "parameters": [],
+              "name": "extractContents"
+            },
+            {
+              "kind": "Method",
               "canonicalReference": "slimdom!Range#intersectsNode:member(1)",
               "docComment": "/**\n * Returns true if range overlaps the range from before node to after node.\n *\n * @param node - The node to check\n *\n * @returns Whether the range intersects node\n */\n",
               "excerptTokens": [

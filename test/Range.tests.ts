@@ -252,15 +252,6 @@ describe('Range', () => {
 			expect(range.startOffset).toBe(1);
 		});
 
-		it('can remove across multiple nodes from element containers', () => {
-			range.setStart(element, 0);
-			range.setEnd(element, 2);
-			range.deleteContents();
-			expect(document.documentElement?.outerHTML).toBe('<element>after</element>');
-			expect(range.startContainer).toBe(element);
-			expect(range.startOffset).toBe(0);
-		});
-
 		it('can remove across multiple nodes from a single element container', () => {
 			range.setStart(element, 0);
 			range.setEnd(element, 2);
@@ -314,6 +305,164 @@ describe('Range', () => {
 			range.setStart(inside.parentNode!, 1);
 			range.collapse();
 			range.deleteContents();
+			expect(document.documentElement?.outerHTML).toBe(
+				'<element>before<child>inside</child>after</element>'
+			);
+			expect(range.startContainer).toBe(element.firstElementChild);
+			expect(range.startOffset).toBe(1);
+		});
+	});
+
+	describe('extractContents', () => {
+		let element: slimdom.Element;
+		let before: slimdom.Text;
+		let inside: slimdom.Text;
+		let after: slimdom.Text;
+		beforeEach(() => {
+			element = document.createElement('element');
+			before = element.appendChild(document.createTextNode('before'));
+			inside = element
+				.appendChild(document.createElement('child'))
+				.appendChild(document.createTextNode('inside'));
+			after = element.appendChild(document.createTextNode('after'));
+			document.documentElement!.replaceWith(element);
+		});
+
+		it('can extract the documentElement', () => {
+			range.selectNode(element);
+			const fragment = range.extractContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe(
+				'<element>before<child>inside</child>after</element>'
+			);
+			expect(document.documentElement).toBe(null);
+			expect(range.startContainer).toBe(document);
+			expect(range.startOffset).toBe(0);
+		});
+
+		it('can extract the contents of the documentElement', () => {
+			range.selectNodeContents(element);
+			const fragment = range.extractContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe(
+				'before<child>inside</child>after'
+			);
+			expect(document.documentElement?.outerHTML).toBe('<element/>');
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(0);
+		});
+
+		it('can extract from text node to end', () => {
+			range.setStart(inside, 1);
+			range.setEnd(element, 3);
+			const fragment = range.extractContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe('<child>nside</child>after');
+			expect(document.documentElement?.outerHTML).toBe(
+				'<element>before<child>i</child></element>'
+			);
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(2);
+		});
+
+		it('can extract within a text node', () => {
+			range.setStart(inside, 1);
+			range.setEnd(inside, 3);
+			const fragment = range.extractContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe('ns');
+			expect(document.documentElement?.outerHTML).toBe(
+				'<element>before<child>iide</child>after</element>'
+			);
+			expect(range.startContainer).toBe(inside);
+			expect(range.startOffset).toBe(1);
+		});
+
+		it('can extract across multiple text nodes', () => {
+			range.setStart(before, 2);
+			range.setEnd(inside, 3);
+			const fragment = range.extractContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe('fore<child>ins</child>');
+			expect(document.documentElement?.outerHTML).toBe(
+				'<element>be<child>ide</child>after</element>'
+			);
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(1);
+		});
+
+		it('can extract across multiple text nodes and elements', () => {
+			range.setStart(before, 2);
+			range.setEnd(after, 2);
+			const fragment = range.extractContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe(
+				'fore<child>inside</child>af'
+			);
+			expect(document.documentElement?.outerHTML).toBe('<element>beter</element>');
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(1);
+		});
+
+		it('can remove across multiple nodes from a single element container', () => {
+			range.setStart(element, 0);
+			range.setEnd(element, 2);
+			const fragment = range.extractContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe(
+				'before<child>inside</child>'
+			);
+			expect(document.documentElement?.outerHTML).toBe('<element>after</element>');
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(0);
+		});
+
+		it('can extract across multiple nodes from multiple element containers (end at end)', () => {
+			range.setStart(element, 0);
+			range.setEnd(inside.parentNode!, 1);
+			const fragment = range.extractContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe(
+				'before<child>inside</child>'
+			);
+			expect(document.documentElement?.outerHTML).toBe('<element><child/>after</element>');
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(0);
+		});
+
+		it('can extract across multiple nodes from multiple element containers (end at begin)', () => {
+			range.setStart(element, 0);
+			range.setEnd(inside.parentNode!, 0);
+			const fragment = range.extractContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe('before<child/>');
+			expect(document.documentElement?.outerHTML).toBe(
+				'<element><child>inside</child>after</element>'
+			);
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(0);
+		});
+
+		it('can extract across multiple nodes from multiple element containers (start at begin)', () => {
+			range.setStart(inside.parentNode!, 0);
+			range.setEnd(element, 3);
+			const fragment = range.extractContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe(
+				'<child>inside</child>after'
+			);
+			expect(document.documentElement?.outerHTML).toBe('<element>before<child/></element>');
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(2);
+		});
+
+		it('can extract across multiple nodes from multiple element containers (start at end)', () => {
+			range.setStart(inside.parentNode!, 1);
+			range.setEnd(element, 3);
+			const fragment = range.extractContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe('<child/>after');
+			expect(document.documentElement?.outerHTML).toBe(
+				'<element>before<child>inside</child></element>'
+			);
+			expect(range.startContainer).toBe(element);
+			expect(range.startOffset).toBe(2);
+		});
+
+		it('does not extract anything for a collapsed range', () => {
+			range.setStart(inside.parentNode!, 1);
+			range.collapse();
+			const fragment = range.extractContents();
+			expect(slimdom.serializeToWellFormedString(fragment)).toBe('');
 			expect(document.documentElement?.outerHTML).toBe(
 				'<element>before<child>inside</child>after</element>'
 			);
