@@ -7,9 +7,10 @@ import {
 	throwNotSupportedError,
 	throwWrongDocumentError,
 } from './util/errorHelpers';
-import { NodeType, isNodeOfType } from './util/NodeType';
+import { NodeType, isNodeOfType, isTextNode } from './util/NodeType';
 import {
 	determineLengthOfNode,
+	forEachInclusiveDescendant,
 	getInclusiveAncestors,
 	getNodeIndex,
 	getRootOfNode,
@@ -102,6 +103,63 @@ function isCollapsed(range: AbstractRange): boolean {
 }
 
 /**
+ * Invokes callback on each node contained in range, in tree order, omitting any node whose parent
+ * is also contained in range.
+ *
+ * @param range    - Range to traverse
+ * @param callback - Callback to invoke for each contained node, should not modify node's position
+ *                   in the tree
+ */
+function forEachNodeContainedInRange(range: AbstractRange, callback: (node: Node) => void): void {
+	if (range.collapsed) {
+		return;
+	}
+	// Determine common ancestors
+	const ancestors1 = getInclusiveAncestors(range.startContainer);
+	const ancestors2 = getInclusiveAncestors(range.endContainer);
+	let firstDistinctAncestorIndex = 0;
+	while (
+		firstDistinctAncestorIndex < ancestors1.length &&
+		firstDistinctAncestorIndex < ancestors2.length
+	) {
+		if (ancestors1[firstDistinctAncestorIndex] !== ancestors2[firstDistinctAncestorIndex]) {
+			break;
+		}
+
+		++firstDistinctAncestorIndex;
+	}
+	const firstChildOutside = range.endContainer.childNodes[range.endOffset] || null;
+	// Walk along children of startContainer
+	for (
+		let child: Node | null = range.startContainer.childNodes[range.startOffset] || null;
+		child && child !== firstChildOutside && child !== ancestors2[ancestors1.length];
+		child = child.nextSibling
+	) {
+		callback(child);
+	}
+	// Walk along siblings from startContainer to common ancestor
+	for (let i = ancestors1.length - 1; i >= firstDistinctAncestorIndex; --i) {
+		for (
+			let sibling = ancestors1[i].nextSibling;
+			sibling && sibling !== firstChildOutside && sibling !== ancestors2[i];
+			sibling = sibling.nextSibling
+		) {
+			callback(sibling);
+		}
+	}
+	// Walk back down to the endContainer, including its children
+	for (let i = firstDistinctAncestorIndex; i < ancestors2.length; ++i) {
+		for (
+			let child = ancestors2[i].firstChild;
+			child && child !== firstChildOutside && child !== ancestors2[i + 1];
+			child = child.nextSibling
+		) {
+			callback(child);
+		}
+	}
+}
+
+/**
  * Interface Range
  *
  * Objects implementing the Range interface are known as live ranges.
@@ -116,6 +174,19 @@ export default class Range implements AbstractRange {
 
 	public get collapsed(): boolean {
 		return isCollapsed(this);
+	}
+
+	/**
+	 * The Range() constructor, when invoked, must return a new live range with (current global
+	 * object’s associated Document, 0) as its start and end.
+	 */
+	constructor() {
+		const context = getContext(this);
+		this.startContainer = context.document;
+		this.startOffset = 0;
+		this.endContainer = context.document;
+		this.endOffset = 0;
+		context.addRange(this);
 	}
 
 	/**
@@ -138,19 +209,6 @@ export default class Range implements AbstractRange {
 		}
 
 		return commonAncestorContainer;
-	}
-
-	/**
-	 * The Range() constructor, when invoked, must return a new live range with (current global
-	 * object’s associated Document, 0) as its start and end.
-	 */
-	constructor() {
-		const context = getContext(this);
-		this.startContainer = context.document;
-		this.startOffset = 0;
-		this.endContainer = context.document;
-		this.endOffset = 0;
-		context.addRange(this);
 	}
 
 	/**
@@ -639,6 +697,56 @@ export default class Range implements AbstractRange {
 				this.startOffset
 			) === POSITION_AFTER
 		);
+	}
+
+	/**
+	 * The stringification behavior must run these steps:
+	 */
+	toString(): string {
+		// 1. Let s be the empty string.
+		let s: string[] = [];
+
+		// 2. If this's start node is this's end node and it is a Text node, then return the
+		// substring of that Text node's data beginning at this's start offset and ending at this's
+		// end offset.
+		const startContainer = this.startContainer;
+		if (isTextNode(startContainer)) {
+			if (this.startContainer === this.endContainer) {
+				return startContainer.substringData(
+					this.startOffset,
+					this.endOffset - this.startOffset
+				);
+			}
+
+			// 3. If this's start node is a Text node, then append the substring of that node's data
+			// from this's start offset until the end to s.
+			s.push(
+				startContainer.substringData(
+					this.startOffset,
+					startContainer.length - this.startOffset
+				)
+			);
+		}
+
+		// 4. Append the concatenation of the data of all Text nodes that are contained in this, in
+		// tree order, to s.
+		forEachNodeContainedInRange(this, (node) => {
+			forEachInclusiveDescendant(node, (node) => {
+				if (isTextNode(node)) {
+					s.push(node.data);
+				}
+			});
+		});
+
+		// 5. If this's end node is a Text node, then append the substring of that node's data from
+		// its start until this’s end offset to s.
+		const endContainer = this.endContainer;
+		if (isTextNode(endContainer)) {
+			s.push(endContainer.substringData(0, this.endOffset));
+		}
+
+		// 6. Return s.
+		return s.join('');
 	}
 }
 

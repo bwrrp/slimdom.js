@@ -445,4 +445,43 @@ describe('Range', () => {
 			});
 		});
 	});
+
+	describe('stringifier', () => {
+		it('produces the text content of the range', () => {
+			const element = document.createElement('element');
+			const before = element.appendChild(document.createTextNode('before'));
+			const inside = element
+				.appendChild(document.createElement('child'))
+				.appendChild(document.createTextNode('inside'));
+			const after = element.appendChild(document.createTextNode('after'));
+			document.documentElement!.replaceWith(element);
+
+			range.selectNode(element);
+			expect(range.toString()).toBe('beforeinsideafter');
+			range.selectNodeContents(element);
+			expect(range.toString()).toBe('beforeinsideafter');
+			range.setStart(inside, 1);
+			expect(range.toString()).toBe('nsideafter');
+			range.setEnd(inside, 3);
+			expect(range.toString()).toBe('ns');
+			range.setStart(before, 2);
+			expect(range.toString()).toBe('foreins');
+			range.setEnd(after, 2);
+			expect(range.toString()).toBe('foreinsideaf');
+			range.setStart(element, 0);
+			range.setEnd(element, 2);
+			expect(range.toString()).toBe('beforeinside');
+			range.setEnd(inside.parentNode!, 1);
+			expect(range.toString()).toBe('beforeinside');
+			range.setEnd(inside.parentNode!, 0);
+			expect(range.toString()).toBe('before');
+			range.setStart(inside.parentNode!, 0);
+			range.setEnd(element, 3);
+			expect(range.toString()).toBe('insideafter');
+			range.setStart(inside.parentNode!, 1);
+			expect(range.toString()).toBe('after');
+			range.collapse();
+			expect(range.toString()).toBe('');
+		});
+	});
 });

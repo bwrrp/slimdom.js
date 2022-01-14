@@ -1,4 +1,5 @@
 import Node from '../Node';
+import Text from '../Text';
 
 export const enum NodeType {
 	ELEMENT_NODE = 1,
@@ -25,4 +26,15 @@ export const enum NodeType {
  */
 export function isNodeOfType(node: Node, ...types: NodeType[]): boolean {
 	return types.some((t) => node.nodeType === t);
+}
+
+/**
+ * Checks whether node implements Text
+ *
+ * @param node - The node to test
+ *
+ * @returns Whether node is a Text (or CDataSection) node
+ */
+export function isTextNode(node: Node): node is Text {
+	return isNodeOfType(node, NodeType.TEXT_NODE, NodeType.CDATA_SECTION_NODE);
 }

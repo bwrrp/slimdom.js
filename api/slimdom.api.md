@@ -479,6 +479,7 @@ export class Range implements AbstractRange {
     startContainer: Node;
     // (undocumented)
     startOffset: number;
+    toString(): string;
 }
 
 // @public
