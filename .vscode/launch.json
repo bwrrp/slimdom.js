@@ -9,7 +9,7 @@
 			"stopOnEntry": false,
 			"args": [
 				"--runInBand",
-				"temp/wpt/dom/nodes/MutationObserver-childList.html"
+				"temp/wpt/dom/ranges/Range-isPointInRange.html"
 			],
 			"env": {
 				"WEB_PLATFORM_TESTS_PATH": "${workspaceRoot}/temp/wpt"

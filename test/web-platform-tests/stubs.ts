@@ -59,6 +59,11 @@ Object.defineProperties(slimdom.Document.prototype, {
 			return this.getElementsByTagName('body')[0] || null;
 		},
 	},
+	head: {
+		get() {
+			return this.getElementsByTagName('head')[0] || null;
+		},
+	},
 	title: {
 		get() {
 			return this.getElementsByTagName('title')[0]?.textContent || '';
