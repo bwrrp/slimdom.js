@@ -103,7 +103,8 @@ export class DefaultContext implements Context {
 		let numRanges = this._ranges.length;
 		for (let i = numRanges - 1; i >= 0; --i) {
 			const r = this._ranges[i].deref();
-			if (r === undefined) {
+			// Safari / webkit has a bug where deref can return null instead of undefined
+			if (r === undefined || r === null) {
 				// Weak ref lost, remove
 				this._ranges[i] = this._ranges[numRanges - 1];
 				this._ranges.pop();
@@ -122,7 +123,8 @@ export class DefaultContext implements Context {
 		let numRanges = this._ranges.length;
 		for (let i = numRanges - 1; i >= 0; --i) {
 			const r = this._ranges[i].deref();
-			if (r === undefined || r === range) {
+			// Safari / webkit has a bug where deref can return null instead of undefined
+			if (r === undefined || r === null || r === range) {
 				this._ranges[i] = this._ranges[numRanges - 1];
 				this._ranges.pop();
 				numRanges -= 1;
