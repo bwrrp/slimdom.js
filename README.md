@@ -97,7 +97,7 @@ The following features are missing simply because I have not yet had, or heard o
 
 -   Iteration helpers (`NodeIterator` / `TreeWalker` / `NodeFilter`, and the `createNodeIterator` / `createTreeWalker` methods on `Document`).
 -   `attributeFilter` for mutation observers.
--   `isConnected` / `getRootNode` / `isEqualNode` / `isSameNode` / `compareDocumentPosition` on `Node`
+-   `isConnected` / `getRootNode` / `isEqualNode` / `isSameNode` on `Node`
 
 [dom-adopt-pr]: https://github.com/whatwg/dom/pull/819
 [slimdom-sax-parser]: https://github.com/wvbe/slimdom-sax-parser
