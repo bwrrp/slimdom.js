@@ -1,3 +1,4 @@
+import Attr from '../Attr';
 import CharacterData from '../CharacterData';
 import Node from '../Node';
 import Text from '../Text';
@@ -30,11 +31,22 @@ export function isNodeOfType(node: Node, ...types: NodeType[]): boolean {
 }
 
 /**
+ * Checks whether node implements Attr
+ *
+ * @param node - The node to test
+ *
+ * @returns Whether node is an Attr
+ */
+export function isAttrNode(node: Node): node is Attr {
+	return isNodeOfType(node, NodeType.ATTRIBUTE_NODE);
+}
+
+/**
  * Checks whether node implements CharacterData
  *
  * @param node - The node to test
  *
- * @returns Whether node is a Text (or CDataSection) node
+ * @returns Whether node is a CharacterData node
  */
 export function isCharacterDataNode(node: Node): node is CharacterData {
 	return isNodeOfType(

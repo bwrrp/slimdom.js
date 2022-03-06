@@ -8114,6 +8114,52 @@
             },
             {
               "kind": "Method",
+              "canonicalReference": "slimdom!Node#compareDocumentPosition:member(1)",
+              "docComment": "/**\n * Compare the position of this node with the given one.\n *\n * @param other - Node to compare with\n *\n * @returns a combination of the DOCUMENT_POSITION_* flags\n */\n",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "compareDocumentPosition(other: "
+                },
+                {
+                  "kind": "Reference",
+                  "text": "Node",
+                  "canonicalReference": "slimdom!default:class"
+                },
+                {
+                  "kind": "Content",
+                  "text": "): "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "isStatic": false,
+              "returnTypeTokenRange": {
+                "startIndex": 3,
+                "endIndex": 4
+              },
+              "releaseTag": "Public",
+              "overloadIndex": 1,
+              "parameters": [
+                {
+                  "parameterName": "other",
+                  "parameterTypeTokenRange": {
+                    "startIndex": 1,
+                    "endIndex": 2
+                  }
+                }
+              ],
+              "name": "compareDocumentPosition"
+            },
+            {
+              "kind": "Method",
               "canonicalReference": "slimdom!Node#contains:member(1)",
               "docComment": "/**\n * Returns true if other is an inclusive descendant of this, and false otherwise (including when other is null).\n *\n * @param childNode - Node to check\n *\n * @returns Whether childNode is an inclusive descendant of the current node\n */\n",
               "excerptTokens": [
@@ -8264,6 +8310,168 @@
               "isOptional": false,
               "releaseTag": "Public",
               "name": "DOCUMENT_NODE",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": true
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!Node.DOCUMENT_POSITION_CONTAINED_BY:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "static DOCUMENT_POSITION_CONTAINED_BY: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "DOCUMENT_POSITION_CONTAINED_BY",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": true
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!Node.DOCUMENT_POSITION_CONTAINS:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "static DOCUMENT_POSITION_CONTAINS: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "DOCUMENT_POSITION_CONTAINS",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": true
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!Node.DOCUMENT_POSITION_DISCONNECTED:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "static DOCUMENT_POSITION_DISCONNECTED: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "DOCUMENT_POSITION_DISCONNECTED",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": true
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!Node.DOCUMENT_POSITION_FOLLOWING:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "static DOCUMENT_POSITION_FOLLOWING: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "DOCUMENT_POSITION_FOLLOWING",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": true
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "static DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC",
+              "propertyTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isStatic": true
+            },
+            {
+              "kind": "Property",
+              "canonicalReference": "slimdom!Node.DOCUMENT_POSITION_PRECEDING:member",
+              "docComment": "",
+              "excerptTokens": [
+                {
+                  "kind": "Content",
+                  "text": "static DOCUMENT_POSITION_PRECEDING: "
+                },
+                {
+                  "kind": "Content",
+                  "text": "number"
+                },
+                {
+                  "kind": "Content",
+                  "text": ";"
+                }
+              ],
+              "isOptional": false,
+              "releaseTag": "Public",
+              "name": "DOCUMENT_POSITION_PRECEDING",
               "propertyTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2

@@ -361,6 +361,7 @@ export abstract class Node {
     static COMMENT_NODE: number;
     // (undocumented)
     COMMENT_NODE: number;
+    compareDocumentPosition(other: Node): number;
     contains(other: Node | null): boolean;
     abstract _copy(document: Document): Node;
     // (undocumented)
@@ -371,6 +372,18 @@ export abstract class Node {
     static DOCUMENT_NODE: number;
     // (undocumented)
     DOCUMENT_NODE: number;
+    // (undocumented)
+    static DOCUMENT_POSITION_CONTAINED_BY: number;
+    // (undocumented)
+    static DOCUMENT_POSITION_CONTAINS: number;
+    // (undocumented)
+    static DOCUMENT_POSITION_DISCONNECTED: number;
+    // (undocumented)
+    static DOCUMENT_POSITION_FOLLOWING: number;
+    // (undocumented)
+    static DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC: number;
+    // (undocumented)
+    static DOCUMENT_POSITION_PRECEDING: number;
     // (undocumented)
     static DOCUMENT_TYPE_NODE: number;
     // (undocumented)

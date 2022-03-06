@@ -1,3 +1,4 @@
+import Attr from './Attr';
 import Element from './Element';
 import Document from './Document';
 import Text from './Text';
@@ -12,9 +13,31 @@ import {
 	preRemoveChild,
 	removeNode,
 } from './util/mutationAlgorithms';
-import { NodeType, isNodeOfType } from './util/NodeType';
-import { getNodeDocument } from './util/treeHelpers';
+import { NodeType, isNodeOfType, isAttrNode } from './util/NodeType';
+import {
+	getInclusiveAncestors,
+	getNodeDocument,
+	getNodeIndex,
+	getRootOfNode,
+} from './util/treeHelpers';
 import { asNullableObject, asNullableString, asObject } from './util/typeHelpers';
+
+const orderKeyByNode = new WeakMap<Node, number>();
+
+/**
+ * Get an implementation-dependent integer value that can be used to consistently determine an
+ * ordering between unrelated nodes.
+ *
+ * @param node - The node to compare ordering for
+ */
+function getOrderKey(node: Node): number {
+	let orderKey = orderKeyByNode.get(node);
+	if (orderKey === undefined) {
+		orderKey = Math.random();
+		orderKeyByNode.set(node, orderKey);
+	}
+	return orderKey;
+}
 
 /**
  * 3.4. Interface Node
@@ -247,6 +270,146 @@ export default abstract class Node {
 	 */
 	public cloneNode(deep: boolean = false): this {
 		return cloneNode(this, deep);
+	}
+
+	static DOCUMENT_POSITION_DISCONNECTED = 0x1;
+	static DOCUMENT_POSITION_PRECEDING = 0x2;
+	static DOCUMENT_POSITION_FOLLOWING = 0x4;
+	static DOCUMENT_POSITION_CONTAINS = 0x8;
+	static DOCUMENT_POSITION_CONTAINED_BY = 0x10;
+	static DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC = 0x20;
+
+	/**
+	 * Compare the position of this node with the given one.
+	 *
+	 * @param other - Node to compare with
+	 *
+	 * @returns a combination of the DOCUMENT_POSITION_* flags
+	 */
+	public compareDocumentPosition(other: Node): number {
+		expectArity(arguments, 1);
+		other = asObject(other, Node);
+
+		// 1. If this is other, then return zero.
+		if (this === other) {
+			return 0;
+		}
+
+		// 2. Let node1 be other and node2 be this.
+		let node1: Node | null = other;
+		let node2: Node | null = this;
+
+		// 3. Let attr1 and attr2 be null.
+		let attr1: Attr | null = null;
+		let attr2: Attr | null = null;
+
+		// 4. If node1 is an attribute, then set attr1 to node1 and node1 to attr1's element.
+		if (isAttrNode(node1)) {
+			attr1 = node1;
+			node1 = attr1.ownerElement;
+		}
+
+		// 5. If node2 is an attribute, then:
+		if (isAttrNode(node2)) {
+			// 5.1. Set attr2 to node2 and node2 to attr2's element.
+			attr2 = node2;
+			node2 = attr2.ownerElement;
+
+			// 5.2. If attr1 and node1 are non-null, and node2 is node1, then:
+			if (attr1 !== null && node1 !== null && node2 === node1) {
+				// 5.2.1. For each attr in node2’s attribute list:
+				for (const attr of (node2 as Element).attributes) {
+					// 5.2.1.1. If attr equals attr1, then return the result of adding
+					// DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC and DOCUMENT_POSITION_PRECEDING.
+					if (attr === attr1) {
+						return (
+							Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC |
+							Node.DOCUMENT_POSITION_PRECEDING
+						);
+					}
+
+					// 5.2.1.2. If attr equals attr2, then return the result of adding
+					// DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC and DOCUMENT_POSITION_FOLLOWING.
+					if (attr === attr2) {
+						return (
+							Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC |
+							Node.DOCUMENT_POSITION_FOLLOWING
+						);
+					}
+				}
+			}
+		}
+
+		// 6. If node1 or node2 is null, or node1's root is not node2's root, then return the result
+		// of adding DOCUMENT_POSITION_DISCONNECTED, DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC, and
+		// either DOCUMENT_POSITION_PRECEDING or DOCUMENT_POSITION_FOLLOWING, with the constraint
+		// that this is to be consistent, together.
+		// Note: Whether to return DOCUMENT_POSITION_PRECEDING or DOCUMENT_POSITION_FOLLOWING is
+		// typically implemented via pointer comparison. In JavaScript implementations a cached
+		// Math.random() value can be used.
+		if (node1 === null || node2 === null) {
+			return (
+				Node.DOCUMENT_POSITION_DISCONNECTED |
+				Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC |
+				(getOrderKey(node1 || attr1!) > getOrderKey(node2 || attr2!)
+					? Node.DOCUMENT_POSITION_FOLLOWING
+					: Node.DOCUMENT_POSITION_PRECEDING)
+			);
+		}
+		const ancestors1 = getInclusiveAncestors(node1);
+		const ancestors2 = getInclusiveAncestors(node2);
+		if (ancestors1[0] !== ancestors2[0]) {
+			return (
+				Node.DOCUMENT_POSITION_DISCONNECTED |
+				Node.DOCUMENT_POSITION_IMPLEMENTATION_SPECIFIC |
+				(getOrderKey(ancestors1[0]) > getOrderKey(ancestors2[0])
+					? Node.DOCUMENT_POSITION_FOLLOWING
+					: Node.DOCUMENT_POSITION_PRECEDING)
+			);
+		}
+
+		// 7. If node1 is an ancestor of node2 and attr1 is null, or node1 is node2 and attr2 is
+		// non-null, then return the result of adding DOCUMENT_POSITION_CONTAINS to
+		// DOCUMENT_POSITION_PRECEDING.
+		let firstDistinctAncestorIndex = 0;
+		while (
+			firstDistinctAncestorIndex < ancestors1.length &&
+			firstDistinctAncestorIndex < ancestors2.length
+		) {
+			if (ancestors1[firstDistinctAncestorIndex] !== ancestors2[firstDistinctAncestorIndex]) {
+				break;
+			}
+			++firstDistinctAncestorIndex;
+		}
+		const node1ContainsNode2 =
+			node1 !== node2 && firstDistinctAncestorIndex === ancestors1.length;
+		const node2ContainsNode1 =
+			node1 !== node2 && firstDistinctAncestorIndex === ancestors2.length;
+		if ((node1ContainsNode2 && attr1 === null) || (node1 === node2 && attr2 !== null)) {
+			return Node.DOCUMENT_POSITION_CONTAINS | Node.DOCUMENT_POSITION_PRECEDING;
+		}
+
+		// 8. If node1 is a descendant of node2 and attr2 is null, or node1 is node2 and attr1 is
+		// non-null, then return the result of adding DOCUMENT_POSITION_CONTAINED_BY to
+		// DOCUMENT_POSITION_FOLLOWING.
+		if ((node2ContainsNode1 && attr2 === null) || (node1 === node2 && attr1 !== null)) {
+			return Node.DOCUMENT_POSITION_CONTAINED_BY | Node.DOCUMENT_POSITION_FOLLOWING;
+		}
+
+		// 9. If node1 is preceding node2, then return DOCUMENT_POSITION_PRECEDING.
+		// Note: Due to the way attributes are handled in this algorithm this results in a node's
+		// attributes counting as preceding that node's children, despite attributes not
+		// participating in the same tree.
+		if (
+			node1ContainsNode2 ||
+			getNodeIndex(ancestors1[firstDistinctAncestorIndex]) <
+				getNodeIndex(ancestors2[firstDistinctAncestorIndex])
+		) {
+			return Node.DOCUMENT_POSITION_PRECEDING;
+		}
+
+		// 10. Return DOCUMENT_POSITION_FOLLOWING.
+		return Node.DOCUMENT_POSITION_FOLLOWING;
 	}
 
 	/**
