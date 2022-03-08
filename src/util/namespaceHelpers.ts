@@ -1,3 +1,4 @@
+import { matchesNameProduction } from '../dom-parsing/grammar';
 import Element from '../Element';
 import Node from '../Node';
 import { throwInvalidCharacterError, throwNamespaceError } from './errorHelpers';
@@ -7,52 +8,6 @@ import { throwInvalidCharacterError, throwNamespaceError } from './errorHelpers'
 export const HTML_NAMESPACE = 'http://www.w3.org/1999/xhtml';
 export const XML_NAMESPACE = 'http://www.w3.org/XML/1998/namespace';
 export const XMLNS_NAMESPACE = 'http://www.w3.org/2000/xmlns/';
-
-/*
-// NAME_REGEX_XML_1_0_FIFTH_EDITION generated using regenerate:
-const regenerate = require('regenerate');
-
-const NameStartChar = regenerate()
-	.add(':')
-	.addRange('A', 'Z')
-	.add('_')
-	.addRange('a', 'z')
-	.addRange(0xC0, 0xD6)
-	.addRange(0xD8, 0xF6)
-	.addRange(0xF8, 0x2FF)
-	.addRange(0x370, 0x37D)
-	.addRange(0x37F, 0x1FFF)
-	.addRange(0x200C, 0x200D)
-	.addRange(0x2070, 0x218F)
-	.addRange(0x2C00, 0x2FEF)
-	.addRange(0x3001, 0xD7FF)
-	.addRange(0xF900, 0xFDCF)
-	.addRange(0xFDF0, 0xFFFD)
-	.addRange(0x10000, 0xEFFFF);
-
-const NameChar = NameStartChar.clone()
-	.add('-')
-	.add('.')
-	.addRange('0', '9')
-	.add(0xB7)
-	.addRange(0x0300, 0x036F)
-	.addRange(0x203F, 0x2040);
-
-return `^(?:${NameStartChar.toString()})(?:${NameChar.toString()})*$`;
-*/
-const NAME_REGEX_XML_1_0_FIFTH_EDITION =
-	/^(?:[:A-Z_a-z\xC0-\xD6\xD8-\xF6\xF8-\u02FF\u0370-\u037D\u037F-\u1FFF\u200C\u200D\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]|[\uD800-\uDB7F][\uDC00-\uDFFF])(?:[\-\.0-:A-Z_a-z\xB7\xC0-\xD6\xD8-\xF6\xF8-\u037D\u037F-\u1FFF\u200C\u200D\u203F\u2040\u2070-\u218F\u2C00-\u2FEF\u3001-\uD7FF\uF900-\uFDCF\uFDF0-\uFFFD]|[\uD800-\uDB7F][\uDC00-\uDFFF])*$/;
-
-/**
- * Returns true if name matches the Name production.
- *
- * @param name - The name to check
- *
- * @returns true if name matches Name, otherwise false
- */
-export function matchesNameProduction(name: string): boolean {
-	return NAME_REGEX_XML_1_0_FIFTH_EDITION.test(name);
-}
 
 /**
  * @param name - The name to check

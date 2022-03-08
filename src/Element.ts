@@ -4,6 +4,7 @@ import Attr from './Attr';
 import Document from './Document';
 import Node from './Node';
 import { getContext } from './context/Context';
+import { matchesNameProduction } from './dom-parsing/grammar';
 import { serializeFragment } from './dom-parsing/serializationAlgorithms';
 import {
 	appendNodes,
@@ -29,7 +30,6 @@ import {
 	throwNotFoundError,
 } from './util/errorHelpers';
 import {
-	matchesNameProduction,
 	validateAndExtract,
 	locateNamespacePrefix,
 	XMLNS_NAMESPACE,

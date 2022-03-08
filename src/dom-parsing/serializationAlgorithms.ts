@@ -6,54 +6,19 @@ import Element from '../Element';
 import Node from '../Node';
 import ProcessingInstruction from '../ProcessingInstruction';
 import Text from '../Text';
-import { throwInvalidStateError } from '../util/errorHelpers';
 import {
+	matchesCharProduction,
 	matchesNameProduction,
-	HTML_NAMESPACE,
-	XML_NAMESPACE,
-	XMLNS_NAMESPACE,
-} from '../util/namespaceHelpers';
+	matchesPubidCharProduction,
+} from '../dom-parsing/grammar';
+import { throwInvalidStateError } from '../util/errorHelpers';
+import { HTML_NAMESPACE, XML_NAMESPACE, XMLNS_NAMESPACE } from '../util/namespaceHelpers';
 import { NodeType } from '../util/NodeType';
 import {
 	recordNamespaceInformation,
 	LocalPrefixesMap,
 	NamespacePrefixMap,
 } from './NamespacePrefixMap';
-
-/*
-// CHAR_REGEX_XML_1_0_FIFTH_EDITION generated using regenerate:
-const regenerate = require('regenerate');
-
-const Char = regenerate()
-	.add(0x9)
-	.add(0xA)
-	.add(0xD)
-	.addRange(0x20, 0xD7FF)
-	.addRange(0xE000, 0xFFFD)
-	.addRange(0x10000, 0xEFFFF);
-
-return `^(${Char.toString()})*$`;
-*/
-const CHAR_REGEX_XML_1_0_FIFTH_EDITION =
-	/^(?:[\t\n\r -\uD7FF\uE000-\uFFFD]|[\uD800-\uDB7F][\uDC00-\uDFFF])*$/;
-
-/*
-// PUBIDCHAR_REGEX_XML_1_0_FIFTH_EDITION generated using regenerate:
-const regenerate = require('regenerate');
-
-// #x20 | #xD | #xA | [a-zA-Z0-9] | [-'()+,./:=?;!*#@$_%]
-const PubidChar = regenerate()
-	.add(0x20)
-	.add(0xD)
-	.add(0xA)
-	.addRange('a', 'z')
-	.addRange('A', 'Z')
-	.addRange('0', '9')
-	.add(..."-'()+,./:=?;!*#@$_%");
-
-`^(${PubidChar.toString()})*$`;
-*/
-const PUBIDCHAR_REGEX_XML_1_0_FIFTH_EDITION = /^(?:[\n\r !#-%'-;=\?-Z_a-z])*$/;
 
 const HTML_VOID_ELEMENTS = [
 	'area',
@@ -865,11 +830,7 @@ function serializeAttributeValue(
 	// characters that are not matched by the XML Char production, then throw an exception; the
 	// serialization of this attribute value would fail to produce a well-formed element
 	// serialization.
-	if (
-		requireWellFormed &&
-		attributeValue !== null &&
-		!CHAR_REGEX_XML_1_0_FIFTH_EDITION.test(attributeValue)
-	) {
+	if (requireWellFormed && attributeValue !== null && !matchesCharProduction(attributeValue)) {
 		throw new Error(
 			'Can not serialize an attribute value because it contains invalid characters.'
 		);
@@ -1010,7 +971,7 @@ function serializeCommentNode(
 	// throw an exception; the serialization of this node's data would not be well-formed.
 	if (
 		requireWellFormed &&
-		(!CHAR_REGEX_XML_1_0_FIFTH_EDITION.test(comment.data) ||
+		(!matchesCharProduction(comment.data) ||
 			comment.data.indexOf('--') >= 0 ||
 			comment.data.endsWith('-'))
 	) {
@@ -1069,7 +1030,7 @@ function serializeTextNode(
 	// 1. If the require well-formed flag is set (its value is true), and node's data contains
 	// characters that are not matched by the XML Char production, then throw an exception; the
 	// serialization of this node's data would not be well-formed.
-	if (requireWellFormed && !CHAR_REGEX_XML_1_0_FIFTH_EDITION.test(text.data)) {
+	if (requireWellFormed && !matchesCharProduction(text.data)) {
 		throw new Error('Can not serialize a text node because it contains invalid characters.');
 	}
 
@@ -1149,7 +1110,7 @@ function serializeDocumentTypeNode(
 	// 1. If the require well-formed flag is true and the node's publicId attribute contains
 	// characters that are not matched by the XML PubidChar production, then throw an exception; the
 	// serialization of this node would not be a well-formed document type declaration.
-	if (requireWellFormed && !PUBIDCHAR_REGEX_XML_1_0_FIFTH_EDITION.test(dt.publicId)) {
+	if (requireWellFormed && !matchesPubidCharProduction(dt.publicId)) {
 		throw new Error(
 			'Can not serialize a document type because the publicId contains invalid characters.'
 		);
@@ -1161,7 +1122,7 @@ function serializeDocumentTypeNode(
 	// serialization of this node would not be a well-formed document type declaration.
 	if (
 		requireWellFormed &&
-		(!CHAR_REGEX_XML_1_0_FIFTH_EDITION.test(dt.systemId) ||
+		(!matchesCharProduction(dt.systemId) ||
 			(dt.systemId.indexOf('"') >= 0 && dt.systemId.indexOf("'") >= 0))
 	) {
 		throw new Error(
@@ -1258,10 +1219,7 @@ function serializeProcessingInstructionNode(
 	// characters that are not matched by the XML Char production or contains the string "?>"
 	// (U+003F QUESTION MARK, U+003E GREATER-THAN SIGN), then throw an exception; the serialization
 	// of this node's data would not be well-formed.
-	if (
-		requireWellFormed &&
-		(!CHAR_REGEX_XML_1_0_FIFTH_EDITION.test(pi.data) || pi.data.indexOf('?>') >= 0)
-	) {
+	if (requireWellFormed && (!matchesCharProduction(pi.data) || pi.data.indexOf('?>') >= 0)) {
 		throw new Error(
 			'Can not serialize a processing instruction because the data contains invalid characters.'
 		);

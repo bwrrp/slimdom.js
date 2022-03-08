@@ -11,6 +11,7 @@ import ProcessingInstruction from './ProcessingInstruction';
 import Text from './Text';
 import Range from './Range';
 import { getContext } from './context/Context';
+import { matchesNameProduction } from './dom-parsing/grammar';
 import cloneNode from './util/cloneNode';
 import createElementNS from './util/createElementNS';
 import {
@@ -20,7 +21,7 @@ import {
 } from './util/errorHelpers';
 import { adoptNode, appendNodes, prependNodes, replaceChildren } from './util/mutationAlgorithms';
 import { NodeType, isNodeOfType } from './util/NodeType';
-import { matchesNameProduction, validateAndExtract } from './util/namespaceHelpers';
+import { validateAndExtract } from './util/namespaceHelpers';
 import { asNullableString, asObject } from './util/typeHelpers';
 import {
 	getListOfElementsWithNamespaceAndLocalName,
