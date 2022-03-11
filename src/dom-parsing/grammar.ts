@@ -1,6 +1,7 @@
 import {
 	complete,
 	delimited,
+	end,
 	error,
 	followed,
 	map,
@@ -18,6 +19,24 @@ import {
 	then,
 	token,
 } from 'prsc';
+import {
+	AttributeEvent,
+	AttValueEvent,
+	CDSectEvent,
+	CharRefEvent,
+	CommentEvent,
+	DoctypedeclEvent,
+	EmptyElemTagEvent,
+	EntityRefEvent,
+	ETagEvent,
+	ExternalIDEvent,
+	ParserEventType,
+	PIEvent,
+	ReferenceEvent,
+	STagEvent,
+	TextEvent,
+	XMLDeclEvent,
+} from './parserEvents';
 
 const TAB = token('\t');
 const LF = token('\n');
@@ -80,9 +99,9 @@ const NOTATION = token('NOTATION');
 const REQUIRED = token('#REQUIRED');
 const IMPLIED = token('#IMPLIED');
 const FIXED = token('#FIXED');
-const CONDITIONAL_SECT_START = token('<![');
-const INCLUDE = token('INCLUDE');
-const IGNORE = token('IGNORE');
+// const CONDITIONAL_SECT_START = token('<![');
+// const INCLUDE = token('INCLUDE');
+// const IGNORE = token('IGNORE');
 const ENTITY_DECL_START = token('<!ENTITY');
 const NDATA = token('NDATA');
 const NOTATION_DECL_START = token('<!NOTATION');
@@ -164,6 +183,19 @@ export function matchesCharProduction(value: string): boolean {
 // [3] S ::= (#x20 | #x9 | #xD | #xA)+
 const S = recognize(plus(or([SPACE, TAB, CR, LF])));
 
+const CompleteWhitespace = complete(star(S));
+
+/**
+ * Returns true if all characters in value match the S production.
+ *
+ * @param value - The string to check
+ *
+ * @returns true if all characters in value match S, otherwise false
+ */
+export function isWhitespace(value: string): boolean {
+	return CompleteWhitespace(value, 0).success;
+}
+
 // [4] NameStartChar ::= ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF]
 //     | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF]
 //     | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
@@ -214,34 +246,37 @@ export function matchesNameProduction(name: string): boolean {
 }
 
 // [6] Names ::= Name (#x20 Name)*
-const Names = then(Name, star(preceded(SPACE, Name)), (first, next) => [first, ...next]);
+// const Names = then(Name, star(preceded(SPACE, Name)), (first, next) => [first, ...next]);
 
 // [7] Nmtoken ::= (NameChar)+
 const Nmtoken = recognize(plus(NameChar));
 
 // [8] Nmtokens ::= Nmtoken (#x20 Nmtoken)*
-const NmTokens = then(Nmtoken, star(preceded(SPACE, Nmtoken)), (first, next) => [first, ...next]);
+// const NmTokens = then(Nmtoken, star(preceded(SPACE, Nmtoken)), (first, next) => [first, ...next]);
 
 // [66] CharRef ::= '&#' [0-9]+ ';'
 //      | '&#x' [0-9a-fA-F]+ ';'
-const CharRef = map(
+const CharRef: Parser<CharRefEvent> = map(
 	or([
 		map(delimited(CHARREF_HEX_START, recognize(plus(HEX_DIGIT)), SEMICOLON, true), (n) =>
 			parseInt(n, 16)
 		),
 		map(delimited(CHARREF_START, recognize(plus(DIGIT)), SEMICOLON), (n) => parseInt(n, 10)),
 	]),
-	(cp) => String.fromCodePoint(cp)
+	(cp) => ({ type: ParserEventType.CharRef, char: String.fromCodePoint(cp) })
 );
 
 // [68] EntityRef ::= '&' Name ';'
-const EntityRef = delimited(AMPERSAND, Name, SEMICOLON);
+const EntityRef: Parser<EntityRefEvent> = map(delimited(AMPERSAND, Name, SEMICOLON), (name) => ({
+	type: ParserEventType.EntityRef,
+	name,
+}));
 
 // [67] Reference ::= EntityRef | CharRef
-const Reference = or([EntityRef, CharRef]);
+const Reference: Parser<ReferenceEvent> = or<ReferenceEvent>([EntityRef, CharRef]);
 
 // [69] PEReference ::= '%' Name ';'
-const PEReference = delimited(PERCENT, Name, SEMICOLON);
+const PEReference = map(delimited(PERCENT, Name, SEMICOLON), (name) => undefined);
 
 // [9] EntityValue ::= '"' ([^%&"] | PEReference | Reference)* '"'
 //     | "'" ([^%&'] | PEReference | Reference)* "'"
@@ -250,11 +285,19 @@ const EntityValue = or([
 		DOUBLE_QUOTE,
 		star(
 			or([
-				recognize(
-					except(skipChars(1), or([PERCENT, AMPERSAND, DOUBLE_QUOTE]), 'entity text')
+				consume(
+					recognize(
+						plus(
+							except(
+								skipChars(1),
+								or([PERCENT, AMPERSAND, DOUBLE_QUOTE]),
+								'entity text'
+							)
+						)
+					)
 				),
-				PEReference,
-				Reference,
+				consume(PEReference),
+				consume(Reference),
 			])
 		),
 		DOUBLE_QUOTE,
@@ -264,11 +307,19 @@ const EntityValue = or([
 		SINGLE_QUOTE,
 		star(
 			or([
-				recognize(
-					except(skipChars(1), or([PERCENT, AMPERSAND, SINGLE_QUOTE]), 'entity text')
+				consume(
+					recognize(
+						plus(
+							except(
+								skipChars(1),
+								or([PERCENT, AMPERSAND, SINGLE_QUOTE]),
+								'entity text'
+							)
+						)
+					)
 				),
-				PEReference,
-				Reference,
+				consume(PEReference),
+				consume(Reference),
 			])
 		),
 		SINGLE_QUOTE,
@@ -278,16 +329,18 @@ const EntityValue = or([
 
 // [10] AttValue ::= '"' ([^<&"] | Reference)* '"'
 //      | "'" ([^<&'] | Reference)* "'"
-const AttValue = or([
+const AttValue: Parser<AttValueEvent[]> = or([
 	delimited(
 		DOUBLE_QUOTE,
 		star(
-			or([
+			or<AttValueEvent>([
 				recognize(
-					except(
-						skipChars(1),
-						or([ANGLE_BRACKET_OPEN, AMPERSAND, DOUBLE_QUOTE]),
-						'attribute value'
+					plus(
+						except(
+							skipChars(1),
+							or([ANGLE_BRACKET_OPEN, AMPERSAND, DOUBLE_QUOTE]),
+							'attribute value'
+						)
 					)
 				),
 				Reference,
@@ -298,12 +351,14 @@ const AttValue = or([
 	delimited(
 		SINGLE_QUOTE,
 		star(
-			or([
+			or<AttValueEvent>([
 				recognize(
-					except(
-						skipChars(1),
-						or([ANGLE_BRACKET_OPEN, AMPERSAND, SINGLE_QUOTE]),
-						'attribute value'
+					plus(
+						except(
+							skipChars(1),
+							or([ANGLE_BRACKET_OPEN, AMPERSAND, SINGLE_QUOTE]),
+							'attribute value'
+						)
 					)
 				),
 				Reference,
@@ -314,11 +369,18 @@ const AttValue = or([
 ]);
 
 // [11] SystemLiteral ::= ('"' [^"]* '"') | ("'" [^']* "'")
-const SystemLiteral = delimited(
-	DOUBLE_QUOTE,
-	recognize(star(except(skipChars(1), DOUBLE_QUOTE, 'system literal'))),
-	DOUBLE_QUOTE
-);
+const SystemLiteral = or([
+	delimited(
+		DOUBLE_QUOTE,
+		recognize(star(except(skipChars(1), DOUBLE_QUOTE, 'system literal'))),
+		DOUBLE_QUOTE
+	),
+	delimited(
+		SINGLE_QUOTE,
+		recognize(star(except(skipChars(1), SINGLE_QUOTE, 'system literal'))),
+		SINGLE_QUOTE
+	),
+]);
 
 // [13] PubidChar ::= #x20 | #xD | #xA | [a-zA-Z0-9] | [-'()+,./:=?;!*#@$_%]
 const PubidChar = or([
@@ -379,27 +441,31 @@ const PubidLiteral = or([
 ]);
 
 // [14] CharData ::= [^<&]* - ([^<&]* ']]>' [^<&]*)
-const CharData = recognize(
-	star(except(skipChars(1), or([ANGLE_BRACKET_OPEN, AMPERSAND, SECT_END]), 'character data'))
+// CharData is only used as optional, it doesn't make sense to have it accept the empty string
+const CharData: Parser<TextEvent> = recognize(
+	plus(except(skipChars(1), or([ANGLE_BRACKET_OPEN, AMPERSAND, SECT_END]), 'character data'))
 );
 
 // [15] Comment ::= '<!--' ((Char - '-') | ('-' (Char - '-')))* '-->'
-const Comment = delimited(
-	COMMENT_START,
-	recognize(star(except(Char, DOUBLE_DASH, 'comment content may not contain --'))),
-	COMMENT_END,
-	true
+const Comment: Parser<CommentEvent> = map(
+	delimited(
+		COMMENT_START,
+		recognize(star(except(Char, DOUBLE_DASH, 'comment content may not contain --'))),
+		COMMENT_END,
+		true
+	),
+	(data) => ({ type: ParserEventType.Comment, data })
 );
 // [17] PITarget ::= Name - (('X' | 'x') ('M' | 'm') ('L' | 'l'))
 const PITarget = except(Name, caseInsensitiveToken('xml'), 'PI target may not be "xml"');
 
 // [16] PI ::= '<?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'
-const PI = delimited(
+const PI: Parser<PIEvent> = delimited(
 	PI_START,
 	then(
 		PITarget,
 		optional(preceded(S, recognize(star(except(Char, PI_END, 'PI data'))))),
-		(target, data) => [target, data] as const
+		(target, data) => ({ type: ParserEventType.PI, target, data })
 	),
 	PI_END,
 	true
@@ -415,7 +481,10 @@ const CData = recognize(star(except(Char, SECT_END, 'CData')));
 const CDEnd = SECT_END;
 
 // [18] CDSect ::= CDStart CData CDEnd
-const CDSect = delimited(CDStart, CData, CDEnd, true);
+const CDSect: Parser<CDSectEvent> = map(delimited(CDStart, CData, CDEnd, true), (data) => ({
+	type: ParserEventType.CDSect,
+	data,
+}));
 
 // [25] Eq ::= S? '=' S?
 const Eq = delimited(optional(S), EQUALS, optional(S));
@@ -461,9 +530,6 @@ const EncodingDecl = preceded(
 	)
 );
 
-// [28a] DeclSep ::= PEReference | S
-const DeclSep = or([PEReference, S]);
-
 // [32] SDDecl ::= S 'standalone' Eq (("'" ('yes' | 'no') "'") | ('"' ('yes' | 'no') '"'))
 const YesOrNo = or([map(YES, () => true), map(NO, () => false)]);
 const SDDecl = preceded(
@@ -481,13 +547,18 @@ const SDDecl = preceded(
 );
 
 // [23] XMLDecl ::= '<?xml' VersionInfo EncodingDecl? SDDecl? S? '?>'
-const XMLDecl = delimited(
+const XMLDecl: Parser<XMLDeclEvent> = delimited(
 	XML_DECL_START,
 	followed(
 		then(
 			VersionInfo,
-			then(optional(EncodingDecl), optional(SDDecl), (enc, sd) => [enc, sd]),
-			(version, [enc, sd]) => [version, enc, sd] as [string, string | null, boolean | null]
+			then(optional(EncodingDecl), optional(SDDecl), (e, s) => [e, s] as const),
+			(version, [encoding, standalone]) => ({
+				type: ParserEventType.XMLDecl,
+				version,
+				encoding,
+				standalone,
+			})
 		),
 		optional(S)
 	),
@@ -495,69 +566,41 @@ const XMLDecl = delimited(
 	true
 );
 
-// [27] Misc ::= Comment | PI | S
-const Misc = or([consume(Comment), consume(PI), consume(S)]);
-
 // [41] Attribute ::= Name Eq AttValue
-const Attribute = then(
-	Name,
-	preceded(Eq, AttValue),
-	(name, val) => [name, val] as [string, string[]]
-);
+const Attribute: Parser<AttributeEvent> = then(Name, preceded(Eq, AttValue), (name, value) => ({
+	name,
+	value,
+}));
 
 // [40] STag ::= '<' Name (S Attribute)* S? '>'
 const Attributes = followed(star(preceded(S, Attribute)), optional(S));
-const STag = delimited(
+
+const STag: Parser<STagEvent> = delimited(
 	ANGLE_BRACKET_OPEN,
-	then(Name, Attributes, (name, attrs) => name),
+	then(Name, Attributes, (name, attributes) => ({
+		type: ParserEventType.STag,
+		name,
+		attributes,
+	})),
 	ANGLE_BRACKET_CLOSE
 );
 
 // [42] ETag ::= '</' Name S? '>'
-const ETag = delimited(ETAG_START, followed(Name, optional(S)), ANGLE_BRACKET_CLOSE, true);
+const ETag: Parser<ETagEvent> = map(
+	delimited(ETAG_START, followed(Name, optional(S)), ANGLE_BRACKET_CLOSE, true),
+	(name) => ({ type: ParserEventType.ETag, name })
+);
 
 // [44] EmptyElemTag ::= '<' Name (S Attribute)* S? '/>'
-const EmptyElemTag = delimited(
+const EmptyElemTag: Parser<EmptyElemTagEvent> = delimited(
 	ANGLE_BRACKET_OPEN,
-	then(Name, Attributes, (name, attrs) => name),
+	then(Name, Attributes, (name, attributes) => ({
+		type: ParserEventType.EmptyElemTag,
+		name,
+		attributes,
+	})),
 	EMPTY_ELEMENT_END
 );
-
-// [43] content ::= CharData? ((element | Reference | CDSect | PI | Comment) CharData?)*
-const content = then(
-	optional(CharData),
-	star(
-		then(
-			or([
-				consume(elementIndirect),
-				consume(Reference),
-				consume(CDSect),
-				consume(PI),
-				consume(Comment),
-			]),
-			optional(CharData),
-			() => undefined
-		)
-	),
-	() => undefined
-);
-
-// [39] element ::= EmptyElemTag
-//      | STag content ETag
-const element = consume(
-	or([
-		EmptyElemTag,
-		then(
-			STag,
-			then(content, ETag, () => undefined),
-			() => undefined
-		),
-	])
-);
-
-function elementIndirect(input: string, offset: number): ParseResult<void> {
-	return element(input, offset);
-}
 
 const Multiplicity = or([QUESTION_MARK, ASTERISK, PLUS]);
 
@@ -694,61 +737,63 @@ const AttlistDecl = delimited(
 );
 
 // [62] includeSect ::= '<![' S? 'INCLUDE' S? '[' extSubsetDecl ']]>'
-const includeSect = delimited(
-	delimited(
-		CONDITIONAL_SECT_START,
-		delimited(optional(S), INCLUDE, optional(S)),
-		SQUARE_BRACKET_OPEN
-	),
-	extSubsetDeclIndirect,
-	SECT_END
-);
+// const includeSect = delimited(
+// 	delimited(
+// 		CONDITIONAL_SECT_START,
+// 		delimited(optional(S), INCLUDE, optional(S)),
+// 		SQUARE_BRACKET_OPEN
+// 	),
+// 	extSubsetDeclIndirect,
+// 	SECT_END
+// );
 
 // [65] Ignore ::= Char* - (Char* ('<![' | ']]>') Char*)
-const Ignore = star(except(Char, or([CONDITIONAL_SECT_START, SECT_END]), 'ignore sect contents'));
+// const Ignore = star(except(Char, or([CONDITIONAL_SECT_START, SECT_END]), 'ignore sect contents'));
 
 // [64] ignoreSectContents ::= Ignore ('<![' ignoreSectContents ']]>' Ignore)*
-const ignoreSectContents = then(
-	Ignore,
-	star(
-		then(
-			delimited(CONDITIONAL_SECT_START, ignoreSectContentsIndirect, SECT_END),
-			Ignore,
-			() => undefined
-		)
-	),
-	() => undefined
-);
+// const ignoreSectContents = then(
+// 	Ignore,
+// 	star(
+// 		then(
+// 			delimited(CONDITIONAL_SECT_START, ignoreSectContentsIndirect, SECT_END),
+// 			Ignore,
+// 			() => undefined
+// 		)
+// 	),
+// 	() => undefined
+// );
 
-function ignoreSectContentsIndirect(input: string, offset: number): ParseResult<void> {
-	return ignoreSectContents(input, offset);
-}
+// function ignoreSectContentsIndirect(input: string, offset: number): ParseResult<void> {
+// 	return ignoreSectContents(input, offset);
+// }
 
 // [63] ignoreSect ::= '<![' S? 'IGNORE' S? '[' ignoreSectContents* ']]>'
-const ignoreSect = delimited(
-	delimited(
-		CONDITIONAL_SECT_START,
-		delimited(optional(S), IGNORE, optional(S)),
-		SQUARE_BRACKET_OPEN
-	),
-	star(ignoreSectContents),
-	SECT_END
-);
+// const ignoreSect = delimited(
+// 	delimited(
+// 		CONDITIONAL_SECT_START,
+// 		delimited(optional(S), IGNORE, optional(S)),
+// 		SQUARE_BRACKET_OPEN
+// 	),
+// 	star(ignoreSectContents),
+// 	SECT_END
+// );
 
 // [61] conditionalSect ::= includeSect | ignoreSect
-// TODO: INCLUDE / IGNORE keywords here can apparently be parameter-entity references
-const conditionalSect = or([consume(includeSect), consume(ignoreSect)]);
+// const conditionalSect = or([consume(includeSect), consume(ignoreSect)]);
 
 // [75] ExternalID ::= 'SYSTEM' S SystemLiteral
 //      | 'PUBLIC' S PubidLiteral S SystemLiteral
-const ExternalID = or<[string | null, string]>([
-	map(preceded(SYSTEM, preceded(S, SystemLiteral)), (sysid) => [null, sysid]),
+const ExternalID: Parser<ExternalIDEvent> = or<ExternalIDEvent>([
+	map(preceded(SYSTEM, preceded(S, SystemLiteral)), (systemId) => ({
+		publicId: null,
+		systemId,
+	})),
 	preceded(
 		PUBLIC,
-		then(preceded(S, PubidLiteral), preceded(S, SystemLiteral), (pubid, sysid) => [
-			pubid,
-			sysid,
-		])
+		then(preceded(S, PubidLiteral), preceded(S, SystemLiteral), (publicId, systemId) => ({
+			publicId,
+			systemId,
+		}))
 	),
 ]);
 
@@ -780,17 +825,20 @@ const PEDecl = delimited(
 const EntityDecl = or([GEDecl, PEDecl]);
 
 // [77] TextDecl ::= '<?xml' VersionInfo? EncodingDecl S? '?>'
-const TextDecl = delimited(
-	XML_DECL_START,
-	then(optional(VersionInfo), EncodingDecl, () => undefined),
-	preceded(optional(S), PI_END)
-);
+// const TextDecl = delimited(
+// 	XML_DECL_START,
+// 	then(optional(VersionInfo), EncodingDecl, () => undefined),
+// 	preceded(optional(S), PI_END)
+// );
 
 // [78] extParsedEnt ::= TextDecl? content
-const extParsedEnt = then(optional(TextDecl), content, () => undefined);
+// const extParsedEnt = then(optional(TextDecl), content, () => undefined);
 
 // [83] PublicID ::= 'PUBLIC' S PubidLiteral
-const PublicID = followed(followed(PUBLIC, S), PubidLiteral);
+const PublicID: Parser<ExternalIDEvent> = map(
+	followed(followed(PUBLIC, S), PubidLiteral),
+	(publicId) => ({ publicId, systemId: null })
+);
 
 // [82] NotationDecl ::= '<!NOTATION' S Name S (ExternalID | PublicID) S? '>'
 const NotationDecl = delimited(
@@ -809,54 +857,177 @@ const markupdecl = or([
 	consume(Comment),
 ]);
 
+// [28a] DeclSep ::= PEReference | S
+const DeclSep = or([consume(PEReference), consume(S)]);
+
 // [28b] intSubset ::= (markupdecl | DeclSep)*
 const intSubset = consume(star(or([consume(markupdecl), consume(DeclSep)])));
 
 // [31] extSubsetDecl ::= ( markupdecl | conditionalSect | DeclSep)*
-const extSubsetDecl = star(or([consume(markupdecl), consume(conditionalSect), consume(DeclSep)]));
+// const extSubsetDecl = star(or([consume(markupdecl), consume(conditionalSect), consume(DeclSep)]));
 
-function extSubsetDeclIndirect(input: string, offset: number): ParseResult<void> {
-	return extSubset(input, offset);
-}
+// function extSubsetDeclIndirect(input: string, offset: number): ParseResult<void> {
+// 	return extSubset(input, offset);
+// }
 
 // [30] extSubset ::= TextDecl? extSubsetDecl
-const extSubset = then(optional(TextDecl), extSubsetDecl, () => undefined);
+// TODO: productions for the external subset apply after parameter entity references are included
+// const extSubset = then(optional(TextDecl), extSubsetDecl, () => undefined);
 
 // [28] doctypedecl ::= '<!DOCTYPE' S Name (S ExternalID)? S? ('[' intSubset ']' S?)? '>'
-const doctypedecl = delimited(
+const doctypedecl: Parser<DoctypedeclEvent> = delimited(
 	DOCTYPE_START,
 	preceded(
 		S,
 		then(
 			Name,
-			then(
+			followed(
 				followed(optional(preceded(S, ExternalID)), optional(S)),
 				optional(
 					followed(
 						delimited(SQUARE_BRACKET_OPEN, intSubset, SQUARE_BRACKET_CLOSE, true),
 						optional(S)
 					)
-				),
-				(externalId, intSubset) => [externalId, intSubset]
+				)
 			),
-			(name, [externalId, intSubset]) => [name, externalId, intSubset]
+			(name, ids) => ({ type: ParserEventType.Doctypedecl, name, ids })
 		)
 	),
 	ANGLE_BRACKET_CLOSE
 );
 
+type StreamingParser<T> = (input: string, offset: number) => Generator<T, ParseResult<unknown>>;
+
+function stream<T>(parser: Parser<T>): StreamingParser<T> {
+	return function* (input: string, offset: number) {
+		const res = parser(input, offset);
+		if (res.success) {
+			yield res.value;
+		}
+		return res;
+	};
+}
+
+function skipUndefined<T>(parser: StreamingParser<T | void>): StreamingParser<T> {
+	return function* (input: string, offset: number) {
+		const gen = parser(input, offset);
+		let it = gen.next();
+		while (!it.done) {
+			const value = it.value;
+			if (value !== undefined) {
+				yield value;
+			}
+			it = gen.next();
+		}
+		return it.value;
+	};
+}
+
+export function collect<T, R>(gen: Generator<T, R>): [T[], R] {
+	const values: T[] = [];
+	let it = gen.next();
+	while (!it.done) {
+		values.push(it.value);
+		it = gen.next();
+	}
+	return [values, it.value];
+}
+
+function streamingThen<T, U>(
+	parser1: StreamingParser<T>,
+	parser2: StreamingParser<U>
+): StreamingParser<T | U> {
+	return function* (input: string, offset: number) {
+		const res1 = yield* parser1(input, offset);
+		if (!res1.success) {
+			return res1;
+		}
+		return yield* parser2(input, res1.offset);
+	};
+}
+
+function streamingStar<T>(parser: StreamingParser<T>): StreamingParser<T> {
+	return function* (input: string, offset: number) {
+		while (true) {
+			const [values, result] = collect(parser(input, offset));
+			if (!result.success) {
+				if (result.fatal) {
+					return result;
+				}
+				return ok(offset);
+			}
+
+			yield* values;
+
+			if (offset === result.offset) {
+				// Did not advance
+				return ok(offset);
+			}
+			offset = result.offset;
+		}
+	};
+}
+
+function streamingOptional<T>(parser: StreamingParser<T>): StreamingParser<T> {
+	return function* (input: string, offset: number) {
+		const [values, result] = collect(parser(input, offset));
+		if (!result.success) {
+			if (result.fatal) {
+				return result;
+			}
+			return ok(offset);
+		}
+
+		yield* values;
+
+		return result;
+	};
+}
+
+function streamingComplete<T>(parser: StreamingParser<T>): StreamingParser<T> {
+	return function* (input: string, offset: number) {
+		const res = yield* parser(input, offset);
+		return end(input, res.offset);
+	};
+}
+
+// [27] Misc ::= Comment | PI | S
+const Misc = or<CommentEvent | PIEvent | void>([Comment, PI, consume(S)]);
+
+const MiscStar = streamingStar(skipUndefined(stream(Misc)));
+
 // [22] prolog ::= XMLDecl? Misc* (doctypedecl Misc*)?
-const prolog = then(
-	optional(XMLDecl),
-	then(star(Misc), optional(then(doctypedecl, star(Misc), () => undefined)), () => undefined),
-	() => undefined
+const prolog = streamingThen(
+	streamingThen(streamingOptional(stream(XMLDecl)), MiscStar),
+	streamingOptional(streamingThen(stream(doctypedecl), MiscStar))
 );
 
-// [1] document ::= prolog element Misc*
-export const document = complete(
-	then(
-		prolog,
-		then(element, star(Misc), () => undefined),
-		() => undefined
-	)
+// [43] content ::= CharData? ((element | Reference | CDSect | PI | Comment) CharData?)*
+// Here's where we deviate a little from the spec grammar in order to avoid the recursion around
+// elements. Instead, consider start and end tags as separate events and handle / check nesting in
+// the caller.
+const contentTag = or<
+	| STagEvent
+	| ETagEvent
+	| EmptyElemTagEvent
+	| ReferenceEvent
+	| CDSectEvent
+	| PIEvent
+	| CommentEvent
+>([STag, ETag, EmptyElemTag, Reference, CDSect, PI, Comment]);
+
+const content = streamingThen(
+	streamingOptional(stream(CharData)),
+	streamingStar(streamingThen(stream(contentTag), streamingOptional(stream(CharData))))
 );
+
+// [39] element ::= EmptyElemTag
+//      | STag content ETag
+const elementStart: Parser<STagEvent | EmptyElemTagEvent> = or<STagEvent | EmptyElemTagEvent>([
+	STag,
+	EmptyElemTag,
+]);
+const element = streamingThen(stream(elementStart), content);
+
+// [1] document ::= prolog element Misc*
+export const document = streamingComplete(streamingThen(streamingThen(prolog, element), MiscStar));

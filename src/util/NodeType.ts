@@ -1,5 +1,6 @@
 import Attr from '../Attr';
 import CharacterData from '../CharacterData';
+import Element from '../Element';
 import Node from '../Node';
 import Text from '../Text';
 
@@ -67,4 +68,15 @@ export function isCharacterDataNode(node: Node): node is CharacterData {
  */
 export function isTextNode(node: Node): node is Text {
 	return isNodeOfType(node, NodeType.TEXT_NODE, NodeType.CDATA_SECTION_NODE);
+}
+
+/**
+ * Checks whether node implements Element
+ *
+ * @param node - The node to test
+ *
+ * @returns Whether node is an Element node
+ */
+export function isElement(node: Node): node is Element {
+	return isNodeOfType(node, NodeType.ELEMENT_NODE);
 }
