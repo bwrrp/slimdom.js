@@ -30,6 +30,14 @@ describe('DOMParser', () => {
 		expect(slimdom.serializeToWellFormedString(doc)).toBe(source);
 	});
 
+	it('can handle character references and predefined entities', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root attr="&#x1f4a9;">&lt;&quot;&#128169;&apos;&gt;</root>`;
+		const out = `<root attr="\u{1f4a9}">&lt;"\u{1f4a9}'&gt;</root>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
 	it('returns an error document if parsing fails', () => {
 		const parser = new slimdom.DOMParser();
 		const doc = parser.parseFromString('NOT A VALID DOCUMENT', 'text/xml');

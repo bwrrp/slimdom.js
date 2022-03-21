@@ -1,5 +1,6 @@
 import {
 	complete,
+	cut,
 	delimited,
 	end,
 	error,
@@ -165,7 +166,14 @@ function caseInsensitiveToken(token: string): Parser<string> {
 }
 
 // [2] Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-const Char = or([TAB, LF, CR, range(0x20, 0xd7ff), range(0xe000, 0xfffd), range(0x10000, 0x10fff)]);
+const Char = or([
+	TAB,
+	LF,
+	CR,
+	range(0x20, 0xd7ff),
+	range(0xe000, 0xfffd),
+	range(0x10000, 0x10ffff),
+]);
 
 const CompleteChars = complete(star(Char));
 
@@ -346,7 +354,8 @@ const AttValue: Parser<AttValueEvent[]> = or([
 				Reference,
 			])
 		),
-		DOUBLE_QUOTE
+		DOUBLE_QUOTE,
+		true
 	),
 	delimited(
 		SINGLE_QUOTE,
@@ -364,7 +373,8 @@ const AttValue: Parser<AttValueEvent[]> = or([
 				Reference,
 			])
 		),
-		SINGLE_QUOTE
+		SINGLE_QUOTE,
+		true
 	),
 ]);
 
@@ -567,10 +577,14 @@ const XMLDecl: Parser<XMLDeclEvent> = delimited(
 );
 
 // [41] Attribute ::= Name Eq AttValue
-const Attribute: Parser<AttributeEvent> = then(Name, preceded(Eq, AttValue), (name, value) => ({
-	name,
-	value,
-}));
+const Attribute: Parser<AttributeEvent> = then(
+	Name,
+	preceded(cut(Eq), cut(AttValue)),
+	(name, value) => ({
+		name,
+		value,
+	})
+);
 
 // [40] STag ::= '<' Name (S Attribute)* S? '>'
 const Attributes = followed(star(preceded(S, Attribute)), optional(S));

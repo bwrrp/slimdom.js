@@ -5,7 +5,7 @@ import { isElement } from '../util/NodeType';
 import { document, isWhitespace } from './grammar';
 import { AttributeEvent, EmptyElemTagEvent, ParserEventType, STagEvent } from './parserEvents';
 
-const builtinEntities = new Map([
+const predefinedEntities = new Map([
 	['amp', '&'],
 	['lt', '<'],
 	['gt', '>'],
@@ -25,8 +25,12 @@ function getAttrValue(attr: AttributeEvent): string {
 					return v.char;
 
 				default:
-					// TODO: handle entities
-					throw new Error('entity reference in attribute value not supported');
+					const c = predefinedEntities.get(v.name);
+					if (c !== undefined) {
+						return c;
+					}
+					// TODO: handle entities defined in the DTD
+					throw new Error(`entity reference ${v.name} in attribute value not supported`);
 			}
 		})
 		.join('');
@@ -147,9 +151,11 @@ export function parseDocument(input: string): Document {
 				continue;
 
 			case ParserEventType.EntityRef:
-				const char = builtinEntities.get(event.name);
+				const char = predefinedEntities.get(event.name);
 				if (char === undefined) {
-					throw new Error(`unknown entity "${event.name}`);
+					throw new Error(
+						`entity reference ${event.name} in character data not supported`
+					);
 				}
 				collectedText.push(char);
 				continue;
