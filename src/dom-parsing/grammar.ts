@@ -1033,4 +1033,5 @@ const elementStart: Parser<STagEvent | EmptyElemTagEvent> = or<STagEvent | Empty
 const element = streamingThen(stream(elementStart), content);
 
 // [1] document ::= prolog element Misc*
-export const document = streamingComplete(streamingThen(streamingThen(prolog, element), MiscStar));
+// As element leads to content, which is a superset of Misc*, we can omit the last Misc*
+export const document = streamingComplete(streamingThen(prolog, element));

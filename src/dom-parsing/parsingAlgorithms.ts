@@ -1,8 +1,9 @@
 import Document from '../Document';
 import Node from '../Node';
+import { splitQualifiedName, XMLNS_NAMESPACE, XML_NAMESPACE } from '../util/namespaceHelpers';
 import { isElement } from '../util/NodeType';
 import { document, isWhitespace } from './grammar';
-import { ParserEventType } from './parserEvents';
+import { AttributeEvent, EmptyElemTagEvent, ParserEventType, STagEvent } from './parserEvents';
 
 const builtinEntities = new Map([
 	['amp', '&'],
@@ -12,22 +13,124 @@ const builtinEntities = new Map([
 	['quot', '"'],
 ]);
 
+function getAttrValue(attr: AttributeEvent): string {
+	// TODO: normalize attribute value
+	return attr.value
+		.map((v) => {
+			if (typeof v === 'string') {
+				return v;
+			}
+			switch (v.type) {
+				case ParserEventType.CharRef:
+					return v.char;
+
+				default:
+					// TODO: handle entities
+					throw new Error('entity reference in attribute value not supported');
+			}
+		})
+		.join('');
+}
+
+class Namespaces {
+	private _parent: Namespaces | null;
+	private _byPrefix: Map<string | null, string | null> = new Map();
+
+	private constructor(parent: Namespaces | null) {
+		this._parent = parent;
+	}
+
+	public getForElement(qualifiedName: string): string | null {
+		const { prefix } = splitQualifiedName(qualifiedName);
+		for (let ns: Namespaces | null = this; ns !== null; ns = ns._parent) {
+			const namespace = ns._byPrefix.get(prefix);
+			if (namespace !== undefined) {
+				return namespace;
+			}
+		}
+		throw new Error(`use of undeclared element prefix ${prefix}`);
+	}
+
+	public getForAttribute(qualifiedName: string): string | null {
+		const { prefix, localName } = splitQualifiedName(qualifiedName);
+		if (prefix === null) {
+			// Default namespace doesn't apply to attributes
+			return localName === 'xmlns' ? XMLNS_NAMESPACE : null;
+		}
+		for (let ns: Namespaces | null = this; ns !== null; ns = ns._parent) {
+			const namespace = ns._byPrefix.get(prefix);
+			if (namespace !== undefined) {
+				return namespace;
+			}
+		}
+		throw new Error(`use of undeclared attribute prefix ${prefix}`);
+	}
+
+	public static fromAttrs(parent: Namespaces, event: STagEvent | EmptyElemTagEvent): Namespaces {
+		const ns = new Namespaces(parent);
+
+		// TODO: also consider DTD default attributes
+		for (const attr of event.attributes) {
+			const { prefix, localName } = splitQualifiedName(attr.name);
+			if (prefix === null && localName === 'xmlns') {
+				ns._byPrefix.set(null, getAttrValue(attr) || null);
+			} else if (prefix === 'xmlns') {
+				if (localName === 'xmlns') {
+					throw new Error('the xmlns namespace prefix may not be declared');
+				}
+				const namespace = getAttrValue(attr) || null;
+				if (localName === 'xml' && namespace !== XML_NAMESPACE) {
+					throw new Error(
+						`the xml namespace prefix may not be bound to any namespace other than ${XML_NAMESPACE}`
+					);
+				}
+				if (namespace === null) {
+					throw new Error(`the prefix ${localName} may not be undeclared`);
+				}
+				ns._byPrefix.set(localName, namespace);
+			}
+		}
+
+		return ns;
+	}
+
+	public static default(): Namespaces {
+		const ns = new Namespaces(null);
+		ns._byPrefix.set(null, null);
+		ns._byPrefix.set('xml', XML_NAMESPACE);
+		ns._byPrefix.set('xmlns', XMLNS_NAMESPACE);
+		return ns;
+	}
+}
+
+const ROOT_NAMESPACES = Namespaces.default();
+
+type ParseContext = {
+	parent: Node;
+	namespaces: Namespaces;
+};
+
 export function parseDocument(input: string): Document {
 	const doc = new Document();
-	const parentStack: Node[] = [];
-	let parent: Node = doc;
+	let context: ParseContext = {
+		parent: doc,
+		namespaces: ROOT_NAMESPACES,
+	};
+	const stack: ParseContext[] = [];
 
 	let collectedText: string[] = [];
 
 	function flushCollectedText() {
 		if (collectedText.length > 0) {
 			const text = collectedText.join('');
-			if (parent !== doc || !isWhitespace(text)) {
-				parent.appendChild(doc.createTextNode(collectedText.join('')));
+			if (context.parent !== doc || !isWhitespace(text)) {
+				context.parent.appendChild(doc.createTextNode(collectedText.join('')));
 			}
 		}
 		collectedText.length = 0;
 	}
+
+	// TODO: normalize line endings
 
 	const gen = document(input, 0);
 	let it = gen.next();
@@ -56,15 +159,15 @@ export function parseDocument(input: string): Document {
 
 		switch (event.type) {
 			case ParserEventType.CDSect:
-				parent.appendChild(doc.createCDATASection(event.data));
+				context.parent.appendChild(doc.createCDATASection(event.data));
 				continue;
 
 			case ParserEventType.Comment:
-				parent.appendChild(doc.createComment(event.data));
+				context.parent.appendChild(doc.createComment(event.data));
 				continue;
 
 			case ParserEventType.Doctypedecl:
-				parent.appendChild(
+				context.parent.appendChild(
 					doc.implementation.createDocumentType(
 						event.name,
 						event.ids?.publicId || '',
@@ -74,32 +177,51 @@ export function parseDocument(input: string): Document {
 				continue;
 
 			case ParserEventType.PI:
-				parent.appendChild(doc.createProcessingInstruction(event.target, event.data || ''));
+				context.parent.appendChild(
+					doc.createProcessingInstruction(event.target, event.data || '')
+				);
 				continue;
 
 			case ParserEventType.STag:
 			case ParserEventType.EmptyElemTag: {
-				// TODO: update local namespaces
-				// TODO: resolve namespace
-				const element = doc.createElementNS(null, event.name);
-				// TODO: create attributes
-				parent.appendChild(element);
+				if (context.parent === doc && doc.documentElement !== null) {
+					throw new Error(
+						`document may only contain a single root element, but found ${doc.documentElement.nodeName} and ${event.name}`
+					);
+				}
+				const namespaces = Namespaces.fromAttrs(context.namespaces, event);
+				const namespace = namespaces.getForElement(event.name);
+				const element = doc.createElementNS(namespace, event.name);
+				for (const attr of event.attributes) {
+					const namespace = namespaces.getForAttribute(attr.name);
+					const { localName } = splitQualifiedName(attr.name);
+					if (element.hasAttributeNS(namespace, localName)) {
+						throw new Error(
+							`attribute ${attr.name} may not appear multiple times on element ${event.name}`
+						);
+					}
+					element.setAttributeNS(namespace, attr.name, getAttrValue(attr));
+				}
+				context.parent.appendChild(element);
 				if (event.type === ParserEventType.STag) {
-					parentStack.push(parent);
-					parent = element;
+					stack.push(context);
+					context = {
+						parent: element,
+						namespaces,
+					};
 				}
 				continue;
 			}
 
 			case ParserEventType.ETag:
-				if (
-					!isElement(parent) ||
-					parent.nodeName !== event.name ||
-					parentStack.length === 0
-				) {
-					throw new Error(`unbalanced end tag: ${event.name}`);
+				if (!isElement(context.parent) || context.parent.nodeName !== event.name) {
+					throw new Error(
+						`non-well-formed element: found end tag ${event.name} but expected ${
+							isElement(context.parent) ? context.parent.nodeName : 'no such tag'
+						}`
+					);
 				}
-				parent = parentStack.pop()!;
+				context = stack.pop()!;
 				continue;
 		}
 	}

@@ -1,6 +1,5 @@
 import { matchesNameProduction } from '../dom-parsing/grammar';
 import Element from '../Element';
-import Node from '../Node';
 import { throwInvalidCharacterError, throwNamespaceError } from './errorHelpers';
 
 // 1.5. Namespaces
@@ -39,6 +38,30 @@ export function validateQualifiedName(qualifiedName: string): void {
 	}
 }
 
+export function splitQualifiedName(qualifiedName: string): {
+	prefix: string | null;
+	localName: string;
+} {
+	// 2. Validate qualifiedName.
+	validateQualifiedName(qualifiedName);
+
+	// 3. Let prefix be null.
+	let prefix: string | null = null;
+
+	// 4.  Let localName be qualifiedName.
+	let localName = qualifiedName;
+
+	// 5. If qualifiedName contains a ":" (U+003A), then split the string on it and set prefix to
+	// the part before and localName to the part after.
+	const index = qualifiedName.indexOf(':');
+	if (index >= 0) {
+		prefix = qualifiedName.substring(0, index);
+		localName = qualifiedName.substring(index + 1);
+	}
+
+	return { prefix, localName };
+}
+
 /**
  * To validate and extract a namespace and qualifiedName, run these steps:
  *
@@ -57,21 +80,11 @@ export function validateAndExtract(
 	}
 
 	// 2. Validate qualifiedName.
-	validateQualifiedName(qualifiedName);
-
 	// 3. Let prefix be null.
-	let prefix: string | null = null;
-
 	// 4.  Let localName be qualifiedName.
-	let localName = qualifiedName;
-
 	// 5. If qualifiedName contains a ":" (U+003A), then split the string on it and set prefix to
 	// the part before and localName to the part after.
-	const index = qualifiedName.indexOf(':');
-	if (index >= 0) {
-		prefix = qualifiedName.substring(0, index);
-		localName = qualifiedName.substring(index + 1);
-	}
+	const { prefix, localName } = splitQualifiedName(qualifiedName);
 
 	// 6. If prefix is non-null and namespace is null, then throw a NamespaceError.
 	if (prefix !== null && namespace === null) {
