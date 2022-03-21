@@ -107,6 +107,10 @@ class Namespaces {
 	}
 }
 
+function normalizeLineEndings(input: string): string {
+	return input.replace(/\r\n?/g, '\n');
+}
+
 const ROOT_NAMESPACES = Namespaces.default();
 
 type ParseContext = {
@@ -134,7 +138,7 @@ export function parseDocument(input: string): Document {
 		collectedText.length = 0;
 	}
 
-	// TODO: normalize line endings
+	input = normalizeLineEndings(input);
 
 	const gen = document(input, 0);
 	let it = gen.next();

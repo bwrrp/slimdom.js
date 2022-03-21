@@ -4,7 +4,7 @@ describe('DOMParser', () => {
 	it('can parse an XML document', () => {
 		const parser = new slimdom.DOMParser();
 		const source = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html>
-				<head>
+				<head>\r\n
 					<title>Test document</title>
 				</head>
 				<body lang="en">
@@ -15,7 +15,7 @@ describe('DOMParser', () => {
 				</body>
 			</html>`;
 		const doc = parser.parseFromString(source, 'text/xml');
-		expect(slimdom.serializeToWellFormedString(doc)).toBe(source);
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(source.replace(/\r\n?/g, '\n'));
 	});
 
 	it('can parse an XML document with namespaces', () => {
