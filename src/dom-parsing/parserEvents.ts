@@ -48,10 +48,36 @@ export type EmptyElemTagEvent = {
 
 export type ExternalIDEvent = { publicId: string | null; systemId: string | null };
 
+export const enum MarkupdeclEventType {
+	AttlistDecl,
+}
+
+export const enum DefaultDeclType {
+	REQUIRED,
+	IMPLIED,
+	VALUE,
+}
+
+export type DefaultDeclEvent =
+	| { type: DefaultDeclType.REQUIRED }
+	| { type: DefaultDeclType.IMPLIED }
+	| { type: DefaultDeclType.VALUE; fixed: boolean; value: AttValueEvent[] };
+
+export type AttDefEvent = { name: string; def: DefaultDeclEvent };
+
+export type AttlistDeclEvent = {
+	type: MarkupdeclEventType.AttlistDecl;
+	name: string;
+	attdefs: AttDefEvent[];
+};
+
+export type MarkupdeclEvent = AttlistDeclEvent;
+
 export type DoctypedeclEvent = {
 	type: ParserEventType.Doctypedecl;
 	name: string;
 	ids: ExternalIDEvent | null;
+	intSubset: MarkupdeclEvent[] | null;
 };
 
 export type DocumentParseEvent =

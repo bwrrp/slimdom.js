@@ -21,16 +21,22 @@ import {
 	token,
 } from 'prsc';
 import {
+	AttDefEvent,
+	AttlistDeclEvent,
 	AttributeEvent,
 	AttValueEvent,
 	CDSectEvent,
 	CharRefEvent,
 	CommentEvent,
+	DefaultDeclEvent,
+	DefaultDeclType,
 	DoctypedeclEvent,
 	EmptyElemTagEvent,
 	EntityRefEvent,
 	ETagEvent,
 	ExternalIDEvent,
+	MarkupdeclEvent,
+	MarkupdeclEventType,
 	ParserEventType,
 	PIEvent,
 	ReferenceEvent,
@@ -730,23 +736,31 @@ const AttType = or([consume(StringType), consume(TokenizedType), consume(Enumera
 
 // [60] DefaultDecl ::= '#REQUIRED' | '#IMPLIED'
 //      | (('#FIXED' S)? AttValue)
-const DefaultDecl = or([
-	consume(REQUIRED),
-	consume(IMPLIED),
-	then(optional(followed(FIXED, S)), AttValue, () => undefined),
+const DefaultDecl = or<DefaultDeclEvent>([
+	map(REQUIRED, () => ({ type: DefaultDeclType.REQUIRED })),
+	map(IMPLIED, () => ({ type: DefaultDeclType.IMPLIED })),
+	then(
+		map(optional(followed(FIXED, S)), (v) => v !== null),
+		AttValue,
+		(fixed, value) => ({ type: DefaultDeclType.VALUE, fixed, value })
+	),
 ]);
 
 // [53] AttDef ::= S Name S AttType S DefaultDecl
-const AttDef = then(
+const AttDef: Parser<AttDefEvent> = then(
 	preceded(S, Name),
-	then(preceded(S, AttType), preceded(S, DefaultDecl), () => undefined),
-	() => undefined
+	cut(preceded(preceded(S, AttType), preceded(S, DefaultDecl))),
+	(name, def) => ({ name, def })
 );
 
 // [52] AttlistDecl ::= '<!ATTLIST' S Name AttDef* S? '>'
-const AttlistDecl = delimited(
+const AttlistDecl: Parser<AttlistDeclEvent> = delimited(
 	followed(ATTLIST_DECL_START, S),
-	then(Name, star(AttDef), () => undefined),
+	then(Name, cut(star(AttDef)), (name, attdefs) => ({
+		type: MarkupdeclEventType.AttlistDecl,
+		name,
+		attdefs,
+	})),
 	preceded(optional(S), ANGLE_BRACKET_CLOSE)
 );
 
@@ -862,9 +876,9 @@ const NotationDecl = delimited(
 );
 
 // [29] markupdecl ::= elementdecl | AttlistDecl | EntityDecl | NotationDecl | PI | Comment
-const markupdecl = or([
+const markupdecl = or<MarkupdeclEvent | void>([
 	consume(elementdecl),
-	consume(AttlistDecl),
+	AttlistDecl,
 	consume(EntityDecl),
 	consume(NotationDecl),
 	consume(PI),
@@ -874,8 +888,14 @@ const markupdecl = or([
 // [28a] DeclSep ::= PEReference | S
 const DeclSep = or([consume(PEReference), consume(S)]);
 
+function filterUndefined<T>(parser: Parser<(T | void)[]>): Parser<T[]> {
+	return map(parser, (vs) => vs.filter((v) => v !== undefined) as T[]);
+}
+
 // [28b] intSubset ::= (markupdecl | DeclSep)*
-const intSubset = consume(star(or([consume(markupdecl), consume(DeclSep)])));
+const intSubset: Parser<MarkupdeclEvent[]> = filterUndefined(
+	star(or<MarkupdeclEvent | void>([markupdecl, DeclSep]))
+);
 
 // [31] extSubsetDecl ::= ( markupdecl | conditionalSect | DeclSep)*
 // const extSubsetDecl = star(or([consume(markupdecl), consume(conditionalSect), consume(DeclSep)]));
@@ -895,16 +915,22 @@ const doctypedecl: Parser<DoctypedeclEvent> = delimited(
 		S,
 		then(
 			Name,
-			followed(
+			then(
 				followed(optional(preceded(S, ExternalID)), optional(S)),
 				optional(
 					followed(
 						delimited(SQUARE_BRACKET_OPEN, intSubset, SQUARE_BRACKET_CLOSE, true),
 						optional(S)
 					)
-				)
+				),
+				(ids, intSubset) => ({ ids, intSubset })
 			),
-			(name, ids) => ({ type: ParserEventType.Doctypedecl, name, ids })
+			(name, { ids, intSubset }) => ({
+				type: ParserEventType.Doctypedecl,
+				name,
+				ids,
+				intSubset,
+			})
 		)
 	),
 	ANGLE_BRACKET_CLOSE

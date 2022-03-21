@@ -38,6 +38,22 @@ describe('DOMParser', () => {
 		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
 	});
 
+	it('can get attributes from their defaults in the DTD', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ATTLIST root attr CDATA "value">]><root><root attr="override"/></root>`;
+		const out = `<!DOCTYPE root><root attr="value"><root attr="override"/></root>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
+	it('can get namespace declarations from their defaults in the DTD', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ATTLIST root xmlns CDATA "ns1">]><root><root xmlns="ns2"/></root>`;
+		const out = `<!DOCTYPE root><root xmlns="ns1"><root xmlns="ns2"/></root>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
 	it('returns an error document if parsing fails', () => {
 		const parser = new slimdom.DOMParser();
 		const doc = parser.parseFromString('NOT A VALID DOCUMENT', 'text/xml');

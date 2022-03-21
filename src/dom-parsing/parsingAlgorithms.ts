@@ -3,19 +3,34 @@ import Node from '../Node';
 import { splitQualifiedName, XMLNS_NAMESPACE, XML_NAMESPACE } from '../util/namespaceHelpers';
 import { isElement } from '../util/NodeType';
 import { document, isWhitespace } from './grammar';
-import { AttributeEvent, EmptyElemTagEvent, ParserEventType, STagEvent } from './parserEvents';
+import {
+	AttlistDeclEvent,
+	AttValueEvent,
+	DefaultDeclType,
+	DoctypedeclEvent,
+	EmptyElemTagEvent,
+	MarkupdeclEventType,
+	ParserEventType,
+	STagEvent,
+} from './parserEvents';
 
+// TODO: entities defined in encoded form in spec:
+// <!ENTITY lt     "&#38;#60;">
+// <!ENTITY gt     "&#62;">
+// <!ENTITY amp    "&#38;#38;">
+// <!ENTITY apos   "&#39;">
+// <!ENTITY quot   "&#34;">
 const predefinedEntities = new Map([
-	['amp', '&'],
 	['lt', '<'],
 	['gt', '>'],
+	['amp', '&'],
 	['apos', "'"],
 	['quot', '"'],
 ]);
 
-function getAttrValue(attr: AttributeEvent): string {
+function getAttrValue(value: AttValueEvent[]): string {
 	// TODO: normalize attribute value
-	return attr.value
+	return value
 		.map((v) => {
 			if (typeof v === 'string') {
 				return v;
@@ -30,6 +45,8 @@ function getAttrValue(attr: AttributeEvent): string {
 						return c;
 					}
 					// TODO: handle entities defined in the DTD
+					// TODO: referenced entities must not be external
+					// TODO: replacement text of referenced entities must not contain <
 					throw new Error(`entity reference ${v.name} in attribute value not supported`);
 			}
 		})
@@ -70,28 +87,44 @@ class Namespaces {
 		throw new Error(`use of undeclared attribute prefix ${prefix}`);
 	}
 
-	public static fromAttrs(parent: Namespaces, event: STagEvent | EmptyElemTagEvent): Namespaces {
+	public static fromAttrs(
+		parent: Namespaces,
+		event: STagEvent | EmptyElemTagEvent,
+		attlist: AttlistDeclEvent | undefined
+	): Namespaces {
 		const ns = new Namespaces(parent);
 
-		// TODO: also consider DTD default attributes
-		for (const attr of event.attributes) {
-			const { prefix, localName } = splitQualifiedName(attr.name);
-			if (prefix === null && localName === 'xmlns') {
-				ns._byPrefix.set(null, getAttrValue(attr) || null);
-			} else if (prefix === 'xmlns') {
+		const checkAttr = (qualifiedName: string, value: AttValueEvent[]) => {
+			const { prefix, localName } = splitQualifiedName(qualifiedName);
+			if (prefix === null && localName === 'xmlns' && !ns._byPrefix.has(null)) {
+				ns._byPrefix.set(null, getAttrValue(value) || null);
+			} else if (prefix === 'xmlns' && !ns._byPrefix.has(localName)) {
 				if (localName === 'xmlns') {
-					throw new Error('the xmlns namespace prefix may not be declared');
+					throw new Error('the xmlns namespace prefix must not be declared');
 				}
-				const namespace = getAttrValue(attr) || null;
+				const namespace = getAttrValue(value) || null;
 				if (localName === 'xml' && namespace !== XML_NAMESPACE) {
 					throw new Error(
-						`the xml namespace prefix may not be bound to any namespace other than ${XML_NAMESPACE}`
+						`the xml namespace prefix must not be bound to any namespace other than ${XML_NAMESPACE}`
 					);
 				}
 				if (namespace === null) {
-					throw new Error(`the prefix ${localName} may not be undeclared`);
+					throw new Error(`the prefix ${localName} must not be undeclared`);
 				}
 				ns._byPrefix.set(localName, namespace);
+			}
+		};
+
+		for (const attr of event.attributes) {
+			checkAttr(attr.name, attr.value);
+		}
+		if (attlist) {
+			for (const attr of attlist.attdefs) {
+				const def = attr.def;
+				if (def.type !== DefaultDeclType.VALUE) {
+					continue;
+				}
+				checkAttr(attr.name, def.value);
 			}
 		}
 
@@ -111,6 +144,20 @@ function normalizeLineEndings(input: string): string {
 	return input.replace(/\r\n?/g, '\n');
 }
 
+function getAttList(
+	dtd: DoctypedeclEvent | null,
+	elementName: string
+): AttlistDeclEvent | undefined {
+	if (!dtd || !dtd.intSubset) {
+		return undefined;
+	}
+
+	// TODO: build a map?
+	return dtd.intSubset.find(
+		(decl) => decl.type === MarkupdeclEventType.AttlistDecl && decl.name === elementName
+	);
+}
+
 const ROOT_NAMESPACES = Namespaces.default();
 
 type ParseContext = {
@@ -124,6 +171,7 @@ export function parseDocument(input: string): Document {
 		parent: doc,
 		namespaces: ROOT_NAMESPACES,
 	};
+	let dtd: DoctypedeclEvent | null = null;
 	const stack: ParseContext[] = [];
 
 	let collectedText: string[] = [];
@@ -177,6 +225,7 @@ export function parseDocument(input: string): Document {
 				continue;
 
 			case ParserEventType.Doctypedecl:
+				dtd = event;
 				context.parent.appendChild(
 					doc.implementation.createDocumentType(
 						event.name,
@@ -196,10 +245,14 @@ export function parseDocument(input: string): Document {
 			case ParserEventType.EmptyElemTag: {
 				if (context.parent === doc && doc.documentElement !== null) {
 					throw new Error(
-						`document may only contain a single root element, but found ${doc.documentElement.nodeName} and ${event.name}`
+						`document must contain a single root element, but found ${doc.documentElement.nodeName} and ${event.name}`
 					);
 				}
-				const namespaces = Namespaces.fromAttrs(context.namespaces, event);
+				const namespaces = Namespaces.fromAttrs(
+					context.namespaces,
+					event,
+					getAttList(dtd, event.name)
+				);
 				const namespace = namespaces.getForElement(event.name);
 				const element = doc.createElementNS(namespace, event.name);
 				for (const attr of event.attributes) {
@@ -207,10 +260,26 @@ export function parseDocument(input: string): Document {
 					const { localName } = splitQualifiedName(attr.name);
 					if (element.hasAttributeNS(namespace, localName)) {
 						throw new Error(
-							`attribute ${attr.name} may not appear multiple times on element ${event.name}`
+							`attribute ${attr.name} must not appear multiple times on element ${event.name}`
 						);
 					}
-					element.setAttributeNS(namespace, attr.name, getAttrValue(attr));
+					element.setAttributeNS(namespace, attr.name, getAttrValue(attr.value));
+				}
+				// Add default attributes from the DTD
+				const attlist = getAttList(dtd, event.name);
+				if (attlist) {
+					for (const attr of attlist.attdefs) {
+						const def = attr.def;
+						if (def.type !== DefaultDeclType.VALUE) {
+							continue;
+						}
+						const namespace = namespaces.getForAttribute(attr.name);
+						const { localName } = splitQualifiedName(attr.name);
+						if (element.hasAttributeNS(namespace, localName)) {
+							continue;
+						}
+						element.setAttributeNS(namespace, attr.name, getAttrValue(def.value));
+					}
 				}
 				context.parent.appendChild(element);
 				if (event.type === ParserEventType.STag) {
