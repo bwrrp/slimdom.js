@@ -9,6 +9,7 @@ import {
 	DefaultDeclType,
 	DoctypedeclEvent,
 	EmptyElemTagEvent,
+	EntityValueEvent,
 	MarkupdeclEventType,
 	ParserEventType,
 	STagEvent,
@@ -16,6 +17,8 @@ import {
 
 class Dtd {
 	private _attlistByName = new Map<string, Map<string, AttDefEvent>>();
+
+	private _entityByName = new Map<string, EntityValueEvent[]>();
 
 	constructor(dtd: DoctypedeclEvent) {
 		if (!dtd.intSubset) {
@@ -38,6 +41,15 @@ class Dtd {
 						}
 						defByName.set(attr.name, attr);
 					}
+					break;
+				}
+
+				case MarkupdeclEventType.EntityDecl: {
+					// First declaration is binding
+					if (this._entityByName.has(decl.name)) {
+						continue;
+					}
+					this._entityByName.set(decl.name, decl.value);
 				}
 			}
 		}

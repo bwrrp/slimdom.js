@@ -50,6 +50,7 @@ export type ExternalIDEvent = { publicId: string | null; systemId: string | null
 
 export const enum MarkupdeclEventType {
 	AttlistDecl,
+	EntityDecl,
 }
 
 export const enum DefaultDeclType {
@@ -71,7 +72,15 @@ export type AttlistDeclEvent = {
 	attdefs: AttDefEvent[];
 };
 
-export type MarkupdeclEvent = AttlistDeclEvent;
+export type EntityValueEvent = TextEvent | ReferenceEvent;
+
+export type EntityDeclEvent = {
+	type: MarkupdeclEventType.EntityDecl;
+	name: string;
+	value: EntityValueEvent[];
+};
+
+export type MarkupdeclEvent = AttlistDeclEvent | EntityDeclEvent;
 
 export type DoctypedeclEvent = {
 	type: ParserEventType.Doctypedecl;

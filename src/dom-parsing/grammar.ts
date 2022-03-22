@@ -32,7 +32,9 @@ import {
 	DefaultDeclType,
 	DoctypedeclEvent,
 	EmptyElemTagEvent,
+	EntityDeclEvent,
 	EntityRefEvent,
+	EntityValueEvent,
 	ETagEvent,
 	ExternalIDEvent,
 	MarkupdeclEvent,
@@ -294,12 +296,12 @@ const PEReference = map(delimited(PERCENT, Name, SEMICOLON), (name) => undefined
 
 // [9] EntityValue ::= '"' ([^%&"] | PEReference | Reference)* '"'
 //     | "'" ([^%&'] | PEReference | Reference)* "'"
-const EntityValue = or([
-	delimited(
-		DOUBLE_QUOTE,
-		star(
-			or([
-				consume(
+const EntityValue = filterUndefined(
+	or([
+		delimited(
+			DOUBLE_QUOTE,
+			star(
+				or<EntityValueEvent | void>([
 					recognize(
 						plus(
 							except(
@@ -308,20 +310,18 @@ const EntityValue = or([
 								'entity text'
 							)
 						)
-					)
-				),
-				consume(PEReference),
-				consume(Reference),
-			])
+					),
+					consume(PEReference),
+					Reference,
+				])
+			),
+			DOUBLE_QUOTE,
+			true
 		),
-		DOUBLE_QUOTE,
-		true
-	),
-	delimited(
-		SINGLE_QUOTE,
-		star(
-			or([
-				consume(
+		delimited(
+			SINGLE_QUOTE,
+			star(
+				or<EntityValueEvent | void>([
 					recognize(
 						plus(
 							except(
@@ -330,16 +330,16 @@ const EntityValue = or([
 								'entity text'
 							)
 						)
-					)
-				),
-				consume(PEReference),
-				consume(Reference),
-			])
+					),
+					consume(PEReference),
+					Reference,
+				])
+			),
+			SINGLE_QUOTE,
+			true
 		),
-		SINGLE_QUOTE,
-		true
-	),
-]);
+	])
+);
 
 // [10] AttValue ::= '"' ([^<&"] | Reference)* '"'
 //      | "'" ([^<&'] | Reference)* "'"
@@ -833,12 +833,17 @@ const ExternalID: Parser<ExternalIDEvent> = or<ExternalIDEvent>([
 const NDataDecl = preceded(delimited(S, NDATA, S), Name);
 
 // [73] EntityDef ::= EntityValue | (ExternalID NDataDecl?)
-const EntityDef = or([EntityValue, then(ExternalID, optional(NDataDecl), () => undefined)]);
+const EntityDef = or<EntityValueEvent[] | void>([
+	EntityValue,
+	consume(then(ExternalID, optional(NDataDecl), () => undefined)),
+]);
 
 // [71] GEDecl ::= '<!ENTITY' S Name S EntityDef S? '>'
-const GEDecl = delimited(
+const GEDecl: Parser<EntityDeclEvent | void> = delimited(
 	ENTITY_DECL_START,
-	then(preceded(S, Name), preceded(S, EntityDef), () => undefined),
+	then(preceded(S, Name), preceded(S, EntityDef), (name, value) =>
+		value === undefined ? undefined : { type: MarkupdeclEventType.EntityDecl, name, value }
+	),
 	preceded(optional(S), ANGLE_BRACKET_CLOSE)
 );
 
@@ -883,7 +888,7 @@ const NotationDecl = delimited(
 const markupdecl = or<MarkupdeclEvent | void>([
 	consume(elementdecl),
 	AttlistDecl,
-	consume(EntityDecl),
+	EntityDecl,
 	consume(NotationDecl),
 	consume(PI),
 	consume(Comment),
