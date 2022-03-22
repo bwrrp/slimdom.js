@@ -54,6 +54,14 @@ describe('DOMParser', () => {
 		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
 	});
 
+	it('can normalize attribute values', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ATTLIST root id ID #IMPLIED>]><root id=" \t\r\nbla\t\r\n " attr=" \t\r\nbla&#9;\t\r\n "/>`;
+		const out = `<!DOCTYPE root><root id="bla" attr="   bla&#9;   "/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
 	it('returns an error document if parsing fails', () => {
 		const parser = new slimdom.DOMParser();
 		const doc = parser.parseFromString('NOT A VALID DOCUMENT', 'text/xml');

@@ -732,7 +732,11 @@ const Enumeration = delimited(
 const EnumeratedType = or([NotationType, Enumeration]);
 
 // [54] AttType ::= StringType | TokenizedType | EnumeratedType
-const AttType = or([consume(StringType), consume(TokenizedType), consume(EnumeratedType)]);
+const AttType = or([
+	map(StringType, () => true),
+	map(TokenizedType, () => false),
+	map(EnumeratedType, () => false),
+]);
 
 // [60] DefaultDecl ::= '#REQUIRED' | '#IMPLIED'
 //      | (('#FIXED' S)? AttValue)
@@ -749,8 +753,8 @@ const DefaultDecl = or<DefaultDeclEvent>([
 // [53] AttDef ::= S Name S AttType S DefaultDecl
 const AttDef: Parser<AttDefEvent> = then(
 	preceded(S, Name),
-	cut(preceded(preceded(S, AttType), preceded(S, DefaultDecl))),
-	(name, def) => ({ name, def })
+	cut(then(preceded(S, AttType), preceded(S, DefaultDecl), (isCData, def) => ({ isCData, def }))),
+	(name, { isCData, def }) => ({ name, isCData, def })
 );
 
 // [52] AttlistDecl ::= '<!ATTLIST' S Name AttDef* S? '>'

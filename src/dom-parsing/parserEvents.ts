@@ -63,7 +63,7 @@ export type DefaultDeclEvent =
 	| { type: DefaultDeclType.IMPLIED }
 	| { type: DefaultDeclType.VALUE; fixed: boolean; value: AttValueEvent[] };
 
-export type AttDefEvent = { name: string; def: DefaultDeclEvent };
+export type AttDefEvent = { name: string; isCData: boolean; def: DefaultDeclEvent };
 
 export type AttlistDeclEvent = {
 	type: MarkupdeclEventType.AttlistDecl;

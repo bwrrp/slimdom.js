@@ -4,7 +4,7 @@ import { splitQualifiedName, XMLNS_NAMESPACE, XML_NAMESPACE } from '../util/name
 import { isElement } from '../util/NodeType';
 import { document, isWhitespace } from './grammar';
 import {
-	AttlistDeclEvent,
+	AttDefEvent,
 	AttValueEvent,
 	DefaultDeclType,
 	DoctypedeclEvent,
@@ -14,12 +14,40 @@ import {
 	STagEvent,
 } from './parserEvents';
 
-// TODO: entities defined in encoded form in spec:
-// <!ENTITY lt     "&#38;#60;">
-// <!ENTITY gt     "&#62;">
-// <!ENTITY amp    "&#38;#38;">
-// <!ENTITY apos   "&#39;">
-// <!ENTITY quot   "&#34;">
+class Dtd {
+	private _attlistByName = new Map<string, Map<string, AttDefEvent>>();
+
+	constructor(dtd: DoctypedeclEvent) {
+		if (!dtd.intSubset) {
+			return;
+		}
+
+		for (const decl of dtd.intSubset) {
+			switch (decl.type) {
+				case MarkupdeclEventType.AttlistDecl: {
+					// Multiple attlist for the same element are merged
+					let defByName = this._attlistByName.get(decl.name);
+					if (defByName === undefined) {
+						defByName = new Map<string, AttDefEvent>();
+						this._attlistByName.set(decl.name, defByName);
+					}
+					for (const attr of decl.attdefs) {
+						// First declaration is binding
+						if (defByName.has(attr.name)) {
+							continue;
+						}
+						defByName.set(attr.name, attr);
+					}
+				}
+			}
+		}
+	}
+
+	public getAttlist(elementName: string): Map<string, AttDefEvent> | undefined {
+		return this._attlistByName.get(elementName);
+	}
+}
+
 const predefinedEntities = new Map([
 	['lt', '<'],
 	['gt', '>'],
@@ -28,18 +56,24 @@ const predefinedEntities = new Map([
 	['quot', '"'],
 ]);
 
-function getAttrValue(value: AttValueEvent[]): string {
-	// TODO: normalize attribute value
-	return value
+function normalizeAttributeValue(value: AttValueEvent[], attDef: AttDefEvent | undefined): string {
+	const normalized = value
 		.map((v) => {
 			if (typeof v === 'string') {
-				return v;
+				return v.replace(/[\r\n\t]/g, ' ');
 			}
 			switch (v.type) {
 				case ParserEventType.CharRef:
 					return v.char;
 
 				default:
+					// TODO: recursively normalize replacement text, which is why predefined
+					// entities are defined in encoded form in the spec:
+					// <!ENTITY lt     "&#38;#60;">
+					// <!ENTITY gt     "&#62;">
+					// <!ENTITY amp    "&#38;#38;">
+					// <!ENTITY apos   "&#39;">
+					// <!ENTITY quot   "&#34;">
 					const c = predefinedEntities.get(v.name);
 					if (c !== undefined) {
 						return c;
@@ -51,6 +85,10 @@ function getAttrValue(value: AttValueEvent[]): string {
 			}
 		})
 		.join('');
+	if (attDef && !attDef.isCData) {
+		return normalized.replace(/[ ]+/g, ' ').replace(/^[ ]+|[ ]+$/g, '');
+	}
+	return normalized;
 }
 
 class Namespaces {
@@ -90,19 +128,20 @@ class Namespaces {
 	public static fromAttrs(
 		parent: Namespaces,
 		event: STagEvent | EmptyElemTagEvent,
-		attlist: AttlistDeclEvent | undefined
+		attlist: Map<string, AttDefEvent> | undefined
 	): Namespaces {
 		const ns = new Namespaces(parent);
 
 		const checkAttr = (qualifiedName: string, value: AttValueEvent[]) => {
 			const { prefix, localName } = splitQualifiedName(qualifiedName);
+			const def = attlist?.get(qualifiedName);
 			if (prefix === null && localName === 'xmlns' && !ns._byPrefix.has(null)) {
-				ns._byPrefix.set(null, getAttrValue(value) || null);
+				ns._byPrefix.set(null, normalizeAttributeValue(value, def) || null);
 			} else if (prefix === 'xmlns' && !ns._byPrefix.has(localName)) {
 				if (localName === 'xmlns') {
 					throw new Error('the xmlns namespace prefix must not be declared');
 				}
-				const namespace = getAttrValue(value) || null;
+				const namespace = normalizeAttributeValue(value, def) || null;
 				if (localName === 'xml' && namespace !== XML_NAMESPACE) {
 					throw new Error(
 						`the xml namespace prefix must not be bound to any namespace other than ${XML_NAMESPACE}`
@@ -119,7 +158,7 @@ class Namespaces {
 			checkAttr(attr.name, attr.value);
 		}
 		if (attlist) {
-			for (const attr of attlist.attdefs) {
+			for (const attr of attlist.values()) {
 				const def = attr.def;
 				if (def.type !== DefaultDeclType.VALUE) {
 					continue;
@@ -144,20 +183,6 @@ function normalizeLineEndings(input: string): string {
 	return input.replace(/\r\n?/g, '\n');
 }
 
-function getAttList(
-	dtd: DoctypedeclEvent | null,
-	elementName: string
-): AttlistDeclEvent | undefined {
-	if (!dtd || !dtd.intSubset) {
-		return undefined;
-	}
-
-	// TODO: build a map?
-	return dtd.intSubset.find(
-		(decl) => decl.type === MarkupdeclEventType.AttlistDecl && decl.name === elementName
-	);
-}
-
 const ROOT_NAMESPACES = Namespaces.default();
 
 type ParseContext = {
@@ -171,7 +196,7 @@ export function parseDocument(input: string): Document {
 		parent: doc,
 		namespaces: ROOT_NAMESPACES,
 	};
-	let dtd: DoctypedeclEvent | null = null;
+	let dtd: Dtd | null = null;
 	const stack: ParseContext[] = [];
 
 	let collectedText: string[] = [];
@@ -225,7 +250,7 @@ export function parseDocument(input: string): Document {
 				continue;
 
 			case ParserEventType.Doctypedecl:
-				dtd = event;
+				dtd = new Dtd(event);
 				context.parent.appendChild(
 					doc.implementation.createDocumentType(
 						event.name,
@@ -248,27 +273,28 @@ export function parseDocument(input: string): Document {
 						`document must contain a single root element, but found ${doc.documentElement.nodeName} and ${event.name}`
 					);
 				}
-				const namespaces = Namespaces.fromAttrs(
-					context.namespaces,
-					event,
-					getAttList(dtd, event.name)
-				);
+				const attlist = dtd ? dtd.getAttlist(event.name) : undefined;
+				const namespaces = Namespaces.fromAttrs(context.namespaces, event, attlist);
 				const namespace = namespaces.getForElement(event.name);
 				const element = doc.createElementNS(namespace, event.name);
 				for (const attr of event.attributes) {
 					const namespace = namespaces.getForAttribute(attr.name);
+					const def = attlist?.get(attr.name);
 					const { localName } = splitQualifiedName(attr.name);
 					if (element.hasAttributeNS(namespace, localName)) {
 						throw new Error(
 							`attribute ${attr.name} must not appear multiple times on element ${event.name}`
 						);
 					}
-					element.setAttributeNS(namespace, attr.name, getAttrValue(attr.value));
+					element.setAttributeNS(
+						namespace,
+						attr.name,
+						normalizeAttributeValue(attr.value, def)
+					);
 				}
 				// Add default attributes from the DTD
-				const attlist = getAttList(dtd, event.name);
 				if (attlist) {
-					for (const attr of attlist.attdefs) {
+					for (const attr of attlist.values()) {
 						const def = attr.def;
 						if (def.type !== DefaultDeclType.VALUE) {
 							continue;
@@ -278,7 +304,11 @@ export function parseDocument(input: string): Document {
 						if (element.hasAttributeNS(namespace, localName)) {
 							continue;
 						}
-						element.setAttributeNS(namespace, attr.name, getAttrValue(def.value));
+						element.setAttributeNS(
+							namespace,
+							attr.name,
+							normalizeAttributeValue(def.value, attr)
+						);
 					}
 				}
 				context.parent.appendChild(element);
