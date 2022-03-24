@@ -1,3 +1,4 @@
+import resolve from '@rollup/plugin-node-resolve';
 import sourcemaps from 'rollup-plugin-sourcemaps';
 import { terser } from 'rollup-plugin-terser';
 
@@ -7,8 +8,9 @@ export default {
 	input: 'lib/index.js',
 	output: [
 		{ name: 'slimdom', file: MAIN_DEST_FILE, format: 'umd', exports: 'named', sourcemap: true },
-		{ file: MODULE_DEST_FILE, format: 'es', sourcemap: true }
+		{ file: MODULE_DEST_FILE, format: 'es', sourcemap: true },
 	],
+	external: [],
 	onwarn(warning) {
 		// Ignore "this is undefined" warning triggered by typescript's __extends helper
 		if (warning.code === 'THIS_IS_UNDEFINED') {
@@ -18,11 +20,12 @@ export default {
 		console.error(warning.message);
 	},
 	plugins: [
+		resolve(),
 		sourcemaps(),
 		terser({
 			mangle: {
 				properties: {
-					regex: /^_/
+					regex: /^_/,
 				},
 				reserved: [
 					'Attr',
@@ -33,6 +36,7 @@ export default {
 					'DocumentFragment',
 					'DocumentType',
 					'DOMImplementation',
+					'DOMParser',
 					'Element',
 					'Node',
 					'MutationObserver',
@@ -40,9 +44,9 @@ export default {
 					'Range',
 					'Text',
 					'XMLDocument',
-					'XMLSerializer'
-				]
-			}
-		})
-	]
+					'XMLSerializer',
+				],
+			},
+		}),
+	],
 };

@@ -74,10 +74,12 @@ export type AttlistDeclEvent = {
 
 export type EntityValueEvent = TextEvent | ReferenceEvent;
 
+export type ExternalEntityEvent = { ids: ExternalIDEvent; ndata: string | null };
+
 export type EntityDeclEvent = {
 	type: MarkupdeclEventType.EntityDecl;
 	name: string;
-	value: EntityValueEvent[];
+	value: EntityValueEvent[] | ExternalEntityEvent;
 };
 
 export type MarkupdeclEvent = AttlistDeclEvent | EntityDeclEvent;

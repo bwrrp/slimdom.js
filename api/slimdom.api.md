@@ -242,6 +242,12 @@ export class DOMImplementation {
 }
 
 // @public
+export class DOMParser {
+    constructor();
+    parseFromString(str: string, type: string): Document;
+}
+
+// @public
 export class Element extends Node implements ParentNode, NonDocumentTypeChildNode, ChildNode {
     constructor(namespace: string | null, prefix: string | null, localName: string);
     // (undocumented)

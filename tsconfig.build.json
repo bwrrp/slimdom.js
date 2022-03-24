@@ -6,8 +6,13 @@
 		"module": "es6",
 		"target": "es2017",
 		"declaration": true,
-		"lib": ["es2017"],
-		"types": []
+		"lib": [
+			"es2017"
+		],
+		"types": [],
+		"moduleResolution": "node"
 	},
-	"include": ["src/**/*"]
+	"include": [
+		"src/**/*"
+	]
 }

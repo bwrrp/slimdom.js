@@ -30,12 +30,29 @@ describe('DOMParser', () => {
 		expect(slimdom.serializeToWellFormedString(doc)).toBe(source);
 	});
 
-	it('can handle character references and predefined entities', () => {
+	it('can handle character references and predefined entities in content', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<root attr="&#x1f4a9;">&lt;&quot;&#128169;&apos;&gt;</root>`;
 		const out = `<root attr="\u{1f4a9}">&lt;"\u{1f4a9}'&gt;</root>`;
 		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
+	it('supports entities in content', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY one "&two;&#38;two;&amp;two;"><!ENTITY two "prrt">]><root>&amp;&one;</root>`;
+		const out = `<!DOCTYPE root><root>&amp;prrtprrt&amp;two;</root>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
+	it('throws on recursive entities in content', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY one "&two;"><!ENTITY two "&one;">]><root>&one;</root>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: reference to entity one must not be recursive</parsererror>"`
+		);
 	});
 
 	it('can get attributes from their defaults in the DTD', () => {
@@ -60,6 +77,23 @@ describe('DOMParser', () => {
 		const out = `<!DOCTYPE root><root id="bla" attr="   bla&#9;   "/>`;
 		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
+	it('supports entities in attribute values', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY one "&two;&#38;two;&amp;two;"><!ENTITY two "prrt">]><root attr="&amp;&one;"/>`;
+		const out = `<!DOCTYPE root><root attr="&amp;prrtprrt&amp;two;"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
+	it('throws on recursive entities in attribute values', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY one "&two;"><!ENTITY two "&one;">]><root attr="&one;"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: reference to entity one must not be recursive</parsererror>"`
+		);
 	});
 
 	it('returns an error document if parsing fails', () => {

@@ -1,6 +1,11 @@
 import Document from '../Document';
 import { parseDocument } from './parsingAlgorithms';
 
+/**
+ * Interface DOMParser
+ *
+ * @public
+ */
 export default class DOMParser {
 	/**
 	 * Constructs a new DOMParser object.
@@ -12,11 +17,11 @@ export default class DOMParser {
 	 * return a Document object containing the parsed content if successful. If not successful,
 	 * returns a Document describing the error.
 	 *
-	 * @param str  The string to parse
-	 * @param type The mime type to parse the string as
+	 * @param str  - The string to parse
+	 * @param type - The mime type to parse the string as
 	 *
-	 * @return Either the document resulting from successfully parsing str, or a document describing
-	 * the error.
+	 * @returns  Either the document resulting from successfully parsing str, or a document
+	 *           describing the error.
 	 */
 	public parseFromString(str: string, type: string): Document {
 		switch (type) {

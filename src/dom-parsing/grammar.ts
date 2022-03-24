@@ -36,6 +36,7 @@ import {
 	EntityRefEvent,
 	EntityValueEvent,
 	ETagEvent,
+	ExternalEntityEvent,
 	ExternalIDEvent,
 	MarkupdeclEvent,
 	MarkupdeclEventType,
@@ -383,6 +384,23 @@ const AttValue: Parser<AttValueEvent[]> = or([
 		true
 	),
 ]);
+
+export const EntityReplacementTextInLiteral = complete(
+	star(
+		or<AttValueEvent>([
+			recognize(
+				plus(
+					except(
+						skipChars(1),
+						or([ANGLE_BRACKET_OPEN, AMPERSAND]),
+						'entity replacement text'
+					)
+				)
+			),
+			Reference,
+		])
+	)
+);
 
 // [11] SystemLiteral ::= ('"' [^"]* '"') | ("'" [^']* "'")
 const SystemLiteral = or([
@@ -833,9 +851,12 @@ const ExternalID: Parser<ExternalIDEvent> = or<ExternalIDEvent>([
 const NDataDecl = preceded(delimited(S, NDATA, S), Name);
 
 // [73] EntityDef ::= EntityValue | (ExternalID NDataDecl?)
-const EntityDef = or<EntityValueEvent[] | void>([
+const EntityDef = or<EntityValueEvent[] | ExternalEntityEvent>([
 	EntityValue,
-	consume(then(ExternalID, optional(NDataDecl), () => undefined)),
+	then(ExternalID, optional(NDataDecl), (ids, ndata) => ({
+		ids,
+		ndata,
+	})),
 ]);
 
 // [71] GEDecl ::= '<!ENTITY' S Name S EntityDef S? '>'
@@ -945,7 +966,7 @@ const doctypedecl: Parser<DoctypedeclEvent> = delimited(
 	ANGLE_BRACKET_CLOSE
 );
 
-type StreamingParser<T> = (input: string, offset: number) => Generator<T, ParseResult<unknown>>;
+export type StreamingParser<T> = (input: string, offset: number) => Generator<T, ParseResult<unknown>>;
 
 function stream<T>(parser: Parser<T>): StreamingParser<T> {
 	return function* (input: string, offset: number) {
@@ -1072,6 +1093,8 @@ const content = streamingThen(
 	streamingOptional(stream(CharData)),
 	streamingStar(streamingThen(stream(contentTag), streamingOptional(stream(CharData))))
 );
+
+export const contentComplete = streamingComplete(content);
 
 // [39] element ::= EmptyElemTag
 //      | STag content ETag

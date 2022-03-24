@@ -2,12 +2,19 @@ import Document from '../Document';
 import Node from '../Node';
 import { splitQualifiedName, XMLNS_NAMESPACE, XML_NAMESPACE } from '../util/namespaceHelpers';
 import { isElement } from '../util/NodeType';
-import { document, isWhitespace } from './grammar';
+import {
+	contentComplete,
+	document,
+	EntityReplacementTextInLiteral,
+	isWhitespace,
+	StreamingParser,
+} from './grammar';
 import {
 	AttDefEvent,
 	AttValueEvent,
 	DefaultDeclType,
 	DoctypedeclEvent,
+	DocumentParseEvent,
 	EmptyElemTagEvent,
 	EntityValueEvent,
 	MarkupdeclEventType,
@@ -15,10 +22,35 @@ import {
 	STagEvent,
 } from './parserEvents';
 
+function constructReplacementText(value: EntityValueEvent[]): string {
+	const replacementText: string[] = [];
+	for (const event of value) {
+		if (typeof event === 'string') {
+			replacementText.push(event);
+			continue;
+		}
+
+		switch (event.type) {
+			case ParserEventType.CharRef:
+				// Include
+				replacementText.push(event.char);
+				break;
+			case ParserEventType.EntityRef:
+				// Bypass
+				replacementText.push(`&${event.name};`);
+				break;
+		}
+	}
+
+	return replacementText.join('');
+}
+
 class Dtd {
 	private _attlistByName = new Map<string, Map<string, AttDefEvent>>();
 
-	private _entityByName = new Map<string, EntityValueEvent[]>();
+	private _entityReplacementTextByName = new Map<string, string>();
+
+	private _unparsedEntityNames = new Set<string>();
 
 	constructor(dtd: DoctypedeclEvent) {
 		if (!dtd.intSubset) {
@@ -46,10 +78,21 @@ class Dtd {
 
 				case MarkupdeclEventType.EntityDecl: {
 					// First declaration is binding
-					if (this._entityByName.has(decl.name)) {
+					if (this._entityReplacementTextByName.has(decl.name)) {
 						continue;
 					}
-					this._entityByName.set(decl.name, decl.value);
+					if (Array.isArray(decl.value)) {
+						this._entityReplacementTextByName.set(
+							decl.name,
+							constructReplacementText(decl.value)
+						);
+					} else if (decl.value.ndata === null) {
+						// External parsed entity may be skipped
+						this._entityReplacementTextByName.set(decl.name, '');
+					} else {
+						// External unparsed entity
+						this._unparsedEntityNames.add(decl.name);
+					}
 				}
 			}
 		}
@@ -58,49 +101,95 @@ class Dtd {
 	public getAttlist(elementName: string): Map<string, AttDefEvent> | undefined {
 		return this._attlistByName.get(elementName);
 	}
+
+	public getEntityReplacementText(name: string): string | undefined {
+		const value = this._entityReplacementTextByName.get(name);
+		if (value === undefined && this._unparsedEntityNames.has(name)) {
+			throw new Error(`reference to binary entity ${name} is not allowed`);
+		}
+		return value;
+	}
 }
 
-const predefinedEntities = new Map([
-	['lt', '<'],
+const predefinedEntitiesReplacementText = new Map([
+	['lt', '&#60;'],
 	['gt', '>'],
-	['amp', '&'],
+	['amp', '&#38;'],
 	['apos', "'"],
 	['quot', '"'],
 ]);
 
-function normalizeAttributeValue(value: AttValueEvent[], attDef: AttDefEvent | undefined): string {
-	const normalized = value
-		.map((v) => {
-			if (typeof v === 'string') {
-				return v.replace(/[\r\n\t]/g, ' ');
-			}
-			switch (v.type) {
-				case ParserEventType.CharRef:
-					return v.char;
+function throwParseError(what: string, input: string, expected: string[], offset: number): never {
+	const quoted = expected.map((str) => `"${str}"`);
+	throw new Error(
+		`Error parsing ${what} at offset ${offset}: expected ${
+			quoted.length > 1 ? 'one of ' + quoted.join(', ') : quoted[0]
+		} but found "${input.slice(offset, offset + 1)}"`
+	);
+}
 
-				default:
-					// TODO: recursively normalize replacement text, which is why predefined
-					// entities are defined in encoded form in the spec:
-					// <!ENTITY lt     "&#38;#60;">
-					// <!ENTITY gt     "&#62;">
-					// <!ENTITY amp    "&#38;#38;">
-					// <!ENTITY apos   "&#39;">
-					// <!ENTITY quot   "&#34;">
-					const c = predefinedEntities.get(v.name);
-					if (c !== undefined) {
-						return c;
-					}
-					// TODO: handle entities defined in the DTD
-					// TODO: referenced entities must not be external
-					// TODO: replacement text of referenced entities must not contain <
-					throw new Error(`entity reference ${v.name} in attribute value not supported`);
-			}
-		})
-		.join('');
-	if (attDef && !attDef.isCData) {
-		return normalized.replace(/[ ]+/g, ' ').replace(/^[ ]+|[ ]+$/g, '');
+function normalizeAndIncludeEntities(
+	normalized: string[],
+	value: AttValueEvent[],
+	dtd: Dtd | null,
+	ancestorEntities: Set<string>
+) {
+	for (const event of value) {
+		if (typeof event === 'string') {
+			normalized.push(event.replace(/[\r\n\t]/g, ' '));
+			continue;
+		}
+
+		if (event.type === ParserEventType.CharRef) {
+			normalized.push(event.char);
+			continue;
+		}
+
+		if (ancestorEntities.has(event.name)) {
+			throw new Error(`reference to entity ${event.name} must not be recursive`);
+		}
+		let replacementText = predefinedEntitiesReplacementText.get(event.name);
+		if (replacementText === undefined && dtd !== null) {
+			replacementText = dtd.getEntityReplacementText(event.name);
+		}
+		if (replacementText === undefined) {
+			throw new Error(`reference to unknown entity ${event.name} in attribute value`);
+		}
+		if (replacementText.includes('<')) {
+			throw new Error(
+				'replacement text for entity ${event.name} in attribute value must not contain "<"'
+			);
+		}
+		const result = EntityReplacementTextInLiteral(replacementText, 0);
+		if (!result.success) {
+			throwParseError(
+				`replacement text for entity ${event.name}`,
+				replacementText,
+				result.expected,
+				result.offset
+			);
+		}
+		// Recursively normalize replacement text
+		ancestorEntities.add(event.name);
+		normalizeAndIncludeEntities(normalized, result.value, dtd, ancestorEntities);
+		ancestorEntities.delete(event.name);
 	}
-	return normalized;
+}
+
+function normalizeAttributeValue(
+	value: AttValueEvent[],
+	attDef: AttDefEvent | undefined,
+	dtd: Dtd | null
+): string {
+	const normalized: string[] = [];
+	normalizeAndIncludeEntities(normalized, value, dtd, new Set());
+	if (attDef && !attDef.isCData) {
+		return normalized
+			.join('')
+			.replace(/[ ]+/g, ' ')
+			.replace(/^[ ]+|[ ]+$/g, '');
+	}
+	return normalized.join('');
 }
 
 class Namespaces {
@@ -140,7 +229,8 @@ class Namespaces {
 	public static fromAttrs(
 		parent: Namespaces,
 		event: STagEvent | EmptyElemTagEvent,
-		attlist: Map<string, AttDefEvent> | undefined
+		attlist: Map<string, AttDefEvent> | undefined,
+		dtd: Dtd | null
 	): Namespaces {
 		const ns = new Namespaces(parent);
 
@@ -148,12 +238,12 @@ class Namespaces {
 			const { prefix, localName } = splitQualifiedName(qualifiedName);
 			const def = attlist?.get(qualifiedName);
 			if (prefix === null && localName === 'xmlns' && !ns._byPrefix.has(null)) {
-				ns._byPrefix.set(null, normalizeAttributeValue(value, def) || null);
+				ns._byPrefix.set(null, normalizeAttributeValue(value, def, dtd) || null);
 			} else if (prefix === 'xmlns' && !ns._byPrefix.has(localName)) {
 				if (localName === 'xmlns') {
 					throw new Error('the xmlns namespace prefix must not be declared');
 				}
-				const namespace = normalizeAttributeValue(value, def) || null;
+				const namespace = normalizeAttributeValue(value, def, dtd) || null;
 				if (localName === 'xml' && namespace !== XML_NAMESPACE) {
 					throw new Error(
 						`the xml namespace prefix must not be bound to any namespace other than ${XML_NAMESPACE}`
@@ -197,163 +287,224 @@ function normalizeLineEndings(input: string): string {
 
 const ROOT_NAMESPACES = Namespaces.default();
 
-type ParseContext = {
-	parent: Node;
+type DomContext = {
+	parent: DomContext | null;
+	root: Node;
 	namespaces: Namespaces;
+	entityRoot: boolean;
+};
+
+type EntityContext = {
+	parent: EntityContext | null;
+	entity: string | null;
+	generator: ReturnType<StreamingParser<DocumentParseEvent>>;
 };
 
 export function parseDocument(input: string): Document {
 	const doc = new Document();
-	let context: ParseContext = {
-		parent: doc,
+	let domContext: DomContext = {
+		parent: null,
+		root: doc,
 		namespaces: ROOT_NAMESPACES,
+		entityRoot: true,
 	};
 	let dtd: Dtd | null = null;
-	const stack: ParseContext[] = [];
-
 	let collectedText: string[] = [];
 
 	function flushCollectedText() {
 		if (collectedText.length > 0) {
 			const text = collectedText.join('');
-			if (context.parent !== doc || !isWhitespace(text)) {
-				context.parent.appendChild(doc.createTextNode(collectedText.join('')));
+			if (domContext.root !== doc || !isWhitespace(text)) {
+				domContext.root.appendChild(doc.createTextNode(collectedText.join('')));
 			}
 		}
 		collectedText.length = 0;
 	}
 
+	// Remove BOM if there is one and normalize line endings to lf
+	input = input.replace(/^\ufeff/, '');
 	input = normalizeLineEndings(input);
 
-	const gen = document(input, 0);
-	let it = gen.next();
-	for (; !it.done; it = gen.next()) {
-		const event = it.value;
-		if (typeof event === 'string') {
-			collectedText.push(event);
-			continue;
-		}
-
-		switch (event.type) {
-			case ParserEventType.CharRef:
-				collectedText.push(event.char);
+	let entityContext: EntityContext | null = {
+		parent: null,
+		entity: null,
+		generator: document(input, 0),
+	};
+	while (entityContext) {
+		let it: IteratorResult<DocumentParseEvent> = entityContext.generator.next();
+		for (; !it.done; it = entityContext.generator.next()) {
+			const event: DocumentParseEvent = it.value;
+			if (typeof event === 'string') {
+				collectedText.push(event);
 				continue;
+			}
 
-			case ParserEventType.EntityRef:
-				const char = predefinedEntities.get(event.name);
-				if (char === undefined) {
-					throw new Error(
-						`entity reference ${event.name} in character data not supported`
-					);
+			switch (event.type) {
+				case ParserEventType.CharRef:
+					collectedText.push(event.char);
+					continue;
+
+				case ParserEventType.EntityRef: {
+					for (let ctx: EntityContext | null = entityContext; ctx; ctx = ctx.parent) {
+						if (ctx.entity === event.name) {
+							throw new Error(
+								`reference to entity ${event.name} must not be recursive`
+							);
+						}
+					}
+					let replacementText = predefinedEntitiesReplacementText.get(event.name);
+					if (replacementText === undefined && dtd !== null) {
+						replacementText = dtd.getEntityReplacementText(event.name);
+					}
+					if (replacementText === undefined) {
+						throw new Error(`reference to unknown entity ${event.name} in content`);
+					}
+					domContext = {
+						parent: domContext,
+						root: domContext.root,
+						namespaces: domContext.namespaces,
+						entityRoot: true,
+					};
+					entityContext = {
+						parent: entityContext,
+						entity: event.name,
+						generator: contentComplete(replacementText, 0),
+					};
+					continue;
 				}
-				collectedText.push(char);
-				continue;
-		}
+			}
 
-		flushCollectedText();
+			flushCollectedText();
 
-		switch (event.type) {
-			case ParserEventType.CDSect:
-				context.parent.appendChild(doc.createCDATASection(event.data));
-				continue;
+			switch (event.type) {
+				case ParserEventType.CDSect:
+					domContext.root.appendChild(doc.createCDATASection(event.data));
+					continue;
 
-			case ParserEventType.Comment:
-				context.parent.appendChild(doc.createComment(event.data));
-				continue;
+				case ParserEventType.Comment:
+					domContext.root.appendChild(doc.createComment(event.data));
+					continue;
 
-			case ParserEventType.Doctypedecl:
-				dtd = new Dtd(event);
-				context.parent.appendChild(
-					doc.implementation.createDocumentType(
-						event.name,
-						event.ids?.publicId || '',
-						event.ids?.systemId || ''
-					)
-				);
-				continue;
-
-			case ParserEventType.PI:
-				context.parent.appendChild(
-					doc.createProcessingInstruction(event.target, event.data || '')
-				);
-				continue;
-
-			case ParserEventType.STag:
-			case ParserEventType.EmptyElemTag: {
-				if (context.parent === doc && doc.documentElement !== null) {
-					throw new Error(
-						`document must contain a single root element, but found ${doc.documentElement.nodeName} and ${event.name}`
+				case ParserEventType.Doctypedecl:
+					dtd = new Dtd(event);
+					domContext.root.appendChild(
+						doc.implementation.createDocumentType(
+							event.name,
+							event.ids?.publicId || '',
+							event.ids?.systemId || ''
+						)
 					);
-				}
-				const attlist = dtd ? dtd.getAttlist(event.name) : undefined;
-				const namespaces = Namespaces.fromAttrs(context.namespaces, event, attlist);
-				const namespace = namespaces.getForElement(event.name);
-				const element = doc.createElementNS(namespace, event.name);
-				for (const attr of event.attributes) {
-					const namespace = namespaces.getForAttribute(attr.name);
-					const def = attlist?.get(attr.name);
-					const { localName } = splitQualifiedName(attr.name);
-					if (element.hasAttributeNS(namespace, localName)) {
+					continue;
+
+				case ParserEventType.PI:
+					domContext.root.appendChild(
+						doc.createProcessingInstruction(event.target, event.data || '')
+					);
+					continue;
+
+				case ParserEventType.STag:
+				case ParserEventType.EmptyElemTag: {
+					if (domContext.root === doc && doc.documentElement !== null) {
 						throw new Error(
-							`attribute ${attr.name} must not appear multiple times on element ${event.name}`
+							`document must contain a single root element, but found ${doc.documentElement.nodeName} and ${event.name}`
 						);
 					}
-					element.setAttributeNS(
-						namespace,
-						attr.name,
-						normalizeAttributeValue(attr.value, def)
+					const attlist = dtd ? dtd.getAttlist(event.name) : undefined;
+					const namespaces = Namespaces.fromAttrs(
+						domContext.namespaces,
+						event,
+						attlist,
+						dtd
 					);
-				}
-				// Add default attributes from the DTD
-				if (attlist) {
-					for (const attr of attlist.values()) {
-						const def = attr.def;
-						if (def.type !== DefaultDeclType.VALUE) {
-							continue;
-						}
+					const namespace = namespaces.getForElement(event.name);
+					const element = doc.createElementNS(namespace, event.name);
+					for (const attr of event.attributes) {
 						const namespace = namespaces.getForAttribute(attr.name);
+						const def = attlist?.get(attr.name);
 						const { localName } = splitQualifiedName(attr.name);
 						if (element.hasAttributeNS(namespace, localName)) {
-							continue;
+							throw new Error(
+								`attribute ${attr.name} must not appear multiple times on element ${event.name}`
+							);
 						}
 						element.setAttributeNS(
 							namespace,
 							attr.name,
-							normalizeAttributeValue(def.value, attr)
+							normalizeAttributeValue(attr.value, def, dtd)
 						);
 					}
+					// Add default attributes from the DTD
+					if (attlist) {
+						for (const attr of attlist.values()) {
+							const def = attr.def;
+							if (def.type !== DefaultDeclType.VALUE) {
+								continue;
+							}
+							const namespace = namespaces.getForAttribute(attr.name);
+							const { localName } = splitQualifiedName(attr.name);
+							if (element.hasAttributeNS(namespace, localName)) {
+								continue;
+							}
+							element.setAttributeNS(
+								namespace,
+								attr.name,
+								normalizeAttributeValue(def.value, attr, dtd)
+							);
+						}
+					}
+					domContext.root.appendChild(element);
+					if (event.type === ParserEventType.STag) {
+						domContext = {
+							parent: domContext,
+							root: element,
+							namespaces,
+							entityRoot: false,
+						};
+					}
+					continue;
 				}
-				context.parent.appendChild(element);
-				if (event.type === ParserEventType.STag) {
-					stack.push(context);
-					context = {
-						parent: element,
-						namespaces,
-					};
-				}
-				continue;
+
+				case ParserEventType.ETag:
+					if (!isElement(domContext.root) || domContext.root.nodeName !== event.name) {
+						throw new Error(
+							`non-well-formed element: found end tag ${event.name} but expected ${
+								isElement(domContext.root)
+									? domContext.root.nodeName
+									: 'no such tag'
+							}`
+						);
+					}
+					// The check above means we never leave the document DomContext
+					domContext = domContext.parent!;
+					continue;
 			}
-
-			case ParserEventType.ETag:
-				if (!isElement(context.parent) || context.parent.nodeName !== event.name) {
-					throw new Error(
-						`non-well-formed element: found end tag ${event.name} but expected ${
-							isElement(context.parent) ? context.parent.nodeName : 'no such tag'
-						}`
-					);
-				}
-				context = stack.pop()!;
-				continue;
 		}
-	}
 
-	if (!it.value.success) {
-		const quoted = it.value.expected.map((str) => `"${str}"`);
-		throw new Error(
-			`Error parsing document at offset ${it.value.offset}: expected ${
-				quoted.length > 1 ? 'one of ' + quoted.join(', ') : quoted[0]
-			} but found "${input.slice(it.value.offset, it.value.offset + 1)}"`
-		);
+		if (!it.value.success) {
+			throwParseError(
+				entityContext.entity
+					? `replacement text for entity ${entityContext.entity}`
+					: 'document',
+				input,
+				it.value.expected,
+				it.value.offset
+			);
+		}
+
+		if (!domContext.entityRoot) {
+			throw new Error(
+				`${
+					entityContext.entity
+						? `replacement text for entity ${entityContext.entity}`
+						: 'document'
+				} is not well-formed - element ${domContext.root.nodeName} is missing a closing tag`
+			);
+		}
+
+		entityContext = entityContext.parent;
+		if (entityContext) {
+			domContext = domContext.parent!;
+		}
 	}
 
 	flushCollectedText();
