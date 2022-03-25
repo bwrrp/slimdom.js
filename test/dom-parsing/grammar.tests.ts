@@ -1,4 +1,5 @@
-import { collect, document } from '../../src/dom-parsing/grammar';
+import { collect } from 'prsc';
+import { document } from '../../src/dom-parsing/grammar';
 import { DocumentParseEvent, ParserEventType } from '../../src/dom-parsing/parserEvents';
 
 describe('grammar', () => {

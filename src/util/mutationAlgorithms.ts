@@ -1,7 +1,7 @@
 import { getContext } from '../context/Context';
 import queueMutationRecord from '../mutation-observer/queueMutationRecord';
 import { throwHierarchyRequestError, throwNotFoundError } from './errorHelpers';
-import { NodeType, isNodeOfType, isTextNode } from './NodeType';
+import { NodeType, isNodeOfType, isTextNode, isDocumentFragment } from './NodeType';
 import {
 	getNodeDocument,
 	getNodeIndex,
@@ -206,8 +206,8 @@ export function insertNode(
 	suppressObservers: boolean = false
 ): void {
 	// 1. Let nodes be node’s children if node is a DocumentFragment node; otherwise « node ».
-	const isDocumentFragment = isNodeOfType(node, NodeType.DOCUMENT_FRAGMENT_NODE);
-	const nodes = isDocumentFragment ? Array.from(node.childNodes) : [node];
+	const isFragment = isDocumentFragment(node);
+	const nodes = isFragment ? Array.from(node.childNodes) : [node];
 
 	// 2. Let count be nodes's size.
 	const count = nodes.length;
@@ -218,7 +218,7 @@ export function insertNode(
 	}
 
 	// 4. If node is a DocumentFragment node, then:
-	if (isDocumentFragment) {
+	if (isFragment) {
 		// 4.1 Remove its children with the suppress observers flag set.
 		nodes.forEach((n) => removeNode(n, true));
 

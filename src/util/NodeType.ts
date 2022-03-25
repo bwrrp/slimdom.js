@@ -1,5 +1,8 @@
 import Attr from '../Attr';
 import CharacterData from '../CharacterData';
+import Document from '../Document';
+import DocumentFragment from '../DocumentFragment';
+import DocumentType from '../DocumentType';
 import Element from '../Element';
 import Node from '../Node';
 import Text from '../Text';
@@ -39,7 +42,7 @@ export function isNodeOfType(node: Node, ...types: NodeType[]): boolean {
  * @returns Whether node is an Attr
  */
 export function isAttrNode(node: Node): node is Attr {
-	return isNodeOfType(node, NodeType.ATTRIBUTE_NODE);
+	return node.nodeType === NodeType.ATTRIBUTE_NODE;
 }
 
 /**
@@ -50,12 +53,11 @@ export function isAttrNode(node: Node): node is Attr {
  * @returns Whether node is a CharacterData node
  */
 export function isCharacterDataNode(node: Node): node is CharacterData {
-	return isNodeOfType(
-		node,
-		NodeType.COMMENT_NODE,
-		NodeType.PROCESSING_INSTRUCTION_NODE,
-		NodeType.TEXT_NODE,
-		NodeType.CDATA_SECTION_NODE
+	return (
+		node.nodeType === NodeType.TEXT_NODE ||
+		node.nodeType === NodeType.CDATA_SECTION_NODE ||
+		node.nodeType === NodeType.COMMENT_NODE ||
+		node.nodeType === NodeType.PROCESSING_INSTRUCTION_NODE
 	);
 }
 
@@ -67,7 +69,7 @@ export function isCharacterDataNode(node: Node): node is CharacterData {
  * @returns Whether node is a Text (or CDataSection) node
  */
 export function isTextNode(node: Node): node is Text {
-	return isNodeOfType(node, NodeType.TEXT_NODE, NodeType.CDATA_SECTION_NODE);
+	return node.nodeType === NodeType.TEXT_NODE || node.nodeType === NodeType.CDATA_SECTION_NODE;
 }
 
 /**
@@ -78,5 +80,38 @@ export function isTextNode(node: Node): node is Text {
  * @returns Whether node is an Element node
  */
 export function isElement(node: Node): node is Element {
-	return isNodeOfType(node, NodeType.ELEMENT_NODE);
+	return node.nodeType === NodeType.ELEMENT_NODE;
+}
+
+/**
+ * Checks whether node implements Document
+ *
+ * @param node - The node to test
+ *
+ * @returns Whether node is a Document node
+ */
+export function isDocument(node: Node): node is Document {
+	return node.nodeType === NodeType.DOCUMENT_NODE;
+}
+
+/**
+ * Checks whether node implements DocumentFragment
+ *
+ * @param node - The node to test
+ *
+ * @returns Whether node is a DocumentFragment node
+ */
+export function isDocumentFragment(node: Node): node is DocumentFragment {
+	return node.nodeType === NodeType.DOCUMENT_FRAGMENT_NODE;
+}
+
+/**
+ * Checks whether node implements DocumentType
+ *
+ * @param node - The node to test
+ *
+ * @returns Whether node is a DocumentType node
+ */
+export function isDocumentType(node: Node): node is DocumentType {
+	return node.nodeType === NodeType.DOCUMENT_TYPE_NODE;
 }

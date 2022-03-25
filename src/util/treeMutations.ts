@@ -1,10 +1,12 @@
-import { asParentNode, asNonDocumentTypeChildNode } from '../mixins';
+import { asParentNode } from '../mixins';
+import CharacterData from '../CharacterData';
 import Document from '../Document';
+import DocumentFragment from '../DocumentFragment';
 import DocumentType from '../DocumentType';
 import Element from '../Element';
 import Node from '../Node';
 
-import { NodeType, isNodeOfType } from './NodeType';
+import { NodeType, isNodeOfType, isElement, isDocument, isDocumentType } from './NodeType';
 
 /**
  * Insert node into parent's children before referenceNode.
@@ -37,57 +39,49 @@ export function insertIntoChildren(node: Node, parent: Node, referenceChild: Nod
 	}
 
 	// ParentNode
-	if (isNodeOfType(node, NodeType.ELEMENT_NODE)) {
-		const element = node as Element;
-		const parentNode = asParentNode(parent);
+	if (isElement(node)) {
 		// Functions calling this will ensure parent is always a ParentNode
-		/* istanbul ignore else */
-		if (parentNode) {
-			let previousElementSibling: Element | null = null;
-			for (let sibling = previousSibling; sibling; sibling = sibling.previousSibling) {
-				if (isNodeOfType(sibling, NodeType.ELEMENT_NODE)) {
-					previousElementSibling = sibling as Element;
-					break;
-				}
-				const siblingNonDocumentTypeChildNode = asNonDocumentTypeChildNode(sibling);
-				if (siblingNonDocumentTypeChildNode) {
-					previousElementSibling = siblingNonDocumentTypeChildNode.previousElementSibling;
-					break;
-				}
+		const parentNode = parent as Element | Document | DocumentFragment;
+		let previousElementSibling: Element | null = null;
+		for (let sibling = previousSibling; sibling; sibling = sibling.previousSibling) {
+			if (isElement(sibling)) {
+				previousElementSibling = sibling;
+				break;
 			}
-
-			let nextElementSibling: Element | null = null;
-			for (let sibling = nextSibling; sibling; sibling = sibling.nextSibling) {
-				if (isNodeOfType(sibling, NodeType.ELEMENT_NODE)) {
-					nextElementSibling = sibling as Element;
-					break;
-				}
-				const siblingNonDocumentTypeChildNode = asNonDocumentTypeChildNode(sibling);
-				// An element can never be inserted before a doctype
-				/* istanbul ignore else */
-				if (siblingNonDocumentTypeChildNode) {
-					nextElementSibling = siblingNonDocumentTypeChildNode.nextElementSibling;
-					break;
-				}
+			const siblingNonDocumentTypeChildNode = sibling as CharacterData | DocumentType;
+			if (!isDocumentType(siblingNonDocumentTypeChildNode)) {
+				previousElementSibling = siblingNonDocumentTypeChildNode.previousElementSibling;
+				break;
 			}
-
-			if (!previousElementSibling) {
-				parentNode.firstElementChild = element;
-			}
-			if (!nextElementSibling) {
-				parentNode.lastElementChild = element;
-			}
-			parentNode.childElementCount += 1;
 		}
+
+		let nextElementSibling: Element | null = null;
+		for (let sibling = nextSibling; sibling; sibling = sibling!.nextSibling) {
+			if (isElement(sibling)) {
+				nextElementSibling = sibling;
+				break;
+			}
+			// An element can never be inserted before a doctype
+			const siblingNonDocumentTypeChildNode = sibling as CharacterData;
+			nextElementSibling = siblingNonDocumentTypeChildNode.nextElementSibling;
+			break;
+		}
+
+		if (!previousElementSibling) {
+			parentNode.firstElementChild = node;
+		}
+		if (!nextElementSibling) {
+			parentNode.lastElementChild = node;
+		}
+		parentNode.childElementCount += 1;
 	}
 
 	// Document
-	if (isNodeOfType(parent, NodeType.DOCUMENT_NODE)) {
-		const parentDocument = parent as Document;
-		if (isNodeOfType(node, NodeType.ELEMENT_NODE)) {
-			parentDocument.documentElement = node as Element;
-		} else if (isNodeOfType(node, NodeType.DOCUMENT_TYPE_NODE)) {
-			parentDocument.doctype = node as DocumentType;
+	if (isDocument(parent)) {
+		if (isElement(node)) {
+			parent.documentElement = node;
+		} else if (isDocumentType(node)) {
+			parent.doctype = node;
 		}
 	}
 }

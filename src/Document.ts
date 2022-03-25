@@ -11,7 +11,7 @@ import ProcessingInstruction from './ProcessingInstruction';
 import Text from './Text';
 import Range from './Range';
 import { getContext } from './context/Context';
-import { matchesNameProduction } from './dom-parsing/grammar';
+import { matchesNameProduction } from './dom-parsing/parsingAlgorithms';
 import cloneNode from './util/cloneNode';
 import createElementNS from './util/createElementNS';
 import {

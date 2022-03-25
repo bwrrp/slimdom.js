@@ -1,5 +1,5 @@
 import Document from '../Document';
-import { parseDocument } from './parsingAlgorithms';
+import { parseXmlDocument } from './parsingAlgorithms';
 
 /**
  * Interface DOMParser
@@ -42,7 +42,7 @@ export default class DOMParser {
 					// 1. Parse str with a namespace-enabled XML parser.
 					// NOTE: For all XHTML script elements parsed using the XML parser, the
 					// equivalent of the scripting flag must be set to "disabled".
-					const doc = parseDocument(str);
+					const doc = parseXmlDocument(str);
 
 					// 2. If the previous step didn't return an error, return the newly created
 					// Document.

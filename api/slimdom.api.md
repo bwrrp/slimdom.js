@@ -445,6 +445,9 @@ export abstract class Node {
 }
 
 // @public
+export function parseXmlDocument(input: string): Document;
+
+// @public
 export class ProcessingInstruction extends CharacterData {
     constructor(target: string, data: string);
     _copy(document: Document): ProcessingInstruction;

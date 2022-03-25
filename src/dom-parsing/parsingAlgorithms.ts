@@ -1,13 +1,20 @@
+import { StreamingParser } from 'prsc';
 import Document from '../Document';
 import Node from '../Node';
-import { splitQualifiedName, XMLNS_NAMESPACE, XML_NAMESPACE } from '../util/namespaceHelpers';
+import { unsafeCreateAttribute, unsafeCreateElement } from '../unsafe';
+import { appendAttribute } from '../util/attrMutations';
+import { throwInvalidCharacterError } from '../util/errorHelpers';
+import { insertNode } from '../util/mutationAlgorithms';
+import { XMLNS_NAMESPACE, XML_NAMESPACE } from '../util/namespaceHelpers';
 import { isElement } from '../util/NodeType';
 import {
+	CompleteChars,
+	CompleteName,
+	CompletePubidChars,
+	CompleteWhitespace,
 	contentComplete,
 	document,
 	EntityReplacementTextInLiteral,
-	isWhitespace,
-	StreamingParser,
 } from './grammar';
 import {
 	AttDefEvent,
@@ -21,6 +28,50 @@ import {
 	ParserEventType,
 	STagEvent,
 } from './parserEvents';
+
+/**
+ * Returns true if all characters in value match the Char production.
+ *
+ * @param value - The string to check
+ *
+ * @returns true if all characters in value match Char, otherwise false
+ */
+export function matchesCharProduction(value: string): boolean {
+	return CompleteChars(value, 0).success;
+}
+
+/**
+ * Returns true if name matches the Name production.
+ *
+ * @param name - The name to check
+ *
+ * @returns true if name matches Name, otherwise false
+ */
+export function matchesNameProduction(name: string): boolean {
+	return CompleteName(name, 0).success;
+}
+
+/**
+ * Returns true if all characters in value match the PubidChar production.
+ *
+ * @param value - The string to check
+ *
+ * @returns true if all characters in value match PubidChar, otherwise false
+ */
+export function matchesPubidCharProduction(value: string): boolean {
+	return CompletePubidChars(value, 0).success;
+}
+
+/**
+ * Returns true if all characters in value match the S production.
+ *
+ * @param value - The string to check
+ *
+ * @returns true if all characters in value match S, otherwise false
+ */
+function isWhitespace(value: string): boolean {
+	return CompleteWhitespace(value, 0).success;
+}
 
 // TODO: add line / column info (and some context) to all parser errors
 // TODO: add same info to all other errors
@@ -128,10 +179,11 @@ const predefinedEntitiesReplacementText = new Map([
 
 function throwParseError(what: string, input: string, expected: string[], offset: number): never {
 	const quoted = expected.map((str) => `"${str}"`);
+	const cp = input.codePointAt(offset);
 	throw new Error(
 		`Error parsing ${what} at offset ${offset}: expected ${
 			quoted.length > 1 ? 'one of ' + quoted.join(', ') : quoted[0]
-		} but found "${input.slice(offset, offset + 1)}"`
+		} but found "${cp ? String.fromCodePoint(cp) : ''}"`
 	);
 }
 
@@ -161,11 +213,6 @@ function normalizeAndIncludeEntities(
 		}
 		if (replacementText === undefined) {
 			throw new Error(`reference to unknown entity ${event.name} in attribute value`);
-		}
-		if (replacementText.includes('<')) {
-			throw new Error(
-				`replacement text for entity ${event.name} in attribute value must not contain "<"`
-			);
 		}
 		const result = EntityReplacementTextInLiteral(replacementText, 0);
 		if (!result.success) {
@@ -199,6 +246,42 @@ function normalizeAttributeValue(
 	return normalized.join('');
 }
 
+type QualifiedNameParts = { prefix: string | null; localName: string };
+type QualifiedNameCache = Map<string, QualifiedNameParts>;
+
+function splitQualifiedName(qualifiedName: string, cache: QualifiedNameCache): QualifiedNameParts {
+	const fromCache = cache.get(qualifiedName);
+	if (fromCache !== undefined) {
+		return fromCache;
+	}
+
+	// 3. Let prefix be null.
+	let prefix: string | null = null;
+
+	// 4.  Let localName be qualifiedName.
+	let localName = qualifiedName;
+
+	// 5. If qualifiedName contains a ":" (U+003A), then split the string on it and set prefix to
+	// the part before and localName to the part after.
+	const index = qualifiedName.indexOf(':');
+	if (index >= 0) {
+		prefix = qualifiedName.substring(0, index);
+		localName = qualifiedName.substring(index + 1);
+	}
+
+	// We already know (from the grammar) that qualifiedName is a valid Name, so only check if there
+	// aren't too many colons
+	if (localName.includes(':')) {
+		throwInvalidCharacterError(
+			`the qualified name ${qualifiedName} must not contain more than one colon`
+		);
+	}
+
+	const parts = { prefix, localName };
+	cache.set(qualifiedName, parts);
+	return parts;
+}
+
 class Namespaces {
 	private _parent: Namespaces | null;
 	private _byPrefix: Map<string | null, string | null> = new Map();
@@ -207,8 +290,7 @@ class Namespaces {
 		this._parent = parent;
 	}
 
-	public getForElement(qualifiedName: string): string | null {
-		const { prefix } = splitQualifiedName(qualifiedName);
+	public getForElement(prefix: string | null): string | null {
 		for (let ns: Namespaces | null = this; ns !== null; ns = ns._parent) {
 			const namespace = ns._byPrefix.get(prefix);
 			if (namespace !== undefined) {
@@ -218,8 +300,7 @@ class Namespaces {
 		throw new Error(`use of undeclared element prefix ${prefix}`);
 	}
 
-	public getForAttribute(qualifiedName: string): string | null {
-		const { prefix, localName } = splitQualifiedName(qualifiedName);
+	public getForAttribute(prefix: string | null, localName: string): string | null {
 		if (prefix === null) {
 			// Default namespace doesn't apply to attributes
 			return localName === 'xmlns' ? XMLNS_NAMESPACE : null;
@@ -237,12 +318,13 @@ class Namespaces {
 		parent: Namespaces,
 		event: STagEvent | EmptyElemTagEvent,
 		attlist: Map<string, AttDefEvent> | undefined,
-		dtd: Dtd | null
+		dtd: Dtd | null,
+		qualifiedNameCache: QualifiedNameCache
 	): Namespaces {
 		const ns = new Namespaces(parent);
 
 		const checkAttr = (qualifiedName: string, value: AttValueEvent[]) => {
-			const { prefix, localName } = splitQualifiedName(qualifiedName);
+			const { prefix, localName } = splitQualifiedName(qualifiedName, qualifiedNameCache);
 			const def = attlist?.get(qualifiedName);
 			if (prefix === null && localName === 'xmlns' && !ns._byPrefix.has(null)) {
 				ns._byPrefix.set(null, normalizeAttributeValue(value, def, dtd) || null);
@@ -288,11 +370,21 @@ class Namespaces {
 	}
 }
 
+const ROOT_NAMESPACES = Namespaces.default();
+
 function normalizeLineEndings(input: string): string {
 	return input.replace(/\r\n?/g, '\n');
 }
 
-const ROOT_NAMESPACES = Namespaces.default();
+function appendParsedNode(parent: Node, child: Node): void {
+	// We can bypass all of the pre-insertion checks as the parser guarantees that we won't try any
+	// invalid combinations of node types here, that there is at most a single doctype and that that
+	// doctype is parsed before any elements. Other constraints, such as not having text at the root
+	// and not having more than one root element, are covered in the parse loop. We can also bypass
+	// adoption, as all nodes are created from our document. Finally, no observers can possibly be
+	// interested in our new document, so we don't need to look for those.
+	insertNode(child, parent, null, true);
+}
 
 type DomContext = {
 	parent: DomContext | null;
@@ -307,7 +399,19 @@ type EntityContext = {
 	generator: ReturnType<StreamingParser<DocumentParseEvent>>;
 };
 
-export function parseDocument(input: string): Document {
+/**
+ * Parse an XML document
+ *
+ * This parser is non-validating, and therefore does not support an external DTD or external parsed
+ * entities. During parsing, any referenced entities are included, default attribute values are
+ * materialized and the DTD internal subset is discarded. References to external entities are
+ * replaced with nothing. References to parameter entities are also ignored.
+ *
+ * @public
+ *
+ * @param input - the string to parse
+ */
+export function parseXmlDocument(input: string): Document {
 	const doc = new Document();
 	let domContext: DomContext = {
 		parent: null,
@@ -316,13 +420,19 @@ export function parseDocument(input: string): Document {
 		entityRoot: true,
 	};
 	let dtd: Dtd | null = null;
+	const qualifiedNameCache: QualifiedNameCache = new Map();
 	let collectedText: string[] = [];
 
 	function flushCollectedText() {
 		if (collectedText.length > 0) {
 			const text = collectedText.join('');
-			if (domContext.root !== doc || !isWhitespace(text)) {
-				domContext.root.appendChild(doc.createTextNode(collectedText.join('')));
+			if (domContext.root === doc) {
+				// Ignore whitespace at document root
+				if (!isWhitespace(text)) {
+					throw new Error('document must not contain text outside of elements');
+				}
+			} else {
+				appendParsedNode(domContext.root, doc.createTextNode(collectedText.join('')));
 			}
 		}
 		collectedText.length = 0;
@@ -385,16 +495,17 @@ export function parseDocument(input: string): Document {
 
 			switch (event.type) {
 				case ParserEventType.CDSect:
-					domContext.root.appendChild(doc.createCDATASection(event.data));
+					appendParsedNode(domContext.root, doc.createCDATASection(event.data));
 					continue;
 
 				case ParserEventType.Comment:
-					domContext.root.appendChild(doc.createComment(event.data));
+					appendParsedNode(domContext.root, doc.createComment(event.data));
 					continue;
 
 				case ParserEventType.Doctypedecl:
 					dtd = new Dtd(event);
-					domContext.root.appendChild(
+					appendParsedNode(
+						domContext.root,
 						doc.implementation.createDocumentType(
 							event.name,
 							event.ids?.publicId || '',
@@ -404,7 +515,11 @@ export function parseDocument(input: string): Document {
 					continue;
 
 				case ParserEventType.PI:
-					domContext.root.appendChild(
+					if (event.target.toLowerCase() === 'xml') {
+						throw new Error('processing instruction target must not be "xml"');
+					}
+					appendParsedNode(
+						domContext.root,
 						doc.createProcessingInstruction(event.target, event.data || '')
 					);
 					continue;
@@ -421,24 +536,37 @@ export function parseDocument(input: string): Document {
 						domContext.namespaces,
 						event,
 						attlist,
-						dtd
+						dtd,
+						qualifiedNameCache
 					);
-					const namespace = namespaces.getForElement(event.name);
-					const element = doc.createElementNS(namespace, event.name);
+					const { prefix, localName } = splitQualifiedName(
+						event.name,
+						qualifiedNameCache
+					);
+					const namespace = namespaces.getForElement(prefix);
+					// We can skip the usual name validity checks
+					const element = unsafeCreateElement(doc, localName, namespace, prefix);
 					for (const attr of event.attributes) {
-						const namespace = namespaces.getForAttribute(attr.name);
+						const { prefix, localName } = splitQualifiedName(
+							attr.name,
+							qualifiedNameCache
+						);
+						const namespace = namespaces.getForAttribute(prefix, localName);
 						const def = attlist?.get(attr.name);
-						const { localName } = splitQualifiedName(attr.name);
 						if (element.hasAttributeNS(namespace, localName)) {
 							throw new Error(
 								`attribute ${attr.name} must not appear multiple times on element ${event.name}`
 							);
 						}
-						element.setAttributeNS(
+						// We can skip validation of names and duplicates
+						const attrNode = unsafeCreateAttribute(
 							namespace,
-							attr.name,
-							normalizeAttributeValue(attr.value, def, dtd)
+							prefix,
+							localName,
+							normalizeAttributeValue(attr.value, def, dtd),
+							element
 						);
+						appendAttribute(attrNode, element, true);
 					}
 					// Add default attributes from the DTD
 					if (attlist) {
@@ -447,19 +575,26 @@ export function parseDocument(input: string): Document {
 							if (def.type !== DefaultDeclType.VALUE) {
 								continue;
 							}
-							const namespace = namespaces.getForAttribute(attr.name);
-							const { localName } = splitQualifiedName(attr.name);
+							const { prefix, localName } = splitQualifiedName(
+								attr.name,
+								qualifiedNameCache
+							);
+							const namespace = namespaces.getForAttribute(prefix, localName);
 							if (element.hasAttributeNS(namespace, localName)) {
 								continue;
 							}
-							element.setAttributeNS(
+							// We can skip validation of names and duplicates
+							const attrNode = unsafeCreateAttribute(
 								namespace,
-								attr.name,
-								normalizeAttributeValue(def.value, attr, dtd)
+								prefix,
+								localName,
+								normalizeAttributeValue(def.value, attr, dtd),
+								element
 							);
+							appendAttribute(attrNode, element, true);
 						}
 					}
-					domContext.root.appendChild(element);
+					appendParsedNode(domContext.root, element);
 					if (event.type === ParserEventType.STag) {
 						domContext = {
 							parent: domContext,

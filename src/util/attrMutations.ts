@@ -53,12 +53,19 @@ export function changeAttribute(attribute: Attr, value: string): void {
 /**
  * To append an attribute attribute to an element element, run these steps:
  *
- * @param attribute - The attribute to append
- * @param element   - The element to append attribute to
+ * @param attribute         - The attribute to append
+ * @param element           - The element to append attribute to
+ * @param suppressObservers - Set to true to not queue a mutation observer event for this change
  */
-export function appendAttribute(attribute: Attr, element: Element): void {
+export function appendAttribute(
+	attribute: Attr,
+	element: Element,
+	suppressObservers: boolean = false
+): void {
 	// 1. Handle attribute changes for attribute with element, null and attribute's value.
-	handleAttributeChanges(attribute, element, null, attribute.value);
+	if (!suppressObservers) {
+		handleAttributeChanges(attribute, element, null, attribute.value);
+	}
 
 	// 2. Append attribute to element’s attribute list.
 	element.attributes.push(attribute);

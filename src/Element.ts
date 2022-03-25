@@ -4,7 +4,7 @@ import Attr from './Attr';
 import Document from './Document';
 import Node from './Node';
 import { getContext } from './context/Context';
-import { matchesNameProduction } from './dom-parsing/grammar';
+import { matchesNameProduction } from './dom-parsing/parsingAlgorithms';
 import { serializeFragment } from './dom-parsing/serializationAlgorithms';
 import {
 	appendNodes,

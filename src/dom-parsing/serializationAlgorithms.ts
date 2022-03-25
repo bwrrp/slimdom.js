@@ -10,7 +10,7 @@ import {
 	matchesCharProduction,
 	matchesNameProduction,
 	matchesPubidCharProduction,
-} from '../dom-parsing/grammar';
+} from '../dom-parsing/parsingAlgorithms';
 import { throwInvalidStateError } from '../util/errorHelpers';
 import { HTML_NAMESPACE, XML_NAMESPACE, XMLNS_NAMESPACE } from '../util/namespaceHelpers';
 import { NodeType } from '../util/NodeType';
@@ -130,9 +130,7 @@ export function produceXmlSerialization(
 			result
 		);
 	} catch (error) {
-		const message =
-			error instanceof Error ? error.message : 'An error occurred during serialization.';
-		return throwInvalidStateError(message);
+		return throwInvalidStateError((error as Error).message);
 	}
 }
 

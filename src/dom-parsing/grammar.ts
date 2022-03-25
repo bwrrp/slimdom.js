@@ -1,22 +1,32 @@
 import {
+	codepoint,
 	complete,
+	consume,
 	cut,
 	delimited,
-	end,
 	error,
+	except,
+	filterUndefined,
 	followed,
 	map,
-	not,
-	ok,
 	okWithValue,
 	optional,
 	or,
 	Parser,
 	ParseResult,
-	plus,
+	peek,
+	plusConsumed,
 	preceded,
+	range,
 	recognize,
 	star,
+	starConsumed,
+	streaming,
+	streamingComplete,
+	streamingFilterUndefined,
+	streamingOptional,
+	streamingStar,
+	streamingThen,
 	then,
 	token,
 } from 'prsc';
@@ -53,11 +63,9 @@ const TAB = token('\t');
 const LF = token('\n');
 const CR = token('\r');
 const SPACE = token(' ');
-const COLON = token(':');
 const UNDERSCORE = token('_');
 const DASH = token('-');
 const PERIOD = token('.');
-const MIDDLE_DOT = token('\u00B7');
 const DOUBLE_QUOTE = token('"');
 const SINGLE_QUOTE = token("'");
 const ANGLE_BRACKET_OPEN = token('<');
@@ -72,13 +80,8 @@ const PARENTHESIS_OPEN = token('(');
 const PARENTHESIS_CLOSE = token(')');
 const PLUS = token('+');
 const COMMA = token(',');
-const SLASH = token('/');
 const QUESTION_MARK = token('?');
-const EXCLAMATION_MARK = token('!');
 const ASTERISK = token('*');
-const OCTOTHORPE = token('#');
-const AT = token('@');
-const DOLLAR = token('$');
 const VERTICAL_BAR = token('|');
 
 const SECT_END = token(']]>');
@@ -117,157 +120,96 @@ const ENTITY_DECL_START = token('<!ENTITY');
 const NDATA = token('NDATA');
 const NOTATION_DECL_START = token('<!NOTATION');
 
-function range(firstCodePoint: number, lastCodePoint: number): Parser<string> {
-	return (input: string, offset: number) => {
-		const cp = input.codePointAt(offset);
-		if (cp !== undefined && cp >= firstCodePoint && cp <= lastCodePoint) {
-			const char = String.fromCodePoint(cp);
-			return okWithValue(offset + char.length, char);
-		}
-		return error(offset, [
-			`${String.fromCodePoint(firstCodePoint)}-${String.fromCodePoint(lastCodePoint)}`,
-		]);
-	};
-}
-
 // A-Z
-const UPPER_ALPHA = range(0x41, 0x5a);
+const UPPER_A_CP = 0x41;
+const UPPER_Z_CP = 0x5a;
+const UPPER_ALPHA = range(UPPER_A_CP, UPPER_Z_CP);
 
 // a-z
-const LOWER_ALPHA = range(0x61, 0x7a);
+const LOWER_A_CP = 0x61;
+const LOWER_Z_CP = 0x7a;
+const LOWER_ALPHA = range(LOWER_A_CP, LOWER_Z_CP);
 
 // 0-9
-const DIGIT = range(0x30, 0x39);
+const ZERO_CP = 0x30;
+const NINE_CP = 0x39;
+const DIGIT = range(ZERO_CP, NINE_CP);
 
-const HEX_DIGIT = or([DIGIT, range(0x41, 0x46), range(0x61, 0x66)]);
-
-function skipChars(nCodepoints: number): Parser<void> {
-	return (input: string, offset: number) => {
-		let i = nCodepoints;
-		while (i > 0) {
-			const cp = input.codePointAt(offset);
-			if (cp === undefined) {
-				return error(offset, ['any character']);
-			}
-			offset += String.fromCodePoint(cp).length;
-			i -= 1;
-		}
-		return ok(offset);
-	};
-}
-
-function consume<T>(parser: Parser<T>): Parser<void> {
-	return map(parser, () => undefined);
-}
-
-function except<T, U>(match: Parser<T>, except: Parser<U>, expect: string): Parser<T> {
-	return preceded(not(except, [expect]), match);
-}
-
-function caseInsensitiveToken(token: string): Parser<string> {
-	const lowerCaseToken = token.toLowerCase();
-	return (input: string, offset: number) => {
-		const match = input.substring(offset, offset + token.length);
-		if (match.toLowerCase() === lowerCaseToken) {
-			return okWithValue(offset + match.length, match);
-		}
-		return error(offset, [token]);
-	};
-}
+const HEX_DIGIT = or([DIGIT, range(0x41, 0x46), range(0x61, 0x66)], ['hexadecimal digit']);
 
 // [2] Char ::= #x9 | #xA | #xD | [#x20-#xD7FF] | [#xE000-#xFFFD] | [#x10000-#x10FFFF]
-const Char = or([
-	TAB,
-	LF,
-	CR,
-	range(0x20, 0xd7ff),
-	range(0xe000, 0xfffd),
-	range(0x10000, 0x10ffff),
-]);
-
-const CompleteChars = complete(star(Char));
-
-/**
- * Returns true if all characters in value match the Char production.
- *
- * @param value - The string to check
- *
- * @returns true if all characters in value match Char, otherwise false
- */
-export function matchesCharProduction(value: string): boolean {
-	return CompleteChars(value, 0).success;
+function isValidChar(cp: number): boolean {
+	return (
+		cp === 0x9 ||
+		cp === 0xa ||
+		cp === 0xd ||
+		(0x20 <= cp && cp <= 0xd7ff) ||
+		(0xe000 <= cp && cp <= 0xfffd) ||
+		(0x10000 <= cp && cp <= 0x10ffff)
+	);
 }
+const Char = codepoint(isValidChar, ['valid character']);
+
+export const CompleteChars = complete(starConsumed(Char));
 
 // [3] S ::= (#x20 | #x9 | #xD | #xA)+
-const S = recognize(plus(or([SPACE, TAB, CR, LF])));
+const S = recognize(plusConsumed(or([SPACE, TAB, CR, LF], ['whitespace character'])));
 
-const CompleteWhitespace = complete(star(S));
-
-/**
- * Returns true if all characters in value match the S production.
- *
- * @param value - The string to check
- *
- * @returns true if all characters in value match S, otherwise false
- */
-export function isWhitespace(value: string): boolean {
-	return CompleteWhitespace(value, 0).success;
-}
+export const CompleteWhitespace = complete(starConsumed(S));
 
 // [4] NameStartChar ::= ":" | [A-Z] | "_" | [a-z] | [#xC0-#xD6] | [#xD8-#xF6] | [#xF8-#x2FF]
 //     | [#x370-#x37D] | [#x37F-#x1FFF] | [#x200C-#x200D] | [#x2070-#x218F] | [#x2C00-#x2FEF]
 //     | [#x3001-#xD7FF] | [#xF900-#xFDCF] | [#xFDF0-#xFFFD] | [#x10000-#xEFFFF]
-const NameStartChar = or([
-	COLON,
-	range(0x41, 0x5a),
-	UNDERSCORE,
-	UPPER_ALPHA,
-	LOWER_ALPHA,
-	range(0xd8, 0xf6),
-	range(0xf8, 0x2ff),
-	range(0x370, 0x37d),
-	range(0x37f, 0x1fff),
-	range(0x200c, 0x200d),
-	range(0x2070, 0x218f),
-	range(0x2c00, 0x2fef),
-	range(0x3001, 0xd7ff),
-	range(0xf900, 0xfdcf),
-	range(0xfdf0, 0xfffd),
-	range(0x10000, 0xeffff),
-]);
+const COLON_CP = 0x3a;
+const UNDERSCORE_CP = 0x5f;
+function isValidNameStartChar(cp: number): boolean {
+	return (
+		cp === COLON_CP ||
+		(UPPER_A_CP <= cp && cp <= UPPER_Z_CP) ||
+		cp === UNDERSCORE_CP ||
+		(LOWER_A_CP <= cp && cp <= LOWER_Z_CP) ||
+		(0xc0 <= cp && cp <= 0xd6) ||
+		(0xd8 <= cp && cp <= 0xf6) ||
+		(0xf8 <= cp && cp <= 0x2ff) ||
+		(0x370 <= cp && cp <= 0x37d) ||
+		(0x37f <= cp && cp <= 0x1fff) ||
+		(0x200c <= cp && cp <= 0x200d) ||
+		(0x2070 <= cp && cp <= 0x218f) ||
+		(0x2c00 <= cp && cp <= 0x2fef) ||
+		(0x3001 <= cp && cp <= 0xd7ff) ||
+		(0xf900 <= cp && cp <= 0xfdcf) ||
+		(0xfdf0 <= cp && cp <= 0xfffd) ||
+		(0x10000 <= cp && cp <= 0xeffff)
+	);
+}
+const NameStartChar = codepoint(isValidNameStartChar, ['valid name start character']);
 
 // [4a] NameChar ::= NameStartChar | "-" | "." | [0-9] | #xB7 | [#x0300-#x036F] | [#x203F-#x2040]
-const NameChar = or([
-	NameStartChar,
-	DASH,
-	PERIOD,
-	DIGIT,
-	MIDDLE_DOT,
-	range(0x0300, 0x036f),
-	range(0x203f, 0x2040),
-]);
+const DASH_CP = 0x2d;
+const PERIOD_CP = 0x2e;
+function isValidNameChar(cp: number): boolean {
+	return (
+		isValidNameStartChar(cp) ||
+		cp === DASH_CP ||
+		cp === PERIOD_CP ||
+		(ZERO_CP <= cp && cp <= NINE_CP) ||
+		cp === 0xb7 ||
+		(0x0300 <= cp && cp <= 0x036f) ||
+		(0x203f <= cp && cp <= 0x2040)
+	);
+}
+const NameChar = codepoint(isValidNameChar, ['valid name character']);
 
 // [5] Name ::= NameStartChar (NameChar)*
-const Name = recognize(then(NameStartChar, star(NameChar), () => undefined));
+const Name = recognize(then(NameStartChar, starConsumed(NameChar), () => undefined));
 
-const CompleteName = complete(Name);
-
-/**
- * Returns true if name matches the Name production.
- *
- * @param name - The name to check
- *
- * @returns true if name matches Name, otherwise false
- */
-export function matchesNameProduction(name: string): boolean {
-	return CompleteName(name, 0).success;
-}
+export const CompleteName = complete(Name);
 
 // [6] Names ::= Name (#x20 Name)*
 // const Names = then(Name, star(preceded(SPACE, Name)), (first, next) => [first, ...next]);
 
 // [7] Nmtoken ::= (NameChar)+
-const Nmtoken = recognize(plus(NameChar));
+const Nmtoken = recognize(plusConsumed(NameChar));
 
 // [8] Nmtokens ::= Nmtoken (#x20 Nmtoken)*
 // const NmTokens = then(Nmtoken, star(preceded(SPACE, Nmtoken)), (first, next) => [first, ...next]);
@@ -276,10 +218,13 @@ const Nmtoken = recognize(plus(NameChar));
 //      | '&#x' [0-9a-fA-F]+ ';'
 const CharRef: Parser<CharRefEvent> = map(
 	or([
-		map(delimited(CHARREF_HEX_START, recognize(plus(HEX_DIGIT)), SEMICOLON, true), (n) =>
-			parseInt(n, 16)
+		map(
+			delimited(CHARREF_HEX_START, recognize(plusConsumed(HEX_DIGIT)), SEMICOLON, true),
+			(n) => parseInt(n, 16)
 		),
-		map(delimited(CHARREF_START, recognize(plus(DIGIT)), SEMICOLON), (n) => parseInt(n, 10)),
+		map(delimited(CHARREF_START, recognize(plusConsumed(DIGIT)), SEMICOLON), (n) =>
+			parseInt(n, 10)
+		),
 	]),
 	(cp) => ({ type: ParserEventType.CharRef, char: String.fromCodePoint(cp) })
 );
@@ -301,14 +246,19 @@ const PEReference: Parser<PEReferenceEvent> = map(delimited(PERCENT, Name, SEMIC
 
 // [9] EntityValue ::= '"' ([^%&"] | PEReference | Reference)* '"'
 //     | "'" ([^%&'] | PEReference | Reference)* "'"
+const PERCENT_CP = 0x25;
 const EntityValue = or([
 	delimited(
 		DOUBLE_QUOTE,
 		star(
 			or<EntityValueEvent>([
 				recognize(
-					plus(
-						except(skipChars(1), or([PERCENT, AMPERSAND, DOUBLE_QUOTE]), 'entity text')
+					plusConsumed(
+						codepoint(
+							(cp) =>
+								cp !== PERCENT_CP && cp !== AMPERSAND_CP && cp !== DOUBLE_QUOTE_CP,
+							['entity text']
+						)
 					)
 				),
 				PEReference,
@@ -323,8 +273,12 @@ const EntityValue = or([
 		star(
 			or<EntityValueEvent>([
 				recognize(
-					plus(
-						except(skipChars(1), or([PERCENT, AMPERSAND, SINGLE_QUOTE]), 'entity text')
+					plusConsumed(
+						codepoint(
+							(cp) =>
+								cp !== PERCENT_CP && cp !== AMPERSAND_CP && cp !== SINGLE_QUOTE_CP,
+							['entity text']
+						)
 					)
 				),
 				PEReference,
@@ -338,17 +292,21 @@ const EntityValue = or([
 
 // [10] AttValue ::= '"' ([^<&"] | Reference)* '"'
 //      | "'" ([^<&'] | Reference)* "'"
+const DOUBLE_QUOTE_CP = 0x22;
+const SINGLE_QUOTE_CP = 0x27;
 const AttValue: Parser<AttValueEvent[]> = or([
 	delimited(
 		DOUBLE_QUOTE,
 		star(
 			or<AttValueEvent>([
 				recognize(
-					plus(
-						except(
-							skipChars(1),
-							or([ANGLE_BRACKET_OPEN, AMPERSAND, DOUBLE_QUOTE]),
-							'attribute value'
+					plusConsumed(
+						codepoint(
+							(cp) =>
+								cp !== ANGLE_BRACKET_OPEN_CP &&
+								cp !== AMPERSAND_CP &&
+								cp !== DOUBLE_QUOTE_CP,
+							['attribute value']
 						)
 					)
 				),
@@ -363,11 +321,13 @@ const AttValue: Parser<AttValueEvent[]> = or([
 		star(
 			or<AttValueEvent>([
 				recognize(
-					plus(
-						except(
-							skipChars(1),
-							or([ANGLE_BRACKET_OPEN, AMPERSAND, SINGLE_QUOTE]),
-							'attribute value'
+					plusConsumed(
+						codepoint(
+							(cp) =>
+								cp !== ANGLE_BRACKET_OPEN_CP &&
+								cp !== AMPERSAND_CP &&
+								cp !== SINGLE_QUOTE_CP,
+							['attribute value']
 						)
 					)
 				),
@@ -383,11 +343,10 @@ export const EntityReplacementTextInLiteral = complete(
 	star(
 		or<AttValueEvent>([
 			recognize(
-				plus(
-					except(
-						skipChars(1),
-						or([ANGLE_BRACKET_OPEN, AMPERSAND]),
-						'entity replacement text'
+				plusConsumed(
+					codepoint(
+						(cp) => cp !== ANGLE_BRACKET_OPEN_CP && cp !== AMPERSAND_CP,
+						['entity replacement text']
 					)
 				)
 			),
@@ -400,99 +359,96 @@ export const EntityReplacementTextInLiteral = complete(
 const SystemLiteral = or([
 	delimited(
 		DOUBLE_QUOTE,
-		recognize(star(except(skipChars(1), DOUBLE_QUOTE, 'system literal'))),
+		recognize(starConsumed(codepoint((cp) => cp !== DOUBLE_QUOTE_CP, ['system literal']))),
 		DOUBLE_QUOTE
 	),
 	delimited(
 		SINGLE_QUOTE,
-		recognize(star(except(skipChars(1), SINGLE_QUOTE, 'system literal'))),
+		recognize(starConsumed(codepoint((cp) => cp !== SINGLE_QUOTE_CP, ['system literal']))),
 		SINGLE_QUOTE
 	),
 ]);
 
 // [13] PubidChar ::= #x20 | #xD | #xA | [a-zA-Z0-9] | [-'()+,./:=?;!*#@$_%]
-const PubidChar = or([
-	SPACE,
-	CR,
-	LF,
-	LOWER_ALPHA,
-	UPPER_ALPHA,
-	DIGIT,
-	DASH,
-	SINGLE_QUOTE,
-	PARENTHESIS_OPEN,
-	PARENTHESIS_CLOSE,
-	PLUS,
-	COMMA,
-	PERIOD,
-	SLASH,
-	COLON,
-	EQUALS,
-	QUESTION_MARK,
-	SEMICOLON,
-	EXCLAMATION_MARK,
-	ASTERISK,
-	OCTOTHORPE,
-	AT,
-	DOLLAR,
-	UNDERSCORE,
-	PERCENT,
-]);
-
-const CompletePubidChars = complete(star(PubidChar));
-
-/**
- * Returns true if all characters in value match the PubidChar production.
- *
- * @param value - The string to check
- *
- * @returns true if all characters in value match PubidChar, otherwise false
- */
-export function matchesPubidCharProduction(value: string): boolean {
-	return CompletePubidChars(value, 0).success;
+function isValidPubidChar(cp: number): boolean {
+	return (
+		cp === 0x20 ||
+		cp === 0xd ||
+		cp === 0xa ||
+		(LOWER_A_CP <= cp && cp <= LOWER_Z_CP) ||
+		(UPPER_A_CP <= cp && cp <= UPPER_Z_CP) ||
+		(ZERO_CP <= cp && cp <= NINE_CP) ||
+		(0x21 <= cp && cp <= 0x2f && cp !== 0x22 && cp !== 0x26) ||
+		(0x3a <= cp && cp <= 0x40 && cp !== 0x3c && cp !== 0x3e) ||
+		cp === 0x5f
+	);
 }
+const PubidChar = codepoint(isValidPubidChar, ['valid public ID character']);
+
+export const CompletePubidChars = complete(starConsumed(PubidChar));
 
 // [12] PubidLiteral ::= '"' PubidChar* '"' | "'" (PubidChar - "'")* "'"
 const PubidLiteral = or([
 	delimited(
 		DOUBLE_QUOTE,
-		recognize(star(except(PubidChar, DOUBLE_QUOTE, 'public id'))),
+		recognize(starConsumed(except(PubidChar, DOUBLE_QUOTE, ['public id']))),
 		DOUBLE_QUOTE,
 		true
 	),
 	delimited(
 		SINGLE_QUOTE,
-		recognize(star(except(PubidChar, SINGLE_QUOTE, 'public id'))),
+		recognize(starConsumed(except(PubidChar, SINGLE_QUOTE, ['public id']))),
 		SINGLE_QUOTE,
 		true
 	),
 ]);
 
 // [14] CharData ::= [^<&]* - ([^<&]* ']]>' [^<&]*)
-// CharData is only used as optional, it doesn't make sense to have it accept the empty string
+// CharData is only ever used as optional, it doesn't make sense to have it accept the empty string
+// For efficiency, hardcode the disallowed codepoints
+const ANGLE_BRACKET_OPEN_CP = 0x3c;
+const AMPERSAND_CP = 0x26;
+const SQUARE_BRACKET_CLOSE_CP = 0x5d;
 const CharData: Parser<TextEvent> = recognize(
-	plus(except(skipChars(1), or([ANGLE_BRACKET_OPEN, AMPERSAND, SECT_END]), 'character data'))
+	plusConsumed(
+		or(
+			[
+				// Fast path: filtered codepoint
+				codepoint(
+					(cp) =>
+						cp !== ANGLE_BRACKET_OPEN_CP &&
+						cp !== AMPERSAND_CP &&
+						cp !== SQUARE_BRACKET_CLOSE_CP,
+					[]
+				),
+				// Square bracket is allowed if it's not a SECT_END
+				except(consume(SQUARE_BRACKET_CLOSE), SECT_END, []),
+			],
+			['character data']
+		)
+	)
 );
 
 // [15] Comment ::= '<!--' ((Char - '-') | ('-' (Char - '-')))* '-->'
 const Comment: Parser<CommentEvent> = map(
 	delimited(
 		COMMENT_START,
-		recognize(star(except(Char, DOUBLE_DASH, 'comment content may not contain --'))),
+		recognize(starConsumed(except(Char, DOUBLE_DASH, ['comment content may not contain --']))),
 		COMMENT_END,
 		true
 	),
 	(data) => ({ type: ParserEventType.Comment, data })
 );
 // [17] PITarget ::= Name - (('X' | 'x') ('M' | 'm') ('L' | 'l'))
-const PITarget = except(Name, caseInsensitiveToken('xml'), 'PI target may not be "xml"');
+// (validation handled in parsing logic)
+const PITarget = Name;
 
 // [16] PI ::= '<?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'
 const PI: Parser<PIEvent> = delimited(
 	PI_START,
 	then(
 		PITarget,
-		optional(preceded(S, recognize(star(except(Char, PI_END, 'PI data'))))),
+		optional(preceded(S, recognize(starConsumed(except(Char, PI_END, ['PI data']))))),
 		(target, data) => ({ type: ParserEventType.PI, target, data })
 	),
 	PI_END,
@@ -503,7 +459,7 @@ const PI: Parser<PIEvent> = delimited(
 const CDStart = token('<![CDATA[');
 
 // [20] CData ::= (Char* - (Char* ']]>' Char*))
-const CData = recognize(star(except(Char, SECT_END, 'CData')));
+const CData = recognize(starConsumed(except(Char, SECT_END, ['CData'])));
 
 // [21] CDEnd ::= ']]>'
 const CDEnd = SECT_END;
@@ -518,7 +474,7 @@ const CDSect: Parser<CDSectEvent> = map(delimited(CDStart, CData, CDEnd, true), 
 const Eq = delimited(optional(S), EQUALS, optional(S));
 
 // [26] VersionNum ::= '1.' [0-9]+
-const VersionNum = recognize(preceded(ONE_POINT, plus(DIGIT)));
+const VersionNum = recognize(preceded(ONE_POINT, plusConsumed(DIGIT)));
 
 // [24] VersionInfo ::= S 'version' Eq ("'" VersionNum "'" | '"' VersionNum '"')
 const VersionInfo = preceded(
@@ -528,8 +484,8 @@ const VersionInfo = preceded(
 		preceded(
 			Eq,
 			or([
-				delimited(SINGLE_QUOTE, VersionNum, SINGLE_QUOTE, true),
 				delimited(DOUBLE_QUOTE, VersionNum, DOUBLE_QUOTE, true),
+				delimited(SINGLE_QUOTE, VersionNum, SINGLE_QUOTE, true),
 			])
 		)
 	)
@@ -539,7 +495,16 @@ const VersionInfo = preceded(
 const EncName = recognize(
 	preceded(
 		or([UPPER_ALPHA, LOWER_ALPHA]),
-		star(or([UPPER_ALPHA, LOWER_ALPHA, DIGIT, PERIOD, UNDERSCORE, DASH]))
+		starConsumed(
+			or([
+				UPPER_ALPHA,
+				LOWER_ALPHA,
+				DIGIT,
+				consume(PERIOD),
+				consume(UNDERSCORE),
+				consume(DASH),
+			])
+		)
 	)
 );
 
@@ -567,8 +532,8 @@ const SDDecl = preceded(
 		preceded(
 			Eq,
 			or([
-				delimited(SINGLE_QUOTE, YesOrNo, SINGLE_QUOTE, true),
 				delimited(DOUBLE_QUOTE, YesOrNo, DOUBLE_QUOTE, true),
+				delimited(SINGLE_QUOTE, YesOrNo, SINGLE_QUOTE, true),
 			])
 		)
 	)
@@ -620,7 +585,10 @@ const STag: Parser<STagEvent> = delimited(
 // [42] ETag ::= '</' Name S? '>'
 const ETag: Parser<ETagEvent> = map(
 	delimited(ETAG_START, followed(Name, optional(S)), ANGLE_BRACKET_CLOSE, true),
-	(name) => ({ type: ParserEventType.ETag, name })
+	(name) => ({
+		type: ParserEventType.ETag,
+		name,
+	})
 );
 
 // [44] EmptyElemTag ::= '<' Name (S Attribute)* S? '/>'
@@ -644,11 +612,10 @@ const choice = delimited(
 	followed(PARENTHESIS_OPEN, optional(S)),
 	then(
 		cp,
-		plus(preceded(delimited(optional(S), VERTICAL_BAR, optional(S)), cp)),
+		plusConsumed(preceded(delimited(optional(S), VERTICAL_BAR, optional(S)), cut(cp))),
 		() => undefined
 	),
-	preceded(optional(S), PARENTHESIS_CLOSE),
-	true
+	preceded(optional(S), PARENTHESIS_CLOSE)
 );
 
 function choiceIndirect(input: string, offset: number): ParseResult<undefined> {
@@ -658,9 +625,12 @@ function choiceIndirect(input: string, offset: number): ParseResult<undefined> {
 // [50] seq ::= '(' S? cp ( S? ',' S? cp )* S? ')'
 const seq = delimited(
 	followed(PARENTHESIS_OPEN, optional(S)),
-	then(cp, star(preceded(delimited(optional(S), COMMA, optional(S)), cp)), () => undefined),
-	preceded(optional(S), PARENTHESIS_CLOSE),
-	true
+	then(
+		cp,
+		starConsumed(preceded(delimited(optional(S), COMMA, optional(S)), cut(cp))),
+		() => undefined
+	),
+	preceded(optional(S), PARENTHESIS_CLOSE)
 );
 
 function seqIndirect(input: string, offset: number): ParseResult<undefined> {
@@ -675,11 +645,13 @@ const children = then(or([choice, seq]), optional(Multiplicity), () => undefined
 const Mixed = preceded(
 	preceded(followed(PARENTHESIS_OPEN, optional(S)), PCDATA),
 	or([
-		followed(
-			star(preceded(delimited(optional(S), VERTICAL_BAR, optional(S)), Name)),
-			followed(PARENTHESIS_CLOSE, ASTERISK)
+		consume(
+			followed(
+				starConsumed(preceded(delimited(optional(S), VERTICAL_BAR, optional(S)), Name)),
+				followed(PARENTHESIS_CLOSE, ASTERISK)
+			)
 		),
-		map(followed(optional(S), PARENTHESIS_CLOSE), () => []),
+		consume(followed(optional(S), PARENTHESIS_CLOSE)),
 	])
 );
 
@@ -717,15 +689,17 @@ const TokenizedType = or([
 // [58] NotationType ::= 'NOTATION' S '(' S? Name (S? '|' S? Name)* S? ')'
 const NotationType = preceded(
 	followed(NOTATION, S),
-	delimited(
-		followed(PARENTHESIS_OPEN, optional(S)),
-		then(
-			Name,
-			star(preceded(delimited(optional(S), VERTICAL_BAR, optional(S)), Name)),
-			(first, rest) => [first, ...rest]
-		),
-		preceded(optional(S), PARENTHESIS_CLOSE),
-		true
+	cut(
+		delimited(
+			followed(PARENTHESIS_OPEN, optional(S)),
+			then(
+				Name,
+				starConsumed(preceded(delimited(optional(S), VERTICAL_BAR, optional(S)), Name)),
+				() => undefined
+			),
+			preceded(optional(S), PARENTHESIS_CLOSE),
+			true
+		)
 	)
 );
 
@@ -734,8 +708,8 @@ const Enumeration = delimited(
 	followed(PARENTHESIS_OPEN, optional(S)),
 	then(
 		Nmtoken,
-		star(preceded(delimited(optional(S), VERTICAL_BAR, optional(S)), Nmtoken)),
-		(first, rest) => [first, ...rest]
+		starConsumed(preceded(delimited(optional(S), VERTICAL_BAR, optional(S)), Nmtoken)),
+		() => undefined
 	),
 	preceded(optional(S), PARENTHESIS_CLOSE)
 );
@@ -744,6 +718,7 @@ const Enumeration = delimited(
 const EnumeratedType = or([NotationType, Enumeration]);
 
 // [54] AttType ::= StringType | TokenizedType | EnumeratedType
+// We only need to know whether the attribute's type is 'CDATA'
 const AttType = or([
 	map(StringType, () => true),
 	map(TokenizedType, () => false),
@@ -777,7 +752,8 @@ const AttlistDecl: Parser<AttlistDeclEvent> = delimited(
 		name,
 		attdefs,
 	})),
-	preceded(optional(S), ANGLE_BRACKET_CLOSE)
+	preceded(optional(S), ANGLE_BRACKET_CLOSE),
+	true
 );
 
 // [62] includeSect ::= '<![' S? 'INCLUDE' S? '[' extSubsetDecl ']]>'
@@ -792,7 +768,7 @@ const AttlistDecl: Parser<AttlistDeclEvent> = delimited(
 // );
 
 // [65] Ignore ::= Char* - (Char* ('<![' | ']]>') Char*)
-// const Ignore = star(except(Char, or([CONDITIONAL_SECT_START, SECT_END]), 'ignore sect contents'));
+// const Ignore = star(except(Char, or([CONDITIONAL_SECT_START, SECT_END]), ['ignore sect contents']));
 
 // [64] ignoreSectContents ::= Ignore ('<![' ignoreSectContents ']]>' Ignore)*
 // const ignoreSectContents = then(
@@ -856,9 +832,11 @@ const EntityDef = or<EntityValueEvent[] | ExternalEntityEvent>([
 // [71] GEDecl ::= '<!ENTITY' S Name S EntityDef S? '>'
 const GEDecl: Parser<EntityDeclEvent | void> = delimited(
 	ENTITY_DECL_START,
-	then(preceded(S, Name), cut(preceded(S, EntityDef)), (name, value) =>
-		value === undefined ? undefined : { type: MarkupdeclEventType.EntityDecl, name, value }
-	),
+	then(preceded(S, Name), cut(preceded(S, EntityDef)), (name, value) => ({
+		type: MarkupdeclEventType.EntityDecl,
+		name,
+		value,
+	})),
 	preceded(optional(S), ANGLE_BRACKET_CLOSE)
 );
 
@@ -874,7 +852,7 @@ const PEDecl = delimited(
 );
 
 // [70] EntityDecl ::= GEDecl | PEDecl
-const EntityDecl = or([GEDecl, PEDecl]);
+const EntityDecl = preceded(peek(ENTITY_DECL_START), cut(or([GEDecl, PEDecl])));
 
 // [77] TextDecl ::= '<?xml' VersionInfo? EncodingDecl S? '?>'
 // const TextDecl = delimited(
@@ -896,7 +874,8 @@ const PublicID: Parser<ExternalIDEvent> = map(
 const NotationDecl = delimited(
 	NOTATION_DECL_START,
 	then(delimited(S, Name, S), or([consume(ExternalID), consume(PublicID)]), () => undefined),
-	preceded(optional(S), ANGLE_BRACKET_CLOSE)
+	preceded(optional(S), ANGLE_BRACKET_CLOSE),
+	true
 );
 
 // [29] markupdecl ::= elementdecl | AttlistDecl | EntityDecl | NotationDecl | PI | Comment
@@ -911,10 +890,6 @@ const markupdecl = or<MarkupdeclEvent | void>([
 
 // [28a] DeclSep ::= PEReference | S
 const DeclSep = or([consume(PEReference), consume(S)]);
-
-function filterUndefined<T>(parser: Parser<(T | void)[]>): Parser<T[]> {
-	return map(parser, (vs) => vs.filter((v) => v !== undefined) as T[]);
-}
 
 // [28b] intSubset ::= (markupdecl | DeclSep)*
 const intSubset: Parser<MarkupdeclEvent[]> = filterUndefined(
@@ -960,123 +935,23 @@ const doctypedecl: Parser<DoctypedeclEvent> = delimited(
 	ANGLE_BRACKET_CLOSE
 );
 
-export type StreamingParser<T> = (
-	input: string,
-	offset: number
-) => Generator<T, ParseResult<unknown>>;
-
-function stream<T>(parser: Parser<T>): StreamingParser<T> {
-	return function* (input: string, offset: number) {
-		const res = parser(input, offset);
-		if (res.success) {
-			yield res.value;
-		}
-		return res;
-	};
-}
-
-function skipUndefined<T>(parser: StreamingParser<T | void>): StreamingParser<T> {
-	return function* (input: string, offset: number) {
-		const gen = parser(input, offset);
-		let it = gen.next();
-		while (!it.done) {
-			const value = it.value;
-			if (value !== undefined) {
-				yield value;
-			}
-			it = gen.next();
-		}
-		return it.value;
-	};
-}
-
-export function collect<T, R>(gen: Generator<T, R>): [T[], R] {
-	const values: T[] = [];
-	let it = gen.next();
-	while (!it.done) {
-		values.push(it.value);
-		it = gen.next();
-	}
-	return [values, it.value];
-}
-
-function streamingThen<T, U>(
-	parser1: StreamingParser<T>,
-	parser2: StreamingParser<U>
-): StreamingParser<T | U> {
-	return function* (input: string, offset: number) {
-		const res1 = yield* parser1(input, offset);
-		if (!res1.success) {
-			return res1;
-		}
-		return yield* parser2(input, res1.offset);
-	};
-}
-
-function streamingStar<T>(parser: StreamingParser<T>): StreamingParser<T> {
-	return function* (input: string, offset: number) {
-		while (true) {
-			const [values, result] = collect(parser(input, offset));
-			if (!result.success) {
-				if (result.fatal) {
-					return result;
-				}
-				return ok(offset);
-			}
-
-			yield* values;
-
-			if (offset === result.offset) {
-				// Did not advance
-				return ok(offset);
-			}
-			offset = result.offset;
-		}
-	};
-}
-
-function streamingOptional<T>(parser: StreamingParser<T>): StreamingParser<T> {
-	return function* (input: string, offset: number) {
-		const [values, result] = collect(parser(input, offset));
-		if (!result.success) {
-			if (result.fatal) {
-				return result;
-			}
-			return ok(offset);
-		}
-
-		yield* values;
-
-		return result;
-	};
-}
-
-function streamingComplete<T>(parser: StreamingParser<T>): StreamingParser<T> {
-	return function* (input: string, offset: number) {
-		const res = yield* parser(input, offset);
-		if (!res.success) {
-			return res;
-		}
-		return end(input, res.offset);
-	};
-}
-
 // [27] Misc ::= Comment | PI | S
 const Misc = or<CommentEvent | PIEvent | void>([Comment, PI, consume(S)]);
 
-const MiscStar = streamingStar(skipUndefined(stream(Misc)));
+const MiscStar = streamingStar(streamingFilterUndefined(streaming(Misc)));
 
 // [22] prolog ::= XMLDecl? Misc* (doctypedecl Misc*)?
 const prolog = streamingThen(
-	streamingThen(streamingOptional(stream(XMLDecl)), MiscStar),
-	streamingOptional(streamingThen(stream(doctypedecl), MiscStar))
+	streamingThen(streamingOptional(streaming(XMLDecl)), MiscStar),
+	streamingOptional(streamingThen(streaming(doctypedecl), MiscStar))
 );
 
 // [43] content ::= CharData? ((element | Reference | CDSect | PI | Comment) CharData?)*
 // Here's where we deviate a little from the spec grammar in order to avoid the recursion around
 // elements. Instead, consider start and end tags as separate events and handle / check nesting in
-// the caller.
-const contentTag = or<
+// the caller. CharData is already greedy, so we can include it into the big or.
+const contentEvent = or<
+	| string
 	| STagEvent
 	| ETagEvent
 	| EmptyElemTagEvent
@@ -1084,12 +959,9 @@ const contentTag = or<
 	| CDSectEvent
 	| PIEvent
 	| CommentEvent
->([STag, ETag, EmptyElemTag, Reference, CDSect, PI, Comment]);
+>([CharData, STag, ETag, EmptyElemTag, Reference, CDSect, PI, Comment]);
 
-const content = streamingThen(
-	streamingOptional(stream(CharData)),
-	streamingStar(streamingThen(stream(contentTag), streamingOptional(stream(CharData))))
-);
+const content = streamingStar(streaming(contentEvent));
 
 export const contentComplete = streamingComplete(content);
 
@@ -1099,7 +971,8 @@ const elementStart: Parser<STagEvent | EmptyElemTagEvent> = or<STagEvent | Empty
 	STag,
 	EmptyElemTag,
 ]);
-const element = streamingThen(stream(elementStart), content);
+
+const element = streamingThen(streaming(elementStart), content);
 
 // [1] document ::= prolog element Misc*
 // As element leads to content, which is a superset of Misc*, we can omit the last Misc*

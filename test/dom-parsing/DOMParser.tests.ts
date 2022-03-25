@@ -3,7 +3,9 @@ import * as slimdom from '../../src/index';
 describe('DOMParser', () => {
 	it('can parse an XML document', () => {
 		const parser = new slimdom.DOMParser();
-		const source = `<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html>
+		const xml = `<?xml version="1.0" encoding="utf-16" standalone="yes"?>
+			<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+			<html>
 				<head>\r\n
 					<title>Test document</title>
 				</head>
@@ -11,23 +13,155 @@ describe('DOMParser', () => {
 					<h1>Hello &lt;world&gt;!</h1>
 					<!-- Comments are awesome! -->
 					<?pi can be useful as well?>
+					<?pi-with-just-a-target?>
 					<![CDATA[<not>an<element/>!]]>
 				</body>
 			</html>`;
-		const doc = parser.parseFromString(source, 'text/xml');
-		expect(slimdom.serializeToWellFormedString(doc)).toBe(source.replace(/\r\n?/g, '\n'));
+		const out =
+			`<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html>
+				<head>\r\n
+					<title>Test document</title>
+				</head>
+				<body lang="en">
+					<h1>Hello &lt;world&gt;!</h1>
+					<!-- Comments are awesome! -->
+					<?pi can be useful as well?>
+					<?pi-with-just-a-target ?>
+					<![CDATA[<not>an<element/>!]]>
+				</body>
+			</html>`.replace(/\r\n?/g, '\n');
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
 	});
 
 	it('can parse an XML document with namespaces', () => {
 		const parser = new slimdom.DOMParser();
-		const source = `<root xmlns="ns1" xmlns:pre="ns2"><pre:bla attr="value" pre:attr="another" xmlns="ns3"><blup/></pre:bla><bla/></root>`;
-		const doc = parser.parseFromString(source, 'text/xml');
+		const xml = `<?xml version="1.0" standalone='no'?><!DOCTYPE root SYSTEM "id"><root xmlns="ns1" xmlns:pre="ns2"><pre:bla attr="value" pre:attr="another" xmlns="ns3"><blup><reset xmlns=""/></blup></pre:bla><bla/></root>`;
+		const out = `<!DOCTYPE root SYSTEM "id"><root xmlns="ns1" xmlns:pre="ns2"><pre:bla attr="value" pre:attr="another" xmlns="ns3"><blup><reset xmlns=""/></blup></pre:bla><bla/></root>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(doc.documentElement?.namespaceURI).toBe('ns1');
 		expect(
 			doc.documentElement?.firstElementChild?.getAttributeNode('pre:attr')?.namespaceURI
 		).toBe('ns2');
 		expect(doc.documentElement?.firstElementChild?.firstElementChild?.namespaceURI).toBe('ns3');
-		expect(slimdom.serializeToWellFormedString(doc)).toBe(source);
+		expect(doc.getElementsByTagName('reset')[0]?.namespaceURI).toBe(null);
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
+	it('returns an error if an element prefix is not declared', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<pre:root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: use of undeclared element prefix pre</parsererror>"`
+		);
+	});
+
+	it('returns an error if an attribute prefix is not declared', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root pre:attr="value"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: use of undeclared attribute prefix pre</parsererror>"`
+		);
+	});
+
+	it('returns an error if the xmlns prefix is declared', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root xmlns:xmlns="value"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: the xmlns namespace prefix must not be declared</parsererror>"`
+		);
+	});
+
+	it('returns an error if the xml prefix is redeclared to a different namespace', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root xmlns:xml="value"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: the xml namespace prefix must not be bound to any namespace other than http://www.w3.org/XML/1998/namespace</parsererror>"`
+		);
+	});
+
+	it('returns an error if a prefix is redeclared to an empty namespace', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root xmlns:pre=""/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: the prefix pre must not be undeclared</parsererror>"`
+		);
+	});
+
+	it('returns an error if an element has a name with multiple colons', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<a:b:c/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">InvalidCharacterError: InvalidCharacterError: the qualified name a:b:c must not contain more than one colon</parsererror>"`
+		);
+	});
+
+	it('returns an error if an element has a name starting with an invalid character', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<-/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 1: expected one of \\"valid name start character\\", \\"valid name start character\\" but found \\"-\\"</parsererror>"`
+		);
+	});
+
+	it('returns an error if an element has a name containing an invalid character', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<a-\u{2050}/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 3: expected one of \\"valid name start character\\", \\"valid name start character\\" but found \\"⁐\\"</parsererror>"`
+		);
+	});
+
+	it('returns an error if the DTD public ID contains an invalid character', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root PUBLIC "\u{1f4a9}" ""><root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 23: expected \\"\\"\\" but found \\"💩\\"</parsererror>"`
+		);
+	});
+
+	it('returns an error if the DTD public ID contains an invalid character (2)', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root PUBLIC "\u{3c}" ""><root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 23: expected \\"\\"\\" but found \\"&lt;\\"</parsererror>"`
+		);
+	});
+
+	it('returns an error if the DTD public ID contains an invalid character (3)', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root PUBLIC "\u{3e}" ""><root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 23: expected \\"\\"\\" but found \\"&gt;\\"</parsererror>"`
+		);
+	});
+
+	it('ignores trailing whitespace after the document element', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root/>\t\r\n `;
+		const out = `<root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
+	it('returns an error if non-whitespace character data follows the document element', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root/>text`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: document must not contain text outside of elements</parsererror>"`
+		);
 	});
 
 	it('can handle character references and predefined entities in content', () => {
@@ -46,7 +180,7 @@ describe('DOMParser', () => {
 		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
 	});
 
-	it('throws on recursive entities in content', () => {
+	it('returns an error for recursive entities in content', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<!DOCTYPE root [<!ENTITY one "&two;"><!ENTITY two "&one;">]><root>&one;</root>`;
 		const doc = parser.parseFromString(xml, 'text/xml');
@@ -55,7 +189,51 @@ describe('DOMParser', () => {
 		);
 	});
 
-	it('throws if an entity in the internal subset contains a reference to a parameter entity', () => {
+	it('returns an error for references to unknown entities in content', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root><root>&one;</root>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: reference to unknown entity one in content</parsererror>"`
+		);
+	});
+
+	it('returns an error for entities that expand to content that does not match the content production', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY wrong "<p">]><root>&wrong;</root>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing replacement text for entity wrong at offset 0: expected \\"end of input\\" but found \\"&lt;\\"</parsererror>"`
+		);
+	});
+
+	it('returns an error for entities that expand to content that is not well-formed', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY wrong "<p>text">]><root>&wrong;</root>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: replacement text for entity wrong is not well-formed - element p is missing a closing tag</parsererror>"`
+		);
+	});
+
+	it('ignores references to external parsed entities', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY one SYSTEM 'external'>]><root>&one;</root>`;
+		const out = `<!DOCTYPE root><root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
+	it('returns an error if an unparsed entity is referenced', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY binary SYSTEM "uri" NDATA stuff>]><root>&binary;</root>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: reference to binary entity binary is not allowed</parsererror>"`
+		);
+	});
+
+	it('returns an error if an entity in the internal subset contains a reference to a parameter entity', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<!DOCTYPE root [<!ENTITY % pe "ignored"><!ENTITY ge "%pe;">]><root>&ge;</root>`;
 		const doc = parser.parseFromString(xml, 'text/xml');
@@ -84,6 +262,14 @@ describe('DOMParser', () => {
 		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
 	});
 
+	it('ignores duplicate declarations for attributes but merges duplicate attribute lists for elements', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ATTLIST root a CDATA "a" b CDATA "b"><!ATTLIST root b CDATA "bbb" c CDATA "c">]><root/>`;
+		const out = `<!DOCTYPE root><root a="a" b="b" c="c"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
 	it('can get namespace declarations from their defaults in the DTD', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<!DOCTYPE root [<!ATTLIST root xmlns CDATA "ns1">]><root><root xmlns="ns2"/></root>`;
@@ -94,7 +280,7 @@ describe('DOMParser', () => {
 
 	it('can normalize attribute values', () => {
 		const parser = new slimdom.DOMParser();
-		const xml = `<!DOCTYPE root [<!ATTLIST root id ID #IMPLIED>]><root id=" \t\r\nbla\t\r\n " attr=" \t\r\nbla&#9;\t\r\n "/>`;
+		const xml = `<!DOCTYPE root [<!ATTLIST root id ID #IMPLIED n NOTATION (a|b) #IMPLIED e (one | two) #REQUIRED>]><root id=" \t\r\nbla\t\r\n " attr=" \t\r\nbla&#9;\t\r\n "/>`;
 		const out = `<!DOCTYPE root><root id="bla" attr="   bla&#9;   "/>`;
 		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
@@ -108,21 +294,38 @@ describe('DOMParser', () => {
 		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
 	});
 
-	it('throws on recursive entities in attribute values', () => {
+	it('ignores duplicate entity definitions', () => {
 		const parser = new slimdom.DOMParser();
-		const xml = `<!DOCTYPE root [<!ENTITY one "&two;"><!ENTITY two "&one;">]><root attr="&one;"/>`;
+		const xml = `<!DOCTYPE root [<!ENTITY one "one"><!ENTITY one "two">]><root attr="&one;"/>`;
+		const out = `<!DOCTYPE root><root attr="one"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
+	it('returns an error for references to unknown entities in attribute values', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root><root attr="&one;"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: reference to unknown entity one in attribute value</parsererror>"`
+		);
+	});
+
+	it('returns an error for recursive entities in attribute values', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY one "&two;"><!ENTITY two '&one;'>]><root attr="&one;"/>`;
 		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
 			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: reference to entity one must not be recursive</parsererror>"`
 		);
 	});
 
-	it('throws if the replacement text for an entity reference in an attribute value contains <', () => {
+	it('returns an error if the replacement text for an entity reference in an attribute value contains <', () => {
 		const parser = new slimdom.DOMParser();
-		const xml = `<!DOCTYPE root [<!ENTITY x "&#60;">]><root attr="&x;"/>`;
+		const xml = `<!DOCTYPE root [<!ENTITY x "&#60;">]><root attr='&x;'/>`;
 		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
-			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: replacement text for entity x in attribute value must not contain \\"&lt;\\"</parsererror>"`
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing replacement text for entity x at offset 0: expected \\"end of input\\" but found \\"&lt;\\"</parsererror>"`
 		);
 	});
 
@@ -130,7 +333,7 @@ describe('DOMParser', () => {
 		const parser = new slimdom.DOMParser();
 		const doc = parser.parseFromString('NOT A VALID DOCUMENT', 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
-			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 0: expected one of \\"&lt;\\", \\"&lt;\\" but found \\"N\\"</parsererror>"`
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 0: expected one of \\"valid name start character\\", \\"valid name start character\\" but found \\"N\\"</parsererror>"`
 		);
 	});
 
@@ -140,6 +343,73 @@ describe('DOMParser', () => {
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
 			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: non-well-formed element: found end tag toot but expected root</parsererror>"`
 		);
+	});
+
+	it('returns an error if a PI has target "xml"', () => {
+		const parser = new slimdom.DOMParser();
+		const doc = parser.parseFromString('<root><?xml version="1.0"?></root>', 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: processing instruction target must not be \\"xml\\"</parsererror>"`
+		);
+	});
+
+	it('returns an error if there is more than one root element', () => {
+		const parser = new slimdom.DOMParser();
+		const doc = parser.parseFromString('<root/><another-root/>', 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: document must contain a single root element, but found root and another-root</parsererror>"`
+		);
+	});
+
+	it('returns an error if the input is empty', () => {
+		const parser = new slimdom.DOMParser();
+		const doc = parser.parseFromString('', 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 0: expected one of \\"valid name start character\\", \\"valid name start character\\" but found \\"\\"</parsererror>"`
+		);
+	});
+
+	it('returns an error if there are not enough end tags', () => {
+		const parser = new slimdom.DOMParser();
+		const doc = parser.parseFromString('<root>', 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: document is not well-formed - element root is missing a closing tag</parsererror>"`
+		);
+	});
+
+	it('returns an error if there are too many end tags', () => {
+		const parser = new slimdom.DOMParser();
+		const doc = parser.parseFromString('<root/></root>', 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: non-well-formed element: found end tag root but expected no such tag</parsererror>"`
+		);
+	});
+
+	it('returns an error if an element has duplicate attributes', () => {
+		const parser = new slimdom.DOMParser();
+		const doc = parser.parseFromString('<root attr="value" attr="another value"/>', 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: attribute attr must not appear multiple times on element root</parsererror>"`
+		);
+	});
+
+	it('returns an error if an element has attributes with the same expanded name', () => {
+		const parser = new slimdom.DOMParser();
+		const doc = parser.parseFromString(
+			'<root xmlns:a="ns" xmlns:b="ns" a:attr="value" b:attr="another value"/>',
+			'text/xml'
+		);
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: attribute b:attr must not appear multiple times on element root</parsererror>"`
+		);
+	});
+
+	it('parses element declarations and notations but does not use them to validate content', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ELEMENT root (one, two, (three | (four, five)+))*><!NOTATION not PUBLIC "id">]><root><two/></root>`;
+		const out = `<!DOCTYPE root><root><two/></root>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
 	});
 
 	it("doesn't support HTML parsing", () => {

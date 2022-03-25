@@ -4,7 +4,7 @@ import DocumentFragment from './DocumentFragment';
 import Element from './Element';
 import Node from './Node';
 
-import { NodeType, isNodeOfType } from './util/NodeType';
+import { NodeType, isNodeOfType, isElement } from './util/NodeType';
 
 /**
  * 3.2.4. Mixin NonElementParentNode
@@ -77,27 +77,10 @@ export interface NonDocumentTypeChildNode {
 // Element implements NonDocumentTypeChildNode;
 // CharacterData implements NonDocumentTypeChildNode;
 
-export function asNonDocumentTypeChildNode(node: Node): NonDocumentTypeChildNode | null {
-	if (
-		isNodeOfType(
-			node,
-			NodeType.ELEMENT_NODE,
-			NodeType.COMMENT_NODE,
-			NodeType.PROCESSING_INSTRUCTION_NODE,
-			NodeType.TEXT_NODE,
-			NodeType.CDATA_SECTION_NODE
-		)
-	) {
-		return node as Element | CharacterData;
-	}
-
-	return null;
-}
-
 export function getPreviousElementSibling(node: Node): Element | null {
 	for (let sibling = node.previousSibling; sibling; sibling = sibling.previousSibling) {
-		if (isNodeOfType(sibling, NodeType.ELEMENT_NODE)) {
-			return sibling as Element;
+		if (isElement(sibling)) {
+			return sibling;
 		}
 	}
 
@@ -106,8 +89,8 @@ export function getPreviousElementSibling(node: Node): Element | null {
 
 export function getNextElementSibling(node: Node): Element | null {
 	for (let sibling = node.nextSibling; sibling; sibling = sibling.nextSibling) {
-		if (isNodeOfType(sibling, NodeType.ELEMENT_NODE)) {
-			return sibling as Element;
+		if (isElement(sibling)) {
+			return sibling;
 		}
 	}
 
