@@ -5,11 +5,19 @@
 
 Fast, tiny, standards-compliant XML DOM implementation for node and the browser.
 
-This is a (partial) implementation of the [DOM living standard][domstandard], as last updated 19 December 2021, and the [DOM Parsing and Serialization W3C Editor's Draft][domparsing], as last updated 20 April 2020. It follows the [fifth edition of the XML 1.0 specification][xmlstandard]. See the 'Features and Limitations' section below for details on what's included and what's not.
+This is a (partial) implementation of the following specifications:
+
+-   [DOM living standard][domstandard], as last updated 19 December 2021
+-   [DOM Parsing and Serialization W3C Editor's Draft][domparsing], as last updated 20 April 2020
+-   [Extensible Markup Language (XML) 1.0 (Fifth Edition)][xmlstandard]
+-   [Namespaces in XML 1.0 (Third Edition)][xml-names]
+
+See the 'Features and Limitations' section below for details on what's included and what's not.
 
 [domstandard]: https://dom.spec.whatwg.org/
 [domparsing]: https://w3c.github.io/DOM-Parsing/
 [xmlstandard]: https://www.w3.org/TR/xml/
+[xml-names]: https://www.w3.org/TR/xml-names/
 
 ## Installation
 
@@ -36,10 +44,17 @@ import * as slimdom from 'slimdom';
 // alternatively, in node and other commonJS environments:
 // const slimdom = require('slimdom');
 
+// Start with an empty document:
 const document = new slimdom.Document();
 document.appendChild(document.createElementNS('http://www.example.com', 'root'));
 const xml = slimdom.serializeToWellFormedString(document);
 // -> '<root xmlns="http://www.example.com"/>'
+
+// Or parse from a string:
+const document2 = new slimdom.DOMParser().parseFromString('<root attr="value">Hello!</root>');
+document2.documentElement.setAttribute('attr', 'new value');
+const xml2 = slimdom.serializeToWellFormedString(document2);
+// -> '<root attr="new value">Hello!</root>'
 ```
 
 Some DOM API's, such as the `DocumentFragment` constructor, require the presence of a global document, for instance to set their initial `ownerDocument` property. In these cases, slimdom will use the instance exposed through `slimdom.document`. Although you could mutate this document, it is recommended to always create your own documents (using the `Document` constructor) to avoid conflicts with other code using slimdom in your application.
@@ -54,6 +69,7 @@ This library implements:
 -   `Range`, which correctly updates under mutations.
 -   `MutationObserver`
 -   `XMLSerializer`, and read-only versions of `innerHTML` / `outerHTML` on `Element`.
+-   `DOMParser`, for XML parsing only.
 
 This library is currently aimed at providing a lightweight and consistent experience for dealing with XML and XML-like data. For simplicity and efficiency, this implementation deviates from the spec in a few minor ways. Most notably, normal JavaScript arrays are used instead of `HTMLCollection` / `NodeList` and `NamedNodeMap`, HTML documents are treated no different from other documents and a number of features from in the DOM spec are missing. In most cases, this is because alternatives are available that can be used together with slimdom with minimal effort.
 
@@ -63,9 +79,9 @@ This library implements the changes from [whatwg/dom#819][dom-adopt-pr], as the 
 
 ### Parsing
 
-This library does not implement the `DOMParser` interface, nor `insertAdjacentHTML` on `Element`, nor `createContextualFragment` on `Range`. The `innerHTML` and `outerHTML` properties are read-only,
+This library does not implement HTML parsing, which means no `insertAdjacentHTML` on `Element`, nor `createContextualFragment` on `Range`. The `innerHTML` and `outerHTML` properties are read-only.
 
-If you need to parse XML, use [slimdom-sax-parser][slimdom-sax-parser]. See its README for examples.
+The `DOMParser` interface is implemented, but this can only be used to parse XML. The XML parser is non-validating, and therefore does not support an external DTD or external parsed entities. During parsing, any referenced entities are included, default attribute values are materialized and the DTD internal subset is discarded. References to external entities are replaced with nothing. References to parameter entities are also ignored.
 
 If you need to parse HTML, see [this example][parse5-example] which shows how to connect the [parse5][parse5] HTML parser with the help of the [dom-treeadapter][dom-treeadapter] library.
 
@@ -100,7 +116,6 @@ The following features are missing simply because I have not yet had, or heard o
 -   `isConnected` / `getRootNode` / `isEqualNode` / `isSameNode` on `Node`
 
 [dom-adopt-pr]: https://github.com/whatwg/dom/pull/819
-[slimdom-sax-parser]: https://github.com/wvbe/slimdom-sax-parser
 [fontoxpath]: https://github.com/FontoXML/fontoxpath/
 [parse5-example]: https://github.com/bwrrp/slimdom.js/tree/main/test/examples/parse5
 [parse5]: https://github.com/inikulin/parse5
