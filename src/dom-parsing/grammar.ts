@@ -41,6 +41,7 @@ import {
 	MarkupdeclEvent,
 	MarkupdeclEventType,
 	ParserEventType,
+	PEReferenceEvent,
 	PIEvent,
 	ReferenceEvent,
 	STagEvent,
@@ -293,54 +294,47 @@ const EntityRef: Parser<EntityRefEvent> = map(delimited(AMPERSAND, Name, SEMICOL
 const Reference: Parser<ReferenceEvent> = or<ReferenceEvent>([EntityRef, CharRef]);
 
 // [69] PEReference ::= '%' Name ';'
-const PEReference = map(delimited(PERCENT, Name, SEMICOLON), (name) => undefined);
+const PEReference: Parser<PEReferenceEvent> = map(delimited(PERCENT, Name, SEMICOLON), (name) => ({
+	type: ParserEventType.PEReference,
+	name,
+}));
 
 // [9] EntityValue ::= '"' ([^%&"] | PEReference | Reference)* '"'
 //     | "'" ([^%&'] | PEReference | Reference)* "'"
-const EntityValue = filterUndefined(
-	or([
-		delimited(
-			DOUBLE_QUOTE,
-			star(
-				or<EntityValueEvent | void>([
-					recognize(
-						plus(
-							except(
-								skipChars(1),
-								or([PERCENT, AMPERSAND, DOUBLE_QUOTE]),
-								'entity text'
-							)
-						)
-					),
-					consume(PEReference),
-					Reference,
-				])
-			),
-			DOUBLE_QUOTE,
-			true
+const EntityValue = or([
+	delimited(
+		DOUBLE_QUOTE,
+		star(
+			or<EntityValueEvent>([
+				recognize(
+					plus(
+						except(skipChars(1), or([PERCENT, AMPERSAND, DOUBLE_QUOTE]), 'entity text')
+					)
+				),
+				PEReference,
+				Reference,
+			])
 		),
-		delimited(
-			SINGLE_QUOTE,
-			star(
-				or<EntityValueEvent | void>([
-					recognize(
-						plus(
-							except(
-								skipChars(1),
-								or([PERCENT, AMPERSAND, SINGLE_QUOTE]),
-								'entity text'
-							)
-						)
-					),
-					consume(PEReference),
-					Reference,
-				])
-			),
-			SINGLE_QUOTE,
-			true
+		DOUBLE_QUOTE,
+		true
+	),
+	delimited(
+		SINGLE_QUOTE,
+		star(
+			or<EntityValueEvent>([
+				recognize(
+					plus(
+						except(skipChars(1), or([PERCENT, AMPERSAND, SINGLE_QUOTE]), 'entity text')
+					)
+				),
+				PEReference,
+				Reference,
+			])
 		),
-	])
-);
+		SINGLE_QUOTE,
+		true
+	),
+]);
 
 // [10] AttValue ::= '"' ([^<&"] | Reference)* '"'
 //      | "'" ([^<&'] | Reference)* "'"
@@ -862,7 +856,7 @@ const EntityDef = or<EntityValueEvent[] | ExternalEntityEvent>([
 // [71] GEDecl ::= '<!ENTITY' S Name S EntityDef S? '>'
 const GEDecl: Parser<EntityDeclEvent | void> = delimited(
 	ENTITY_DECL_START,
-	then(preceded(S, Name), preceded(S, EntityDef), (name, value) =>
+	then(preceded(S, Name), cut(preceded(S, EntityDef)), (name, value) =>
 		value === undefined ? undefined : { type: MarkupdeclEventType.EntityDecl, name, value }
 	),
 	preceded(optional(S), ANGLE_BRACKET_CLOSE)
@@ -966,7 +960,10 @@ const doctypedecl: Parser<DoctypedeclEvent> = delimited(
 	ANGLE_BRACKET_CLOSE
 );
 
-export type StreamingParser<T> = (input: string, offset: number) => Generator<T, ParseResult<unknown>>;
+export type StreamingParser<T> = (
+	input: string,
+	offset: number
+) => Generator<T, ParseResult<unknown>>;
 
 function stream<T>(parser: Parser<T>): StreamingParser<T> {
 	return function* (input: string, offset: number) {

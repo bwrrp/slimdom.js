@@ -22,6 +22,9 @@ import {
 	STagEvent,
 } from './parserEvents';
 
+// TODO: add line / column info (and some context) to all parser errors
+// TODO: add same info to all other errors
+
 function constructReplacementText(value: EntityValueEvent[]): string {
 	const replacementText: string[] = [];
 	for (const event of value) {
@@ -39,6 +42,10 @@ function constructReplacementText(value: EntityValueEvent[]): string {
 				// Bypass
 				replacementText.push(`&${event.name};`);
 				break;
+			case ParserEventType.PEReference:
+				throw new Error(
+					`reference to parameter entity ${event.name} must not occur in an entity declaration in the internal subset`
+				);
 		}
 	}
 
@@ -157,7 +164,7 @@ function normalizeAndIncludeEntities(
 		}
 		if (replacementText.includes('<')) {
 			throw new Error(
-				'replacement text for entity ${event.name} in attribute value must not contain "<"'
+				`replacement text for entity ${event.name} in attribute value must not contain "<"`
 			);
 		}
 		const result = EntityReplacementTextInLiteral(replacementText, 0);

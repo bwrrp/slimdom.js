@@ -55,6 +55,27 @@ describe('DOMParser', () => {
 		);
 	});
 
+	it('throws if an entity in the internal subset contains a reference to a parameter entity', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY % pe "ignored"><!ENTITY ge "%pe;">]><root>&ge;</root>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: reference to parameter entity pe must not occur in an entity declaration in the internal subset</parsererror>"`
+		);
+	});
+
+	it('can handle the first example from appendix D', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE test [<!ENTITY example "<p>An ampersand (&#38;#38;) may be escaped
+		numerically (&#38;#38;#38;) or with a general entity
+		(&amp;amp;).</p>" >]><root>&example;</root>`;
+		const out = `<!DOCTYPE test><root><p>An ampersand (&amp;) may be escaped
+		numerically (&amp;#38;) or with a general entity
+		(&amp;amp;).</p></root>`.replace(/\r\n?/g, '\n');
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
 	it('can get attributes from their defaults in the DTD', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<!DOCTYPE root [<!ATTLIST root attr CDATA "value">]><root><root attr="override"/></root>`;
@@ -93,6 +114,15 @@ describe('DOMParser', () => {
 		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
 			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: reference to entity one must not be recursive</parsererror>"`
+		);
+	});
+
+	it('throws if the replacement text for an entity reference in an attribute value contains <', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY x "&#60;">]><root attr="&x;"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: replacement text for entity x in attribute value must not contain \\"&lt;\\"</parsererror>"`
 		);
 	});
 

@@ -1,6 +1,7 @@
 export const enum ParserEventType {
 	CharRef,
 	EntityRef,
+	PEReference,
 	Comment,
 	PI,
 	CDSect,
@@ -16,6 +17,8 @@ export type CharRefEvent = { type: ParserEventType.CharRef; char: string };
 export type EntityRefEvent = { type: ParserEventType.EntityRef; name: string };
 
 export type ReferenceEvent = CharRefEvent | EntityRefEvent;
+
+export type PEReferenceEvent = { type: ParserEventType.PEReference; name: string };
 
 export type TextEvent = string;
 
@@ -72,7 +75,7 @@ export type AttlistDeclEvent = {
 	attdefs: AttDefEvent[];
 };
 
-export type EntityValueEvent = TextEvent | ReferenceEvent;
+export type EntityValueEvent = TextEvent | ReferenceEvent | PEReferenceEvent;
 
 export type ExternalEntityEvent = { ids: ExternalIDEvent; ndata: string | null };
 
