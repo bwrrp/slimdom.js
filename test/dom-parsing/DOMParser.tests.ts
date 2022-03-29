@@ -164,6 +164,33 @@ describe('DOMParser', () => {
 		);
 	});
 
+	it('returns an error if an entity reference follows the document element', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY e "">]><root/>&e;`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: reference to entity e must not appear after the document element</parsererror>"`
+		);
+	});
+
+	it('returns an error if a character reference follows the document element', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root/>&#9;`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: character reference must not appear after the document element</parsererror>"`
+		);
+	});
+
+	it('returns an error if a CData section follows the document element', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root/><![CDATA[]]>;`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: CData section must not appear after the document element</parsererror>"`
+		);
+	});
+
 	it('can handle character references and predefined entities in content', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<root attr="&#x1f4a9;">&lt;&quot;&#128169;&apos;&gt;</root>`;

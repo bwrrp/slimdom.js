@@ -458,10 +458,20 @@ export function parseXmlDocument(input: string): Document {
 
 			switch (event.type) {
 				case ParserEventType.CharRef:
+					if (domContext.root === doc && doc.documentElement !== null) {
+						throw new Error(
+							'character reference must not appear after the document element'
+						);
+					}
 					collectedText.push(event.char);
 					continue;
 
 				case ParserEventType.EntityRef: {
+					if (domContext.root === doc && doc.documentElement !== null) {
+						throw new Error(
+							`reference to entity ${event.name} must not appear after the document element`
+						);
+					}
 					for (let ctx: EntityContext | null = entityContext; ctx; ctx = ctx.parent) {
 						if (ctx.entity === event.name) {
 							throw new Error(
@@ -495,6 +505,9 @@ export function parseXmlDocument(input: string): Document {
 
 			switch (event.type) {
 				case ParserEventType.CDSect:
+					if (domContext.root === doc && doc.documentElement !== null) {
+						throw new Error('CData section must not appear after the document element');
+					}
 					appendParsedNode(domContext.root, doc.createCDATASection(event.data));
 					continue;
 
@@ -503,6 +516,7 @@ export function parseXmlDocument(input: string): Document {
 					continue;
 
 				case ParserEventType.Doctypedecl:
+					// Grammar guarantees this happens before the document element
 					dtd = new Dtd(event);
 					appendParsedNode(
 						domContext.root,
