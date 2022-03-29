@@ -677,14 +677,15 @@ const StringType = token('CDATA');
 //      | 'ENTITIES'
 //      | 'NMTOKEN'
 //      | 'NMTOKENS'
+// Ordering is important here as some tokens are prefixes of others and we want the longest match
 const TokenizedType = or([
-	token('ID'),
-	token('IDREF'),
 	token('IDREFS'),
+	token('IDREF'),
+	token('ID'),
 	token('ENTITY'),
 	token('ENTITIES'),
-	token('NMTOKEN'),
 	token('NMTOKENS'),
+	token('NMTOKEN'),
 ]);
 
 // [58] NotationType ::= 'NOTATION' S '(' S? Name (S? '|' S? Name)* S? ')'

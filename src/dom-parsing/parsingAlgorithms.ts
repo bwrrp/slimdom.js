@@ -75,6 +75,8 @@ function isWhitespace(value: string): boolean {
 
 // TODO: add line / column info (and some context) to all parser errors
 // TODO: add same info to all other errors
+// TODO: CharData accepts more than Char, but serialization does not
+// TODO: entity must be defined before usage in attlist
 
 function constructReplacementText(value: EntityValueEvent[]): string {
 	const replacementText: string[] = [];

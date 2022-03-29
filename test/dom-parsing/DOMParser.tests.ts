@@ -322,6 +322,14 @@ describe('DOMParser', () => {
 		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
 	});
 
+	it('can normalize attribute values (2)', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ATTLIST root a NMTOKENS "a default">]><root a=" a b c "/>`;
+		const out = `<!DOCTYPE root><root a="a b c"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toBe(out);
+	});
+
 	it('supports entities in attribute values', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<!DOCTYPE root [<!ENTITY one "&two;&#38;two;&amp;two;"><!ENTITY two "prrt">]><root attr="&amp;&one;"/>`;
