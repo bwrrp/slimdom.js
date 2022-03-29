@@ -147,6 +147,33 @@ describe('DOMParser', () => {
 		);
 	});
 
+	it('returns an error if an entity has a name that contains a colon', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY a:b "a">]><root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 25: expected one of \\"name must not contain colon\\", \\"%\\" but found \\"a\\"</parsererror>"`
+		);
+	});
+
+	it('returns an error if a notation has a name that contains a colon', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!NOTATION a:b PUBLIC "a">]><root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 27: expected \\"name must not contain colon\\" but found \\"a\\"</parsererror>"`
+		);
+	});
+
+	it('returns an error if a processing instruction has a name that contains a colon', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<?a:b?><root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 2: expected \\"name must not contain colon\\" but found \\"a\\"</parsererror>"`
+		);
+	});
+
 	it('returns an error if the DTD public ID contains an invalid character (2)', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<!DOCTYPE root PUBLIC "\u{3c}" ""><root/>`;

@@ -204,6 +204,8 @@ const Name = recognize(then(NameStartChar, starConsumed(NameChar), () => undefin
 
 export const CompleteName = complete(Name);
 
+const NCName = filter(Name, (name) => !name.includes(':'), ['name must not contain colon']);
+
 // [6] Names ::= Name (#x20 Name)*
 // const Names = then(Name, star(preceded(SPACE, Name)), (first, next) => [first, ...next]);
 
@@ -229,7 +231,8 @@ const CharRef: Parser<CharRefEvent> = map(
 );
 
 // [68] EntityRef ::= '&' Name ';'
-const EntityRef: Parser<EntityRefEvent> = map(delimited(AMPERSAND, Name, SEMICOLON), (name) => ({
+// Namespaces spec makes this an NCName
+const EntityRef: Parser<EntityRefEvent> = map(delimited(AMPERSAND, NCName, SEMICOLON), (name) => ({
 	type: ParserEventType.EntityRef,
 	name,
 }));
@@ -238,10 +241,14 @@ const EntityRef: Parser<EntityRefEvent> = map(delimited(AMPERSAND, Name, SEMICOL
 const Reference: Parser<ReferenceEvent> = or<ReferenceEvent>([EntityRef, CharRef]);
 
 // [69] PEReference ::= '%' Name ';'
-const PEReference: Parser<PEReferenceEvent> = map(delimited(PERCENT, Name, SEMICOLON), (name) => ({
-	type: ParserEventType.PEReference,
-	name,
-}));
+// Namespaces spec makes this an NCName
+const PEReference: Parser<PEReferenceEvent> = map(
+	delimited(PERCENT, NCName, SEMICOLON),
+	(name) => ({
+		type: ParserEventType.PEReference,
+		name,
+	})
+);
 
 // [9] EntityValue ::= '"' ([^%&"] | PEReference | Reference)* '"'
 //     | "'" ([^%&'] | PEReference | Reference)* "'"
@@ -439,16 +446,16 @@ const Comment: Parser<CommentEvent> = map(
 	(data) => ({ type: ParserEventType.Comment, data })
 );
 // [17] PITarget ::= Name - (('X' | 'x') ('M' | 'm') ('L' | 'l'))
-// (validation handled in parsing logic)
-const PITarget = Name;
+// Namespaces spec makes this an NCName
+const PITarget = filter(NCName, (target) => target.toLowerCase() !== 'xml', [
+	'processing instruction target must not be "xml"',
+]);
 
 // [16] PI ::= '<?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'
 const PI: Parser<PIEvent> = delimited(
 	PI_START,
 	then(
-		filter(PITarget, (target) => target.toLowerCase() !== 'xml', [
-			'processing instruction target must not be "xml"',
-		]),
+		PITarget,
 		optional(preceded(S, recognize(starConsumed(except(Char, PI_END, ['PI data']))))),
 		(target, data) => ({ type: ParserEventType.PI, target, data })
 	),
@@ -689,14 +696,15 @@ const TokenizedType = or([
 ]);
 
 // [58] NotationType ::= 'NOTATION' S '(' S? Name (S? '|' S? Name)* S? ')'
+// Namespaces spec makes this use NCName
 const NotationType = preceded(
 	followed(NOTATION, S),
 	cut(
 		delimited(
 			followed(PARENTHESIS_OPEN, optional(S)),
 			then(
-				Name,
-				starConsumed(preceded(delimited(optional(S), VERTICAL_BAR, optional(S)), Name)),
+				NCName,
+				starConsumed(preceded(delimited(optional(S), VERTICAL_BAR, optional(S)), NCName)),
 				() => undefined
 			),
 			preceded(optional(S), PARENTHESIS_CLOSE),
@@ -820,7 +828,8 @@ const ExternalID: Parser<ExternalIDEvent> = or<ExternalIDEvent>([
 ]);
 
 // [76] NDataDecl ::= S 'NDATA' S Name
-const NDataDecl = preceded(delimited(S, NDATA, S), Name);
+// Namespaces spec makes this an NCName
+const NDataDecl = preceded(delimited(S, NDATA, S), NCName);
 
 // [73] EntityDef ::= EntityValue | (ExternalID NDataDecl?)
 const EntityDef = or<EntityValueEvent[] | ExternalEntityEvent>([
@@ -832,9 +841,10 @@ const EntityDef = or<EntityValueEvent[] | ExternalEntityEvent>([
 ]);
 
 // [71] GEDecl ::= '<!ENTITY' S Name S EntityDef S? '>'
+// Namespaces spec makes this an NCName
 const GEDecl: Parser<EntityDeclEvent | void> = delimited(
 	ENTITY_DECL_START,
-	then(preceded(S, Name), cut(preceded(S, EntityDef)), (name, value) => ({
+	then(preceded(S, NCName), cut(preceded(S, EntityDef)), (name, value) => ({
 		type: MarkupdeclEventType.EntityDecl,
 		name,
 		value,
@@ -846,9 +856,10 @@ const GEDecl: Parser<EntityDeclEvent | void> = delimited(
 const PEDef = or([consume(EntityValue), consume(ExternalID)]);
 
 // [72] PEDecl ::= '<!ENTITY' S '%' S Name S PEDef S? '>'
+// Namespaces spec makes this an NCName
 const PEDecl = delimited(
 	followed(ENTITY_DECL_START, preceded(S, PERCENT)),
-	then(preceded(S, Name), preceded(S, PEDef), () => undefined),
+	then(preceded(S, NCName), preceded(S, PEDef), () => undefined),
 	preceded(optional(S), ANGLE_BRACKET_CLOSE),
 	true
 );
@@ -873,9 +884,10 @@ const PublicID: Parser<ExternalIDEvent> = map(
 );
 
 // [82] NotationDecl ::= '<!NOTATION' S Name S (ExternalID | PublicID) S? '>'
+// Namespaces spec makes this an NCName
 const NotationDecl = delimited(
 	NOTATION_DECL_START,
-	then(delimited(S, Name, S), or([consume(ExternalID), consume(PublicID)]), () => undefined),
+	then(delimited(S, NCName, S), or([consume(ExternalID), consume(PublicID)]), () => undefined),
 	preceded(optional(S), ANGLE_BRACKET_CLOSE),
 	true
 );
