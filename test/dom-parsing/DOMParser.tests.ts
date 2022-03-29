@@ -356,6 +356,15 @@ describe('DOMParser', () => {
 		);
 	});
 
+	it('returns an error for external entity references in attribute values', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY e "&ext;"><!ENTITY ext SYSTEM "ext">]><root attr='&e;'/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: reference to external entity ext is not allowed in attribute value</parsererror>"`
+		);
+	});
+
 	it('returns an error if the replacement text for an entity reference in an attribute value contains <', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<!DOCTYPE root [<!ENTITY x "&#60;">]><root attr='&x;'/>`;

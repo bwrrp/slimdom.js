@@ -108,6 +108,8 @@ class Dtd {
 
 	private _entityReplacementTextByName = new Map<string, string>();
 
+	private _externalEntityNames = new Set<string>();
+
 	private _unparsedEntityNames = new Set<string>();
 
 	constructor(dtd: DoctypedeclEvent) {
@@ -136,7 +138,10 @@ class Dtd {
 
 				case MarkupdeclEventType.EntityDecl: {
 					// First declaration is binding
-					if (this._entityReplacementTextByName.has(decl.name)) {
+					if (
+						this._entityReplacementTextByName.has(decl.name) ||
+						this._externalEntityNames.has(decl.name)
+					) {
 						continue;
 					}
 					if (Array.isArray(decl.value)) {
@@ -146,7 +151,7 @@ class Dtd {
 						);
 					} else if (decl.value.ndata === null) {
 						// External parsed entity may be skipped
-						this._entityReplacementTextByName.set(decl.name, '');
+						this._externalEntityNames.add(decl.name);
 					} else {
 						// External unparsed entity
 						this._unparsedEntityNames.add(decl.name);
@@ -160,10 +165,20 @@ class Dtd {
 		return this._attlistByName.get(elementName);
 	}
 
-	public getEntityReplacementText(name: string): string | undefined {
+	public getEntityReplacementText(name: string, allowExternal: boolean): string | undefined {
 		const value = this._entityReplacementTextByName.get(name);
-		if (value === undefined && this._unparsedEntityNames.has(name)) {
-			throw new Error(`reference to binary entity ${name} is not allowed`);
+		if (value === undefined) {
+			if (this._unparsedEntityNames.has(name)) {
+				throw new Error(`reference to binary entity ${name} is not allowed`);
+			}
+			if (this._externalEntityNames.has(name)) {
+				if (allowExternal) {
+					return '';
+				}
+				throw new Error(
+					`reference to external entity ${name} is not allowed in attribute value`
+				);
+			}
 		}
 		return value;
 	}
@@ -209,7 +224,7 @@ function normalizeAndIncludeEntities(
 		}
 		let replacementText = predefinedEntitiesReplacementText.get(event.name);
 		if (replacementText === undefined && dtd !== null) {
-			replacementText = dtd.getEntityReplacementText(event.name);
+			replacementText = dtd.getEntityReplacementText(event.name, false);
 		}
 		if (replacementText === undefined) {
 			throw new Error(`reference to unknown entity ${event.name} in attribute value`);
@@ -481,7 +496,7 @@ export function parseXmlDocument(input: string): Document {
 					}
 					let replacementText = predefinedEntitiesReplacementText.get(event.name);
 					if (replacementText === undefined && dtd !== null) {
-						replacementText = dtd.getEntityReplacementText(event.name);
+						replacementText = dtd.getEntityReplacementText(event.name, true);
 					}
 					if (replacementText === undefined) {
 						throw new Error(`reference to unknown entity ${event.name} in content`);
