@@ -287,11 +287,9 @@ function splitQualifiedName(qualifiedName: string, cache: QualifiedNameCache): Q
 	}
 
 	// We already know (from the grammar) that qualifiedName is a valid Name, so only check if there
-	// aren't too many colons
-	if (localName.includes(':')) {
-		throwInvalidCharacterError(
-			`the qualified name ${qualifiedName} must not contain more than one colon`
-		);
+	// aren't too many colons and that both parts are not empty
+	if (prefix === '' || localName === '' || localName.includes(':')) {
+		throw new Error(`the name ${qualifiedName} is not a valid qualified name`);
 	}
 
 	const parts = { prefix, localName };

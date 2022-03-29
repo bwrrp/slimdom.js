@@ -98,7 +98,25 @@ describe('DOMParser', () => {
 		const xml = `<a:b:c/>`;
 		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
-			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">InvalidCharacterError: InvalidCharacterError: the qualified name a:b:c must not contain more than one colon</parsererror>"`
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: the name a:b:c is not a valid qualified name</parsererror>"`
+		);
+	});
+
+	it('returns an error if an element has a name with an empty prefix', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<:b/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: the name :b is not a valid qualified name</parsererror>"`
+		);
+	});
+
+	it('returns an error if an element has a name an empty localName', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<a:/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: the name a: is not a valid qualified name</parsererror>"`
 		);
 	});
 
