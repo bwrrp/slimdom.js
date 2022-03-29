@@ -515,9 +515,6 @@ export function parseXmlDocument(input: string): Document {
 					continue;
 
 				case ParserEventType.PI:
-					if (event.target.toLowerCase() === 'xml') {
-						throw new Error('processing instruction target must not be "xml"');
-					}
 					appendParsedNode(
 						domContext.root,
 						doc.createProcessingInstruction(event.target, event.data || '')

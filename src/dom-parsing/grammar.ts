@@ -4,12 +4,11 @@ import {
 	consume,
 	cut,
 	delimited,
-	error,
 	except,
+	filter,
 	filterUndefined,
 	followed,
 	map,
-	okWithValue,
 	optional,
 	or,
 	Parser,
@@ -447,7 +446,9 @@ const PITarget = Name;
 const PI: Parser<PIEvent> = delimited(
 	PI_START,
 	then(
-		PITarget,
+		filter(PITarget, (target) => target.toLowerCase() !== 'xml', [
+			'processing instruction target must not be "xml"',
+		]),
 		optional(preceded(S, recognize(starConsumed(except(Char, PI_END, ['PI data']))))),
 		(target, data) => ({ type: ParserEventType.PI, target, data })
 	),

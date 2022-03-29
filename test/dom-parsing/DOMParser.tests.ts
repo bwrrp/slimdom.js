@@ -216,6 +216,15 @@ describe('DOMParser', () => {
 		);
 	});
 
+	it('returns an error for entity references in element tags', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY e SYSTEM "external">]><root &e;/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 53: expected one of \\"valid name start character\\", \\"valid name start character\\" but found \\"&amp;\\"</parsererror>"`
+		);
+	});
+
 	it('ignores references to external parsed entities', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<!DOCTYPE root [<!ENTITY one SYSTEM 'external'>]><root>&one;</root>`;
@@ -349,7 +358,18 @@ describe('DOMParser', () => {
 		const parser = new slimdom.DOMParser();
 		const doc = parser.parseFromString('<root><?xml version="1.0"?></root>', 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
-			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: processing instruction target must not be \\"xml\\"</parsererror>"`
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 8: expected \\"processing instruction target must not be \\"xml\\"\\" but found \\"x\\"</parsererror>"`
+		);
+	});
+
+	it('returns an error if a PI has target "xml" in the DTD', () => {
+		const parser = new slimdom.DOMParser();
+		const doc = parser.parseFromString(
+			'<!DOCTYPE root [<?xml version="1.0"?>]><root/>',
+			'text/xml'
+		);
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 18: expected \\"processing instruction target must not be \\"xml\\"\\" but found \\"x\\"</parsererror>"`
 		);
 	});
 
