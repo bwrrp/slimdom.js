@@ -125,6 +125,7 @@ export default class Attr extends Node {
 		this.name = prefix === null ? localName : `${prefix}:${localName}`;
 		this._value = value;
 		this.ownerElement = element;
+		this.ownerDocument = element ? element.ownerDocument : getContext(this).document;
 	}
 
 	/**

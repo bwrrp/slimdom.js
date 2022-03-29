@@ -1,4 +1,5 @@
 import {
+	document,
 	Document,
 	unsafeCreateAttribute,
 	unsafeCreateElement,
@@ -10,6 +11,17 @@ describe('unsafe methods', () => {
 		it('can create an Attr while bypassing name checks', () => {
 			const attr = unsafeCreateAttribute(null, 'prefix', '<', 'test', null);
 			expect(attr.name).toBe('prefix:<');
+			expect(attr.ownerDocument).toBe(document);
+			expect(attr.ownerElement).toBe(null);
+		});
+
+		it('can assign the owner element', () => {
+			const doc = new Document();
+			const element = doc.createElement('element');
+			const attr = unsafeCreateAttribute(null, 'prefix', '<', 'test', element);
+			expect(attr.name).toBe('prefix:<');
+			expect(attr.ownerDocument).toBe(doc);
+			expect(attr.ownerElement).toBe(element);
 		});
 	});
 

@@ -11,6 +11,8 @@ describe('Attr', () => {
 		expect(attr.nodeType).toBe(2);
 		expect(attr.nodeName).toBe('test');
 		expect(attr.nodeValue).toBe('');
+		expect(attr.ownerDocument).toBe(document);
+		expect(attr.ownerElement).toBe(null);
 
 		expect(attr.namespaceURI).toBe(null);
 		expect(attr.prefix).toBe(null);
@@ -24,6 +26,8 @@ describe('Attr', () => {
 		expect(attr.nodeType).toBe(2);
 		expect(attr.nodeName).toBe('ns:test');
 		expect(attr.nodeValue).toBe('');
+		expect(attr.ownerDocument).toBe(document);
+		expect(attr.ownerElement).toBe(null);
 
 		expect(attr.namespaceURI).toBe('http://www.example.com/ns');
 		expect(attr.prefix).toBe('ns');
