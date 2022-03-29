@@ -306,6 +306,9 @@ class Namespaces {
 	}
 
 	public getForElement(prefix: string | null): string | null {
+		if (prefix === 'xmlns') {
+			throw new Error('element names must not have the prefix "xmlns"');
+		}
 		for (let ns: Namespaces | null = this; ns !== null; ns = ns._parent) {
 			const namespace = ns._byPrefix.get(prefix);
 			if (namespace !== undefined) {
@@ -342,15 +345,31 @@ class Namespaces {
 			const { prefix, localName } = splitQualifiedName(qualifiedName, qualifiedNameCache);
 			const def = attlist?.get(qualifiedName);
 			if (prefix === null && localName === 'xmlns' && !ns._byPrefix.has(null)) {
-				ns._byPrefix.set(null, normalizeAttributeValue(value, def, dtd) || null);
+				const namespace = normalizeAttributeValue(value, def, dtd) || null;
+				if (namespace === XML_NAMESPACE || namespace === XMLNS_NAMESPACE) {
+					throw new Error(
+						`the namespace ${namespace} must not be used as the default namespace`
+					);
+				}
+				ns._byPrefix.set(null, namespace);
 			} else if (prefix === 'xmlns' && !ns._byPrefix.has(localName)) {
 				if (localName === 'xmlns') {
 					throw new Error('the xmlns namespace prefix must not be declared');
 				}
 				const namespace = normalizeAttributeValue(value, def, dtd) || null;
+				if (namespace === XMLNS_NAMESPACE) {
+					throw new Error(
+						`the namespace ${XMLNS_NAMESPACE} must not be bound to a prefix`
+					);
+				}
 				if (localName === 'xml' && namespace !== XML_NAMESPACE) {
 					throw new Error(
 						`the xml namespace prefix must not be bound to any namespace other than ${XML_NAMESPACE}`
+					);
+				}
+				if (namespace === XML_NAMESPACE && localName !== 'xml') {
+					throw new Error(
+						`the namespace ${XML_NAMESPACE} must be bound only to the prefix "xml"`
 					);
 				}
 				if (namespace === null) {

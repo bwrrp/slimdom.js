@@ -84,6 +84,51 @@ describe('DOMParser', () => {
 		);
 	});
 
+	it('returns an error if the xml namespace is bound to a prefix other than xml', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root xmlns:pre="http://www.w3.org/XML/1998/namespace"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: the namespace http://www.w3.org/XML/1998/namespace must be bound only to the prefix \\"xml\\"</parsererror>"`
+		);
+	});
+
+	it('returns an error if the xml namespace is used as the default namespace', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root xmlns="http://www.w3.org/XML/1998/namespace"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: the namespace http://www.w3.org/XML/1998/namespace must not be used as the default namespace</parsererror>"`
+		);
+	});
+
+	it('returns an error if the xmlns namespace is used as the default namespace', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root xmlns="http://www.w3.org/2000/xmlns/"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: the namespace http://www.w3.org/2000/xmlns/ must not be used as the default namespace</parsererror>"`
+		);
+	});
+
+	it('returns an error if the xmlns namespace is bound to a prefix', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root xmlns:pre="http://www.w3.org/2000/xmlns/"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: the namespace http://www.w3.org/2000/xmlns/ must not be bound to a prefix</parsererror>"`
+		);
+	});
+
+	it('returns an error if the xmlns prefix is used for an element', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<xmlns:root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: element names must not have the prefix \\"xmlns\\"</parsererror>"`
+		);
+	});
+
 	it('returns an error if a prefix is redeclared to an empty namespace', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<root xmlns:pre=""/>`;
