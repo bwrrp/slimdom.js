@@ -1,9 +1,7 @@
-import { StreamingParser } from 'prsc';
 import Document from '../Document';
 import Node from '../Node';
 import { unsafeCreateAttribute, unsafeCreateElement } from '../unsafe';
 import { appendAttribute } from '../util/attrMutations';
-import { throwInvalidCharacterError } from '../util/errorHelpers';
 import { insertNode } from '../util/mutationAlgorithms';
 import { XMLNS_NAMESPACE, XML_NAMESPACE } from '../util/namespaceHelpers';
 import { isElement } from '../util/NodeType';
@@ -12,9 +10,9 @@ import {
 	CompleteName,
 	CompletePubidChars,
 	CompleteWhitespace,
-	contentComplete,
-	document,
 	EntityReplacementTextInLiteral,
+	parseContent,
+	parseDocument,
 } from './grammar';
 import {
 	AttDefEvent,
@@ -208,7 +206,7 @@ function normalizeAndIncludeEntities(
 	normalized: string[],
 	value: AttValueEvent[],
 	dtd: Dtd | null,
-	ancestorEntities: Set<string>
+	ancestorEntities: string[] | null
 ) {
 	for (const event of value) {
 		if (typeof event === 'string') {
@@ -221,7 +219,7 @@ function normalizeAndIncludeEntities(
 			continue;
 		}
 
-		if (ancestorEntities.has(event.name)) {
+		if (ancestorEntities !== null && ancestorEntities.includes(event.name)) {
 			throw new Error(`reference to entity ${event.name} must not be recursive`);
 		}
 		let replacementText = predefinedEntitiesReplacementText.get(event.name);
@@ -241,9 +239,12 @@ function normalizeAndIncludeEntities(
 			);
 		}
 		// Recursively normalize replacement text
-		ancestorEntities.add(event.name);
-		normalizeAndIncludeEntities(normalized, result.value, dtd, ancestorEntities);
-		ancestorEntities.delete(event.name);
+		normalizeAndIncludeEntities(
+			normalized,
+			result.value,
+			dtd,
+			ancestorEntities ? [event.name, ...ancestorEntities] : [event.name]
+		);
 	}
 }
 
@@ -253,7 +254,7 @@ function normalizeAttributeValue(
 	dtd: Dtd | null
 ): string {
 	const normalized: string[] = [];
-	normalizeAndIncludeEntities(normalized, value, dtd, new Set());
+	normalizeAndIncludeEntities(normalized, value, dtd, null);
 	if (attDef && !attDef.isCData) {
 		return normalized
 			.join('')
@@ -339,43 +340,54 @@ class Namespaces {
 		dtd: Dtd | null,
 		qualifiedNameCache: QualifiedNameCache
 	): Namespaces {
-		const ns = new Namespaces(parent);
+		let ns = parent;
+		let hasDeclarations = false;
+
+		const add = (prefix: string | null, namespace: string | null) => {
+			if (prefix === null && (namespace === XML_NAMESPACE || namespace === XMLNS_NAMESPACE)) {
+				throw new Error(
+					`the namespace ${namespace} must not be used as the default namespace`
+				);
+			}
+			if (namespace === XMLNS_NAMESPACE) {
+				throw new Error(`the namespace ${XMLNS_NAMESPACE} must not be bound to a prefix`);
+			}
+			if (namespace === XML_NAMESPACE && prefix !== 'xml') {
+				throw new Error(
+					`the namespace ${XML_NAMESPACE} must be bound only to the prefix "xml"`
+				);
+			}
+			if (namespace !== XML_NAMESPACE && prefix === 'xml') {
+				throw new Error(
+					`the xml namespace prefix must not be bound to any namespace other than ${XML_NAMESPACE}`
+				);
+			}
+			if (prefix !== null && namespace === null) {
+				throw new Error(`the prefix ${prefix} must not be undeclared`);
+			}
+			if (!hasDeclarations) {
+				ns = new Namespaces(parent);
+				hasDeclarations = true;
+			}
+			ns._byPrefix.set(prefix, namespace);
+		};
 
 		const checkAttr = (qualifiedName: string, value: AttValueEvent[]) => {
 			const { prefix, localName } = splitQualifiedName(qualifiedName, qualifiedNameCache);
 			const def = attlist?.get(qualifiedName);
-			if (prefix === null && localName === 'xmlns' && !ns._byPrefix.has(null)) {
+			if (
+				prefix === null &&
+				localName === 'xmlns' &&
+				(!hasDeclarations || !ns._byPrefix.has(null))
+			) {
 				const namespace = normalizeAttributeValue(value, def, dtd) || null;
-				if (namespace === XML_NAMESPACE || namespace === XMLNS_NAMESPACE) {
-					throw new Error(
-						`the namespace ${namespace} must not be used as the default namespace`
-					);
-				}
-				ns._byPrefix.set(null, namespace);
-			} else if (prefix === 'xmlns' && !ns._byPrefix.has(localName)) {
+				add(null, namespace);
+			} else if (prefix === 'xmlns' && (!hasDeclarations || !ns._byPrefix.has(localName))) {
 				if (localName === 'xmlns') {
 					throw new Error('the xmlns namespace prefix must not be declared');
 				}
 				const namespace = normalizeAttributeValue(value, def, dtd) || null;
-				if (namespace === XMLNS_NAMESPACE) {
-					throw new Error(
-						`the namespace ${XMLNS_NAMESPACE} must not be bound to a prefix`
-					);
-				}
-				if (localName === 'xml' && namespace !== XML_NAMESPACE) {
-					throw new Error(
-						`the xml namespace prefix must not be bound to any namespace other than ${XML_NAMESPACE}`
-					);
-				}
-				if (namespace === XML_NAMESPACE && localName !== 'xml') {
-					throw new Error(
-						`the namespace ${XML_NAMESPACE} must be bound only to the prefix "xml"`
-					);
-				}
-				if (namespace === null) {
-					throw new Error(`the prefix ${localName} must not be undeclared`);
-				}
-				ns._byPrefix.set(localName, namespace);
+				add(localName, namespace);
 			}
 		};
 
@@ -430,7 +442,7 @@ type DomContext = {
 type EntityContext = {
 	parent: EntityContext | null;
 	entity: string | null;
-	generator: ReturnType<StreamingParser<DocumentParseEvent>>;
+	generator: Iterator<DocumentParseEvent>;
 };
 
 /**
@@ -479,7 +491,7 @@ export function parseXmlDocument(input: string): Document {
 	let entityContext: EntityContext | null = {
 		parent: null,
 		entity: null,
-		generator: document(input, 0),
+		generator: parseDocument(input),
 	};
 	while (entityContext) {
 		let it: IteratorResult<DocumentParseEvent> = entityContext.generator.next();
@@ -529,7 +541,7 @@ export function parseXmlDocument(input: string): Document {
 					entityContext = {
 						parent: entityContext,
 						entity: event.name,
-						generator: contentComplete(replacementText, 0),
+						generator: parseContent(replacementText),
 					};
 					continue;
 				}

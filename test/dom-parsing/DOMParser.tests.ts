@@ -170,7 +170,7 @@ describe('DOMParser', () => {
 		const xml = `<-/>`;
 		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
-			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 1: expected one of \\"valid name start character\\", \\"valid name start character\\" but found \\"-\\"</parsererror>"`
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 1: expected \\"valid name start character\\" but found \\"-\\"</parsererror>"`
 		);
 	});
 
@@ -179,16 +179,25 @@ describe('DOMParser', () => {
 		const xml = `<a-\u{2050}/>`;
 		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
-			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 3: expected one of \\"valid name start character\\", \\"valid name start character\\" but found \\"⁐\\"</parsererror>"`
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 3: expected one of \\"/&gt;\\", \\"&gt;\\" but found \\"⁐\\"</parsererror>"`
 		);
 	});
 
-	it('returns an error if the DTD public ID contains an invalid character', () => {
+	it('returns an error if the DTD public ID contains an invalid character (double quotes)', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<!DOCTYPE root PUBLIC "\u{1f4a9}" ""><root/>`;
 		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
 			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 23: expected \\"\\"\\" but found \\"💩\\"</parsererror>"`
+		);
+	});
+
+	it('returns an error if the DTD public ID contains an invalid character (single quotes)', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root PUBLIC '\u{1f4a9}' ""><root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 23: expected \\"'\\" but found \\"💩\\"</parsererror>"`
 		);
 	});
 
@@ -320,7 +329,7 @@ describe('DOMParser', () => {
 		const xml = `<!DOCTYPE root [<!ENTITY wrong "<p">]><root>&wrong;</root>`;
 		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
-			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing replacement text for entity wrong at offset 0: expected \\"end of input\\" but found \\"&lt;\\"</parsererror>"`
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing replacement text for entity wrong at offset 2: expected one of \\"/&gt;\\", \\"&gt;\\" but found \\"D\\"</parsererror>"`
 		);
 	});
 
@@ -338,7 +347,7 @@ describe('DOMParser', () => {
 		const xml = `<!DOCTYPE root [<!ENTITY e SYSTEM "external">]><root &e;/>`;
 		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
-			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 53: expected one of \\"valid name start character\\", \\"valid name start character\\" but found \\"&amp;\\"</parsererror>"`
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 53: expected one of \\"/&gt;\\", \\"&gt;\\" but found \\"&amp;\\"</parsererror>"`
 		);
 	});
 
@@ -476,7 +485,7 @@ describe('DOMParser', () => {
 		const parser = new slimdom.DOMParser();
 		const doc = parser.parseFromString('NOT A VALID DOCUMENT', 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
-			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 0: expected one of \\"valid name start character\\", \\"valid name start character\\" but found \\"N\\"</parsererror>"`
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 0: expected \\"&lt;\\" but found \\"N\\"</parsererror>"`
 		);
 	});
 
@@ -519,7 +528,7 @@ describe('DOMParser', () => {
 		const parser = new slimdom.DOMParser();
 		const doc = parser.parseFromString('', 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
-			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 0: expected one of \\"valid name start character\\", \\"valid name start character\\" but found \\"\\"</parsererror>"`
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 0: expected \\"&lt;\\" but found \\"\\"</parsererror>"`
 		);
 	});
 
