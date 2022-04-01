@@ -499,6 +499,15 @@ describe('DOMParser', () => {
 		);
 	});
 
+	it('returns an error if an attlist references an entity that is not defined earlier', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ATTLIST el a CDATA "&e;"><!ENTITY e "v">]><root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: default value of attribute a contains reference to undefined entity e</parsererror>"`
+		);
+	});
+
 	it('returns an error for recursive entities in attribute values', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<!DOCTYPE root [<!ENTITY one "&two;"><!ENTITY two '&one;'>]><root attr="&one;"/>`;

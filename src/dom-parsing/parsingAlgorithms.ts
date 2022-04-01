@@ -73,7 +73,6 @@ function isWhitespace(value: string): boolean {
 
 // TODO: add line / column info (and some context) to all parser errors
 // TODO: add same info to all other errors
-// TODO: entity must be defined before usage in attlist
 
 function constructReplacementText(value: EntityValueEvent[]): string {
 	const replacementText: string[] = [];
@@ -119,6 +118,27 @@ class Dtd {
 		for (const decl of dtd.intSubset) {
 			switch (decl.type) {
 				case MarkupdeclEventType.AttlistDecl: {
+					// Check if no entity is referenced before it is defined
+					for (const attr of decl.attdefs) {
+						if (attr.def.type === DefaultDeclType.VALUE) {
+							for (const event of attr.def.value) {
+								if (
+									typeof event !== 'string' &&
+									event.type === ParserEventType.EntityRef
+								) {
+									if (
+										!this._entityReplacementTextByName.has(event.name) &&
+										!this._externalEntityNames.has(event.name) &&
+										!this._unparsedEntityNames.has(event.name)
+									) {
+										throw new Error(
+											`default value of attribute ${attr.name} contains reference to undefined entity ${event.name}`
+										);
+									}
+								}
+							}
+						}
+					}
 					// Multiple attlist for the same element are merged
 					let defByName = this._attlistByName.get(decl.name);
 					if (defByName === undefined) {
