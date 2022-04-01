@@ -12,7 +12,7 @@ export const enum ParserEventType {
 	Doctypedecl,
 }
 
-export type CharRefEvent = { type: ParserEventType.CharRef; char: string };
+export type CharRefEvent = { type: ParserEventType.CharRef; cp: number };
 
 export type EntityRefEvent = { type: ParserEventType.EntityRef; name: string };
 

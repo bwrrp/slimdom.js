@@ -73,7 +73,6 @@ function isWhitespace(value: string): boolean {
 
 // TODO: add line / column info (and some context) to all parser errors
 // TODO: add same info to all other errors
-// TODO: CharData accepts more than Char, but serialization does not
 // TODO: entity must be defined before usage in attlist
 
 function constructReplacementText(value: EntityValueEvent[]): string {
@@ -87,7 +86,7 @@ function constructReplacementText(value: EntityValueEvent[]): string {
 		switch (event.type) {
 			case ParserEventType.CharRef:
 				// Include
-				replacementText.push(event.char);
+				replacementText.push(String.fromCodePoint(event.cp));
 				break;
 			case ParserEventType.EntityRef:
 				// Bypass
@@ -195,10 +194,14 @@ const predefinedEntitiesReplacementText = new Map([
 function throwParseError(what: string, input: string, expected: string[], offset: number): never {
 	const quoted = expected.map((str) => `"${str}"`);
 	const cp = input.codePointAt(offset);
+	let actual = cp ? `"${String.fromCodePoint(cp)}"` : 'end of input';
+	if (!matchesCharProduction(actual)) {
+		actual = 'invalid character';
+	}
 	throw new Error(
 		`Error parsing ${what} at offset ${offset}: expected ${
 			quoted.length > 1 ? 'one of ' + quoted.join(', ') : quoted[0]
-		} but found "${cp ? String.fromCodePoint(cp) : ''}"`
+		} but found ${actual}`
 	);
 }
 
@@ -215,7 +218,7 @@ function normalizeAndIncludeEntities(
 		}
 
 		if (event.type === ParserEventType.CharRef) {
-			normalized.push(event.char);
+			normalized.push(String.fromCodePoint(event.cp));
 			continue;
 		}
 
@@ -509,7 +512,7 @@ export function parseXmlDocument(input: string): Document {
 							'character reference must not appear after the document element'
 						);
 					}
-					collectedText.push(event.char);
+					collectedText.push(String.fromCodePoint(event.cp));
 					continue;
 
 				case ParserEventType.EntityRef: {

@@ -223,7 +223,7 @@ const CharRef: Parser<CharRefEvent> = map(
 			parseInt(n, 10)
 		),
 	]),
-	(cp) => ({ type: ParserEventType.CharRef, char: String.fromCodePoint(cp) })
+	(cp) => ({ type: ParserEventType.CharRef, cp })
 );
 
 // [68] EntityRef ::= '&' Name ';'
@@ -256,7 +256,11 @@ const EntityValue = or([
 			or<EntityValueEvent>([
 				recognize(
 					codepoints(
-						(cp) => cp !== PERCENT_CP && cp !== AMPERSAND_CP && cp !== DOUBLE_QUOTE_CP,
+						(cp) =>
+							cp !== PERCENT_CP &&
+							cp !== AMPERSAND_CP &&
+							cp !== DOUBLE_QUOTE_CP &&
+							isValidChar(cp),
 						[]
 					)
 				),
@@ -273,7 +277,11 @@ const EntityValue = or([
 			or<EntityValueEvent>([
 				recognize(
 					codepoints(
-						(cp) => cp !== PERCENT_CP && cp !== AMPERSAND_CP && cp !== SINGLE_QUOTE_CP,
+						(cp) =>
+							cp !== PERCENT_CP &&
+							cp !== AMPERSAND_CP &&
+							cp !== SINGLE_QUOTE_CP &&
+							isValidChar(cp),
 						[]
 					)
 				),
@@ -300,7 +308,8 @@ const AttValue: Parser<AttValueEvent[]> = or([
 						(cp) =>
 							cp !== ANGLE_BRACKET_OPEN_CP &&
 							cp !== AMPERSAND_CP &&
-							cp !== DOUBLE_QUOTE_CP,
+							cp !== DOUBLE_QUOTE_CP &&
+							isValidChar(cp),
 						[]
 					)
 				),
@@ -319,7 +328,8 @@ const AttValue: Parser<AttValueEvent[]> = or([
 						(cp) =>
 							cp !== ANGLE_BRACKET_OPEN_CP &&
 							cp !== AMPERSAND_CP &&
-							cp !== SINGLE_QUOTE_CP,
+							cp !== SINGLE_QUOTE_CP &&
+							isValidChar(cp),
 						[]
 					)
 				),
@@ -334,7 +344,12 @@ const AttValue: Parser<AttValueEvent[]> = or([
 export const EntityReplacementTextInLiteral = complete(
 	star(
 		or<AttValueEvent>([
-			recognize(codepoints((cp) => cp !== ANGLE_BRACKET_OPEN_CP && cp !== AMPERSAND_CP, [])),
+			recognize(
+				codepoints(
+					(cp) => cp !== ANGLE_BRACKET_OPEN_CP && cp !== AMPERSAND_CP && isValidChar(cp),
+					[]
+				)
+			),
 			Reference,
 		])
 	)
@@ -342,8 +357,16 @@ export const EntityReplacementTextInLiteral = complete(
 
 // [11] SystemLiteral ::= ('"' [^"]* '"') | ("'" [^']* "'")
 const SystemLiteral = or([
-	delimited(DOUBLE_QUOTE, recognize(codepoints((cp) => cp !== DOUBLE_QUOTE_CP)), DOUBLE_QUOTE),
-	delimited(SINGLE_QUOTE, recognize(codepoints((cp) => cp !== SINGLE_QUOTE_CP)), SINGLE_QUOTE),
+	delimited(
+		DOUBLE_QUOTE,
+		recognize(codepoints((cp) => cp !== DOUBLE_QUOTE_CP && isValidChar(cp))),
+		DOUBLE_QUOTE
+	),
+	delimited(
+		SINGLE_QUOTE,
+		recognize(codepoints((cp) => cp !== SINGLE_QUOTE_CP && isValidChar(cp))),
+		SINGLE_QUOTE
+	),
 ]);
 
 // [13] PubidChar ::= #x20 | #xD | #xA | [a-zA-Z0-9] | [-'()+,./:=?;!*#@$_%]
@@ -395,7 +418,8 @@ const CharData: Parser<TextEvent> = recognize(
 					(cp) =>
 						cp !== ANGLE_BRACKET_OPEN_CP &&
 						cp !== AMPERSAND_CP &&
-						cp !== SQUARE_BRACKET_CLOSE_CP,
+						cp !== SQUARE_BRACKET_CLOSE_CP &&
+						isValidChar(cp),
 					[]
 				),
 				// Square bracket is allowed if it's not a SECT_END

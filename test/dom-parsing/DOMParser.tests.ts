@@ -201,6 +201,51 @@ describe('DOMParser', () => {
 		);
 	});
 
+	it('returns an error if text contains an invalid character', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root>\u{19}</root>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 6: expected \\"end of input\\" but found invalid character</parsererror>"`
+		);
+	});
+
+	it('returns an error if an entity text contains an invalid character (double quotes)', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY a "\u{19}">]><root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 28: expected \\"\\"\\" but found invalid character</parsererror>"`
+		);
+	});
+
+	it('returns an error if an entity text contains an invalid character (single quotes)', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<!DOCTYPE root [<!ENTITY a '\u{19}'>]><root/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 28: expected \\"'\\" but found invalid character</parsererror>"`
+		);
+	});
+
+	it('returns an error if an attribute contains an invalid character (double quotes)', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root attr="\u{19}"/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 12: expected \\"\\"\\" but found invalid character</parsererror>"`
+		);
+	});
+
+	it('returns an error if an attribute contains an invalid character (single quotes)', () => {
+		const parser = new slimdom.DOMParser();
+		const xml = `<root attr='\u{19}'/>`;
+		const doc = parser.parseFromString(xml, 'text/xml');
+		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 12: expected \\"'\\" but found invalid character</parsererror>"`
+		);
+	});
+
 	it('returns an error if an entity has a name that contains a colon', () => {
 		const parser = new slimdom.DOMParser();
 		const xml = `<!DOCTYPE root [<!ENTITY a:b "a">]><root/>`;
@@ -528,7 +573,7 @@ describe('DOMParser', () => {
 		const parser = new slimdom.DOMParser();
 		const doc = parser.parseFromString('', 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(
-			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 0: expected \\"&lt;\\" but found \\"\\"</parsererror>"`
+			`"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Error parsing document at offset 0: expected \\"&lt;\\" but found end of input</parsererror>"`
 		);
 	});
 
