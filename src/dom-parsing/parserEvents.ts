@@ -1,3 +1,9 @@
+export type WithPosition<TEvent> = TEvent & {
+	input: string;
+	start: number;
+	end: number;
+};
+
 export const enum ParserEventType {
 	CharRef,
 	EntityRef,
@@ -12,13 +18,13 @@ export const enum ParserEventType {
 	Doctypedecl,
 }
 
-export type CharRefEvent = { type: ParserEventType.CharRef; cp: number };
+export type CharRefEvent = WithPosition<{ type: ParserEventType.CharRef; cp: number }>;
 
-export type EntityRefEvent = { type: ParserEventType.EntityRef; name: string };
+export type EntityRefEvent = WithPosition<{ type: ParserEventType.EntityRef; name: string }>;
 
 export type ReferenceEvent = CharRefEvent | EntityRefEvent;
 
-export type PEReferenceEvent = { type: ParserEventType.PEReference; name: string };
+export type PEReferenceEvent = WithPosition<{ type: ParserEventType.PEReference; name: string }>;
 
 export type TextEvent = string;
 
@@ -28,7 +34,7 @@ export type CommentEvent = { type: ParserEventType.Comment; data: string };
 
 export type PIEvent = { type: ParserEventType.PI; target: string; data: string | null };
 
-export type CDSectEvent = { type: ParserEventType.CDSect; data: string };
+export type CDSectEvent = WithPosition<{ type: ParserEventType.CDSect; data: string }>;
 
 export type XMLDeclEvent = {
 	type: ParserEventType.XMLDecl;
@@ -37,15 +43,19 @@ export type XMLDeclEvent = {
 	standalone: boolean | null;
 };
 
-export type AttributeEvent = { name: string; value: AttValueEvent[] };
+export type AttributeEvent = { name: WithPosition<{ name: string }>; value: AttValueEvent[] };
 
-export type STagEvent = { type: ParserEventType.STag; name: string; attributes: AttributeEvent[] };
+export type STagEvent = {
+	type: ParserEventType.STag;
+	name: WithPosition<{ name: string }>;
+	attributes: AttributeEvent[];
+};
 
-export type ETagEvent = { type: ParserEventType.ETag; name: string };
+export type ETagEvent = WithPosition<{ type: ParserEventType.ETag; name: string }>;
 
 export type EmptyElemTagEvent = {
 	type: ParserEventType.EmptyElemTag;
-	name: string;
+	name: WithPosition<{ name: string }>;
 	attributes: AttributeEvent[];
 };
 
@@ -67,7 +77,11 @@ export type DefaultDeclEvent =
 	| { type: DefaultDeclType.IMPLIED }
 	| { type: DefaultDeclType.VALUE; fixed: boolean; value: AttValueEvent[] };
 
-export type AttDefEvent = { name: string; isCData: boolean; def: DefaultDeclEvent };
+export type AttDefEvent = {
+	name: WithPosition<{ name: string }>;
+	isCData: boolean;
+	def: DefaultDeclEvent;
+};
 
 export type AttlistDeclEvent = {
 	type: MarkupdeclEventType.AttlistDecl;

@@ -4,10 +4,23 @@ import * as slimdom from '../../../src/index';
 // DomTreeAdapter needs to be imported this way
 import DomTreeAdapter = require('dom-treeadapter');
 
+type SlimdomTreeAdapterMap = parse5.TreeAdapterTypeMap<
+	slimdom.Node,
+	slimdom.Node,
+	slimdom.Node,
+	slimdom.Document,
+	slimdom.DocumentFragment,
+	slimdom.Element,
+	slimdom.Comment,
+	slimdom.Text,
+	unknown,
+	slimdom.DocumentType
+>;
+
 function parseHTML(html: string): slimdom.Document {
 	const document = new slimdom.Document();
 	const treeAdapter = DomTreeAdapter(document);
-	return parse5.parse(html, { treeAdapter }) as slimdom.Document;
+	return parse5.parse<SlimdomTreeAdapterMap>(html, { treeAdapter });
 }
 
 describe('Example: parse5 integration', () => {

@@ -11,6 +11,7 @@ import {
 	followed,
 	map,
 	not,
+	okWithValue,
 	optional,
 	or,
 	Parser,
@@ -52,9 +53,21 @@ import {
 	ReferenceEvent,
 	STagEvent,
 	TextEvent,
+	WithPosition,
 	XMLDeclEvent,
 } from './parserEvents';
 import ParserStateMachine, { ParserState, ParserStateType } from './ParserStateMachine';
+
+function withPosition<T>(parser: Parser<T>): Parser<WithPosition<T>> {
+	return (input: string, offset: number) => {
+		const start = offset;
+		const res = parser(input, offset);
+		if (!res.success) {
+			return res;
+		}
+		return okWithValue(res.offset, { input, start, end: res.offset, ...res.value });
+	};
+}
 
 const UNDERSCORE = token('_');
 const DASH = token('-');
@@ -213,37 +226,40 @@ const Nmtoken = recognize(codepoints(isValidNameChar, ['valid name character']))
 
 // [66] CharRef ::= '&#' [0-9]+ ';'
 //      | '&#x' [0-9a-fA-F]+ ';'
-const CharRef: Parser<CharRefEvent> = map(
-	or([
-		map(
-			delimited(CHARREF_HEX_START, recognize(plusConsumed(HEX_DIGIT)), SEMICOLON, true),
-			(n) => parseInt(n, 16)
-		),
-		map(delimited(CHARREF_START, recognize(plusConsumed(DIGIT)), SEMICOLON), (n) =>
-			parseInt(n, 10)
-		),
-	]),
-	(cp) => ({ type: ParserEventType.CharRef, cp })
+const CharRef: Parser<CharRefEvent> = withPosition(
+	map(
+		or([
+			map(
+				delimited(CHARREF_HEX_START, recognize(plusConsumed(HEX_DIGIT)), SEMICOLON, true),
+				(n) => parseInt(n, 16)
+			),
+			map(delimited(CHARREF_START, recognize(plusConsumed(DIGIT)), SEMICOLON), (n) =>
+				parseInt(n, 10)
+			),
+		]),
+		(cp) => ({ type: ParserEventType.CharRef, cp })
+	)
 );
 
 // [68] EntityRef ::= '&' Name ';'
 // Namespaces spec makes this an NCName
-const EntityRef: Parser<EntityRefEvent> = map(delimited(AMPERSAND, NCName, SEMICOLON), (name) => ({
-	type: ParserEventType.EntityRef,
-	name,
-}));
+const EntityRef: Parser<EntityRefEvent> = withPosition(
+	map(delimited(AMPERSAND, NCName, SEMICOLON), (name) => ({
+		type: ParserEventType.EntityRef,
+		name,
+	}))
+);
 
 // [67] Reference ::= EntityRef | CharRef
 const Reference: Parser<ReferenceEvent> = or<ReferenceEvent>([EntityRef, CharRef]);
 
 // [69] PEReference ::= '%' Name ';'
 // Namespaces spec makes this an NCName
-const PEReference: Parser<PEReferenceEvent> = map(
-	delimited(PERCENT, NCName, SEMICOLON),
-	(name) => ({
+const PEReference: Parser<PEReferenceEvent> = withPosition(
+	map(delimited(PERCENT, NCName, SEMICOLON), (name) => ({
 		type: ParserEventType.PEReference,
 		name,
-	})
+	}))
 );
 
 // [9] EntityValue ::= '"' ([^%&"] | PEReference | Reference)* '"'
@@ -500,10 +516,12 @@ const CData = recognize(
 const CDEnd = SECT_END;
 
 // [18] CDSect ::= CDStart CData CDEnd
-const CDSect: Parser<CDSectEvent> = map(delimited(CDStart, CData, CDEnd, true), (data) => ({
-	type: ParserEventType.CDSect,
-	data,
-}));
+const CDSect: Parser<CDSectEvent> = withPosition(
+	map(delimited(CDStart, CData, CDEnd, true), (data) => ({
+		type: ParserEventType.CDSect,
+		data,
+	}))
+);
 
 // [25] Eq ::= S? '=' S?
 const Eq = delimited(optional(S), EQUALS, optional(S));
@@ -594,9 +612,11 @@ const XMLDecl: Parser<XMLDeclEvent> = delimited(
 	true
 );
 
+const NameWithPosition = withPosition(map(Name, (name) => ({ name })));
+
 // [41] Attribute ::= Name Eq AttValue
 const Attribute: Parser<AttributeEvent> = then(
-	Name,
+	NameWithPosition,
 	preceded(cut(Eq), cut(AttValue)),
 	(name, value) => ({
 		name,
@@ -612,7 +632,7 @@ const Attributes = followed(star(preceded(S, Attribute)), optional(S));
 const STagOrEmptyElemTag: Parser<STagEvent | EmptyElemTagEvent> = preceded(
 	ANGLE_BRACKET_OPEN,
 	then<STagEvent, boolean, STagEvent | EmptyElemTagEvent>(
-		then(Name, cut(Attributes), (name, attributes) => ({
+		then(NameWithPosition, cut(Attributes), (name, attributes) => ({
 			type: ParserEventType.STag,
 			name,
 			attributes,
@@ -630,12 +650,11 @@ const STagOrEmptyElemTag: Parser<STagEvent | EmptyElemTagEvent> = preceded(
 );
 
 // [42] ETag ::= '</' Name S? '>'
-const ETag: Parser<ETagEvent> = map(
-	delimited(ETAG_START, followed(Name, optional(S)), ANGLE_BRACKET_CLOSE, true),
-	(name) => ({
+const ETag: Parser<ETagEvent> = withPosition(
+	map(delimited(ETAG_START, followed(Name, optional(S)), ANGLE_BRACKET_CLOSE, true), (name) => ({
 		type: ParserEventType.ETag,
 		name,
-	})
+	}))
 );
 
 const Multiplicity = or([QUESTION_MARK, ASTERISK, PLUS]);
@@ -777,7 +796,7 @@ const DefaultDecl = or<DefaultDeclEvent>([
 
 // [53] AttDef ::= S Name S AttType S DefaultDecl
 const AttDef: Parser<AttDefEvent> = then(
-	preceded(S, Name),
+	preceded(S, NameWithPosition),
 	cut(then(preceded(S, AttType), preceded(S, DefaultDecl), (isCData, def) => ({ isCData, def }))),
 	(name, { isCData, def }) => ({ name, isCData, def })
 );

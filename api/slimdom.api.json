@@ -1,8 +1,8 @@
 {
   "metadata": {
     "toolPackage": "@microsoft/api-extractor",
-    "toolVersion": "7.19.4",
-    "schemaVersion": 1004,
+    "toolVersion": "7.24.2",
+    "schemaVersion": 1005,
     "oldestForwardsCompatibleVersion": 1001,
     "tsdocConfig": {
       "$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
@@ -156,7 +156,8 @@
         "@betaDocumentation": true,
         "@internalRemarks": true,
         "@preapproved": true
-      }
+      },
+      "reportUnsupportedHtmlElements": false
     }
   },
   "kind": "Package",
@@ -233,7 +234,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "_copy"
@@ -301,35 +303,40 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "prefix",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "localName",
                   "parameterTypeTokenRange": {
                     "startIndex": 5,
                     "endIndex": 6
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "value",
                   "parameterTypeTokenRange": {
                     "startIndex": 7,
                     "endIndex": 8
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "element",
                   "parameterTypeTokenRange": {
                     "startIndex": 9,
                     "endIndex": 11
-                  }
+                  },
+                  "isOptional": false
                 }
               ]
             },
@@ -400,7 +407,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupNamespaceURI"
@@ -445,7 +453,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupPrefix"
@@ -713,7 +722,7 @@
           ],
           "extendsTokenRange": {
             "startIndex": 1,
-            "endIndex": 3
+            "endIndex": 2
           },
           "implementsTokenRanges": []
         },
@@ -781,7 +790,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "_copy"
@@ -812,7 +822,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ]
             },
@@ -873,7 +884,7 @@
           ],
           "extendsTokenRange": {
             "startIndex": 1,
-            "endIndex": 3
+            "endIndex": 2
           },
           "implementsTokenRanges": []
         },
@@ -974,7 +985,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ]
             },
@@ -1027,7 +1039,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "after"
@@ -1072,7 +1085,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "appendData"
@@ -1126,7 +1140,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "before"
@@ -1210,14 +1225,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "count",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "deleteData"
@@ -1270,14 +1287,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "data",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "insertData"
@@ -1349,7 +1368,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupNamespaceURI"
@@ -1394,7 +1414,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupPrefix"
@@ -1579,21 +1600,24 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "count",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "data",
                   "parameterTypeTokenRange": {
                     "startIndex": 5,
                     "endIndex": 6
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "replaceData"
@@ -1647,7 +1671,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "replaceWith"
@@ -1700,14 +1725,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "count",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "substringData"
@@ -1746,7 +1773,7 @@
           ],
           "extendsTokenRange": {
             "startIndex": 1,
-            "endIndex": 3
+            "endIndex": 2
           },
           "implementsTokenRanges": [
             {
@@ -1755,7 +1782,7 @@
             },
             {
               "startIndex": 6,
-              "endIndex": 8
+              "endIndex": 7
             }
           ]
         },
@@ -1823,7 +1850,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "_copy"
@@ -1854,7 +1882,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": true
                 }
               ]
             },
@@ -1915,7 +1944,7 @@
           ],
           "extendsTokenRange": {
             "startIndex": 1,
-            "endIndex": 3
+            "endIndex": 2
           },
           "implementsTokenRanges": []
         },
@@ -2005,7 +2034,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "_copy"
@@ -2073,7 +2103,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "typeParameters": [
@@ -2140,7 +2171,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "append"
@@ -2245,7 +2277,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "createAttribute"
@@ -2299,14 +2332,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "qualifiedName",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "createAttributeNS"
@@ -2352,7 +2387,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "createCDATASection"
@@ -2398,7 +2434,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "createComment"
@@ -2474,7 +2511,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "createElement"
@@ -2528,14 +2566,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "qualifiedName",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "createElementNS"
@@ -2589,14 +2629,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "data",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "createProcessingInstruction"
@@ -2672,7 +2714,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "createTextNode"
@@ -2818,7 +2861,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "getElementsByTagName"
@@ -2876,14 +2920,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "localName",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "getElementsByTagNameNS"
@@ -2973,14 +3019,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "deep",
                   "parameterTypeTokenRange": {
                     "startIndex": 5,
                     "endIndex": 6
-                  }
+                  },
+                  "isOptional": true
                 }
               ],
               "typeParameters": [
@@ -3070,7 +3118,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupNamespaceURI"
@@ -3115,7 +3164,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupPrefix"
@@ -3254,7 +3304,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "prepend"
@@ -3308,7 +3359,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "replaceChildren"
@@ -3347,7 +3399,7 @@
           ],
           "extendsTokenRange": {
             "startIndex": 1,
-            "endIndex": 3
+            "endIndex": 2
           },
           "implementsTokenRanges": [
             {
@@ -3356,7 +3408,7 @@
             },
             {
               "startIndex": 6,
-              "endIndex": 8
+              "endIndex": 7
             }
           ]
         },
@@ -3468,7 +3520,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "_copy"
@@ -3536,7 +3589,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "append"
@@ -3704,7 +3758,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupNamespaceURI"
@@ -3749,7 +3804,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupPrefix"
@@ -3888,7 +3944,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "prepend"
@@ -3942,7 +3999,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "replaceChildren"
@@ -3981,7 +4039,7 @@
           ],
           "extendsTokenRange": {
             "startIndex": 1,
-            "endIndex": 3
+            "endIndex": 2
           },
           "implementsTokenRanges": [
             {
@@ -3990,7 +4048,7 @@
             },
             {
               "startIndex": 6,
-              "endIndex": 8
+              "endIndex": 7
             }
           ]
         },
@@ -4071,7 +4129,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "_copy"
@@ -4118,21 +4177,24 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "publicId",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": true
                 },
                 {
                   "parameterName": "systemId",
                   "parameterTypeTokenRange": {
                     "startIndex": 5,
                     "endIndex": 6
-                  }
+                  },
+                  "isOptional": true
                 }
               ]
             },
@@ -4185,7 +4247,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "after"
@@ -4239,7 +4302,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "before"
@@ -4284,7 +4348,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupNamespaceURI"
@@ -4329,7 +4394,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupPrefix"
@@ -4551,7 +4617,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "replaceWith"
@@ -4617,12 +4684,12 @@
           ],
           "extendsTokenRange": {
             "startIndex": 1,
-            "endIndex": 3
+            "endIndex": 2
           },
           "implementsTokenRanges": [
             {
               "startIndex": 4,
-              "endIndex": 6
+              "endIndex": 5
             }
           ]
         },
@@ -4682,14 +4749,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": true
                 },
                 {
                   "parameterName": "name",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": true
                 }
               ]
             },
@@ -4804,7 +4873,7 @@
           ],
           "extendsTokenRange": {
             "startIndex": 1,
-            "endIndex": 3
+            "endIndex": 2
           },
           "implementsTokenRanges": []
         },
@@ -4848,7 +4917,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ]
             },
@@ -4914,21 +4984,24 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "qualifiedName",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "doctype",
                   "parameterTypeTokenRange": {
                     "startIndex": 5,
                     "endIndex": 7
-                  }
+                  },
+                  "isOptional": true
                 }
               ],
               "name": "createDocument"
@@ -4990,21 +5063,24 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "publicId",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "systemId",
                   "parameterTypeTokenRange": {
                     "startIndex": 5,
                     "endIndex": 6
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "createDocumentType"
@@ -5050,7 +5126,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": true
                 }
               ],
               "name": "createHTMLDocument"
@@ -5134,14 +5211,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "type",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "parseFromString"
@@ -5244,7 +5323,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "_copy"
@@ -5291,21 +5371,24 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "prefix",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "localName",
                   "parameterTypeTokenRange": {
                     "startIndex": 5,
                     "endIndex": 6
-                  }
+                  },
+                  "isOptional": false
                 }
               ]
             },
@@ -5358,7 +5441,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "after"
@@ -5412,7 +5496,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "append"
@@ -5498,7 +5583,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "before"
@@ -5634,7 +5720,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "getAttribute"
@@ -5684,7 +5771,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "getAttributeNode"
@@ -5742,14 +5830,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "localName",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "getAttributeNodeNS"
@@ -5802,14 +5892,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "localName",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "getAttributeNS"
@@ -5859,7 +5951,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "getElementsByTagName"
@@ -5917,14 +6010,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "localName",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "getElementsByTagNameNS"
@@ -5969,7 +6064,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "hasAttribute"
@@ -6022,14 +6118,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "localName",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "hasAttributeNS"
@@ -6189,7 +6287,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupNamespaceURI"
@@ -6234,7 +6333,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupPrefix"
@@ -6486,7 +6586,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "prepend"
@@ -6592,7 +6693,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "removeAttribute"
@@ -6639,7 +6741,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "removeAttributeNode"
@@ -6692,14 +6795,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "localName",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "removeAttributeNS"
@@ -6753,7 +6858,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "replaceChildren"
@@ -6807,7 +6913,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "replaceWith"
@@ -6860,14 +6967,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "value",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "setAttribute"
@@ -6918,7 +7027,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "setAttributeNode"
@@ -6969,7 +7079,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "setAttributeNodeNS"
@@ -7030,21 +7141,24 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "qualifiedName",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "value",
                   "parameterTypeTokenRange": {
                     "startIndex": 5,
                     "endIndex": 6
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "setAttributeNS"
@@ -7155,14 +7269,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "force",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": true
                 }
               ],
               "name": "toggleAttribute"
@@ -7170,7 +7286,7 @@
           ],
           "extendsTokenRange": {
             "startIndex": 1,
-            "endIndex": 3
+            "endIndex": 2
           },
           "implementsTokenRanges": [
             {
@@ -7183,7 +7299,7 @@
             },
             {
               "startIndex": 8,
-              "endIndex": 10
+              "endIndex": 9
             }
           ]
         },
@@ -7351,7 +7467,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ]
             },
@@ -7434,14 +7551,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "options",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "observe"
@@ -7531,14 +7650,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "target",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ]
             },
@@ -7864,7 +7985,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "_copy"
@@ -7946,7 +8068,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "typeParameters": [
@@ -8144,7 +8267,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": true
                 }
               ],
               "name": "cloneNode"
@@ -8244,7 +8368,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "compareDocumentPosition"
@@ -8294,7 +8419,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 3
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "contains"
@@ -8908,14 +9034,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "child",
                   "parameterTypeTokenRange": {
                     "startIndex": 5,
                     "endIndex": 7
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "typeParameters": [
@@ -8973,7 +9101,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "isDefaultNamespace"
@@ -9050,7 +9179,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupNamespaceURI"
@@ -9095,7 +9225,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "lookupPrefix"
@@ -9531,7 +9662,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "typeParameters": [
@@ -9607,14 +9739,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "child",
                   "parameterTypeTokenRange": {
                     "startIndex": 5,
                     "endIndex": 6
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "typeParameters": [
@@ -9759,7 +9893,8 @@
               "parameterTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
-              }
+              },
+              "isOptional": false
             }
           ],
           "name": "parseXmlDocument"
@@ -9828,7 +9963,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "_copy"
@@ -9867,14 +10003,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "data",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ]
             },
@@ -9962,7 +10100,7 @@
           ],
           "extendsTokenRange": {
             "startIndex": 1,
-            "endIndex": 3
+            "endIndex": 2
           },
           "implementsTokenRanges": []
         },
@@ -10102,7 +10240,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": true
                 }
               ],
               "name": "collapse"
@@ -10211,14 +10350,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "sourceRange",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "compareBoundaryPoints"
@@ -10272,14 +10413,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "offset",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "comparePoint"
@@ -10522,7 +10665,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "insertNode"
@@ -10568,7 +10712,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "intersectsNode"
@@ -10622,14 +10767,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "offset",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "isPointInRange"
@@ -10675,7 +10822,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "selectNode"
@@ -10721,7 +10869,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "selectNodeContents"
@@ -10775,14 +10924,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "offset",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "setEnd"
@@ -10828,7 +10979,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "setEndAfter"
@@ -10874,7 +11026,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "setEndBefore"
@@ -10928,14 +11081,16 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 },
                 {
                   "parameterName": "offset",
                   "parameterTypeTokenRange": {
                     "startIndex": 3,
                     "endIndex": 4
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "setStart"
@@ -10981,7 +11136,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "setStartAfter"
@@ -11027,7 +11183,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "setStartBefore"
@@ -11182,7 +11339,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "surroundContents"
@@ -11220,7 +11378,7 @@
           "implementsTokenRanges": [
             {
               "startIndex": 1,
-              "endIndex": 3
+              "endIndex": 2
             }
           ]
         },
@@ -11263,7 +11421,8 @@
               "parameterTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
-              }
+              },
+              "isOptional": false
             }
           ],
           "name": "serializeToWellFormedString"
@@ -11317,7 +11476,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ]
             },
@@ -11462,7 +11622,7 @@
           "implementsTokenRanges": [
             {
               "startIndex": 1,
-              "endIndex": 3
+              "endIndex": 2
             }
           ]
         },
@@ -11530,7 +11690,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "_copy"
@@ -11561,7 +11722,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": true
                 }
               ]
             },
@@ -11660,7 +11822,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "splitText"
@@ -11695,7 +11858,7 @@
           ],
           "extendsTokenRange": {
             "startIndex": 1,
-            "endIndex": 3
+            "endIndex": 2
           },
           "implementsTokenRanges": []
         },
@@ -11747,14 +11910,16 @@
               "parameterTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
-              }
+              },
+              "isOptional": false
             },
             {
               "parameterName": "element",
               "parameterTypeTokenRange": {
                 "startIndex": 3,
                 "endIndex": 4
-              }
+              },
+              "isOptional": false
             }
           ],
           "name": "unsafeAppendAttribute"
@@ -11835,35 +12000,40 @@
               "parameterTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
-              }
+              },
+              "isOptional": false
             },
             {
               "parameterName": "prefix",
               "parameterTypeTokenRange": {
                 "startIndex": 3,
                 "endIndex": 4
-              }
+              },
+              "isOptional": false
             },
             {
               "parameterName": "localName",
               "parameterTypeTokenRange": {
                 "startIndex": 5,
                 "endIndex": 6
-              }
+              },
+              "isOptional": false
             },
             {
               "parameterName": "value",
               "parameterTypeTokenRange": {
                 "startIndex": 7,
                 "endIndex": 8
-              }
+              },
+              "isOptional": false
             },
             {
               "parameterName": "ownerElement",
               "parameterTypeTokenRange": {
                 "startIndex": 9,
                 "endIndex": 11
-              }
+              },
+              "isOptional": false
             }
           ],
           "name": "unsafeCreateAttribute"
@@ -11932,28 +12102,32 @@
               "parameterTypeTokenRange": {
                 "startIndex": 1,
                 "endIndex": 2
-              }
+              },
+              "isOptional": false
             },
             {
               "parameterName": "localName",
               "parameterTypeTokenRange": {
                 "startIndex": 3,
                 "endIndex": 4
-              }
+              },
+              "isOptional": false
             },
             {
               "parameterName": "namespace",
               "parameterTypeTokenRange": {
                 "startIndex": 5,
                 "endIndex": 6
-              }
+              },
+              "isOptional": false
             },
             {
               "parameterName": "prefix",
               "parameterTypeTokenRange": {
                 "startIndex": 7,
                 "endIndex": 8
-              }
+              },
+              "isOptional": true
             }
           ],
           "name": "unsafeCreateElement"
@@ -12022,7 +12196,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "_copy"
@@ -12030,7 +12205,7 @@
           ],
           "extendsTokenRange": {
             "startIndex": 1,
-            "endIndex": 3
+            "endIndex": 2
           },
           "implementsTokenRanges": []
         },
@@ -12102,7 +12277,8 @@
                   "parameterTypeTokenRange": {
                     "startIndex": 1,
                     "endIndex": 2
-                  }
+                  },
+                  "isOptional": false
                 }
               ],
               "name": "serializeToString"

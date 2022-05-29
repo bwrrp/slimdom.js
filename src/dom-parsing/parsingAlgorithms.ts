@@ -21,11 +21,104 @@ import {
 	DoctypedeclEvent,
 	DocumentParseEvent,
 	EmptyElemTagEvent,
+	EntityRefEvent,
 	EntityValueEvent,
 	MarkupdeclEventType,
 	ParserEventType,
 	STagEvent,
+	WithPosition,
 } from './parserEvents';
+
+function offsetToCoords(input: string, offset: number): { line: number; char: number } {
+	// Assumes normalized line endings
+	let line = 1;
+	let char = 1;
+	let i = 0;
+	while (i < offset) {
+		const cp = input.codePointAt(i)!;
+		const l = cp > 0xffff ? 2 : 1;
+		char++;
+		i += l;
+		if (cp === 0xa) {
+			line++;
+			char = 1;
+		}
+	}
+	return { line, char };
+}
+
+function replaceInvalidCharacters(input: string): string {
+	return Array.from(input, (char) =>
+		matchesCharProduction(char) ? char : '[invalid character]'
+	).join('');
+}
+
+const enum TruncateSide {
+	Start,
+	End,
+	Inside,
+}
+
+function truncate(input: string, side: TruncateSide, max: number): string {
+	const ELLIPSIS = '\u{2026}';
+	const chars = Array.from(input);
+	if (chars.length < max) {
+		return input;
+	}
+	switch (side) {
+		case TruncateSide.Start:
+			return ELLIPSIS + chars.slice(-max).join('');
+		case TruncateSide.End:
+			return chars.slice(0, max).join('') + ELLIPSIS;
+	}
+	const halfLength = Math.min(chars.length / 2, max / 2) | 0;
+	return chars.slice(0, halfLength).join('') + ELLIPSIS + chars.slice(-halfLength).join('');
+}
+
+function highlightError(input: string, start: number, end: number): string {
+	const inside = truncate(
+		replaceInvalidCharacters(input.substring(start, end)),
+		TruncateSide.Inside,
+		30
+	);
+	const newlineIndexBefore = input.lastIndexOf('\n', start);
+	const lineBefore = truncate(
+		replaceInvalidCharacters(input.substring(newlineIndexBefore + 1, start)),
+		TruncateSide.Start,
+		55 - inside.length
+	);
+	const newlineIndexAfter = input.indexOf('\n', end);
+	const lineAfter = truncate(
+		replaceInvalidCharacters(
+			newlineIndexAfter > 0 ? input.substring(end, newlineIndexAfter) : input.substring(end)
+		),
+		TruncateSide.End,
+		80 - inside.length - lineBefore.length
+	);
+	const indent = Array.from(lineBefore, (c) => (isWhitespace(c) ? c : ' ')).join('');
+	const squiggle = '^'.repeat(Array.from(inside).length);
+	return `${lineBefore}${inside}${lineAfter}\n${indent}${squiggle}`;
+}
+
+export function throwErrorWithContext(message: string, event: WithPosition<unknown>): never {
+	const { line, char } = offsetToCoords(event.input, event.start);
+	const location = `At line ${line}, character ${char}:`;
+	throw new Error(
+		`${message}\n${location}\n\n${highlightError(event.input, event.start, event.end)}`
+	);
+}
+
+function throwParseError(what: string, input: string, expected: string[], offset: number): never {
+	const quoted = expected.map((str) => (str.includes('"') ? `'${str}'` : `"${str}"`));
+	const cp = input.codePointAt(offset);
+	const actual = cp ? String.fromCodePoint(cp) : '';
+	throwErrorWithContext(
+		`Parsing ${what} failed, expected ${
+			quoted.length > 1 ? 'one of ' + quoted.join(', ') : quoted[0]
+		}`,
+		{ input, start: offset, end: offset + Math.max(actual.length, 1) }
+	);
+}
 
 /**
  * Returns true if all characters in value match the Char production.
@@ -92,8 +185,9 @@ function constructReplacementText(value: EntityValueEvent[]): string {
 				replacementText.push(`&${event.name};`);
 				break;
 			case ParserEventType.PEReference:
-				throw new Error(
-					`reference to parameter entity ${event.name} must not occur in an entity declaration in the internal subset`
+				throwErrorWithContext(
+					`reference to parameter entity "${event.name}" must not occur in an entity declaration in the internal subset`,
+					event
 				);
 		}
 	}
@@ -131,8 +225,9 @@ class Dtd {
 										!this._externalEntityNames.has(event.name) &&
 										!this._unparsedEntityNames.has(event.name)
 									) {
-										throw new Error(
-											`default value of attribute ${attr.name} contains reference to undefined entity ${event.name}`
+										throwErrorWithContext(
+											`default value of attribute "${attr.name.name}" contains reference to undefined entity "${event.name}"`,
+											event
 										);
 									}
 								}
@@ -147,10 +242,10 @@ class Dtd {
 					}
 					for (const attr of decl.attdefs) {
 						// First declaration is binding
-						if (defByName.has(attr.name)) {
+						if (defByName.has(attr.name.name)) {
 							continue;
 						}
-						defByName.set(attr.name, attr);
+						defByName.set(attr.name.name, attr);
 					}
 					break;
 				}
@@ -180,22 +275,29 @@ class Dtd {
 		}
 	}
 
-	public getAttlist(elementName: string): Map<string, AttDefEvent> | undefined {
-		return this._attlistByName.get(elementName);
+	public getAttlist(nameEvent: { name: string }): Map<string, AttDefEvent> | undefined {
+		return this._attlistByName.get(nameEvent.name);
 	}
 
-	public getEntityReplacementText(name: string, allowExternal: boolean): string | undefined {
-		const value = this._entityReplacementTextByName.get(name);
+	public getEntityReplacementText(
+		event: EntityRefEvent,
+		allowExternal: boolean
+	): string | undefined {
+		const value = this._entityReplacementTextByName.get(event.name);
 		if (value === undefined) {
-			if (this._unparsedEntityNames.has(name)) {
-				throw new Error(`reference to binary entity ${name} is not allowed`);
+			if (this._unparsedEntityNames.has(event.name)) {
+				throwErrorWithContext(
+					`reference to binary entity "${event.name}" is not allowed`,
+					event
+				);
 			}
-			if (this._externalEntityNames.has(name)) {
+			if (this._externalEntityNames.has(event.name)) {
 				if (allowExternal) {
 					return '';
 				}
-				throw new Error(
-					`reference to external entity ${name} is not allowed in attribute value`
+				throwErrorWithContext(
+					`reference to external entity "${event.name}" is not allowed in attribute value`,
+					event
 				);
 			}
 		}
@@ -210,20 +312,6 @@ const predefinedEntitiesReplacementText = new Map([
 	['apos', "'"],
 	['quot', '"'],
 ]);
-
-function throwParseError(what: string, input: string, expected: string[], offset: number): never {
-	const quoted = expected.map((str) => `"${str}"`);
-	const cp = input.codePointAt(offset);
-	let actual = cp ? `"${String.fromCodePoint(cp)}"` : 'end of input';
-	if (!matchesCharProduction(actual)) {
-		actual = 'invalid character';
-	}
-	throw new Error(
-		`Error parsing ${what} at offset ${offset}: expected ${
-			quoted.length > 1 ? 'one of ' + quoted.join(', ') : quoted[0]
-		} but found ${actual}`
-	);
-}
 
 function normalizeAndIncludeEntities(
 	normalized: string[],
@@ -243,19 +331,25 @@ function normalizeAndIncludeEntities(
 		}
 
 		if (ancestorEntities !== null && ancestorEntities.includes(event.name)) {
-			throw new Error(`reference to entity ${event.name} must not be recursive`);
+			throwErrorWithContext(
+				`reference to entity "${event.name}" must not be recursive`,
+				event
+			);
 		}
 		let replacementText = predefinedEntitiesReplacementText.get(event.name);
 		if (replacementText === undefined && dtd !== null) {
-			replacementText = dtd.getEntityReplacementText(event.name, false);
+			replacementText = dtd.getEntityReplacementText(event, false);
 		}
 		if (replacementText === undefined) {
-			throw new Error(`reference to unknown entity ${event.name} in attribute value`);
+			throwErrorWithContext(
+				`reference to unknown entity "${event.name}" in attribute value`,
+				event
+			);
 		}
 		const result = EntityReplacementTextInLiteral(replacementText, 0);
 		if (!result.success) {
 			throwParseError(
-				`replacement text for entity ${event.name}`,
+				`replacement text for entity "${event.name}"`,
 				replacementText,
 				result.expected,
 				result.offset
@@ -290,7 +384,11 @@ function normalizeAttributeValue(
 type QualifiedNameParts = { prefix: string | null; localName: string };
 type QualifiedNameCache = Map<string, QualifiedNameParts>;
 
-function splitQualifiedName(qualifiedName: string, cache: QualifiedNameCache): QualifiedNameParts {
+function splitQualifiedName(
+	event: WithPosition<{ name: string }>,
+	cache: QualifiedNameCache
+): QualifiedNameParts {
+	const qualifiedName = event.name;
 	const fromCache = cache.get(qualifiedName);
 	if (fromCache !== undefined) {
 		return fromCache;
@@ -313,7 +411,7 @@ function splitQualifiedName(qualifiedName: string, cache: QualifiedNameCache): Q
 	// We already know (from the grammar) that qualifiedName is a valid Name, so only check if there
 	// aren't too many colons and that both parts are not empty
 	if (prefix === '' || localName === '' || localName.includes(':')) {
-		throw new Error(`the name ${qualifiedName} is not a valid qualified name`);
+		throwErrorWithContext(`the name "${qualifiedName}" is not a valid qualified name`, event);
 	}
 
 	const parts = { prefix, localName };
@@ -329,9 +427,9 @@ class Namespaces {
 		this._parent = parent;
 	}
 
-	public getForElement(prefix: string | null): string | null {
+	public getForElement(prefix: string | null, event: WithPosition<unknown>): string | null {
 		if (prefix === 'xmlns') {
-			throw new Error('element names must not have the prefix "xmlns"');
+			throwErrorWithContext('element names must not have the prefix "xmlns"', event);
 		}
 		for (let ns: Namespaces | null = this; ns !== null; ns = ns._parent) {
 			const namespace = ns._byPrefix.get(prefix);
@@ -339,10 +437,14 @@ class Namespaces {
 				return namespace;
 			}
 		}
-		throw new Error(`use of undeclared element prefix ${prefix}`);
+		throwErrorWithContext(`use of undeclared element prefix "${prefix}"`, event);
 	}
 
-	public getForAttribute(prefix: string | null, localName: string): string | null {
+	public getForAttribute(
+		prefix: string | null,
+		localName: string,
+		event: WithPosition<unknown>
+	): string | null {
 		if (prefix === null) {
 			// Default namespace doesn't apply to attributes
 			return localName === 'xmlns' ? XMLNS_NAMESPACE : null;
@@ -353,7 +455,7 @@ class Namespaces {
 				return namespace;
 			}
 		}
-		throw new Error(`use of undeclared attribute prefix ${prefix}`);
+		throwErrorWithContext(`use of undeclared attribute prefix ${prefix}`, event);
 	}
 
 	public static fromAttrs(
@@ -366,27 +468,37 @@ class Namespaces {
 		let ns = parent;
 		let hasDeclarations = false;
 
-		const add = (prefix: string | null, namespace: string | null) => {
+		const add = (
+			prefix: string | null,
+			namespace: string | null,
+			event: WithPosition<unknown>
+		) => {
 			if (prefix === null && (namespace === XML_NAMESPACE || namespace === XMLNS_NAMESPACE)) {
-				throw new Error(
-					`the namespace ${namespace} must not be used as the default namespace`
+				throwErrorWithContext(
+					`the namespace "${namespace}" must not be used as the default namespace`,
+					event
 				);
 			}
 			if (namespace === XMLNS_NAMESPACE) {
-				throw new Error(`the namespace ${XMLNS_NAMESPACE} must not be bound to a prefix`);
+				throwErrorWithContext(
+					`the namespace "${XMLNS_NAMESPACE}" must not be bound to a prefix`,
+					event
+				);
 			}
 			if (namespace === XML_NAMESPACE && prefix !== 'xml') {
-				throw new Error(
-					`the namespace ${XML_NAMESPACE} must be bound only to the prefix "xml"`
+				throwErrorWithContext(
+					`the namespace "${XML_NAMESPACE}" must be bound only to the prefix "xml"`,
+					event
 				);
 			}
 			if (namespace !== XML_NAMESPACE && prefix === 'xml') {
-				throw new Error(
-					`the xml namespace prefix must not be bound to any namespace other than ${XML_NAMESPACE}`
+				throwErrorWithContext(
+					`the xml namespace prefix must not be bound to any namespace other than "${XML_NAMESPACE}"`,
+					event
 				);
 			}
 			if (prefix !== null && namespace === null) {
-				throw new Error(`the prefix ${prefix} must not be undeclared`);
+				throwErrorWithContext(`the prefix "${prefix}" must not be undeclared`, event);
 			}
 			if (!hasDeclarations) {
 				ns = new Namespaces(parent);
@@ -395,22 +507,25 @@ class Namespaces {
 			ns._byPrefix.set(prefix, namespace);
 		};
 
-		const checkAttr = (qualifiedName: string, value: AttValueEvent[]) => {
-			const { prefix, localName } = splitQualifiedName(qualifiedName, qualifiedNameCache);
-			const def = attlist?.get(qualifiedName);
+		const checkAttr = (nameEvent: WithPosition<{ name: string }>, value: AttValueEvent[]) => {
+			const { prefix, localName } = splitQualifiedName(nameEvent, qualifiedNameCache);
+			const def = attlist?.get(nameEvent.name);
 			if (
 				prefix === null &&
 				localName === 'xmlns' &&
 				(!hasDeclarations || !ns._byPrefix.has(null))
 			) {
 				const namespace = normalizeAttributeValue(value, def, dtd) || null;
-				add(null, namespace);
+				add(null, namespace, nameEvent);
 			} else if (prefix === 'xmlns' && (!hasDeclarations || !ns._byPrefix.has(localName))) {
 				if (localName === 'xmlns') {
-					throw new Error('the xmlns namespace prefix must not be declared');
+					throwErrorWithContext(
+						'the "xmlns" namespace prefix must not be declared',
+						nameEvent
+					);
 				}
 				const namespace = normalizeAttributeValue(value, def, dtd) || null;
-				add(localName, namespace);
+				add(localName, namespace, nameEvent);
 			}
 		};
 
@@ -528,8 +643,9 @@ export function parseXmlDocument(input: string): Document {
 			switch (event.type) {
 				case ParserEventType.CharRef:
 					if (domContext.root === doc && doc.documentElement !== null) {
-						throw new Error(
-							'character reference must not appear after the document element'
+						throwErrorWithContext(
+							'character reference must not appear after the document element',
+							event
 						);
 					}
 					collectedText.push(String.fromCodePoint(event.cp));
@@ -537,23 +653,28 @@ export function parseXmlDocument(input: string): Document {
 
 				case ParserEventType.EntityRef: {
 					if (domContext.root === doc && doc.documentElement !== null) {
-						throw new Error(
-							`reference to entity ${event.name} must not appear after the document element`
+						throwErrorWithContext(
+							`reference to entity "${event.name}" must not appear after the document element`,
+							event
 						);
 					}
 					for (let ctx: EntityContext | null = entityContext; ctx; ctx = ctx.parent) {
 						if (ctx.entity === event.name) {
-							throw new Error(
-								`reference to entity ${event.name} must not be recursive`
+							throwErrorWithContext(
+								`reference to entity "${event.name}" must not be recursive`,
+								event
 							);
 						}
 					}
 					let replacementText = predefinedEntitiesReplacementText.get(event.name);
 					if (replacementText === undefined && dtd !== null) {
-						replacementText = dtd.getEntityReplacementText(event.name, true);
+						replacementText = dtd.getEntityReplacementText(event, true);
 					}
 					if (replacementText === undefined) {
-						throw new Error(`reference to unknown entity ${event.name} in content`);
+						throwErrorWithContext(
+							`reference to unknown entity "${event.name}" in content`,
+							event
+						);
 					}
 					domContext = {
 						parent: domContext,
@@ -575,7 +696,10 @@ export function parseXmlDocument(input: string): Document {
 			switch (event.type) {
 				case ParserEventType.CDSect:
 					if (domContext.root === doc && doc.documentElement !== null) {
-						throw new Error('CData section must not appear after the document element');
+						throwErrorWithContext(
+							'CData section must not appear after the document element',
+							event
+						);
 					}
 					appendParsedNode(domContext.root, doc.createCDATASection(event.data));
 					continue;
@@ -607,8 +731,9 @@ export function parseXmlDocument(input: string): Document {
 				case ParserEventType.STag:
 				case ParserEventType.EmptyElemTag: {
 					if (domContext.root === doc && doc.documentElement !== null) {
-						throw new Error(
-							`document must contain a single root element, but found ${doc.documentElement.nodeName} and ${event.name}`
+						throwErrorWithContext(
+							`document must contain a single root element, but found "${doc.documentElement.nodeName}" and "${event.name.name}"`,
+							event.name
 						);
 					}
 					const attlist = dtd ? dtd.getAttlist(event.name) : undefined;
@@ -623,7 +748,7 @@ export function parseXmlDocument(input: string): Document {
 						event.name,
 						qualifiedNameCache
 					);
-					const namespace = namespaces.getForElement(prefix);
+					const namespace = namespaces.getForElement(prefix, event.name);
 					// We can skip the usual name validity checks
 					const element = unsafeCreateElement(doc, localName, namespace, prefix);
 					for (const attr of event.attributes) {
@@ -631,11 +756,12 @@ export function parseXmlDocument(input: string): Document {
 							attr.name,
 							qualifiedNameCache
 						);
-						const namespace = namespaces.getForAttribute(prefix, localName);
-						const def = attlist?.get(attr.name);
+						const namespace = namespaces.getForAttribute(prefix, localName, event.name);
+						const def = attlist?.get(attr.name.name);
 						if (element.hasAttributeNS(namespace, localName)) {
-							throw new Error(
-								`attribute ${attr.name} must not appear multiple times on element ${event.name}`
+							throwErrorWithContext(
+								`attribute "${attr.name.name}" must not appear multiple times on element "${event.name.name}"`,
+								attr.name
 							);
 						}
 						// We can skip validation of names and duplicates
@@ -659,7 +785,11 @@ export function parseXmlDocument(input: string): Document {
 								attr.name,
 								qualifiedNameCache
 							);
-							const namespace = namespaces.getForAttribute(prefix, localName);
+							const namespace = namespaces.getForAttribute(
+								prefix,
+								localName,
+								attr.name
+							);
 							if (element.hasAttributeNS(namespace, localName)) {
 								continue;
 							}
@@ -688,12 +818,13 @@ export function parseXmlDocument(input: string): Document {
 
 				case ParserEventType.ETag:
 					if (!isElement(domContext.root) || domContext.root.nodeName !== event.name) {
-						throw new Error(
-							`non-well-formed element: found end tag ${event.name} but expected ${
+						throwErrorWithContext(
+							`non-well-formed element: found end tag "${event.name}" but expected ${
 								isElement(domContext.root)
-									? domContext.root.nodeName
+									? `"${domContext.root.nodeName}"`
 									: 'no such tag'
-							}`
+							}`,
+							event
 						);
 					}
 					// The check above means we never leave the document DomContext
@@ -717,9 +848,11 @@ export function parseXmlDocument(input: string): Document {
 			throw new Error(
 				`${
 					entityContext.entity
-						? `replacement text for entity ${entityContext.entity}`
+						? `replacement text for entity "${entityContext.entity}"`
 						: 'document'
-				} is not well-formed - element ${domContext.root.nodeName} is missing a closing tag`
+				} is not well-formed - element "${
+					domContext.root.nodeName
+				}" is missing a closing tag`
 			);
 		}
 
