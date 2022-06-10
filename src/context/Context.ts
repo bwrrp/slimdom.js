@@ -98,13 +98,17 @@ export class DefaultContext implements Context {
 	public XMLDocument!: XMLDocumentConstructor;
 
 	private _ranges: WeakRef<Range>[] = [];
+	private _weakRangeSet: WeakSet<Range> = new WeakSet();
 
 	public forEachRange(cb: (range: Range) => void): void {
 		let numRanges = this._ranges.length;
 		for (let i = numRanges - 1; i >= 0; --i) {
-			const r = this._ranges[i].deref();
+			const weakref = this._ranges[i];
+			const r = weakref.deref();
 			// Safari / webkit has a bug where deref can return null instead of undefined
-			if (r === undefined || r === null) {
+			const isLost = r === undefined || r === null;
+			const isManuallyRemoved = !isLost && !this._weakRangeSet.has(r)
+			if (isLost || isManuallyRemoved) {
 				// Weak ref lost, remove
 				this._ranges[i] = this._ranges[numRanges - 1];
 				this._ranges.pop();
@@ -116,26 +120,19 @@ export class DefaultContext implements Context {
 	}
 
 	public addRange(range: Range): void {
-		this._ranges.push(createWeakRef(range));
+		const weakref = createWeakRef(range);
+		this._ranges.push(weakref);
+		this._weakRangeSet.add(range);
 	}
 
 	public removeRange(range: Range): void {
-		let numRanges = this._ranges.length;
-		for (let i = numRanges - 1; i >= 0; --i) {
-			const r = this._ranges[i].deref();
-			// Safari / webkit has a bug where deref can return null instead of undefined
-			if (r === undefined || r === null || r === range) {
-				this._ranges[i] = this._ranges[numRanges - 1];
-				this._ranges.pop();
-				numRanges -= 1;
-			}
-		}
+		this._weakRangeSet.delete(range);
 	}
 }
 
 // TODO: make it possible to create multiple contexts by binding constructors to each instance
 export const defaultContext = new DefaultContext();
 
-export function getContext(instance: Node | Range): Context {
+export function getContext(_instance: Node | Range): Context {
 	return defaultContext;
 }
