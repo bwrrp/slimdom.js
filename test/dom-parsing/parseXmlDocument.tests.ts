@@ -467,6 +467,17 @@ describe('parseXmlDocument', () => {
 	`);
 	});
 
+	it('returns an error if a parameter entity reference occurs within an entity value', () => {
+		const xml = `<!DOCTYPE root [<!ENTITY % first SYSTEM "id"><!ENTITY % second "%first;">]><root/>`;
+		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(`
+		"reference to parameter entity \\"first\\" must not occur in an entity declaration in the internal subset
+		At line 1, character 65:
+
+		…<!ENTITY % first SYSTEM \\"id\\"><!ENTITY % second \\"%first;\\">]><root/>
+		                                                 ^^^^^^^"
+	`);
+	});
+
 	it('can handle the first example from appendix D', () => {
 		const xml = `<!DOCTYPE test [<!ENTITY example "<p>An ampersand (&#38;#38;) may be escaped
 		numerically (&#38;#38;#38;) or with a general entity
@@ -568,6 +579,17 @@ describe('parseXmlDocument', () => {
 
 		&ext;
 		^^^^^"
+	`);
+	});
+
+	it('returns an error for external entity references in default attribute values', () => {
+		const xml = `<!DOCTYPE root [<!ENTITY ext SYSTEM "ext"><!ATTLIST root attr CDATA "&ext;">]><root/>`;
+		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(`
+		"default value of attribute \\"attr\\" must not contain reference to external entity \\"ext\\"
+		At line 1, character 70:
+
+		…NTITY ext SYSTEM \\"ext\\"><!ATTLIST root attr CDATA \\"&ext;\\">]><root/>
+		                                                   ^^^^^"
 	`);
 	});
 

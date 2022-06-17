@@ -109,7 +109,9 @@ export function throwErrorWithContext(message: string, event: WithPosition<unkno
 }
 
 function throwParseError(what: string, input: string, expected: string[], offset: number): never {
-	const quoted = expected.map((str) => (str.includes('"') ? `'${str}'` : `"${str}"`));
+	const quoted = Array.from(new Set(expected), (str) =>
+		str.includes('"') ? `'${str}'` : `"${str}"`
+	);
 	const cp = input.codePointAt(offset);
 	const actual = cp ? String.fromCodePoint(cp) : '';
 	throwErrorWithContext(
@@ -164,9 +166,6 @@ function isWhitespace(value: string): boolean {
 	return CompleteWhitespace(value, 0).success;
 }
 
-// TODO: add line / column info (and some context) to all parser errors
-// TODO: add same info to all other errors
-
 function constructReplacementText(value: EntityValueEvent[]): string {
 	const replacementText: string[] = [];
 	for (const event of value) {
@@ -216,10 +215,10 @@ class Dtd {
 					for (const attr of decl.attdefs) {
 						if (attr.def.type === DefaultDeclType.VALUE) {
 							for (const event of attr.def.value) {
-								if (
-									typeof event !== 'string' &&
-									event.type === ParserEventType.EntityRef
-								) {
+								if (typeof event === 'string') {
+									continue;
+								}
+								if (event.type === ParserEventType.EntityRef) {
 									if (
 										!this._entityReplacementTextByName.has(event.name) &&
 										!this._externalEntityNames.has(event.name) &&
@@ -227,6 +226,12 @@ class Dtd {
 									) {
 										throwErrorWithContext(
 											`default value of attribute "${attr.name.name}" contains reference to undefined entity "${event.name}"`,
+											event
+										);
+									}
+									if (this._externalEntityNames.has(event.name)) {
+										throwErrorWithContext(
+											`default value of attribute "${attr.name.name}" must not contain reference to external entity "${event.name}"`,
 											event
 										);
 									}
@@ -250,7 +255,25 @@ class Dtd {
 					break;
 				}
 
-				case MarkupdeclEventType.EntityDecl: {
+				case MarkupdeclEventType.PEDecl: {
+					// We don't support these, but still need to validate well-formedness
+					if (Array.isArray(decl.value)) {
+						for (const event of decl.value) {
+							if (
+								typeof event !== 'string' &&
+								event.type === ParserEventType.PEReference
+							) {
+								throwErrorWithContext(
+									`reference to parameter entity "${event.name}" must not occur in an entity declaration in the internal subset`,
+									event
+								);
+							}
+						}
+					}
+					break;
+				}
+
+				case MarkupdeclEventType.GEDecl: {
 					// First declaration is binding
 					if (
 						this._entityReplacementTextByName.has(decl.name) ||

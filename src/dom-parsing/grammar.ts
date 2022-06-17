@@ -228,15 +228,25 @@ const Nmtoken = recognize(codepoints(isValidNameChar, ['valid name character']))
 //      | '&#x' [0-9a-fA-F]+ ';'
 const CharRef: Parser<CharRefEvent> = withPosition(
 	map(
-		or([
-			map(
-				delimited(CHARREF_HEX_START, recognize(plusConsumed(HEX_DIGIT)), SEMICOLON, true),
-				(n) => parseInt(n, 16)
-			),
-			map(delimited(CHARREF_START, recognize(plusConsumed(DIGIT)), SEMICOLON), (n) =>
-				parseInt(n, 10)
-			),
-		]),
+		filter(
+			or([
+				map(
+					delimited(
+						CHARREF_HEX_START,
+						recognize(plusConsumed(HEX_DIGIT)),
+						SEMICOLON,
+						true
+					),
+					(n) => parseInt(n, 16)
+				),
+				map(
+					delimited(CHARREF_START, recognize(plusConsumed(DIGIT)), SEMICOLON, true),
+					(n) => parseInt(n, 10)
+				),
+			]),
+			(cp) => isValidChar(cp),
+			['character reference must reference a valid character']
+		),
 		(cp) => ({ type: ParserEventType.CharRef, cp })
 	)
 );
@@ -244,7 +254,7 @@ const CharRef: Parser<CharRefEvent> = withPosition(
 // [68] EntityRef ::= '&' Name ';'
 // Namespaces spec makes this an NCName
 const EntityRef: Parser<EntityRefEvent> = withPosition(
-	map(delimited(AMPERSAND, NCName, SEMICOLON), (name) => ({
+	map(delimited(AMPERSAND, NCName, cut(SEMICOLON)), (name) => ({
 		type: ParserEventType.EntityRef,
 		name,
 	}))
@@ -372,18 +382,22 @@ export const EntityReplacementTextInLiteral = complete(
 );
 
 // [11] SystemLiteral ::= ('"' [^"]* '"') | ("'" [^']* "'")
-const SystemLiteral = or([
-	delimited(
-		DOUBLE_QUOTE,
-		recognize(codepoints((cp) => cp !== DOUBLE_QUOTE_CP && isValidChar(cp))),
-		DOUBLE_QUOTE
-	),
-	delimited(
-		SINGLE_QUOTE,
-		recognize(codepoints((cp) => cp !== SINGLE_QUOTE_CP && isValidChar(cp))),
-		SINGLE_QUOTE
-	),
-]);
+const SystemLiteral = filter(
+	or([
+		delimited(
+			DOUBLE_QUOTE,
+			recognize(codepoints((cp) => cp !== DOUBLE_QUOTE_CP && isValidChar(cp))),
+			DOUBLE_QUOTE
+		),
+		delimited(
+			SINGLE_QUOTE,
+			recognize(codepoints((cp) => cp !== SINGLE_QUOTE_CP && isValidChar(cp))),
+			SINGLE_QUOTE
+		),
+	]),
+	(systemId) => !systemId.includes('#'),
+	['system identifier must not contain a fragment identifier']
+);
 
 // [13] PubidChar ::= #x20 | #xD | #xA | [a-zA-Z0-9] | [-'()+,./:=?;!*#@$_%]
 function isValidPubidChar(cp: number): boolean {
@@ -703,7 +717,7 @@ const Mixed = preceded(
 		consume(
 			followed(
 				starConsumed(preceded(delimited(optional(S), VERTICAL_BAR, optional(S)), Name)),
-				followed(PARENTHESIS_CLOSE, ASTERISK)
+				preceded(optional(S), followed(PARENTHESIS_CLOSE, ASTERISK))
 			)
 		),
 		consume(followed(optional(S), PARENTHESIS_CLOSE)),
@@ -892,7 +906,7 @@ const EntityDef = or<EntityValueEvent[] | ExternalEntityEvent>([
 const GEDecl: Parser<EntityDeclEvent | void> = delimited(
 	ENTITY_DECL_START,
 	then(preceded(S, NCName), cut(preceded(S, EntityDef)), (name, value) => ({
-		type: MarkupdeclEventType.EntityDecl,
+		type: MarkupdeclEventType.GEDecl,
 		name,
 		value,
 	})),
@@ -900,13 +914,21 @@ const GEDecl: Parser<EntityDeclEvent | void> = delimited(
 );
 
 // [74] PEDef ::= EntityValue | ExternalID
-const PEDef = or([consume(EntityValue), consume(ExternalID)]);
+const PEDef = or<EntityValueEvent[] | void>([EntityValue, consume(ExternalID)]);
 
 // [72] PEDecl ::= '<!ENTITY' S '%' S Name S PEDef S? '>'
 // Namespaces spec makes this an NCName
-const PEDecl = delimited(
+const PEDecl: Parser<EntityDeclEvent | void> = delimited(
 	followed(ENTITY_DECL_START, preceded(S, PERCENT)),
-	then(preceded(S, NCName), preceded(S, PEDef), () => undefined),
+	then(preceded(S, NCName), cut(preceded(S, PEDef)), (name, value) =>
+		value
+			? {
+					type: MarkupdeclEventType.PEDecl,
+					name,
+					value,
+			  }
+			: undefined
+	),
 	preceded(optional(S), ANGLE_BRACKET_CLOSE),
 	true
 );

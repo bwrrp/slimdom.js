@@ -63,7 +63,8 @@ export type ExternalIDEvent = { publicId: string | null; systemId: string | null
 
 export const enum MarkupdeclEventType {
 	AttlistDecl,
-	EntityDecl,
+	GEDecl,
+	PEDecl,
 }
 
 export const enum DefaultDeclType {
@@ -94,7 +95,7 @@ export type EntityValueEvent = TextEvent | ReferenceEvent | PEReferenceEvent;
 export type ExternalEntityEvent = { ids: ExternalIDEvent; ndata: string | null };
 
 export type EntityDeclEvent = {
-	type: MarkupdeclEventType.EntityDecl;
+	type: MarkupdeclEventType.GEDecl | MarkupdeclEventType.PEDecl;
 	name: string;
 	value: EntityValueEvent[] | ExternalEntityEvent;
 };

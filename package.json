@@ -28,6 +28,7 @@
 		"build:docs": "api-documenter markdown -i api -o docs",
 		"build": "npm-run-all build:clean build:bundle build:api build:api-copy build:docs",
 		"prepare": "npm run build",
+		"download-xmlconf": "node test/dom-parsing/downloadXmlConf.js",
 		"test": "jest --coverage --verbose",
 		"test:debug": "node --inspect --debug-brk node_modules/jest/bin/jest.js --runInBand"
 	},
@@ -43,6 +44,7 @@
 		"@microsoft/api-extractor": "^7.24.2",
 		"@rollup/plugin-node-resolve": "^13.3.0",
 		"@types/jest": "^27.5.1",
+		"@types/node": "^18.0.0",
 		"copyfiles": "^2.4.1",
 		"dom-treeadapter": "^0.2.2",
 		"jest": "^28.1.0",
