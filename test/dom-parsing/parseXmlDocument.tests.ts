@@ -39,7 +39,7 @@ describe('parseXmlDocument', () => {
 				<blah=>Hello</blah>
 			</root>`;
 		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(`
-		"Parsing document failed, expected one of \\"/>\\", \\">\\"
+		"Parsing document failed, expected \\">\\"
 		At line 3, character 10:
 
 						<blah=>Hello</blah>
@@ -241,7 +241,7 @@ describe('parseXmlDocument', () => {
 	it('returns an error if an element has a name containing an invalid character', () => {
 		const xml = `<a-\u{2050}/>`;
 		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(`
-		"Parsing document failed, expected one of \\"/>\\", \\">\\"
+		"Parsing document failed, expected \\">\\"
 		At line 1, character 4:
 
 		<a-⁐/>
@@ -274,7 +274,7 @@ describe('parseXmlDocument', () => {
 	it('returns an error if an entity has a name that contains a colon', () => {
 		const xml = `<!DOCTYPE root [<!ENTITY a:b "a">]><root/>`;
 		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(`
-		"Parsing document failed, expected one of \\"name must not contain colon\\", \\"%\\"
+		"Parsing document failed, expected \\"name must not contain colon\\"
 		At line 1, character 26:
 
 		<!DOCTYPE root [<!ENTITY a:b \\"a\\">]><root/>
@@ -412,7 +412,7 @@ describe('parseXmlDocument', () => {
 	it('returns an error for entities that expand to content that does not match the content production', () => {
 		const xml = `<!DOCTYPE root [<!ENTITY wrong "<p">]><root>&wrong;</root>`;
 		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(`
-		"Parsing replacement text for entity wrong failed, expected one of \\"/>\\", \\">\\"
+		"Parsing replacement text for entity wrong failed, expected one of \\">\\", \\"/>\\"
 		At line 1, character 3:
 
 		<!DOCTYPE root [<!ENTITY wrong \\"<p\\">]><root>&wrong;</root>
@@ -430,7 +430,7 @@ describe('parseXmlDocument', () => {
 	it('returns an error for entity references in element tags', () => {
 		const xml = `<!DOCTYPE root [<!ENTITY e SYSTEM "external">]><root &e;/>`;
 		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(`
-		"Parsing document failed, expected one of \\"/>\\", \\">\\"
+		"Parsing document failed, expected \\">\\"
 		At line 1, character 54:
 
 		<!DOCTYPE root [<!ENTITY e SYSTEM \\"external\\">]><root &e;/>
@@ -666,7 +666,7 @@ describe('parseXmlDocument', () => {
 		At line 1, character 1:
 
 
-		"
+		^"
 	`);
 	});
 

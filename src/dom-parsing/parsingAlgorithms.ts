@@ -96,7 +96,7 @@ function highlightError(input: string, start: number, end: number): string {
 		80 - inside.length - lineBefore.length
 	);
 	const indent = Array.from(lineBefore, (c) => (isWhitespace(c) ? c : ' ')).join('');
-	const squiggle = '^'.repeat(Array.from(inside).length);
+	const squiggle = '^'.repeat(Math.max(Array.from(inside).length, 1));
 	return `${lineBefore}${inside}${lineAfter}\n${indent}${squiggle}`;
 }
 
@@ -641,8 +641,8 @@ export function parseXmlDocument(input: string): Document {
 			} else {
 				appendParsedNode(domContext.root, doc.createTextNode(collectedText.join('')));
 			}
+			collectedText.length = 0;
 		}
-		collectedText.length = 0;
 	}
 
 	// Remove BOM if there is one and normalize line endings to lf

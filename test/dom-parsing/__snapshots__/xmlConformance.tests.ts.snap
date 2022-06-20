@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`XML Conformance Test Suite Bjoern Hoehrmann via HST 2013-09-18 hst-bh-001 - decimal charref > 10FFFF, indeed > max 32 bit integer, checking for recovery from possible overflow: hst-bh-001 1`] = `
-"Parsing document failed, expected \\"end of input\\"
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 4, character 6:
 
 <p>Fa&#xFF000000F6;il</p>          <!-- 32 bit integer overflow -->
@@ -9,7 +9,7 @@ At line 4, character 6:
 `;
 
 exports[`XML Conformance Test Suite Bjoern Hoehrmann via HST 2013-09-18 hst-bh-002 - hex charref > 10FFFF, indeed > max 32 bit integer, checking for recovery from possible overflow: hst-bh-002 1`] = `
-"Parsing document failed, expected \\"end of input\\"
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 4, character 6:
 
 <p>Fa&#4294967542;il</p>           <!-- 32 bit integer overflow -->
@@ -17,7 +17,7 @@ At line 4, character 6:
 `;
 
 exports[`XML Conformance Test Suite Bjoern Hoehrmann via HST 2013-09-18 hst-bh-003 - decimal charref > 10FFFF, indeed > max 64 bit integer, checking for recovery from possible overflow: hst-bh-003 1`] = `
-"Parsing document failed, expected \\"end of input\\"
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 4, character 6:
 
 <p>Fa&#xFFFFFFFF000000F6;il</p>    <!-- 64 bit integer overflow -->
@@ -25,7 +25,7 @@ At line 4, character 6:
 `;
 
 exports[`XML Conformance Test Suite Bjoern Hoehrmann via HST 2013-09-18 hst-bh-004 - hex charref > 10FFFF, indeed > max 64 bit integer, checking for recovery from possible overflow: hst-bh-004 1`] = `
-"Parsing document failed, expected \\"end of input\\"
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 4, character 6:
 
 <p>Fa&#18446744073709551862;il</p> <!-- 64 bit integer overflow -->
@@ -37,7 +37,7 @@ exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P01-ibm0
 At line 5, character 28:
 
 <!-- element is missing -->
-                           "
+                           ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P01-ibm01n02.xml - Tests a document with wrong ordering of its prolog and element. The element occurs before the xml declaration and the DTD.: ibm-not-wf-P01-ibm01n02.xml 1`] = `
@@ -313,83 +313,83 @@ At line 6, character 47:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n01.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x21: ibm-not-wf-P04-ibm04n01.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar! [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n02.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x28: ibm-not-wf-P04-ibm04n02.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar( [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n03.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x29: ibm-not-wf-P04-ibm04n03.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar) [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n04.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x2B: ibm-not-wf-P04-ibm04n04.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar+ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n05.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x2C: ibm-not-wf-P04-ibm04n05.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar, [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n06.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x2F: ibm-not-wf-P04-ibm04n06.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar/ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n07.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x3B: ibm-not-wf-P04-ibm04n07.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar; [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n08.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x3C: ibm-not-wf-P04-ibm04n08.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar< [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n09.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x3D: ibm-not-wf-P04-ibm04n09.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar= [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n10.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x3F: ibm-not-wf-P04-ibm04n10.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar? [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n11.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x5B: ibm-not-wf-P04-ibm04n11.xml 1`] = `
@@ -401,83 +401,83 @@ At line 1, character 28:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n12.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x5C: ibm-not-wf-P04-ibm04n12.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar\\\\ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n13.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x5D: ibm-not-wf-P04-ibm04n13.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar] [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n14.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x5E: ibm-not-wf-P04-ibm04n14.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar^ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n15.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x60: ibm-not-wf-P04-ibm04n15.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar\` [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n16.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x7B: ibm-not-wf-P04-ibm04n16.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar{ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n17.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x7C: ibm-not-wf-P04-ibm04n17.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar| [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P04-ibm04n18.xml - Tests an element name which contains an illegal ASCII NameChar. "IllegalNameChar" is followed by #x7D: ibm-not-wf-P04-ibm04n18.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar} [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P05-ibm05n01.xml - Tests an element name which has an illegal first character. An illegal first character "." is followed by "A_name-starts_with.".: ibm-not-wf-P05-ibm05n01.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE .A_name_starts_with. [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P05-ibm05n02.xml - Tests an element name which has an illegal first character. An illegal first character "-" is followed by "A_name-starts_with-".: ibm-not-wf-P05-ibm05n02.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE -A_name_starts_With- [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P05-ibm05n03.xml - Tests an element name which has an illegal first character. An illegal first character "5" is followed by "A_name-starts_with_digit".: ibm-not-wf-P05-ibm05n03.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE 5A_name_starts_with_digit [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P09-ibm09n01.xml - Tests an internal general entity with an invalid value. The entity "Fullname" contains "%".: ibm-not-wf-P09-ibm09n01.xml 1`] = `
@@ -509,7 +509,7 @@ exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P09-ibm0
 At line 9, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P10-ibm10n01.xml - Tests an attribute with an invalid value. The value of the attribute "first" contains the character "less than".: ibm-not-wf-P10-ibm10n01.xml 1`] = `
@@ -529,7 +529,7 @@ At line 14, character 25:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P10-ibm10n03.xml - Tests an attribute with an invalid value. The value of the attribute "first" contains the double quote character in the middle.: ibm-not-wf-P10-ibm10n03.xml 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 14, character 22:
 
 <student first=\\"Snow\\"Man\\">My Name is SnowMan. </student>
@@ -561,7 +561,7 @@ At line 14, character 25:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P10-ibm10n07.xml - Tests an attribute with an invalid value. The value of the attribute "first" contains the double quote character in the middle.: ibm-not-wf-P10-ibm10n07.xml 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 14, character 22:
 
 <student first=\\"Snow\\"Man\\">My Name is SnowMan. </student>
@@ -577,35 +577,35 @@ At line 14, character 43:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P11-ibm11n01.xml - Tests SystemLiteral. The systemLiteral for the element "student" has a double quote character in the middle.: ibm-not-wf-P11-ibm11n01.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 2, character 2:
+"Parsing document failed, expected \\">\\"
+At line 2, character 35:
 
 <!DOCTYPE student SYSTEM \\"student\\".dtd\\"[
- ^"
+                                  ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P11-ibm11n02.xml - Tests SystemLiteral. The systemLiteral for the element "student" has a single quote character in the middle.: ibm-not-wf-P11-ibm11n02.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 2, character 2:
+"Parsing document failed, expected \\">\\"
+At line 2, character 35:
 
 <!DOCTYPE student SYSTEM 'student'.dtd'[
- ^"
+                                  ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P11-ibm11n03.xml - Tests SystemLiteral. The closing bracket (double quote) is missing with the systemLiteral for the element "student".: ibm-not-wf-P11-ibm11n03.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 2, character 2:
+"Parsing document failed, expected one of '\\"', \\"'\\"
+At line 8, character 1:
 
-<!DOCTYPE student SYSTEM \\"student.DTD [
- ^"
+
+^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P11-ibm11n04.xml - Tests SystemLiteral. The closing bracket (single quote) is missing with the systemLiteral for the element "student".: ibm-not-wf-P11-ibm11n04.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 2, character 2:
+"Parsing document failed, expected one of '\\"', \\"'\\"
+At line 8, character 1:
 
-<!DOCTYPE student SYSTEM 'student.DTD [
- ^"
+
+^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P12-ibm12n01.xml - Tests PubidLiteral. The closing bracket (double quote) is missing with the value of the PubidLiteral for the entity "info".: ibm-not-wf-P12-ibm12n01.xml 1`] = `
@@ -665,7 +665,7 @@ At line 9, character 39:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P14-ibm14n02.xml - Tests CharData. The content of the element "student" contains the character "less than".: ibm-not-wf-P14-ibm14n02.xml 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 9, character 44:
 
 <student first=\\"Snow\\">My name is Snow <Man </student>
@@ -693,7 +693,7 @@ exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P15-ibm1
 At line 8, character 40:
 
 <student>My Name is SnowMan. </student>
-                                       "
+                                       ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P15-ibm15n03.xml - Tests comment. The second comment has a wrong beginning sequence "(less than)!-".: ibm-not-wf-P15-ibm15n03.xml 1`] = `
@@ -709,7 +709,7 @@ exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P15-ibm1
 At line 8, character 40:
 
 <student>My Name is SnowMan. </student>
-                                       "
+                                       ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P16-ibm16n01.xml - Tests PI. The content of the PI includes the sequence "?(greater than)?".: ibm-not-wf-P16-ibm16n01.xml 1`] = `
@@ -733,7 +733,7 @@ exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P16-ibm1
 At line 9, character 40:
 
 <student>My Name is SnowMan. </student>
-                                       "
+                                       ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P16-ibm16n04.xml - Tests PI. The closing sequence is missing in the PI.: ibm-not-wf-P16-ibm16n04.xml 1`] = `
@@ -741,7 +741,7 @@ exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P16-ibm1
 At line 9, character 40:
 
 <student>My Name is SnowMan. </student>
-                                       "
+                                       ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P17-ibm17n01.xml - Tests PITarget. The PITarget contains the string "XML".: ibm-not-wf-P17-ibm17n01.xml 1`] = `
@@ -789,7 +789,7 @@ exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P18-ibm1
 At line 7, character 71:
 
 …e is SnowMan. <![CDATA[This is <normal> text </student>
-                                                        "
+                                                        ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P19-ibm19n01.xml - Tests CDStart. The CDStart contains a lower case string "cdata".: ibm-not-wf-P19-ibm19n01.xml 1`] = `
@@ -1025,27 +1025,27 @@ At line 6, character 1:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P28-ibm28n01.xml - Tests doctypedecl with a required field missing. The Name "animal" is missing in the doctypedecl.: ibm-not-wf-P28-ibm28n01.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 2, character 2:
+"Parsing document failed, expected \\">\\"
+At line 2, character 18:
 
 <!DOCTYPE SYSTEM \\"ibm28n01.dtd\\">
- ^"
+                 ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P28-ibm28n02.xml - Tests doctypedecl with wrong field ordering. The Name "animal" occurs after the markup declarations inside the "[]".: ibm-not-wf-P28-ibm28n02.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 2, character 2:
+At line 2, character 11:
 
 <!DOCTYPE [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P28-ibm28n03.xml - Tests doctypedecl with wrong field ordering. The Name "animal" occurs after the markup declarations inside the "[]".: ibm-not-wf-P28-ibm28n03.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 2, character 2:
+"Parsing document failed, expected \\">\\"
+At line 2, character 18:
 
 <!DOCTYPE SYSTEM \\"ibm28n01.dtd\\" animal [
- ^"
+                 ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P28-ibm28n04.xml - Tests doctypedecl with general entity reference.The "(ampersand)generalE" occurs in the DTD.: ibm-not-wf-P28-ibm28n04.xml 1`] = `
@@ -1073,11 +1073,11 @@ At line 4, character 1:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P28-ibm28n07.xml - Tests doctypedecl with wrong bracket. The opening bracket "{" occurs in the DTD.: ibm-not-wf-P28-ibm28n07.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 2, character 2:
+"Parsing document failed, expected \\">\\"
+At line 2, character 18:
 
 <!DOCTYPE animal {
- ^"
+                 ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P28-ibm28n08.xml - Tests doctypedecl with wrong opening sequence. The opening sequence "(less than)?DOCTYPE" occurs in the DTD.: ibm-not-wf-P28-ibm28n08.xml 1`] = `
@@ -1085,7 +1085,7 @@ exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P28-ibm2
 At line 7, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P29-ibm29n01.xml - Tests markupdecl with an illegal markup declaration. A XMLDecl occurs inside the DTD.: ibm-not-wf-P29-ibm29n01.xml 1`] = `
@@ -1125,7 +1125,7 @@ exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P29-ibm2
 At line 9, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P29-ibm29n06.xml - Tests WFC "PEs in Internal Subset". A PE reference occurs inside a comment in the DTD.: ibm-not-wf-P29-ibm29n06.xml 1`] = `
@@ -1133,7 +1133,7 @@ exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P29-ibm2
 At line 9, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P29-ibm29n07.xml - Tests WFC "PEs in Internal Subset". A PE reference occurs inside a NotationDecl in the DTD.: ibm-not-wf-P29-ibm29n07.xml 1`] = `
@@ -1153,11 +1153,11 @@ At line 1, character 20:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P32-ibm32n02.xml - Tests SDDecl with a required field missing. The "=" sign is missing in the SDDecl in the XMLDecl.: ibm-not-wf-P32-ibm32n02.xml 1`] = `
-"Parsing document failed, expected \\"?>\\"
-At line 1, character 21:
+"Parsing document failed, expected \\"=\\"
+At line 1, character 31:
 
 <?xml version=\\"1.0\\" standalone\\"yes\\" ?>
-                    ^"
+                              ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P32-ibm32n03.xml - Tests SDDecl with wrong key word. The word "Standalone" occurs in the SDDecl in the XMLDecl.: ibm-not-wf-P32-ibm32n03.xml 1`] = `
@@ -1201,11 +1201,11 @@ At line 1, character 33:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P32-ibm32n08.xml - Tests SDDecl with wrong field ordering. The "=" sign occurs after the key word "yes" in the SDDecl in the XMLDecl.: ibm-not-wf-P32-ibm32n08.xml 1`] = `
-"Parsing document failed, expected \\"?>\\"
-At line 1, character 21:
+"Parsing document failed, expected \\"=\\"
+At line 1, character 31:
 
 <?xml version=\\"1.0\\" standalone\\"Yes\\"= ?>
-                    ^"
+                              ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P39-ibm39n01.xml - Tests element with a required field missing. The ETag is missing for the element "root".: ibm-not-wf-P39-ibm39n01.xml 1`] = `"document is not well-formed - element \\"root\\" is missing a closing tag"`;
@@ -1239,7 +1239,7 @@ At line 5, character 2:
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P39-ibm39n06.xml - Tests element with wrong field ordering. The content occurs after the ETag of the element "root".: ibm-not-wf-P39-ibm39n06.xml 1`] = `"document must not contain text outside of elements"`;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P40-ibm40n01.xml - Tests STag with a required field missing. The Name "root" is in the STag of the element "root".: ibm-not-wf-P40-ibm40n01.xml 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 7, character 7:
 
 <attr1=\\"any\\">missing name in start tag</root>
@@ -1247,7 +1247,7 @@ At line 7, character 7:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P40-ibm40n02.xml - Tests STag with a required field missing. The white space between the Name "root" and the attribute "attr1" is missing in the STag of the element "root".: ibm-not-wf-P40-ibm40n02.xml 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 7, character 11:
 
 <rootattr1=\\"any\\">missing white space in start tag</root>
@@ -1255,7 +1255,7 @@ At line 7, character 11:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P40-ibm40n03.xml - Tests STag with wrong field ordering. The Name "root" occurs after the attribute "attr1" in the STag of the element "root".: ibm-not-wf-P40-ibm40n03.xml 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 7, character 7:
 
 <attr1=\\"any\\" root>Wrong ordering in start tag</root>
@@ -1279,7 +1279,7 @@ At line 7, character 20:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P41-ibm41n01.xml - Tests Attribute with a required field missing. The attribute name is missing in the Attribute in the STag of the element "root".: ibm-not-wf-P41-ibm41n01.xml 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 7, character 7:
 
 <root =\\"any\\">missing name in Attribute</root>
@@ -1295,7 +1295,7 @@ At line 7, character 12:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P41-ibm41n03.xml - Tests Attribute with a required field missing. The AttValue is missing in the Attribute in the STag of the element "root".: ibm-not-wf-P41-ibm41n03.xml 1`] = `
-"Parsing document failed, expected one of '\\"', \\"'\\"
+"Parsing document failed, expected \\"quoted attribute value\\"
 At line 7, character 14:
 
 <root attr1= >missing AttValue in Attribute</root>
@@ -1303,7 +1303,7 @@ At line 7, character 14:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P41-ibm41n04.xml - Tests Attribute with a required field missing. The Name and the "=" are missing in the Attribute in the STag of the element "root".: ibm-not-wf-P41-ibm41n04.xml 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 7, character 7:
 
 <root \\"any\\">missing name and Eq in Attribute</root>
@@ -1319,7 +1319,7 @@ At line 7, character 12:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P41-ibm41n06.xml - Tests Attribute with a required field missing. The Name and the AttValue are missing in the Attribute in the STag of the element "root".: ibm-not-wf-P41-ibm41n06.xml 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 7, character 7:
 
 <root = >missing Name and AttValue in Attribute</root>
@@ -1335,7 +1335,7 @@ At line 7, character 12:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P41-ibm41n08.xml - Tests Attribute with wrong field ordering. The Name and the AttValue are swapped in the Attribute in the STag of the element "root".: ibm-not-wf-P41-ibm41n08.xml 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 7, character 7:
 
 <root \\"any\\"=attr1>wrong ordering in Attribute</root>
@@ -1343,7 +1343,7 @@ At line 7, character 7:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P41-ibm41n09.xml - Tests Attribute with wrong field ordering. The "=" occurs before the Name and the AttValue in the Attribute in the STag of the element "root".: ibm-not-wf-P41-ibm41n09.xml 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 7, character 7:
 
 <root =attr1\\"any\\">wrong ordering in Attribute</root>
@@ -1465,7 +1465,7 @@ At line 7, character 2:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P44-ibm44n02.xml - Tests EmptyElemTag with wrong field ordering. The Attribute (attri1 = "any") occurs before the name of the element "root" in the EmptyElemTag.: ibm-not-wf-P44-ibm44n02.xml 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 7, character 7:
 
 <attr1=\\"any\\" root/>
@@ -1473,7 +1473,7 @@ At line 7, character 7:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P44-ibm44n03.xml - Tests EmptyElemTag with wrong closing sequence. The string "\\>" is used as the closing sequence in the EmptyElemtag of the element "root".: ibm-not-wf-P44-ibm44n03.xml 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 7, character 18:
 
 <root attr1=\\"any\\"\\\\>
@@ -1865,7 +1865,7 @@ At line 7, character 30:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P52-ibm52n01.xml - Tests AttlistDecl with a required field missing. The Name is missing in the AttlistDecl in the DTD.: ibm-not-wf-P52-ibm52n01.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 6, character 23:
 
 <!ATTLIST attr1 CDATA #IMPLIED>
@@ -1881,7 +1881,7 @@ At line 6, character 1:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P52-ibm52n03.xml - Tests AttlistDecl with wrong field ordering. The Name "a" occurs after the first AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P52-ibm52n03.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 6, character 23:
 
 <!ATTLIST attr1 CDATA \\"defaultAttValue\\" a attr2 CDATA #IMPLIED>
@@ -1913,7 +1913,7 @@ At line 6, character 1:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P53-ibm53n01.xml - Tests AttDef with a required field missing. The DefaultDecl is missing in the AttDef for the name "attr1" in the AttlistDecl in the DTD.: ibm-not-wf-P53-ibm53n01.xml 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 6, character 25:
 
 <!ATTLIST a attr1 CDATA >
@@ -1929,7 +1929,7 @@ At line 6, character 28:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P53-ibm53n03.xml - Tests AttDef with a required field missing. The AttType is missing for "attr1" in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P53-ibm53n03.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 6, character 19:
 
 <!ATTLIST a attr1 #IMPLIED>
@@ -1977,7 +1977,7 @@ At line 6, character 13:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P54-ibm54n01.xml - Tests AttType with a wrong option. The string "BOGUSATTR" is used as the AttType in the AttlistDecl in the DTD.: ibm-not-wf-P54-ibm54n01.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 17:
 
 <!ATTLIST a att BOGUSATTR #IMPLIED> 
@@ -1985,7 +1985,7 @@ At line 7, character 17:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P54-ibm54n02.xml - Tests AttType with a wrong option. The string "PCDATA" is used as the AttType in the AttlistDecl in the DTD.: ibm-not-wf-P54-ibm54n02.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 17:
 
 <!ATTLIST a att PCDATA #IMPLIED> 
@@ -1993,7 +1993,7 @@ At line 7, character 17:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P55-ibm55n01.xml - Tests StringType with a wrong key word. The lower case string "cdata" is used as the StringType in the AttType in the AttlistDecl in the DTD.: ibm-not-wf-P55-ibm55n01.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 17:
 
 <!ATTLIST a att cdata #IMPLIED>  
@@ -2001,7 +2001,7 @@ At line 7, character 17:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P55-ibm55n02.xml - Tests StringType with a wrong key word. The string "#CDATA" is used as the StringType in the AttType in the AttlistDecl in the DTD.: ibm-not-wf-P55-ibm55n02.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 17:
 
 <!ATTLIST a att #CDATA #IMPLIED> 
@@ -2009,7 +2009,7 @@ At line 7, character 17:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P55-ibm55n03.xml - Tests StringType with a wrong key word. The string "CData" is used as the StringType in the AttType in the AttlistDecl in the DTD.: ibm-not-wf-P55-ibm55n03.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 17:
 
 <!ATTLIST a att CData #IMPLIED> 
@@ -2017,7 +2017,7 @@ At line 7, character 17:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P56-ibm56n01.xml - Tests TokenizedType with wrong key word. The type "id" is used in the TokenizedType in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P56-ibm56n01.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 18:
 
 <!ATTLIST a attr id #REQUIRED>
@@ -2025,7 +2025,7 @@ At line 7, character 18:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P56-ibm56n02.xml - Tests TokenizedType with wrong key word. The type "Idref" is used in the TokenizedType in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P56-ibm56n02.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 18:
 
 <!ATTLIST a attr Idref #REQUIRED>
@@ -2033,7 +2033,7 @@ At line 7, character 18:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P56-ibm56n03.xml - Tests TokenizedType with wrong key word. The type"Idrefs" is used in the TokenizedType in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P56-ibm56n03.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 18:
 
 <!ATTLIST a attr IdRefs #REQUIRED>
@@ -2041,7 +2041,7 @@ At line 7, character 18:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P56-ibm56n04.xml - Tests TokenizedType with wrong key word. The type "EntitY" is used in the TokenizedType in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P56-ibm56n04.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 18:
 
 <!ATTLIST a attr EntitY #REQUIRED>
@@ -2049,7 +2049,7 @@ At line 7, character 18:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P56-ibm56n05.xml - Tests TokenizedType with wrong key word. The type "nmTOKEN" is used in the TokenizedType in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P56-ibm56n05.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 18:
 
 <!ATTLIST a attr nmTOKEN #REQUIRED>
@@ -2057,7 +2057,7 @@ At line 7, character 18:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P56-ibm56n06.xml - Tests TokenizedType with wrong key word. The type "NMtokens" is used in the TokenizedType in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P56-ibm56n06.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 18:
 
 <!ATTLIST a attr NMtokens #REQUIRED>
@@ -2065,7 +2065,7 @@ At line 7, character 18:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P56-ibm56n07.xml - Tests TokenizedType with wrong key word. The type "#ID" is used in the TokenizedType in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P56-ibm56n07.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 18:
 
 <!ATTLIST a attr #ID #REQUIRED>
@@ -2073,7 +2073,7 @@ At line 7, character 18:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P57-ibm57n01.xml - Tests EnumeratedType with an illegal option. The string "NMTOKEN (a|b)" is used in the EnumeratedType in the AttlistDecl in the DTD.: ibm-not-wf-P57-ibm57n01.xml 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 6, character 29:
 
  <!ATTLIST root att NMTOKEN (a|b) #IMPLIED>
@@ -2081,7 +2081,7 @@ At line 6, character 29:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P58-ibm58n01.xml - Tests NotationType with wrong key word. The lower case "notation" is used as the key word in the NotationType in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P58-ibm58n01.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 8, character 21:
 
  <!ATTLIST one attr notation (this) #IMPLIED>
@@ -2113,7 +2113,7 @@ At line 8, character 36:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P58-ibm58n05.xml - Tests NotationType with wrong field ordering. The key word "NOTATION" occurs after "(this)" in the NotationType in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P58-ibm58n05.xml 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 8, character 28:
 
  <!ATTLIST one attr (this) NOTATION #IMPLIED>
@@ -2129,7 +2129,7 @@ At line 10, character 37:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P58-ibm58n07.xml - Tests NotationType with a required field missing. The white space is missing between "NOTATION" and "(this)" in the NotationType in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P58-ibm58n07.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected \\"whitespace\\"
 At line 9, character 31:
 
  <!ATTLIST three attr NOTATION(this) #IMPLIED>
@@ -2145,7 +2145,7 @@ At line 9, character 33:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P59-ibm59n01.xml - Tests Enumeration with required fields missing. The Nmtokens and "|"s are missing in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P59-ibm59n01.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected \\"valid name character\\"
 At line 8, character 22:
 
  <!ATTLIST one attr () #IMPLIED>
@@ -2169,7 +2169,7 @@ At line 9, character 26:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P59-ibm59n04.xml - Tests Enumeration with illegal presence. The double quotes occur around the Enumeration value in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P59-ibm59n04.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected \\"valid name character\\"
 At line 8, character 22:
 
  <!ATTLIST one attr (\\"enum\\") #IMPLIED>
@@ -2177,7 +2177,7 @@ At line 8, character 22:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P59-ibm59n05.xml - Tests Enumeration with a required field missing. The white space is missing between in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P59-ibm59n05.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 8, character 21:
 
  <!ATTLIST one attr enum) #IMPLIED>
@@ -2185,7 +2185,7 @@ At line 8, character 21:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P59-ibm59n06.xml - Tests Enumeration with a required field missing. The beginning bracket "(" is missing in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P59-ibm59n06.xml 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 8, character 21:
 
  <!ATTLIST one attr enum) #IMPLIED>
@@ -2193,7 +2193,7 @@ At line 8, character 21:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P60-ibm60n01.xml - Tests DefaultDecl with wrong key word. The string "#required" is used as the key word in the DefaultDecl in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P60-ibm60n01.xml 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 7, character 30:
 
  <!ATTLIST one chapter CDATA #required>
@@ -2201,7 +2201,7 @@ At line 7, character 30:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P60-ibm60n02.xml - Tests DefaultDecl with wrong key word. The string "Implied" is used as the key word in the DefaultDecl in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P60-ibm60n02.xml 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 7, character 30:
 
  <!ATTLIST one chapter CDATA #Implied>
@@ -2209,7 +2209,7 @@ At line 7, character 30:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P60-ibm60n03.xml - Tests DefaultDecl with wrong key word. The string "!IMPLIED" is used as the key word in the DefaultDecl in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P60-ibm60n03.xml 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 7, character 30:
 
  <!ATTLIST one chapter CDATA !IMPLIED>
@@ -2217,7 +2217,7 @@ At line 7, character 30:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P60-ibm60n04.xml - Tests DefaultDecl with a required field missing. There is no attribute value specified after the key word "#FIXED" in the DefaultDecl in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P60-ibm60n04.xml 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 7, character 37:
 
  <!ATTLIST one chapter CDATA #FIXED >
@@ -2225,7 +2225,7 @@ At line 7, character 37:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P60-ibm60n05.xml - Tests DefaultDecl with a required field missing. The white space is missing between the key word "#FIXED" and the attribute value in the DefaultDecl in the AttDef in the AttlistDecl in the DTD.: ibm-not-wf-P60-ibm60n05.xml 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 7, character 30:
 
  <!ATTLIST one chapter CDATA #FIXED\\"Introduction\\">
@@ -2345,7 +2345,7 @@ At line 5, character 46:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P66-ibm66n12.xml - Tests CharRef with an illegal character referred to. The "#x0000" is used as the referred character in the attribute value in the EmptyElemTag of the element "root".: ibm-not-wf-P66-ibm66n12.xml 1`] = `
-"Parsing document failed, expected '\\"'
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 7, character 50:
 
 <root att=\\"wrong replacement charater reference: &#x0000;\\" />
@@ -2353,7 +2353,7 @@ At line 7, character 50:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P66-ibm66n13.xml - Tests CharRef with an illegal character referred to. The "#x001f" is used as the referred character in the attribute value in the EmptyElemTag of the element "root".: ibm-not-wf-P66-ibm66n13.xml 1`] = `
-"Parsing document failed, expected '\\"'
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 7, character 40:
 
 <root att=\\"wrong replacement charater: &#x001f;\\" />
@@ -2361,7 +2361,7 @@ At line 7, character 40:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P66-ibm66n14.xml - Tests CharRef with an illegal character referred to. The "#xfffe" is used as the referred character in the attribute value in the EmptyElemTag of the element "root".: ibm-not-wf-P66-ibm66n14.xml 1`] = `
-"Parsing document failed, expected '\\"'
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 7, character 41:
 
 <root att=\\"wrong replacement charater : &#xfffe;\\" />
@@ -2369,7 +2369,7 @@ At line 7, character 41:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P66-ibm66n15.xml - Tests CharRef with an illegal character referred to. The "#xffff" is used as the referred character in the attribute value in the EmptyElemTag of the element "root".: ibm-not-wf-P66-ibm66n15.xml 1`] = `
-"Parsing document failed, expected '\\"'
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 7, character 40:
 
 <root att=\\"wrong replacement charater: &#xffff;\\" />
@@ -2673,31 +2673,31 @@ At line 6, character 17:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P75-ibm75n02.xml - Tests ExternalID with wrong key word. The string "public" is used as the key word in the ExternalID in the doctypedecl.: ibm-not-wf-P75-ibm75n02.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 3, character 2:
+"Parsing document failed, expected \\">\\"
+At line 4, character 5:
 
-<!DOCTYPE root 
- ^"
+    public \\"-//W3C//DTD//EN\\" \\"empty.dtd\\"
+    ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P75-ibm75n03.xml - Tests ExternalID with wrong key word. The string "Public" is used as the key word in the ExternalID in the doctypedecl.: ibm-not-wf-P75-ibm75n03.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 3, character 2:
+"Parsing document failed, expected \\">\\"
+At line 4, character 5:
 
-<!DOCTYPE root 
- ^"
+    Public \\"-//W3C//DTD//EN\\" \\"empty.dtd\\"
+    ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P75-ibm75n04.xml - Tests ExternalID with wrong field ordering. The key word "PUBLIC" occurs after the PublicLiteral and the SystemLiteral in the ExternalID in the doctypedecl.: ibm-not-wf-P75-ibm75n04.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 3, character 2:
+"Parsing document failed, expected \\">\\"
+At line 4, character 5:
 
-<!DOCTYPE root 
- ^"
+    \\"-//W3C//DTD//EN\\" \\"empty.dtd\\" PUBLIC
+    ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P75-ibm75n05.xml - Tests ExternalID with a required field missing. The white space between "SYSTEM" and the Systemliteral is missing in the ExternalID in the EntityDef in the EntityDecl in the DTD.: ibm-not-wf-P75-ibm75n05.xml 1`] = `
-"Parsing document failed, expected one of \\"SYSTEM\\", \\"PUBLIC\\"
+"Parsing document failed, expected \\"whitespace\\"
 At line 6, character 23:
 
 <!ENTITY pImage SYSTEM\\"image.jpg\\">
@@ -2705,7 +2705,7 @@ At line 6, character 23:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P75-ibm75n06.xml - Tests ExternalID with a required field missing. The Systemliteral is missing after "SYSTEM" in the ExternalID in the EntityDef in the EntityDecl in the DTD.: ibm-not-wf-P75-ibm75n06.xml 1`] = `
-"Parsing document failed, expected one of \\"SYSTEM\\", \\"PUBLIC\\"
+"Parsing document failed, expected one of '\\"', \\"'\\"
 At line 6, character 24:
 
 <!ENTITY pImage SYSTEM >
@@ -2713,27 +2713,27 @@ At line 6, character 24:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P75-ibm75n07.xml - Tests ExternalID with a required field missing. The white space between the PublicLiteral and the Systemliteral is missing in the ExternalID in the doctypedecl.: ibm-not-wf-P75-ibm75n07.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 3, character 2:
+"Parsing document failed, expected \\">\\"
+At line 4, character 5:
 
-<!DOCTYPE root 
- ^"
+    PUBLIC \\"-//W3C//DTD//EN\\"\\"empty.dtd\\"
+    ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P75-ibm75n08.xml - Tests ExternalID with a required field missing. The key word "PUBLIC" is missing in the ExternalID in the doctypedecl.: ibm-not-wf-P75-ibm75n08.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 3, character 2:
+"Parsing document failed, expected \\">\\"
+At line 4, character 5:
 
-<!DOCTYPE root 
- ^"
+    \\"-//W3C//DTD//EN\\" \\"empty.dtd\\"
+    ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P75-ibm75n09.xml - Tests ExternalID with a required field missing. The white space between "PUBLIC" and the PublicLiteral is missing in the ExternalID in the doctypedecl.: ibm-not-wf-P75-ibm75n09.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 3, character 2:
+"Parsing document failed, expected \\"whitespace\\"
+At line 4, character 11:
 
-<!DOCTYPE root 
- ^"
+    PUBLIC\\"-//W3C//DTD//EN\\" \\"empty.dtd\\"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P75-ibm75n10.xml - Tests ExternalID with a required field missing. The PublicLiteral is missing in the ExternalID in the doctypedecl.: ibm-not-wf-P75-ibm75n10.xml 1`] = `
@@ -2745,11 +2745,11 @@ At line 4, character 14:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P75-ibm75n11.xml - Tests ExternalID with a required field missing. The PublicLiteral is missing in the ExternalID in the doctypedecl.: ibm-not-wf-P75-ibm75n11.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 3, character 2:
+"Parsing document failed, expected \\">\\"
+At line 4, character 5:
 
-<!DOCTYPE root 
- ^"
+    public \\"-//W3C//DTD//EN\\"
+    ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P75-ibm75n12.xml - Tests ExternalID with a required field missing. The SystemLiteral is missing in the ExternalID in the doctypedecl.: ibm-not-wf-P75-ibm75n12.xml 1`] = `
@@ -2761,11 +2761,11 @@ At line 6, character 29:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P75-ibm75n13.xml - Tests ExternalID with wrong field ordering. The key word "PUBLIC" occurs after the PublicLiteral in the ExternalID in the doctypedecl.: ibm-not-wf-P75-ibm75n13.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 3, character 2:
+"Parsing document failed, expected \\">\\"
+At line 4, character 5:
 
-<!DOCTYPE root 
- ^"
+    \\"-//W3C//DTD//EN\\" PUBLIC \\"empty.dtd\\"
+    ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P76-ibm76n01.xml - Tests NDataDecl with wrong key word. The string "ndata" is used as the key word in the NDataDecl in the EntityDef in the GEDecl.: ibm-not-wf-P76-ibm76n01.xml 1`] = `
@@ -3033,7 +3033,7 @@ At line 7, character 22:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P83-ibm83n04.xml - Tests PublicID with a required field missing. The white space between the "PUBLIC" and the PubidLiteral is missing in the PublicID in the NotationDecl in the DTD.: ibm-not-wf-P83-ibm83n04.xml 1`] = `
-"Parsing document failed, expected one of \\"SYSTEM\\", \\"PUBLIC\\"
+"Parsing document failed, expected \\"whitespace\\"
 At line 7, character 28:
 
 <!NOTATION JPGformat PUBLIC\\"-//JPG//DTD//JPGFormat\\">
@@ -3041,7 +3041,7 @@ At line 7, character 28:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P83-ibm83n05.xml - Tests PublicID with a required field missing. The PubidLiteral is missing in the PublicID in the NotationDecl in the DTD.: ibm-not-wf-P83-ibm83n05.xml 1`] = `
-"Parsing document failed, expected one of \\"SYSTEM\\", \\"PUBLIC\\"
+"Parsing document failed, expected one of '\\"', \\"'\\"
 At line 7, character 29:
 
 <!NOTATION JPGformat PUBLIC >
@@ -3105,7 +3105,7 @@ At line 3, character 4:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-001 - Attribute values must start with attribute names, not "?".: not-wf-sa-001 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 3, character 1:
 
 ?
@@ -3133,7 +3133,7 @@ exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-004 - SG
 At line 2, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-005 - Processing instructions end in '?>' not '?'.: not-wf-sa-005 1`] = `
@@ -3141,7 +3141,7 @@ exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-005 - Pr
 At line 2, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-006 - XML comments may not contain "--": not-wf-sa-006 1`] = `
@@ -3193,7 +3193,7 @@ At line 1, character 8:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-012 - SGML-ism: attribute values must be quoted in all cases.: not-wf-sa-012 1`] = `
-"Parsing document failed, expected one of '\\"', \\"'\\"
+"Parsing document failed, expected \\"quoted attribute value\\"
 At line 1, character 9:
 
 <doc a1=v1></doc>
@@ -3217,7 +3217,7 @@ At line 1, character 10:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-015 - Attribute values need a value, not just an equals sign.: not-wf-sa-015 1`] = `
-"Parsing document failed, expected one of '\\"', \\"'\\"
+"Parsing document failed, expected \\"quoted attribute value\\"
 At line 1, character 9:
 
 <doc a1=></doc>
@@ -3225,7 +3225,7 @@ At line 1, character 9:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-016 - Attribute values need an associated name.: not-wf-sa-016 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 1, character 14:
 
 <doc a1=\\"v1\\" \\"v2\\"></doc>
@@ -3237,7 +3237,7 @@ exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-017 - CD
 At line 2, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-018 - CDATA sections begin with a literal '<![CDATA[', no space.: not-wf-sa-018 1`] = `
@@ -3281,7 +3281,7 @@ At line 1, character 15:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-023 - Digits are not valid name start characters.: not-wf-sa-023 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 1, character 6:
 
 <doc 12=\\"34\\"></doc>
@@ -3317,7 +3317,7 @@ exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-027 - Co
 At line 4, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-028 - Processing instructions must end with '?>'.: not-wf-sa-028 1`] = `
@@ -3325,7 +3325,7 @@ exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-028 - Pr
 At line 5, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-029 - Text may not contain a literal ']]>' sequence.: not-wf-sa-029 1`] = `
@@ -3369,7 +3369,7 @@ At line 1, character 9:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-034 - A form feed is not a legal XML character.: not-wf-sa-034 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 1, character 5:
 
 <doc[invalid character]>A form-feed is not white space or a name character</doc[…
@@ -3445,7 +3445,7 @@ At line 1, character 8:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-045 - Invalid Empty Element Tag: not-wf-sa-045 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\"/>\\"
 At line 2, character 3:
 
 <a/
@@ -3453,7 +3453,7 @@ At line 2, character 3:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-046 - This start (or empty element) tag was not terminated correctly.: not-wf-sa-046 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\"/>\\"
 At line 2, character 3:
 
 <a/</a>
@@ -3461,7 +3461,7 @@ At line 2, character 3:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-047 - Invalid empty element tag invalid whitespace: not-wf-sa-047 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\"/>\\"
 At line 2, character 4:
 
 <a / >
@@ -3489,7 +3489,7 @@ exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-050 - Em
 At line 1, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-051 - CDATA is invalid at top level of document.: not-wf-sa-051 1`] = `
@@ -3533,11 +3533,11 @@ At line 2, character 1:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-056 - Invalid Document Type Definition format - misplaced comment.: not-wf-sa-056 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 15:
 
 <!DOCTYPE doc -- a comment -- []>
- ^"
+              ^"
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-057 - This isn't SGML; comments can't exist in declarations.: not-wf-sa-057 1`] = `
@@ -3557,7 +3557,7 @@ At line 3, character 22:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-059 - String literal must be in quotes.: not-wf-sa-059 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 3, character 26:
 
 <!ATTLIST doc a1 NMTOKEN v1>
@@ -3565,7 +3565,7 @@ At line 3, character 26:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-060 - Invalid type NAME defined in ATTLIST.: not-wf-sa-060 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 3, character 18:
 
 <!ATTLIST doc a1 NAME #IMPLIED>
@@ -3629,7 +3629,7 @@ At line 3, character 23:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-068 - Space is required between NOTATION keyword and list of enumerated choices in <!ATTLIST...> declarations.: not-wf-sa-068 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected \\"whitespace\\"
 At line 3, character 26:
 
 <!ATTLIST doc a1 NOTATION(foo) #IMPLIED>
@@ -3939,7 +3939,7 @@ At line 5, character 1:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-111 - Entiry reference must be in content of element not Start-tag.: not-wf-sa-111 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 4, character 6:
 
 <doc &e;></doc>
@@ -4171,7 +4171,7 @@ At line 2, character 16:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-142 - Character #x0000 is not legal anywhere in an XML document.: not-wf-sa-142 1`] = `
-"Parsing document failed, expected \\"end of input\\"
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 4, character 6:
 
 <doc>&#0;</doc>
@@ -4179,7 +4179,7 @@ At line 4, character 6:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-143 - Character #x001F is not legal anywhere in an XML document.: not-wf-sa-143 1`] = `
-"Parsing document failed, expected \\"end of input\\"
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 4, character 6:
 
 <doc>&#31;</doc>
@@ -4187,7 +4187,7 @@ At line 4, character 6:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-144 - Character #xFFFF is not legal anywhere in an XML document.: not-wf-sa-144 1`] = `
-"Parsing document failed, expected \\"end of input\\"
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 4, character 6:
 
 <doc>&#xFFFF;</doc>
@@ -4195,7 +4195,7 @@ At line 4, character 6:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-145 - Character #xD800 is not legal anywhere in an XML document. (If it appeared in a UTF-16 surrogate pair, it'd represent half of a UCS-4 character and so wouldn't really be in the document.): not-wf-sa-145 1`] = `
-"Parsing document failed, expected \\"end of input\\"
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 4, character 6:
 
 <doc>&#xD800;</doc>
@@ -4203,7 +4203,7 @@ At line 4, character 6:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-146 - Character references must also refer to legal XML characters; #x00110000 is one more than the largest legal character.: not-wf-sa-146 1`] = `
-"Parsing document failed, expected \\"end of input\\"
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 4, character 6:
 
 <doc>&#x110000;</doc>
@@ -4347,11 +4347,11 @@ At line 5, character 1:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-164 - Invalid placement of Parameter entity reference.: not-wf-sa-164 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 4, character 3:
 
-<!DOCTYPE doc [
- ^"
+] %e; >
+  ^"
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-165 - Parameter entity declarations must have a space before the '%'.: not-wf-sa-165 1`] = `
@@ -4441,7 +4441,7 @@ exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-179 - In
 At line 5, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-180 - The Entity Declared WFC requires entities to be declared before they are used in an attribute list declaration.: not-wf-sa-180 1`] = `
@@ -4485,7 +4485,7 @@ At line 2, character 24:
 `;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-186 - Whitespace is required between attribute/value pairs.: not-wf-sa-186 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 5, character 9:
 
 <a b=\\"c\\"d=\\"e\\"/>
@@ -4991,7 +4991,7 @@ At line 1, character 1:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p04fail1 - Name contains invalid character.: o-p04fail1 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 1, character 3:
 
 <A@/>
@@ -4999,7 +4999,7 @@ At line 1, character 3:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p04fail2 - Name contains invalid character.: o-p04fail2 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 1, character 3:
 
 <A#/>
@@ -5007,7 +5007,7 @@ At line 1, character 3:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p04fail3 - Name contains invalid character.: o-p04fail3 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 1, character 3:
 
 <A$/>
@@ -5067,7 +5067,7 @@ exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p09fail4 - quote 
 At line 6, character 7:
 
 <doc/>
-      "
+      ^"
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p09fail5 - quote types must match: o-p09fail5 1`] = `
@@ -5075,7 +5075,7 @@ exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p09fail5 - quote 
 At line 6, character 7:
 
 <doc/>
-      "
+      ^"
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p10fail1 - attribute values exclude '<': o-p10fail1 1`] = `
@@ -5099,15 +5099,15 @@ exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p10fail3 - quote 
 At line 2, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p11fail1 - quote types must match: o-p11fail1 1`] = `
-"Parsing document failed, expected one of \\"SYSTEM\\", \\"PUBLIC\\"
+"Parsing document failed, expected one of '\\"', \\"'\\"
 At line 8, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p11fail2 - cannot contain delimiting quotes: o-p11fail2 1`] = `
@@ -5119,7 +5119,7 @@ At line 5, character 26:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p11pass1 - system literals may not contain URI fragments: o-p11pass1 1`] = `
-"Parsing document failed, expected one of \\"SYSTEM\\", \\"PUBLIC\\"
+"Parsing document failed, expected \\"system identifier must not contain a fragment identifier\\"
 At line 5, character 24:
 
 <!NOTATION not1 SYSTEM \\"a%a&b&#0<!ELEMENT<!--<?</>?>/\\\\''\\">
@@ -5423,11 +5423,11 @@ At line 1, character 20:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p32fail4 - quotes are required: o-p32fail4 1`] = `
-"Parsing document failed, expected \\"?>\\"
-At line 1, character 21:
+"Parsing document failed, expected one of '\\"', \\"'\\"
+At line 1, character 32:
 
 <?xml version=\\"1.0\\" standalone=yes?>
-                    ^"
+                               ^"
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p32fail5 - yes or no must be lower case: o-p32fail5 1`] = `
@@ -5453,7 +5453,7 @@ exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p39fail3 - XML do
 At line 1, character 1:
 
 
-"
+^"
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p39fail4 - XML declarations must be correctly terminated: o-p39fail4 1`] = `
@@ -5473,7 +5473,7 @@ At line 1, character 20:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p40fail1 - S is required between attributes: o-p40fail1 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 1, character 15:
 
 <doc att=\\"val\\"att2=\\"val2\\"></doc>
@@ -5545,7 +5545,7 @@ At line 1, character 11:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p42fail3 - no NET (contrast with SGML): o-p42fail3 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\"/>\\"
 At line 1, character 5:
 
 <doc/doc/
@@ -5585,7 +5585,7 @@ At line 1, character 2:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p44fail2 - Illegal space after Empty element tag.: o-p44fail2 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\"/>\\"
 At line 1, character 5:
 
 <doc/ >
@@ -5593,7 +5593,7 @@ At line 1, character 5:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p44fail3 - Illegal comment in Empty element tag.: o-p44fail3 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 1, character 6:
 
 <doc --bad comment--/>
@@ -5601,7 +5601,7 @@ At line 1, character 6:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p44fail4 - Whitespace required between attributes.: o-p44fail4 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 1, character 15:
 
 <doc att=\\"val\\"att2=\\"val2\\"/>
@@ -5849,7 +5849,7 @@ At line 4, character 18:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p53fail3 - type is required: o-p53fail3 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 4, character 19:
 
 <!ATTLIST doc att #IMPLIED>
@@ -5873,7 +5873,7 @@ At line 4, character 15:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p54fail1 - don't pass unknown attribute types: o-p54fail1 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 4, character 19:
 
 <!ATTLIST doc att DUNNO #IMPLIED>
@@ -5881,7 +5881,7 @@ At line 4, character 19:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p55fail1 - must be upper case: o-p55fail1 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 4, character 19:
 
 <!ATTLIST doc att cdata #IMPLIED>
@@ -5897,7 +5897,7 @@ At line 4, character 21:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p56fail2 - no NUMBER type: o-p56fail2 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 4, character 19:
 
 <!ATTLIST doc att NUMBER #IMPLIED>
@@ -5905,7 +5905,7 @@ At line 4, character 19:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p56fail3 - no NAME type: o-p56fail3 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 4, character 19:
 
 <!ATTLIST doc att NAME #IMPLIED>
@@ -5921,7 +5921,7 @@ At line 4, character 25:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p56fail5 - types must be upper case: o-p56fail5 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 4, character 19:
 
 <!ATTLIST doc att id #IMPLIED>
@@ -5929,7 +5929,7 @@ At line 4, character 19:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p57fail1 - no keyword for NMTOKEN enumeration: o-p57fail1 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 4, character 27:
 
 <!ATTLIST doc att NMTOKEN (a|b) #IMPLIED>
@@ -5961,7 +5961,7 @@ At line 6, character 30:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p58fail4 - NOTATION must be upper case: o-p58fail4 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 6, character 19:
 
 <!ATTLIST doc att notation (a|b) #IMPLIED>
@@ -5969,7 +5969,7 @@ At line 6, character 19:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p58fail5 - S after keyword is required: o-p58fail5 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected \\"whitespace\\"
 At line 6, character 27:
 
 <!ATTLIST doc att NOTATION(a|b) #IMPLIED>
@@ -6001,7 +6001,7 @@ At line 5, character 29:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p59fail1 - at least one required: o-p59fail1 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected \\"valid name character\\"
 At line 4, character 20:
 
 <!ATTLIST doc att () #IMPLIED>
@@ -6017,7 +6017,7 @@ At line 4, character 21:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p59fail3 - values are unquoted: o-p59fail3 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected \\"valid name character\\"
 At line 4, character 20:
 
 <!ATTLIST doc att (\\"a\\") #IMPLIED>
@@ -6025,7 +6025,7 @@ At line 4, character 20:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p60fail1 - keywords must be upper case: o-p60fail1 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 4, character 25:
 
 <!ATTLIST doc att CDATA #implied>
@@ -6033,7 +6033,7 @@ At line 4, character 25:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p60fail2 - S is required after #FIXED: o-p60fail2 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 4, character 25:
 
 <!ATTLIST doc att CDATA #FIXED\\"value\\">
@@ -6049,7 +6049,7 @@ At line 4, character 35:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p60fail4 - #FIXED required value: o-p60fail4 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 4, character 25:
 
 <!ATTLIST doc att CDATA #FIXED>
@@ -6097,7 +6097,7 @@ At line 1, character 10:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p66fail5 - no references to non-characters: o-p66fail5 1`] = `
-"Parsing document failed, expected \\"end of input\\"
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 1, character 6:
 
 <doc>&#5;</doc>
@@ -6105,7 +6105,7 @@ At line 1, character 6:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p66fail6 - no references to non-characters: o-p66fail6 1`] = `
-"Parsing document failed, expected \\"end of input\\"
+"Parsing document failed, expected \\"character reference must reference a valid character\\"
 At line 1, character 6:
 
 <doc>&#xd802;&#xdc02;</doc>
@@ -6300,7 +6300,7 @@ At line 3, character 30:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p75fail1 - S required after "PUBLIC": o-p75fail1 1`] = `
-"Parsing document failed, expected one of \\"SYSTEM\\", \\"PUBLIC\\"
+"Parsing document failed, expected \\"whitespace\\"
 At line 3, character 20:
 
 <!ENTITY ent PUBLIC\\"PublicID\\" \\"nop.ent\\">
@@ -6308,7 +6308,7 @@ At line 3, character 20:
 `;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p75fail2 - S required after "SYSTEM": o-p75fail2 1`] = `
-"Parsing document failed, expected one of \\"SYSTEM\\", \\"PUBLIC\\"
+"Parsing document failed, expected \\"whitespace\\"
 At line 3, character 20:
 
 <!ENTITY ent SYSTEM\\"nop.ent\\">
@@ -6548,7 +6548,7 @@ At line 3, character 3:
 `;
 
 exports[`XML Conformance Test Suite Richard Tobin's XML Namespaces 1.0 test suite 14 Feb 2003 rmt-ns10-043 - Colon in entity name: rmt-ns10-043 1`] = `
-"Parsing document failed, expected \\">\\"
+"Parsing document failed, expected \\"name must not contain colon\\"
 At line 5, character 10:
 
 <!ENTITY a:b \\"bogus\\">
@@ -6588,7 +6588,7 @@ At line 6, character 2:
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests error uri01 - SYSTEM ids may not have URI fragments: uri01 1`] = `
-"Parsing document failed, expected one of \\"SYSTEM\\", \\"PUBLIC\\"
+"Parsing document failed, expected \\"system identifier must not contain a fragment identifier\\"
 At line 4, character 21:
 
 <!ENTITY foo SYSTEM \\"foo#bar\\">
@@ -6596,7 +6596,7 @@ At line 4, character 21:
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf attlist01 - SGML's NUTOKEN is not allowed.: attlist01 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 9:
 
 	number	NUTOKEN	\\"1\\"
@@ -6604,7 +6604,7 @@ At line 7, character 9:
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf attlist02 - SGML's NUTOKENS attribute type is not allowed.: attlist02 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 9:
 
 	number	NUTOKENS	\\"1 2 3\\"
@@ -6620,7 +6620,7 @@ At line 7, character 11:
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf attlist04 - SGML's NUMBER attribute type is not allowed.: attlist04 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 9:
 
 	number	NUMBER	\\"1\\"
@@ -6628,7 +6628,7 @@ At line 7, character 9:
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf attlist05 - SGML's NUMBERS attribute type is not allowed.: attlist05 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 10:
 
 	numbers	NUMBERS	\\"1 2 3 4\\"
@@ -6636,7 +6636,7 @@ At line 7, character 10:
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf attlist06 - SGML's NAME attribute type is not allowed.: attlist06 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 9:
 
 	number	NAME	\\"Elvis\\"
@@ -6644,7 +6644,7 @@ At line 7, character 9:
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf attlist07 - SGML's NAMES attribute type is not allowed.: attlist07 1`] = `
-"Parsing document failed, expected \\")\\"
+"Parsing document failed, expected one of \\"CDATA\\", \\"IDREFS\\", \\"IDREF\\", \\"ID\\", \\"ENTITY\\", \\"ENTITIES\\", \\"NMTOKENS\\", \\"NMTOKEN\\", \\"NOTATION\\", \\"(\\"
 At line 7, character 9:
 
 	number	NAMES	\\"The King\\"
@@ -6652,7 +6652,7 @@ At line 7, character 9:
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf attlist08 - SGML's #CURRENT is not allowed.: attlist08 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 7, character 17:
 
 	language	CDATA	#CURRENT
@@ -6660,7 +6660,7 @@ At line 7, character 17:
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf attlist09 - SGML's #CONREF is not allowed.: attlist09 1`] = `
-"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", '\\"', \\"'\\"
+"Parsing document failed, expected one of \\"#REQUIRED\\", \\"#IMPLIED\\", \\"quoted attribute value\\"
 At line 5, character 17:
 
 	language	CDATA	#CONREF
@@ -6668,7 +6668,7 @@ At line 5, character 17:
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf attlist10 - Whitespace required between attributes: attlist10 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 6, character 20:
 
 <root att1=\\"value1\\"att2=\\"value2\\">
@@ -6676,7 +6676,7 @@ At line 6, character 20:
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf attlist11 - Whitespace required between attributes: attlist11 1`] = `
-"Parsing document failed, expected one of \\"/>\\", \\">\\"
+"Parsing document failed, expected \\">\\"
 At line 6, character 20:
 
 <root att1=\\"value1\\"att2=\\"value2\\"/>
@@ -6724,7 +6724,7 @@ At line 5, character 5:
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf dtd04 - PUBLIC literal must be quoted: dtd04 1`] = `
-"Parsing document failed, expected one of \\"SYSTEM\\", \\"PUBLIC\\"
+"Parsing document failed, expected one of '\\"', \\"'\\"
 At line 4, character 25:
 
     <!ENTITY foo PUBLIC -//BadCorp//DTD-foo-1.0//EN \\"elvis.ent\\">
@@ -6732,7 +6732,7 @@ At line 4, character 25:
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf dtd05 - SYSTEM identifier must be quoted: dtd05 1`] = `
-"Parsing document failed, expected one of \\"SYSTEM\\", \\"PUBLIC\\"
+"Parsing document failed, expected one of '\\"', \\"'\\"
 At line 4, character 25:
 
     <!ENTITY foo SYSTEM elvis.ent>
@@ -6744,7 +6744,7 @@ exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf element00 
 At line 3, character 5:
 
 </ro
-    "
+    ^"
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf element01 - EOF in middle of incomplete ETAG: element01 1`] = `
@@ -6752,7 +6752,7 @@ exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf element01 
 At line 3, character 7:
 
 </root
-      "
+      ^"
 `;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf element02 - Illegal markup (<%@ ... %>): element02 1`] = `
@@ -6991,378 +6991,378 @@ At line 3, character 23:
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n02.xml - Tests an element with an illegal NameStartChar: #0x333: x-ibm-1-0.5-not-wf-P04-ibm04n02.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ̳IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n03.xml - Tests an element with an illegal NameStartChar: #0x369: x-ibm-1-0.5-not-wf-P04-ibm04n03.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ͩIllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n04.xml - Tests an element with an illegal NameStartChar: #0x37E: x-ibm-1-0.5-not-wf-P04-ibm04n04.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ;IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n05.xml - Tests an element with an illegal NameStartChar: #0x2000: x-ibm-1-0.5-not-wf-P04-ibm04n05.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE  IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n06.xml - Tests an element with an illegal NameStartChar: #0x2001: x-ibm-1-0.5-not-wf-P04-ibm04n06.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE  IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n07.xml - Tests an element with an illegal NameStartChar: #0x2002: x-ibm-1-0.5-not-wf-P04-ibm04n07.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE  IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n08.xml - Tests an element with an illegal NameStartChar: #0x2005: x-ibm-1-0.5-not-wf-P04-ibm04n08.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE  IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n09.xml - Tests an element with an illegal NameStartChar: #0x200B: x-ibm-1-0.5-not-wf-P04-ibm04n09.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ​IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n10.xml - Tests an element with an illegal NameStartChar: #0x200E: x-ibm-1-0.5-not-wf-P04-ibm04n10.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ‎IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n11.xml - Tests an element with an illegal NameStartChar: #0x200F: x-ibm-1-0.5-not-wf-P04-ibm04n11.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ‏IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n12.xml - Tests an element with an illegal NameStartChar: #0x2069: x-ibm-1-0.5-not-wf-P04-ibm04n12.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ⁩IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n13.xml - Tests an element with an illegal NameStartChar: #0x2190: x-ibm-1-0.5-not-wf-P04-ibm04n13.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ←IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n14.xml - Tests an element with an illegal NameStartChar: #0x23FF: x-ibm-1-0.5-not-wf-P04-ibm04n14.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ⏿IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n15.xml - Tests an element with an illegal NameStartChar: #0x280F: x-ibm-1-0.5-not-wf-P04-ibm04n15.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ⠏IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n16.xml - Tests an element with an illegal NameStartChar: #0x2A00: x-ibm-1-0.5-not-wf-P04-ibm04n16.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ⨀IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n17.xml - Tests an element with an illegal NameStartChar: #0x2EDC: x-ibm-1-0.5-not-wf-P04-ibm04n17.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ⬀IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n18.xml - Tests an element with an illegal NameStartChar: #0x2B00: x-ibm-1-0.5-not-wf-P04-ibm04n18.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ⯿IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n19.xml - Tests an element with an illegal NameStartChar: #0x2BFF: x-ibm-1-0.5-not-wf-P04-ibm04n19.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE ⿿IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n20.xml - Tests an element with an illegal NameStartChar: #0x3000: x-ibm-1-0.5-not-wf-P04-ibm04n20.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE 　IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n25.xml - Tests an element with an illegal NameStartChar: #0xEFFF: x-ibm-1-0.5-not-wf-P04-ibm04n25.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n26.xml - Tests an element with an illegal NameStartChar: #0xF1FF: x-ibm-1-0.5-not-wf-P04-ibm04n26.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n27.xml - Tests an element with an illegal NameStartChar: #0xF8FF: x-ibm-1-0.5-not-wf-P04-ibm04n27.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE IllegalNameStartChar [
- ^"
+          ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04-ibm04n28.xml - Tests an element with an illegal NameStartChar: #0xFFFFF: x-ibm-1-0.5-not-wf-P04-ibm04n28.xml 1`] = `
 "Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+At line 1, character 11:
 
 <!DOCTYPE [invalid character]IllegalNameStartChar [
- ^"
+          ^^^^^^^^^^^^^^^^^^^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an01.xml - Tests an element with an illegal NameChar: #xB8: x-ibm-1-0.5-not-wf-P04a-ibm04an01.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar¸ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an02.xml - Tests an element with an illegal NameChar: #0xA1: x-ibm-1-0.5-not-wf-P04a-ibm04an02.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar¡ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an03.xml - Tests an element with an illegal NameChar: #0xAF: x-ibm-1-0.5-not-wf-P04a-ibm04an03.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar¯ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an04.xml - Tests an element with an illegal NameChar: #0x37E: x-ibm-1-0.5-not-wf-P04a-ibm04an04.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar; [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an05.xml - Tests an element with an illegal NameChar: #0x2000: x-ibm-1-0.5-not-wf-P04a-ibm04an05.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar  [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an06.xml - Tests an element with an illegal NameChar: #0x2001: x-ibm-1-0.5-not-wf-P04a-ibm04an06.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar  [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an07.xml - Tests an element with an illegal NameChar: #0x2002: x-ibm-1-0.5-not-wf-P04a-ibm04an07.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar  [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an08.xml - Tests an element with an illegal NameChar: #0x2005: x-ibm-1-0.5-not-wf-P04a-ibm04an08.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar  [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an09.xml - Tests an element with an illegal NameChar: #0x200B: x-ibm-1-0.5-not-wf-P04a-ibm04an09.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar​ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an10.xml - Tests an element with an illegal NameChar: #0x200E: x-ibm-1-0.5-not-wf-P04a-ibm04an10.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar‎ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an11.xml - Tests an element with an illegal NameChar: #0x2038: x-ibm-1-0.5-not-wf-P04a-ibm04an11.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar‽ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an12.xml - Tests an element with an illegal NameChar: #0x2041: x-ibm-1-0.5-not-wf-P04a-ibm04an12.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar⁁ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an13.xml - Tests an element with an illegal NameChar: #0x2190: x-ibm-1-0.5-not-wf-P04a-ibm04an13.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar← [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an14.xml - Tests an element with an illegal NameChar: #0x23FF: x-ibm-1-0.5-not-wf-P04a-ibm04an14.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar⏿ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an15.xml - Tests an element with an illegal NameChar: #0x280F: x-ibm-1-0.5-not-wf-P04a-ibm04an15.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar⠏ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an16.xml - Tests an element with an illegal NameChar: #0x2A00: x-ibm-1-0.5-not-wf-P04a-ibm04an16.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar⨀ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an17.xml - Tests an element with an illegal NameChar: #0xFDD0: x-ibm-1-0.5-not-wf-P04a-ibm04an17.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar﷐ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an18.xml - Tests an element with an illegal NameChar: #0xFDEF: x-ibm-1-0.5-not-wf-P04a-ibm04an18.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar﷯ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an19.xml - Tests an element with an illegal NameChar: #0x2FFF: x-ibm-1-0.5-not-wf-P04a-ibm04an19.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar⿿ [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an20.xml - Tests an element with an illegal NameChar: #0x3000: x-ibm-1-0.5-not-wf-P04a-ibm04an20.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar　 [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an25.xml - Tests an element with an illegal NameChar: #0xEFFF: x-ibm-1-0.5-not-wf-P04a-ibm04an25.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an26.xml - Tests an element with an illegal NameChar: #0xF1FF: x-ibm-1-0.5-not-wf-P04a-ibm04an26.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an27.xml - Tests an element with an illegal NameChar: #0xF8FF: x-ibm-1-0.5-not-wf-P04a-ibm04an27.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar [
- ^"
+                         ^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P04a-ibm04an28.xml - Tests an element with an illegal NameChar: #0xFFFFF: x-ibm-1-0.5-not-wf-P04a-ibm04an28.xml 1`] = `
-"Parsing document failed, expected \\"valid name start character\\"
-At line 1, character 2:
+"Parsing document failed, expected \\">\\"
+At line 1, character 26:
 
 <!DOCTYPE IllegalNameChar[invalid character] [
- ^"
+                         ^^^^^^^^^^^^^^^^^^^"
 `;
 
 exports[`XML Conformance Test Suite University of Edinburgh tests for XML 1.0 5th edition x-ibm-1-0.5-not-wf-P05-ibm05n01.xml - Tests an element with an illegal Name containing #0x0B: x-ibm-1-0.5-not-wf-P05-ibm05n01.xml 1`] = `
