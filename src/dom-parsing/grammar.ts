@@ -1,11 +1,11 @@
 import {
-	codepoint,
-	codepoints,
+	codepointUtf8 as codepoint,
+	codepointsUtf8 as codepoints,
 	complete,
 	consume,
 	cut,
 	delimited,
-	dispatch,
+	dispatchUtf8 as dispatch,
 	except,
 	filter,
 	filterUndefined,
@@ -20,14 +20,14 @@ import {
 	peek,
 	plusConsumed,
 	preceded,
-	range,
-	recognize,
+	rangeUtf8 as range,
+	recognizeUtf8 as recognize,
 	sequence,
 	sequenceConsumed,
 	star,
 	starConsumed,
 	then,
-	token,
+	tokenUtf8 as token,
 } from 'prsc';
 import {
 	AttDefEvent,
@@ -48,6 +48,7 @@ import {
 	ETagEvent,
 	ExternalEntityEvent,
 	ExternalIDEvent,
+	Input,
 	MarkupdeclEvent,
 	MarkupdeclEventType,
 	ParserEventType,
@@ -61,8 +62,10 @@ import {
 } from './parserEvents';
 import ParserStateMachine, { ParserState, ParserStateType } from './ParserStateMachine';
 
-function withPosition<T>(parser: Parser<T>): Parser<WithPosition<T>> {
-	return (input: string, offset: number) => {
+function withPosition<T, Input = string>(
+	parser: Parser<T, Input>
+): Parser<WithPosition<T, Input>, Input> {
+	return (input, offset) => {
 		const start = offset;
 		const res = parser(input, offset);
 		if (!res.success) {
@@ -229,7 +232,7 @@ const Nmtoken = recognize(codepoints(isValidNameChar, ['valid name character']))
 
 // [66] CharRef ::= '&#' [0-9]+ ';'
 //      | '&#x' [0-9a-fA-F]+ ';'
-const CharRef: Parser<CharRefEvent> = withPosition(
+const CharRef: Parser<CharRefEvent, Input> = withPosition(
 	map(
 		filter(
 			or([
@@ -257,7 +260,7 @@ const CharRef: Parser<CharRefEvent> = withPosition(
 
 // [68] EntityRef ::= '&' Name ';'
 // Namespaces spec makes this an NCName
-const EntityRef: Parser<EntityRefEvent> = withPosition(
+const EntityRef: Parser<EntityRefEvent, Input> = withPosition(
 	map(delimited(AMPERSAND, NCName, cut(SEMICOLON)), (name) => ({
 		type: ParserEventType.EntityRef,
 		name,
@@ -265,11 +268,11 @@ const EntityRef: Parser<EntityRefEvent> = withPosition(
 );
 
 // [67] Reference ::= EntityRef | CharRef
-const Reference: Parser<ReferenceEvent> = or<ReferenceEvent>([EntityRef, CharRef]);
+const Reference: Parser<ReferenceEvent, Input> = or<ReferenceEvent, Input>([EntityRef, CharRef]);
 
 // [69] PEReference ::= '%' Name ';'
 // Namespaces spec makes this an NCName
-const PEReference: Parser<PEReferenceEvent> = withPosition(
+const PEReference: Parser<PEReferenceEvent, Input> = withPosition(
 	map(delimited(PERCENT, NCName, SEMICOLON), (name) => ({
 		type: ParserEventType.PEReference,
 		name,
@@ -284,7 +287,7 @@ const EntityValue = or([
 	delimited(
 		DOUBLE_QUOTE,
 		star(
-			or<EntityValueEvent>([
+			or<EntityValueEvent, Input>([
 				recognize(
 					codepoints(
 						(cp) =>
@@ -305,7 +308,7 @@ const EntityValue = or([
 	delimited(
 		SINGLE_QUOTE,
 		star(
-			or<EntityValueEvent>([
+			or<EntityValueEvent, Input>([
 				recognize(
 					codepoints(
 						(cp) =>
@@ -329,7 +332,7 @@ const EntityValue = or([
 //      | "'" ([^<&'] | Reference)* "'"
 const DOUBLE_QUOTE_CP = 0x22;
 const SINGLE_QUOTE_CP = 0x27;
-const AttValue: Parser<AttValueEvent[]> = dispatch(
+const AttValue: Parser<AttValueEvent[], Input> = dispatch(
 	{
 		[DOUBLE_QUOTE_CP]: delimited(
 			DOUBLE_QUOTE,
@@ -383,7 +386,7 @@ const AttValue: Parser<AttValueEvent[]> = dispatch(
 
 export const EntityReplacementTextInLiteral = complete(
 	star(
-		or<AttValueEvent>([
+		or<AttValueEvent, Input>([
 			recognize(
 				codepoints(
 					(cp) => cp !== ANGLE_BRACKET_OPEN_CP && cp !== AMPERSAND_CP && isValidChar(cp),
@@ -453,7 +456,7 @@ const PubidLiteral = or([
 // For efficiency, hardcode the disallowed codepoints
 const ANGLE_BRACKET_OPEN_CP = 0x3c;
 const SQUARE_BRACKET_CLOSE_CP = 0x5d;
-const CharData: Parser<TextEvent> = recognize(
+const CharData: Parser<TextEvent, Input> = recognize(
 	plusConsumed(
 		or(
 			[
@@ -475,7 +478,7 @@ const CharData: Parser<TextEvent> = recognize(
 );
 
 // [15] Comment ::= '<!--' ((Char - '-') | ('-' (Char - '-')))* '-->'
-const Comment: Parser<CommentEvent> = map(
+const Comment: Parser<CommentEvent, Input> = map(
 	delimited(
 		COMMENT_START,
 		recognize(
@@ -504,7 +507,7 @@ const PITarget = filter(
 
 // [16] PI ::= '<?' PITarget (S (Char* - (Char* '?>' Char*)))? '?>'
 const QUESTION_MARK_CP = 0x3f;
-const PI: Parser<PIEvent> = delimited(
+const PI: Parser<PIEvent, Input> = delimited(
 	PI_START,
 	then(
 		PITarget,
@@ -547,7 +550,7 @@ const CData = recognize(
 const CDEnd = SECT_END;
 
 // [18] CDSect ::= CDStart CData CDEnd
-const CDSect: Parser<CDSectEvent> = withPosition(
+const CDSect: Parser<CDSectEvent, Input> = withPosition(
 	map(delimited(CDStart, CData, CDEnd, true), (data) => ({
 		type: ParserEventType.CDSect,
 		data,
@@ -626,7 +629,7 @@ const SDDecl = preceded(
 );
 
 // [23] XMLDecl ::= '<?xml' VersionInfo EncodingDecl? SDDecl? S? '?>'
-const XMLDecl: Parser<XMLDeclEvent> = delimited(
+const XMLDecl: Parser<XMLDeclEvent, Input> = delimited(
 	XML_DECL_START,
 	followed(
 		then(
@@ -648,7 +651,7 @@ const XMLDecl: Parser<XMLDeclEvent> = delimited(
 const NameWithPosition = withPosition(map(Name, (name) => ({ name })));
 
 // [41] Attribute ::= Name Eq AttValue
-const Attribute: Parser<AttributeEvent> = then(
+const Attribute: Parser<AttributeEvent, Input> = then(
 	NameWithPosition,
 	preceded(cut(Eq), cut(AttValue)),
 	(name, value) => ({
@@ -663,7 +666,7 @@ const Attribute: Parser<AttributeEvent> = then(
 const Attributes = followed(star(preceded(S, Attribute)), optional(S));
 
 const SOLIDUS_CP = 0x2f;
-const STagOrEmptyElemTag: Parser<STagEvent | EmptyElemTagEvent> = map(
+const STagOrEmptyElemTag: Parser<STagEvent | EmptyElemTagEvent, Input> = map(
 	sequence(
 		ANGLE_BRACKET_OPEN,
 		NameWithPosition,
@@ -685,7 +688,7 @@ const STagOrEmptyElemTag: Parser<STagEvent | EmptyElemTagEvent> = map(
 );
 
 // [42] ETag ::= '</' Name S? '>'
-const ETag: Parser<ETagEvent> = withPosition(
+const ETag: Parser<ETagEvent, Input> = withPosition(
 	map(delimited(ETAG_START, followed(Name, optional(S)), ANGLE_BRACKET_CLOSE, true), (name) => ({
 		type: ParserEventType.ETag,
 		name,
@@ -710,7 +713,7 @@ const choice = sequenceConsumed(
 	PARENTHESIS_CLOSE
 );
 
-function choiceIndirect(input: string, offset: number): ParseResult<void> {
+function choiceIndirect(input: Input, offset: number): ParseResult<void> {
 	return choice(input, offset);
 }
 
@@ -724,7 +727,7 @@ const seq = sequenceConsumed(
 	PARENTHESIS_CLOSE
 );
 
-function seqIndirect(input: string, offset: number): ParseResult<void> {
+function seqIndirect(input: Input, offset: number): ParseResult<void> {
 	return seq(input, offset);
 }
 
@@ -822,7 +825,7 @@ const AttType = or([
 
 // [60] DefaultDecl ::= '#REQUIRED' | '#IMPLIED'
 //      | (('#FIXED' S)? AttValue)
-const DefaultDecl = or<DefaultDeclEvent>([
+const DefaultDecl = or<DefaultDeclEvent, Input>([
 	map(REQUIRED, () => ({ type: DefaultDeclType.REQUIRED })),
 	map(IMPLIED, () => ({ type: DefaultDeclType.IMPLIED })),
 	then(
@@ -833,14 +836,14 @@ const DefaultDecl = or<DefaultDeclEvent>([
 ]);
 
 // [53] AttDef ::= S Name S AttType S DefaultDecl
-const AttDef: Parser<AttDefEvent> = then(
+const AttDef: Parser<AttDefEvent, Input> = then(
 	preceded(S, NameWithPosition),
 	cut(then(preceded(S, AttType), preceded(S, DefaultDecl), (isCData, def) => ({ isCData, def }))),
 	(name, { isCData, def }) => ({ name, isCData, def })
 );
 
 // [52] AttlistDecl ::= '<!ATTLIST' S Name AttDef* S? '>'
-const AttlistDecl: Parser<AttlistDeclEvent> = delimited(
+const AttlistDecl: Parser<AttlistDeclEvent, Input> = delimited(
 	followed(ATTLIST_DECL_START, S),
 	then(Name, cut(star(AttDef)), (name, attdefs) => ({
 		type: MarkupdeclEventType.AttlistDecl,
@@ -898,7 +901,7 @@ const AttlistDecl: Parser<AttlistDeclEvent> = delimited(
 
 // [75] ExternalID ::= 'SYSTEM' S SystemLiteral
 //      | 'PUBLIC' S PubidLiteral S SystemLiteral
-const ExternalID: Parser<ExternalIDEvent> = or<ExternalIDEvent>([
+const ExternalID = or<ExternalIDEvent, Input>([
 	map(preceded(SYSTEM, cut(preceded(S, SystemLiteral))), (systemId) => ({
 		publicId: null,
 		systemId,
@@ -917,7 +920,7 @@ const ExternalID: Parser<ExternalIDEvent> = or<ExternalIDEvent>([
 const NDataDecl = preceded(delimited(S, NDATA, S), NCName);
 
 // [73] EntityDef ::= EntityValue | (ExternalID NDataDecl?)
-const EntityDef = or<EntityValueEvent[] | ExternalEntityEvent>([
+const EntityDef = or<EntityValueEvent[] | ExternalEntityEvent, Input>([
 	EntityValue,
 	then(ExternalID, optional(NDataDecl), (ids, ndata) => ({
 		ids,
@@ -927,7 +930,7 @@ const EntityDef = or<EntityValueEvent[] | ExternalEntityEvent>([
 
 // [71] GEDecl ::= '<!ENTITY' S Name S EntityDef S? '>'
 // Namespaces spec makes this an NCName
-const GEDecl: Parser<EntityDeclEvent | void> = delimited(
+const GEDecl: Parser<EntityDeclEvent | void, Input> = delimited(
 	ENTITY_DECL_START,
 	then(preceded(S, NCName), cut(preceded(S, EntityDef)), (name, value) => ({
 		type: MarkupdeclEventType.GEDecl,
@@ -938,11 +941,11 @@ const GEDecl: Parser<EntityDeclEvent | void> = delimited(
 );
 
 // [74] PEDef ::= EntityValue | ExternalID
-const PEDef = or<EntityValueEvent[] | void>([EntityValue, consume(ExternalID)]);
+const PEDef = or<EntityValueEvent[] | void, Input>([EntityValue, consume(ExternalID)]);
 
 // [72] PEDecl ::= '<!ENTITY' S '%' S Name S PEDef S? '>'
 // Namespaces spec makes this an NCName
-const PEDecl: Parser<EntityDeclEvent | void> = delimited(
+const PEDecl: Parser<EntityDeclEvent | void, Input> = delimited(
 	followed(ENTITY_DECL_START, preceded(S, PERCENT)),
 	then(preceded(S, NCName), cut(preceded(S, PEDef)), (name, value) =>
 		value
@@ -971,7 +974,7 @@ const EntityDecl = preceded(peek(ENTITY_DECL_START), cut(or([GEDecl, PEDecl])));
 // const extParsedEnt = then(optional(TextDecl), content, () => undefined);
 
 // [83] PublicID ::= 'PUBLIC' S PubidLiteral
-const PublicID: Parser<ExternalIDEvent> = map(
+const PublicID: Parser<ExternalIDEvent, Input> = map(
 	followed(followed(PUBLIC, S), cut(PubidLiteral)),
 	(publicId) => ({ publicId, systemId: null })
 );
@@ -986,7 +989,7 @@ const NotationDecl = delimited(
 );
 
 // [29] markupdecl ::= elementdecl | AttlistDecl | EntityDecl | NotationDecl | PI | Comment
-const markupdecl = or<MarkupdeclEvent | void>([
+const markupdecl = or<MarkupdeclEvent | void, Input>([
 	consume(elementdecl),
 	AttlistDecl,
 	EntityDecl,
@@ -999,8 +1002,8 @@ const markupdecl = or<MarkupdeclEvent | void>([
 const DeclSep = or([consume(PEReference), consume(S)]);
 
 // [28b] intSubset ::= (markupdecl | DeclSep)*
-const intSubset: Parser<MarkupdeclEvent[]> = filterUndefined(
-	star(or<MarkupdeclEvent | void>([markupdecl, DeclSep]))
+const intSubset: Parser<MarkupdeclEvent[], Input> = filterUndefined(
+	star(or<MarkupdeclEvent | void, Input>([markupdecl, DeclSep]))
 );
 
 // [31] extSubsetDecl ::= ( markupdecl | conditionalSect | DeclSep)*
@@ -1015,7 +1018,7 @@ const intSubset: Parser<MarkupdeclEvent[]> = filterUndefined(
 // const extSubset = then(optional(TextDecl), extSubsetDecl, () => undefined);
 
 // [28] doctypedecl ::= '<!DOCTYPE' S Name (S ExternalID)? S? ('[' intSubset ']' S?)? '>'
-const doctypedecl: Parser<DoctypedeclEvent> = preceded(
+const doctypedecl: Parser<DoctypedeclEvent, Input> = preceded(
 	DOCTYPE_START,
 	cut(
 		map(
@@ -1052,7 +1055,7 @@ const contentEvent = dispatch<DocumentParseEvent>(
 		[ANGLE_BRACKET_OPEN_CP]: dispatch<DocumentParseEvent>(
 			{
 				[SOLIDUS_CP]: ETag,
-				[EXCLAMATION_MARK_CP]: or<CommentEvent | CDSectEvent>([Comment, CDSect]),
+				[EXCLAMATION_MARK_CP]: or<CommentEvent | CDSectEvent, Input>([Comment, CDSect]),
 				[QUESTION_MARK_CP]: PI,
 			},
 			STagOrEmptyElemTag,
@@ -1068,12 +1071,12 @@ const content: ParserState<DocumentParseEvent> = {
 	type: ParserStateType.star,
 };
 
-export function parseContent(input: string): Iterator<DocumentParseEvent> {
+export function parseContent(input: Input): Iterator<DocumentParseEvent> {
 	return new ParserStateMachine(input, [content]);
 }
 
 // [27] Misc ::= Comment | PI | S
-const Misc = or<CommentEvent | PIEvent | void>([Comment, PI, S]);
+const Misc = or<CommentEvent | PIEvent | void, Input>([Comment, PI, S]);
 
 // [22] prolog ::= XMLDecl? Misc* (doctypedecl Misc*)?
 const prolog: ParserState<DocumentParseEvent>[] = [
@@ -1095,6 +1098,6 @@ const element: ParserState<DocumentParseEvent>[] = [
 // As element leads to content, which is a superset of Misc*, we can omit the last Misc*
 const document: ParserState<DocumentParseEvent>[] = [...prolog, ...element];
 
-export function parseDocument(input: string): Iterator<DocumentParseEvent> {
+export function parseDocument(input: Input): Iterator<DocumentParseEvent> {
 	return new ParserStateMachine(input, document);
 }

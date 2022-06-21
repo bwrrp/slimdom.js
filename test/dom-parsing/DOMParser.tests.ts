@@ -57,8 +57,7 @@ describe('DOMParser', () => {
 		"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Parsing document failed, expected \\"&lt;\\"
 		At line 1, character 1:
 
-		[invalid character]
-		^^^^^^^^^^^^^^^^^^^</parsererror>"
+		$TODOhighlightError(event.input, event.start, event.end)}</parsererror>"
 	`);
 	});
 

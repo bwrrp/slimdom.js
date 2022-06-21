@@ -23,20 +23,74 @@ import {
 	EmptyElemTagEvent,
 	EntityRefEvent,
 	EntityValueEvent,
+	Input,
 	MarkupdeclEventType,
 	ParserEventType,
 	STagEvent,
 	WithPosition,
 } from './parserEvents';
 
-function offsetToCoords(input: string, offset: number): { line: number; char: number } {
+declare var TextEncoder: any;
+
+function getUtf8Length(cp: number): number {
+	if (cp <= 0x7f) {
+		return 1;
+	}
+	if (cp <= 0x7ff) {
+		return 2;
+	}
+	if (cp <= 0xffff) {
+		return 3;
+	}
+	return 4;
+}
+
+function getUtf8Codepoint(input: ArrayLike<number>, offset: number): number | undefined {
+	let cp = input[offset] | 0;
+	if ((cp & 0b1_0000000) === 0) {
+		// one byte 1_aaaaaaa
+		return cp;
+	}
+	const second = input[offset + 1];
+	if (second === undefined) {
+		return undefined;
+	}
+	if ((cp & 0b111_00000) === 0b110_00000) {
+		// two bytes: 110_aaaaa 10_bbbbbb
+		return ((cp & 0b11111) << 6) | (second & 0b111111);
+	}
+	const third = input[offset + 2];
+	if (third === undefined) {
+		return undefined;
+	}
+	if ((cp & 0b1111_0000) === 0b1110_0000) {
+		// three bytes: 1110_aaaa 10_bbbbbb 10_cccccc
+		return ((cp & 0b1111) << 12) | ((second & 0b111111) << 6) | (third & 0b111111);
+	}
+	const fourth = input[offset + 3];
+	if (fourth === undefined) {
+		return undefined;
+	}
+	if ((cp & 0b11111_000) === 0b11110_000) {
+		// four bytes: 11110_aaa 10_bbbbbb 10_cccccc 10_dddddd
+		return (
+			((cp & 0b1111) << 18) |
+			((second & 0b111111) << 12) |
+			((third & 0b111111) << 6) |
+			(fourth & 0b111111)
+		);
+	}
+	throw new Error('invalid utf-8 character');
+}
+
+function offsetToCoords(input: Input, offset: number): { line: number; char: number } {
 	// Assumes normalized line endings
 	let line = 1;
 	let char = 1;
 	let i = 0;
 	while (i < offset) {
-		const cp = input.codePointAt(i)!;
-		const l = cp > 0xffff ? 2 : 1;
+		const cp = getUtf8Codepoint(input, i)!;
+		const l = getUtf8Length(cp);
 		char++;
 		i += l;
 		if (cp === 0xa) {
@@ -104,15 +158,15 @@ export function throwErrorWithContext(message: string, event: WithPosition<unkno
 	const { line, char } = offsetToCoords(event.input, event.start);
 	const location = `At line ${line}, character ${char}:`;
 	throw new Error(
-		`${message}\n${location}\n\n${highlightError(event.input, event.start, event.end)}`
+		`${message}\n${location}\n\n$TODOhighlightError(event.input, event.start, event.end)}`
 	);
 }
 
-function throwParseError(what: string, input: string, expected: string[], offset: number): never {
+function throwParseError(what: string, input: Input, expected: string[], offset: number): never {
 	const quoted = Array.from(new Set(expected), (str) =>
 		str.includes('"') ? `'${str}'` : `"${str}"`
 	);
-	const cp = input.codePointAt(offset);
+	const cp = getUtf8Codepoint(input, offset);
 	const actual = cp ? String.fromCodePoint(cp) : '';
 	throwErrorWithContext(
 		`Parsing ${what} failed, expected ${
@@ -130,7 +184,7 @@ function throwParseError(what: string, input: string, expected: string[], offset
  * @returns true if all characters in value match Char, otherwise false
  */
 export function matchesCharProduction(value: string): boolean {
-	return CompleteChars(value, 0).success;
+	return CompleteChars(new TextEncoder().encode(value), 0).success;
 }
 
 /**
@@ -141,7 +195,7 @@ export function matchesCharProduction(value: string): boolean {
  * @returns true if name matches Name, otherwise false
  */
 export function matchesNameProduction(name: string): boolean {
-	return CompleteName(name, 0).success;
+	return CompleteName(new TextEncoder().encode(name), 0).success;
 }
 
 /**
@@ -152,7 +206,7 @@ export function matchesNameProduction(name: string): boolean {
  * @returns true if all characters in value match PubidChar, otherwise false
  */
 export function matchesPubidCharProduction(value: string): boolean {
-	return CompletePubidChars(value, 0).success;
+	return CompletePubidChars(new TextEncoder().encode(value), 0).success;
 }
 
 /**
@@ -163,7 +217,7 @@ export function matchesPubidCharProduction(value: string): boolean {
  * @returns true if all characters in value match S, otherwise false
  */
 function isWhitespace(value: string): boolean {
-	return CompleteWhitespace(value, 0).success;
+	return CompleteWhitespace(new TextEncoder().encode(value), 0).success;
 }
 
 function constructReplacementText(value: EntityValueEvent[]): string {
@@ -369,11 +423,12 @@ function normalizeAndIncludeEntities(
 				event
 			);
 		}
-		const result = EntityReplacementTextInLiteral(replacementText, 0);
+		const input = new TextEncoder().encode(replacementText);
+		const result = EntityReplacementTextInLiteral(input, 0);
 		if (!result.success) {
 			throwParseError(
 				`replacement text for entity "${event.name}"`,
-				replacementText,
+				input,
 				result.expected,
 				result.offset
 			);
@@ -648,11 +703,12 @@ export function parseXmlDocument(input: string): Document {
 	// Remove BOM if there is one and normalize line endings to lf
 	input = input.replace(/^\ufeff/, '');
 	input = normalizeLineEndings(input);
+	const encoded = new TextEncoder().encode(input);
 
 	let entityContext: EntityContext | null = {
 		parent: null,
 		entity: null,
-		generator: parseDocument(input),
+		generator: parseDocument(encoded),
 	};
 	while (entityContext) {
 		let it: IteratorResult<DocumentParseEvent> = entityContext.generator.next();
@@ -708,7 +764,7 @@ export function parseXmlDocument(input: string): Document {
 					entityContext = {
 						parent: entityContext,
 						entity: event.name,
-						generator: parseContent(replacementText),
+						generator: parseContent(new TextEncoder().encode(replacementText)),
 					};
 					continue;
 				}
@@ -861,7 +917,7 @@ export function parseXmlDocument(input: string): Document {
 				entityContext.entity
 					? `replacement text for entity ${entityContext.entity}`
 					: 'document',
-				input,
+				encoded,
 				it.value.expected,
 				it.value.offset
 			);

@@ -1,5 +1,7 @@
-export type WithPosition<TEvent> = TEvent & {
-	input: string;
+export type Input = ArrayLike<number>;
+
+export type WithPosition<TEvent, TInput = Input> = TEvent & {
+	input: TInput;
 	start: number;
 	end: number;
 };

@@ -19,34 +19,5 @@ export default {
 
 		console.error(warning.message);
 	},
-	plugins: [
-		resolve(),
-		sourcemaps(),
-		terser({
-			mangle: {
-				properties: {
-					regex: /^_/,
-				},
-				reserved: [
-					'Attr',
-					'CDATASection',
-					'CharacterData',
-					'Comment',
-					'Document',
-					'DocumentFragment',
-					'DocumentType',
-					'DOMImplementation',
-					'DOMParser',
-					'Element',
-					'Node',
-					'MutationObserver',
-					'ProcessingInstruction',
-					'Range',
-					'Text',
-					'XMLDocument',
-					'XMLSerializer',
-				],
-			},
-		}),
-	],
+	plugins: [resolve(), sourcemaps()],
 };

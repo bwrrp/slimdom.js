@@ -1,4 +1,5 @@
 import { end, Parser, ParseResult } from 'prsc';
+import { Input } from './parserEvents';
 
 export const enum ParserStateType {
 	one,
@@ -7,7 +8,7 @@ export const enum ParserStateType {
 }
 
 export type ParserState<T> = {
-	parser: Parser<T | void>;
+	parser: Parser<T | void, Input>;
 	type: ParserStateType;
 };
 
@@ -15,10 +16,10 @@ export default class ParserStateMachine<T> implements Iterator<T> {
 	private _states: ParserState<T>[];
 	private _state = 0;
 
-	private _input: string;
+	private _input: Input;
 	private _offset = 0;
 
-	constructor(input: string, states: ParserState<T>[]) {
+	constructor(input: Input, states: ParserState<T>[]) {
 		this._input = input;
 		this._states = states;
 	}
