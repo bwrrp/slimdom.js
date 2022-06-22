@@ -51,7 +51,7 @@ const xml = slimdom.serializeToWellFormedString(document);
 // -> '<root xmlns="http://www.example.com"/>'
 
 // Or parse from a string:
-const document2 = new slimdom.DOMParser().parseFromString('<root attr="value">Hello!</root>');
+const document2 = slimdom.parseXmlDocument('<root attr="value">Hello!</root>');
 document2.documentElement.setAttribute('attr', 'new value');
 const xml2 = slimdom.serializeToWellFormedString(document2);
 // -> '<root attr="new value">Hello!</root>'
@@ -77,13 +77,15 @@ Do not rely on the behavior or presence of any methods and properties not specif
 
 This library implements the changes from [whatwg/dom#819][dom-adopt-pr], as the specification as currently described has known bugs around adoption.
 
+As serializing XML using the `XMLSerializer` does not enforce well-formedness, you may instead want to use the `serializeToWellFormedString` function which does perform such checks.
+
 ### Parsing
 
-This library does not implement HTML parsing, which means no `insertAdjacentHTML` on `Element`, nor `createContextualFragment` on `Range`. The `innerHTML` and `outerHTML` properties are read-only.
+The `DOMParser` interface is implemented, but this can only be used to parse XML. As the spec for it requires generating and returning an error document when parsing fails, you may want to use the `parseXmlDocument` function instead, which throws in such cases.
 
-The `DOMParser` interface is implemented, but this can only be used to parse XML. The XML parser is non-validating, and therefore does not support an external DTD or external parsed entities. During parsing, any referenced entities are included, default attribute values are materialized and the DTD internal subset is discarded. References to external entities are replaced with nothing. References to parameter entities are also ignored.
+The XML parser is non-validating, but does check for well-formedness. It does not support an external DTD or external parsed entities, but does check any internal DTD for syntactic errors. During parsing, any referenced entities are included, default attribute values are materialized and the DTD internal subset is discarded. References to external entities are replaced with nothing. References to parameter entities are ignored.
 
-If you need to parse HTML, see [this example][parse5-example] which shows how to connect the [parse5][parse5] HTML parser with the help of the [dom-treeadapter][dom-treeadapter] library.
+This library does not implement HTML parsing, which means no `insertAdjacentHTML` on `Element`, nor `createContextualFragment` on `Range`. The `innerHTML` and `outerHTML` properties are read-only. If you need to parse HTML, see [this example][parse5-example] which shows how to connect the [parse5][parse5] HTML parser with the help of the [dom-treeadapter][dom-treeadapter] library.
 
 ### CSS Selectors and XPath
 
@@ -133,5 +135,7 @@ To work on the slimdom library itself, clone [the repository](https://github.com
 The slimdom library and tests are developed in [TypeScript](https://www.typescriptlang.org/), using [prettier](https://github.com/prettier/prettier) to automate formatting.
 
 This repository includes a full suite of tests based on [jest](https://facebook.github.io/jest/). Run `npm test` to run the tests, or `npm run test:debug` to debug the tests and code by disabling coverage and enabling the node inspector (see [chrome://inspect](chrome://inspect) in Chrome).
+
+A runner for the W3C [XML Conformance Test Suites](https://www.w3.org/XML/Test/) is included in the `test/dom-parsing/xmlConformance.tests.ts` file. These tests are used to check that the parser conforms to the specificiations. To run these tests, first execute `npm run download-xmlconf` to download the necessary files to the `temp/xmlconf` directory. The tests will then be included automatically when running `npm test`. Tests for documents that are supposed to be rejected use Jest's snapshots feature to guard against unintentional changes to the errors produced. You may need to update these snapshots when the format of errors changes by running `npm test -- -u`.
 
 An experimental runner for the W3C [web platform tests](http://web-platform-tests.org/) is <s>included in the `test/web-platform-tests` directory</s> temporarily unavailable due to the migration to jest. To use it (when re-enabled), clone the [web platform tests repository](https://github.com/w3c/web-platform-tests) somewhere and set the `WEB_PLATFORM_TESTS_PATH` environment variable to the corresponding path. Then run `npm test` as normal. The `webPlatform.tests.ts` file contains a blacklist of tests that don't currently run due to missing features.
