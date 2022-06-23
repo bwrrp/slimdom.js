@@ -29,7 +29,7 @@
 		"build:docs": "api-documenter markdown -i api -o docs",
 		"build": "npm-run-all build:clean build:bundle build:api build:api-copy build:docs",
 		"prepare": "npm run build",
-		"download-xmlconf": "node test/dom-parsing/downloadXmlConf.js",
+		"download-xmlconf": "node test/dom-parsing/downloadXmlConf.cjs",
 		"test": "jest --coverage --verbose",
 		"test:debug": "node --inspect --debug-brk node_modules/jest/bin/jest.js --runInBand"
 	},
