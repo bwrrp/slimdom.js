@@ -779,7 +779,7 @@ export function parseXmlDocument(input: string): Document {
 							attr.name,
 							qualifiedNameCache
 						);
-						const namespace = namespaces.getForAttribute(prefix, localName, event.name);
+						const namespace = namespaces.getForAttribute(prefix, localName, attr.name);
 						const def = attlist?.get(attr.name.name);
 						if (element.hasAttributeNS(namespace, localName)) {
 							throwErrorWithContext(
