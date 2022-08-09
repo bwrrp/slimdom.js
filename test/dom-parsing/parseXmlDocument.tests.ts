@@ -99,10 +99,10 @@ describe('parseXmlDocument', () => {
 		const xml = `<root pre:attr="value"/>`;
 		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(`
 		"use of undeclared attribute prefix pre
-		At line 1, character 2:
+		At line 1, character 7:
 
 		<root pre:attr=\\"value\\"/>
-		 ^^^^"
+		      ^^^^^^^^"
 	`);
 	});
 

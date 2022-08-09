@@ -6477,10 +6477,10 @@ At line 3, character 2:
 
 exports[`XML Conformance Test Suite Richard Tobin's XML Namespaces 1.0 test suite 14 Feb 2003 rmt-ns10-026 - Unbound attribute prefix: rmt-ns10-026 1`] = `
 "use of undeclared attribute prefix a
-At line 3, character 2:
+At line 3, character 6:
 
 <foo a:attr=\\"1\\"/>
- ^^^"
+     ^^^^^^"
 `;
 
 exports[`XML Conformance Test Suite Richard Tobin's XML Namespaces 1.0 test suite 14 Feb 2003 rmt-ns10-029 - Reserved prefixes and namespaces: declaring the xml prefix incorrectly: rmt-ns10-029 1`] = `
