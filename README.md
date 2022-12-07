@@ -81,9 +81,23 @@ As serializing XML using the `XMLSerializer` does not enforce well-formedness, y
 
 ### Parsing
 
-The `DOMParser` interface is implemented, but this can only be used to parse XML. As the spec for it requires generating and returning an error document when parsing fails, you may want to use the `parseXmlDocument` function instead, which throws in such cases.
+The `DOMParser` interface is implemented, but this can only be used to parse XML. You may want to use the `parseXmlDocument` function instead, which throws when parsing fails - the spec requires `DOMParser` to generate and return an error document in those cases.
 
 The XML parser is non-validating, but does check for well-formedness. It does not support an external DTD or external parsed entities, but does check any internal DTD for syntactic errors. During parsing, any referenced entities are included, default attribute values are materialized and the DTD internal subset is discarded. References to external entities are replaced with nothing. References to parameter entities are ignored.
+
+The `parseXmlFragment` function may be used to parse fragments of XML. This function accepts the same format as specified for external parsed entities, except that it does not support parameter entities. That means it accepts an optional text declaration (similar to the XML version declaration) followed by any content that may be found between an element's start and end tags. That does not include doctype nodes. An optional resolver function may be provided to resolve any namespace prefixes not defined in the fragment itself.
+
+```javascript
+// Parse a fragment of XML with missing namespace declarations
+const fragment = slimdom.parseXmlFragment(
+	`<a:root xmlns:b="ns-b"><b:child/></a:root>
+	<a:root xmlns:a="ns-a"><b:child/></a:root>`,
+	{ resolveNamespacePrefix: (prefix) => `resolved-${prefix}` }
+);
+const xml3 = slimdom.serializeToWellFormedString(fragment);
+// -> `<a:root xmlns:a="resolved-a" xmlns:b="ns-b"><b:child/></a:root>
+// 	<a:root xmlns:a="ns-a"><b:child xmlns:b="resolved-b"/></a:root>`
+```
 
 This library does not implement HTML parsing, which means no `insertAdjacentHTML` on `Element`, nor `createContextualFragment` on `Range`. The `innerHTML` and `outerHTML` properties are read-only. If you need to parse HTML, see [this example][parse5-example] which shows how to connect the [parse5][parse5] HTML parser with the help of the [dom-treeadapter][dom-treeadapter] library.
 

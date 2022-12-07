@@ -448,6 +448,11 @@ export abstract class Node {
 export function parseXmlDocument(input: string): Document;
 
 // @public
+export function parseXmlFragment(input: string, options?: Partial<{
+    resolveNamespacePrefix(prefix: string): string | undefined;
+}>): DocumentFragment;
+
+// @public
 export class ProcessingInstruction extends CharacterData {
     constructor(target: string, data: string);
     _copy(document: Document): ProcessingInstruction;

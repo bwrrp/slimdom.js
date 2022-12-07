@@ -38,7 +38,8 @@ export type CDSectEvent = WithPosition<{ type: ParserEventType.CDSect; data: str
 
 export type XMLDeclEvent = {
 	type: ParserEventType.XMLDecl;
-	version: string;
+	// Version is optional in TextDecl
+	version: string | null;
 	encoding: string | null;
 	standalone: boolean | null;
 };

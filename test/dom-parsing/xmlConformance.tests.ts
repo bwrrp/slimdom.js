@@ -5,6 +5,7 @@ import {
 	Element,
 	Node,
 	parseXmlDocument,
+	parseXmlFragment,
 	serializeToWellFormedString,
 } from '../../src/index';
 import { existsSync, readFileSync } from 'node:fs';
@@ -114,11 +115,6 @@ function loadXml(path: string): string {
 	return buf.toString('utf-8');
 }
 
-function wrapExternalEntity(xml: string): string {
-	// Remove the XML version declaration
-	return `<TESTCASES>${xml.replace(/<\?xml[^?]*\?>/, '')}</TESTCASES>`;
-}
-
 describe('XML Conformance Test Suite', () => {
 	const basePath = process.env.XMLCONF_PATH || './temp/xmlconf';
 	if (!existsSync(basePath)) {
@@ -126,10 +122,17 @@ describe('XML Conformance Test Suite', () => {
 		return;
 	}
 
-	function loadSuite(suitePath: string, manifestPath: string, wrap = false): void {
+	function wrapExternalEntity(input: string): Element {
+		const fragment = parseXmlFragment(input);
+		const wrapper = fragment.ownerDocument!.createElement('XML');
+		wrapper.appendChild(fragment);
+		return wrapper;
+	}
+
+	function loadSuite(suitePath: string, manifestPath: string, fragment = false): void {
 		const manifestXml = loadXml(join(basePath, suitePath, manifestPath));
 		// Some of these manifests are external entities rather than full documents
-		const manifest = parseXmlDocument(wrap ? wrapExternalEntity(manifestXml) : manifestXml);
+		const manifest = fragment ? wrapExternalEntity(manifestXml) : parseXmlDocument(manifestXml);
 
 		for (const test of manifest.getElementsByTagName('TEST')) {
 			const id = test.getAttribute('ID')!;

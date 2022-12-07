@@ -961,14 +961,24 @@ const PEDecl: Parser<EntityDeclEvent | void> = delimited(
 const EntityDecl = preceded(peek(ENTITY_DECL_START), cut(or([GEDecl, PEDecl])));
 
 // [77] TextDecl ::= '<?xml' VersionInfo? EncodingDecl S? '?>'
-// const TextDecl = delimited(
-// 	XML_DECL_START,
-// 	then(optional(VersionInfo), EncodingDecl, () => undefined),
-// 	preceded(optional(S), PI_END)
-// );
-
-// [78] extParsedEnt ::= TextDecl? content
-// const extParsedEnt = then(optional(TextDecl), content, () => undefined);
+const TextDecl: Parser<XMLDeclEvent> = delimited(
+	XML_DECL_START,
+	followed(
+		then(
+			optional(VersionInfo),
+			EncodingDecl,
+			(version, encoding) => ({
+				type: ParserEventType.XMLDecl,
+				version,
+				encoding,
+				standalone: null,
+			})
+		),
+		optional(S)
+	),
+	PI_END,
+	true
+);
 
 // [83] PublicID ::= 'PUBLIC' S PubidLiteral
 const PublicID: Parser<ExternalIDEvent> = map(
@@ -1097,4 +1107,14 @@ const document: ParserState<DocumentParseEvent>[] = [...prolog, ...element];
 
 export function parseDocument(input: string): Iterator<DocumentParseEvent> {
 	return new ParserStateMachine(input, document);
+}
+
+// [78] extParsedEnt ::= TextDecl? content
+const extParsedEnt: ParserState<DocumentParseEvent>[] = [
+	{ parser: TextDecl, type: ParserStateType.optional },
+	content,
+];
+
+export function parseFragment(input: string): Iterator<DocumentParseEvent> {
+	return new ParserStateMachine(input, extParsedEnt);
 }

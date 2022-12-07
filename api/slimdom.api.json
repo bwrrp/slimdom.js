@@ -1,8 +1,8 @@
 {
   "metadata": {
     "toolPackage": "@microsoft/api-extractor",
-    "toolVersion": "7.25.2",
-    "schemaVersion": 1006,
+    "toolVersion": "7.33.6",
+    "schemaVersion": 1010,
     "oldestForwardsCompatibleVersion": 1001,
     "tsdocConfig": {
       "$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
@@ -164,11 +164,13 @@
   "canonicalReference": "slimdom!",
   "docComment": "",
   "name": "slimdom",
+  "preserveMemberOrder": false,
   "members": [
     {
       "kind": "EntryPoint",
       "canonicalReference": "slimdom!",
       "name": "",
+      "preserveMemberOrder": false,
       "members": [
         {
           "kind": "Class",
@@ -182,15 +184,17 @@
             {
               "kind": "Reference",
               "text": "Node",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Node:class"
             },
             {
               "kind": "Content",
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/Attr.d.ts",
           "releaseTag": "Public",
           "name": "Attr",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Method",
@@ -204,7 +208,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -213,7 +217,7 @@
                 {
                   "kind": "Reference",
                   "text": "Attr",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Attr:class"
                 },
                 {
                   "kind": "Content",
@@ -285,7 +289,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -596,11 +600,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset nodeValue(newValue: string | null);"
+                  "text": ";\n\nset nodeValue(newValue: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -626,7 +626,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -692,11 +692,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset textContent(newValue: string | null);"
+                  "text": ";\n\nset textContent(newValue: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -725,11 +721,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset value(value: string);"
+                  "text": ";\n\nset value(value: string);"
                 }
               ],
               "isReadonly": false,
@@ -762,15 +754,17 @@
             {
               "kind": "Reference",
               "text": "Text",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Text:class"
             },
             {
               "kind": "Content",
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/CDATASection.d.ts",
           "releaseTag": "Public",
           "name": "CDATASection",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Method",
@@ -784,7 +778,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -793,7 +787,7 @@
                 {
                   "kind": "Reference",
                   "text": "CDATASection",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!CDATASection:class"
                 },
                 {
                   "kind": "Content",
@@ -930,20 +924,16 @@
             {
               "kind": "Reference",
               "text": "Node",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Node:class"
             },
             {
               "kind": "Content",
-              "text": " "
-            },
-            {
-              "kind": "Content",
-              "text": "implements "
+              "text": " implements "
             },
             {
               "kind": "Reference",
               "text": "NonDocumentTypeChildNode",
-              "canonicalReference": "slimdom!NonDocumentTypeChildNode:interface"
+              "canonicalReference": "slimdom!~NonDocumentTypeChildNode:interface"
             },
             {
               "kind": "Content",
@@ -952,15 +942,17 @@
             {
               "kind": "Reference",
               "text": "ChildNode",
-              "canonicalReference": "slimdom!ChildNode:interface"
+              "canonicalReference": "slimdom!~ChildNode:interface"
             },
             {
               "kind": "Content",
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/CharacterData.d.ts",
           "releaseTag": "Public",
           "name": "CharacterData",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Property",
@@ -1039,7 +1031,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -1142,7 +1134,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -1197,11 +1189,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset data(newValue: string);"
+                  "text": ";\n\nset data(newValue: string);"
                 }
               ],
               "isReadonly": false,
@@ -1476,7 +1464,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -1513,11 +1501,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset nodeValue(newValue: string | null);"
+                  "text": ";\n\nset nodeValue(newValue: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -1543,7 +1527,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -1690,7 +1674,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -1808,11 +1792,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset textContent(newValue: string | null);"
+                  "text": ";\n\nset textContent(newValue: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -1833,12 +1813,12 @@
           },
           "implementsTokenRanges": [
             {
-              "startIndex": 4,
-              "endIndex": 5
+              "startIndex": 3,
+              "endIndex": 4
             },
             {
-              "startIndex": 6,
-              "endIndex": 7
+              "startIndex": 5,
+              "endIndex": 6
             }
           ]
         },
@@ -1854,15 +1834,17 @@
             {
               "kind": "Reference",
               "text": "CharacterData",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!CharacterData:class"
             },
             {
               "kind": "Content",
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/Comment.d.ts",
           "releaseTag": "Public",
           "name": "Comment",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Method",
@@ -1876,7 +1858,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -1885,7 +1867,7 @@
                 {
                   "kind": "Reference",
                   "text": "Comment",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Comment:class"
                 },
                 {
                   "kind": "Content",
@@ -2022,20 +2004,16 @@
             {
               "kind": "Reference",
               "text": "Node",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Node:class"
             },
             {
               "kind": "Content",
-              "text": " "
-            },
-            {
-              "kind": "Content",
-              "text": "implements "
+              "text": " implements "
             },
             {
               "kind": "Reference",
               "text": "NonElementParentNode",
-              "canonicalReference": "slimdom!NonElementParentNode:interface"
+              "canonicalReference": "slimdom!~NonElementParentNode:interface"
             },
             {
               "kind": "Content",
@@ -2044,15 +2022,17 @@
             {
               "kind": "Reference",
               "text": "ParentNode",
-              "canonicalReference": "slimdom!ParentNode:interface"
+              "canonicalReference": "slimdom!~ParentNode:interface"
             },
             {
               "kind": "Content",
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/Document.d.ts",
           "releaseTag": "Public",
           "name": "Document",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Method",
@@ -2066,7 +2046,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -2075,7 +2055,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -2130,7 +2110,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -2203,7 +2183,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -2284,7 +2264,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -2326,7 +2306,7 @@
                 {
                   "kind": "Reference",
                   "text": "Attr",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Attr:class"
                 },
                 {
                   "kind": "Content",
@@ -2382,7 +2362,7 @@
                 {
                   "kind": "Reference",
                   "text": "Attr",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Attr:class"
                 },
                 {
                   "kind": "Content",
@@ -2438,7 +2418,7 @@
                 {
                   "kind": "Reference",
                   "text": "CDATASection",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!CDATASection:class"
                 },
                 {
                   "kind": "Content",
@@ -2486,7 +2466,7 @@
                 {
                   "kind": "Reference",
                   "text": "Comment",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Comment:class"
                 },
                 {
                   "kind": "Content",
@@ -2526,7 +2506,7 @@
                 {
                   "kind": "Reference",
                   "text": "DocumentFragment",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!DocumentFragment:class"
                 },
                 {
                   "kind": "Content",
@@ -2565,7 +2545,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -2621,7 +2601,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -2685,7 +2665,7 @@
                 {
                   "kind": "Reference",
                   "text": "ProcessingInstruction",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!ProcessingInstruction:class"
                 },
                 {
                   "kind": "Content",
@@ -2733,7 +2713,7 @@
                 {
                   "kind": "Reference",
                   "text": "Range",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Range:class"
                 },
                 {
                   "kind": "Content",
@@ -2772,7 +2752,7 @@
                 {
                   "kind": "Reference",
                   "text": "Text",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Text:class"
                 },
                 {
                   "kind": "Content",
@@ -2812,7 +2792,7 @@
                 {
                   "kind": "Reference",
                   "text": "DocumentType",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!DocumentType:class"
                 },
                 {
                   "kind": "Content",
@@ -2846,7 +2826,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -2880,7 +2860,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -2922,7 +2902,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -2982,7 +2962,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -3034,7 +3014,7 @@
                 {
                   "kind": "Reference",
                   "text": "DOMImplementation",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!DOMImplementation:class"
                 },
                 {
                   "kind": "Content",
@@ -3064,7 +3044,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -3149,7 +3129,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -3338,11 +3318,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset nodeValue(_newValue: string | null);"
+                  "text": ";\n\nset nodeValue(_newValue: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -3372,7 +3348,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -3428,7 +3404,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -3483,11 +3459,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset textContent(_newValue: string | null);"
+                  "text": ";\n\nset textContent(_newValue: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -3508,12 +3480,12 @@
           },
           "implementsTokenRanges": [
             {
-              "startIndex": 4,
-              "endIndex": 5
+              "startIndex": 3,
+              "endIndex": 4
             },
             {
-              "startIndex": 6,
-              "endIndex": 7
+              "startIndex": 5,
+              "endIndex": 6
             }
           ]
         },
@@ -3529,9 +3501,10 @@
             {
               "kind": "Reference",
               "text": "Document",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Document:class"
             }
           ],
+          "fileUrlPath": "lib/index.d.ts",
           "isReadonly": true,
           "releaseTag": "Public",
           "name": "document",
@@ -3552,20 +3525,16 @@
             {
               "kind": "Reference",
               "text": "Node",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Node:class"
             },
             {
               "kind": "Content",
-              "text": " "
-            },
-            {
-              "kind": "Content",
-              "text": "implements "
+              "text": " implements "
             },
             {
               "kind": "Reference",
               "text": "NonElementParentNode",
-              "canonicalReference": "slimdom!NonElementParentNode:interface"
+              "canonicalReference": "slimdom!~NonElementParentNode:interface"
             },
             {
               "kind": "Content",
@@ -3574,15 +3543,17 @@
             {
               "kind": "Reference",
               "text": "ParentNode",
-              "canonicalReference": "slimdom!ParentNode:interface"
+              "canonicalReference": "slimdom!~ParentNode:interface"
             },
             {
               "kind": "Content",
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/DocumentFragment.d.ts",
           "releaseTag": "Public",
           "name": "DocumentFragment",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Method",
@@ -3596,7 +3567,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -3605,7 +3576,7 @@
                 {
                   "kind": "Reference",
                   "text": "DocumentFragment",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!DocumentFragment:class"
                 },
                 {
                   "kind": "Content",
@@ -3664,7 +3635,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -3745,7 +3716,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -3779,7 +3750,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -3813,7 +3784,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -4002,11 +3973,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset nodeValue(newValue: string | null);"
+                  "text": ";\n\nset nodeValue(newValue: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -4036,7 +4003,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -4092,7 +4059,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -4147,11 +4114,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset textContent(newValue: string | null);"
+                  "text": ";\n\nset textContent(newValue: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -4172,12 +4135,12 @@
           },
           "implementsTokenRanges": [
             {
-              "startIndex": 4,
-              "endIndex": 5
+              "startIndex": 3,
+              "endIndex": 4
             },
             {
-              "startIndex": 6,
-              "endIndex": 7
+              "startIndex": 5,
+              "endIndex": 6
             }
           ]
         },
@@ -4193,28 +4156,26 @@
             {
               "kind": "Reference",
               "text": "Node",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Node:class"
             },
             {
               "kind": "Content",
-              "text": " "
-            },
-            {
-              "kind": "Content",
-              "text": "implements "
+              "text": " implements "
             },
             {
               "kind": "Reference",
               "text": "ChildNode",
-              "canonicalReference": "slimdom!ChildNode:interface"
+              "canonicalReference": "slimdom!~ChildNode:interface"
             },
             {
               "kind": "Content",
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/DocumentType.d.ts",
           "releaseTag": "Public",
           "name": "DocumentType",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Method",
@@ -4228,7 +4189,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -4237,7 +4198,7 @@
                 {
                   "kind": "Reference",
                   "text": "DocumentType",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!DocumentType:class"
                 },
                 {
                   "kind": "Content",
@@ -4345,7 +4306,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -4401,7 +4362,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -4637,11 +4598,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset nodeValue(_newValue: string | null);"
+                  "text": ";\n\nset nodeValue(_newValue: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -4730,7 +4687,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -4814,11 +4771,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset textContent(_newValue: string | null);"
+                  "text": ";\n\nset textContent(_newValue: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -4839,8 +4792,8 @@
           },
           "implementsTokenRanges": [
             {
-              "startIndex": 4,
-              "endIndex": 5
+              "startIndex": 3,
+              "endIndex": 4
             }
           ]
         },
@@ -4863,8 +4816,10 @@
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/util/errorHelpers.d.ts",
           "releaseTag": "Public",
           "name": "DOMException",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Constructor",
@@ -5047,8 +5002,10 @@
               "text": "export default class DOMImplementation "
             }
           ],
+          "fileUrlPath": "lib/DOMImplementation.d.ts",
           "releaseTag": "Public",
           "name": "DOMImplementation",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Constructor",
@@ -5062,7 +5019,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -5111,7 +5068,7 @@
                 {
                   "kind": "Reference",
                   "text": "DocumentType",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!DocumentType:class"
                 },
                 {
                   "kind": "Content",
@@ -5124,7 +5081,7 @@
                 {
                   "kind": "Reference",
                   "text": "XMLDocument",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!XMLDocument:class"
                 },
                 {
                   "kind": "Content",
@@ -5204,7 +5161,7 @@
                 {
                   "kind": "Reference",
                   "text": "DocumentType",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!DocumentType:class"
                 },
                 {
                   "kind": "Content",
@@ -5268,7 +5225,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -5309,8 +5266,10 @@
               "text": "export default class DOMParser "
             }
           ],
+          "fileUrlPath": "lib/dom-parsing/DOMParser.d.ts",
           "releaseTag": "Public",
           "name": "DOMParser",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Constructor",
@@ -5355,7 +5314,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -5406,20 +5365,16 @@
             {
               "kind": "Reference",
               "text": "Node",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Node:class"
             },
             {
               "kind": "Content",
-              "text": " "
-            },
-            {
-              "kind": "Content",
-              "text": "implements "
+              "text": " implements "
             },
             {
               "kind": "Reference",
               "text": "ParentNode",
-              "canonicalReference": "slimdom!ParentNode:interface"
+              "canonicalReference": "slimdom!~ParentNode:interface"
             },
             {
               "kind": "Content",
@@ -5428,7 +5383,7 @@
             {
               "kind": "Reference",
               "text": "NonDocumentTypeChildNode",
-              "canonicalReference": "slimdom!NonDocumentTypeChildNode:interface"
+              "canonicalReference": "slimdom!~NonDocumentTypeChildNode:interface"
             },
             {
               "kind": "Content",
@@ -5437,15 +5392,17 @@
             {
               "kind": "Reference",
               "text": "ChildNode",
-              "canonicalReference": "slimdom!ChildNode:interface"
+              "canonicalReference": "slimdom!~ChildNode:interface"
             },
             {
               "kind": "Content",
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/Element.d.ts",
           "releaseTag": "Public",
           "name": "Element",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Method",
@@ -5459,7 +5416,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -5468,7 +5425,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -5576,7 +5533,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -5632,7 +5589,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -5684,7 +5641,7 @@
                 {
                   "kind": "Reference",
                   "text": "Attr",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Attr:class"
                 },
                 {
                   "kind": "Content",
@@ -5722,7 +5679,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -5803,7 +5760,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -5837,7 +5794,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -5926,7 +5883,7 @@
                 {
                   "kind": "Reference",
                   "text": "Attr",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Attr:class"
                 },
                 {
                   "kind": "Content",
@@ -5986,7 +5943,7 @@
                 {
                   "kind": "Reference",
                   "text": "Attr",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Attr:class"
                 },
                 {
                   "kind": "Content",
@@ -6109,7 +6066,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -6169,7 +6126,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -6390,7 +6347,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -6576,7 +6533,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -6671,11 +6628,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset nodeValue(newValue: string | null);"
+                  "text": ";\n\nset nodeValue(newValue: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -6763,7 +6716,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -6815,7 +6768,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -6926,7 +6879,7 @@
                 {
                   "kind": "Reference",
                   "text": "Attr",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Attr:class"
                 },
                 {
                   "kind": "Content",
@@ -6935,7 +6888,7 @@
                 {
                   "kind": "Reference",
                   "text": "Attr",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Attr:class"
                 },
                 {
                   "kind": "Content",
@@ -7042,7 +6995,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -7098,7 +7051,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -7213,7 +7166,7 @@
                 {
                   "kind": "Reference",
                   "text": "Attr",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Attr:class"
                 },
                 {
                   "kind": "Content",
@@ -7222,7 +7175,7 @@
                 {
                   "kind": "Reference",
                   "text": "Attr",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Attr:class"
                 },
                 {
                   "kind": "Content",
@@ -7266,7 +7219,7 @@
                 {
                   "kind": "Reference",
                   "text": "Attr",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Attr:class"
                 },
                 {
                   "kind": "Content",
@@ -7275,7 +7228,7 @@
                 {
                   "kind": "Reference",
                   "text": "Attr",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Attr:class"
                 },
                 {
                   "kind": "Content",
@@ -7430,11 +7383,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nset textContent(newValue: string | null);"
+                  "text": ";\n\nset textContent(newValue: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -7518,16 +7467,16 @@
           },
           "implementsTokenRanges": [
             {
-              "startIndex": 4,
-              "endIndex": 5
+              "startIndex": 3,
+              "endIndex": 4
             },
             {
-              "startIndex": 6,
-              "endIndex": 7
+              "startIndex": 5,
+              "endIndex": 6
             },
             {
-              "startIndex": 8,
-              "endIndex": 9
+              "startIndex": 7,
+              "endIndex": 8
             }
           ]
         },
@@ -7541,8 +7490,10 @@
               "text": "export default class MutationObserver "
             }
           ],
+          "fileUrlPath": "lib/mutation-observer/MutationObserver.d.ts",
           "releaseTag": "Public",
           "name": "MutationObserver",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Property",
@@ -7556,7 +7507,7 @@
                 {
                   "kind": "Reference",
                   "text": "MutationCallback",
-                  "canonicalReference": "slimdom!MutationCallback:type"
+                  "canonicalReference": "slimdom!~MutationCallback:type"
                 },
                 {
                   "kind": "Content",
@@ -7586,7 +7537,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -7620,7 +7571,7 @@
                 {
                   "kind": "Reference",
                   "text": "MutationRecord",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!MutationRecord:class"
                 },
                 {
                   "kind": "Content",
@@ -7654,7 +7605,7 @@
                 {
                   "kind": "Reference",
                   "text": "RegisteredObserver",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!~RegisteredObserver:class"
                 },
                 {
                   "kind": "Content",
@@ -7688,7 +7639,7 @@
                 {
                   "kind": "Reference",
                   "text": "MutationCallback",
-                  "canonicalReference": "slimdom!MutationCallback:type"
+                  "canonicalReference": "slimdom!~MutationCallback:type"
                 },
                 {
                   "kind": "Content",
@@ -7751,7 +7702,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -7760,7 +7711,7 @@
                 {
                   "kind": "Reference",
                   "text": "MutationObserverInit",
-                  "canonicalReference": "slimdom!MutationObserverInit:interface"
+                  "canonicalReference": "slimdom!~MutationObserverInit:interface"
                 },
                 {
                   "kind": "Content",
@@ -7816,7 +7767,7 @@
                 {
                   "kind": "Reference",
                   "text": "MutationRecord",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!MutationRecord:class"
                 },
                 {
                   "kind": "Content",
@@ -7852,8 +7803,10 @@
               "text": "export default class MutationRecord "
             }
           ],
+          "fileUrlPath": "lib/mutation-observer/MutationRecord.d.ts",
           "releaseTag": "Public",
           "name": "MutationRecord",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Constructor",
@@ -7875,7 +7828,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -7916,7 +7869,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -8008,7 +7961,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -8071,7 +8024,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -8105,7 +8058,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -8139,7 +8092,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -8199,8 +8152,10 @@
               "text": "export default abstract class Node "
             }
           ],
+          "fileUrlPath": "lib/Node.d.ts",
           "releaseTag": "Public",
           "name": "Node",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Method",
@@ -8214,7 +8169,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -8223,7 +8178,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -8263,7 +8218,7 @@
                 {
                   "kind": "Reference",
                   "text": "RegisteredObservers",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!~RegisteredObservers:class"
                 },
                 {
                   "kind": "Content",
@@ -8293,7 +8248,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -8478,7 +8433,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -8617,7 +8572,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -8665,7 +8620,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -9239,7 +9194,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -9303,7 +9258,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -9320,7 +9275,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -9440,7 +9395,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -9568,7 +9523,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -9663,11 +9618,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nabstract set nodeValue(value: string | null);"
+                  "text": ";\n\nabstract set nodeValue(value: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -9781,7 +9732,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -9815,7 +9766,7 @@
                 {
                   "kind": "Reference",
                   "text": "Element",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Element:class"
                 },
                 {
                   "kind": "Content",
@@ -9849,7 +9800,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -9883,7 +9834,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -9975,7 +9926,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -10044,7 +9995,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -10053,7 +10004,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -10191,11 +10142,7 @@
                 },
                 {
                   "kind": "Content",
-                  "text": ";"
-                },
-                {
-                  "kind": "Content",
-                  "text": "\n\nabstract set textContent(value: string | null);"
+                  "text": ";\n\nabstract set textContent(value: string | null);"
                 }
               ],
               "isReadonly": false,
@@ -10232,13 +10179,14 @@
             {
               "kind": "Reference",
               "text": "Document",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Document:class"
             },
             {
               "kind": "Content",
               "text": ";"
             }
           ],
+          "fileUrlPath": "lib/dom-parsing/parsingAlgorithms.d.ts",
           "returnTypeTokenRange": {
             "startIndex": 3,
             "endIndex": 4
@@ -10258,6 +10206,73 @@
           "name": "parseXmlDocument"
         },
         {
+          "kind": "Function",
+          "canonicalReference": "slimdom!parseXmlFragment:function(1)",
+          "docComment": "/**\n * Parse an XML fragment\n *\n * This accepts the same format as specified for external parsed entities, except that it does not support parameter entities. That means it accepts an optional text declaration (similar to the XML version declaration) followed by any content that may be found between an element's start and end tags. That does not include doctype nodes.\n *\n * This parser is non-validating, and therefore does not support an external DTD or external parsed entities. During parsing, any referenced entities are included, default attribute values are materialized and the DTD internal subset is discarded. References to external entities are replaced with nothing. References to parameter entities are also ignored.\n *\n * @param input - the string to parse\n *\n * @param options - allows specifying context missing from the fragment text\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export declare function parseXmlFragment(input: "
+            },
+            {
+              "kind": "Content",
+              "text": "string"
+            },
+            {
+              "kind": "Content",
+              "text": ", options?: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Partial",
+              "canonicalReference": "!Partial:type"
+            },
+            {
+              "kind": "Content",
+              "text": "<{\n    resolveNamespacePrefix(prefix: string): string | undefined;\n}>"
+            },
+            {
+              "kind": "Content",
+              "text": "): "
+            },
+            {
+              "kind": "Reference",
+              "text": "DocumentFragment",
+              "canonicalReference": "slimdom!DocumentFragment:class"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "lib/dom-parsing/parsingAlgorithms.d.ts",
+          "returnTypeTokenRange": {
+            "startIndex": 6,
+            "endIndex": 7
+          },
+          "releaseTag": "Public",
+          "overloadIndex": 1,
+          "parameters": [
+            {
+              "parameterName": "input",
+              "parameterTypeTokenRange": {
+                "startIndex": 1,
+                "endIndex": 2
+              },
+              "isOptional": false
+            },
+            {
+              "parameterName": "options",
+              "parameterTypeTokenRange": {
+                "startIndex": 3,
+                "endIndex": 5
+              },
+              "isOptional": true
+            }
+          ],
+          "name": "parseXmlFragment"
+        },
+        {
           "kind": "Class",
           "canonicalReference": "slimdom!ProcessingInstruction:class",
           "docComment": "/**\n * 3.13. Interface ProcessingInstruction\n *\n * @public\n */\n",
@@ -10269,15 +10284,17 @@
             {
               "kind": "Reference",
               "text": "CharacterData",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!CharacterData:class"
             },
             {
               "kind": "Content",
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/ProcessingInstruction.d.ts",
           "releaseTag": "Public",
           "name": "ProcessingInstruction",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Method",
@@ -10291,7 +10308,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -10300,7 +10317,7 @@
                 {
                   "kind": "Reference",
                   "text": "ProcessingInstruction",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!ProcessingInstruction:class"
                 },
                 {
                   "kind": "Content",
@@ -10482,15 +10499,17 @@
             {
               "kind": "Reference",
               "text": "AbstractRange",
-              "canonicalReference": "slimdom!AbstractRange:interface"
+              "canonicalReference": "slimdom!~AbstractRange:interface"
             },
             {
               "kind": "Content",
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/Range.d.ts",
           "releaseTag": "Public",
           "name": "Range",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Constructor",
@@ -10519,7 +10538,7 @@
                 {
                   "kind": "Reference",
                   "text": "DocumentFragment",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!DocumentFragment:class"
                 },
                 {
                   "kind": "Content",
@@ -10550,7 +10569,7 @@
                 {
                   "kind": "Reference",
                   "text": "Range",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Range:class"
                 },
                 {
                   "kind": "Content",
@@ -10657,7 +10676,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -10695,7 +10714,7 @@
                 {
                   "kind": "Reference",
                   "text": "Range",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Range:class"
                 },
                 {
                   "kind": "Content",
@@ -10751,7 +10770,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -10933,7 +10952,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -10992,7 +11011,7 @@
                 {
                   "kind": "Reference",
                   "text": "DocumentFragment",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!DocumentFragment:class"
                 },
                 {
                   "kind": "Content",
@@ -11023,7 +11042,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11071,7 +11090,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11119,7 +11138,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11183,7 +11202,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11231,7 +11250,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11279,7 +11298,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11343,7 +11362,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11391,7 +11410,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11439,7 +11458,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11503,7 +11522,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11551,7 +11570,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11657,7 +11676,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11716,7 +11735,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11802,7 +11821,7 @@
             {
               "kind": "Reference",
               "text": "Node",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Node:class"
             },
             {
               "kind": "Content",
@@ -11817,6 +11836,7 @@
               "text": ";"
             }
           ],
+          "fileUrlPath": "lib/dom-parsing/XMLSerializer.d.ts",
           "returnTypeTokenRange": {
             "startIndex": 3,
             "endIndex": 4
@@ -11847,15 +11867,17 @@
             {
               "kind": "Reference",
               "text": "AbstractRange",
-              "canonicalReference": "slimdom!AbstractRange:interface"
+              "canonicalReference": "slimdom!~AbstractRange:interface"
             },
             {
               "kind": "Content",
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/Range.d.ts",
           "releaseTag": "Public",
           "name": "StaticRange",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Constructor",
@@ -11931,7 +11953,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -11990,7 +12012,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",
@@ -12057,15 +12079,17 @@
             {
               "kind": "Reference",
               "text": "CharacterData",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!CharacterData:class"
             },
             {
               "kind": "Content",
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/Text.d.ts",
           "releaseTag": "Public",
           "name": "Text",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Method",
@@ -12079,7 +12103,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -12088,7 +12112,7 @@
                 {
                   "kind": "Reference",
                   "text": "Text",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Text:class"
                 },
                 {
                   "kind": "Content",
@@ -12226,7 +12250,7 @@
                 {
                   "kind": "Reference",
                   "text": "Text",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Text:class"
                 },
                 {
                   "kind": "Content",
@@ -12302,7 +12326,7 @@
             {
               "kind": "Reference",
               "text": "Attr",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Attr:class"
             },
             {
               "kind": "Content",
@@ -12311,7 +12335,7 @@
             {
               "kind": "Reference",
               "text": "Element",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Element:class"
             },
             {
               "kind": "Content",
@@ -12326,6 +12350,7 @@
               "text": ";"
             }
           ],
+          "fileUrlPath": "lib/unsafe.d.ts",
           "returnTypeTokenRange": {
             "startIndex": 5,
             "endIndex": 6
@@ -12396,7 +12421,7 @@
             {
               "kind": "Reference",
               "text": "Element",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Element:class"
             },
             {
               "kind": "Content",
@@ -12409,13 +12434,14 @@
             {
               "kind": "Reference",
               "text": "Attr",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Attr:class"
             },
             {
               "kind": "Content",
               "text": ";"
             }
           ],
+          "fileUrlPath": "lib/unsafe.d.ts",
           "returnTypeTokenRange": {
             "startIndex": 12,
             "endIndex": 13
@@ -12478,7 +12504,7 @@
             {
               "kind": "Reference",
               "text": "Document",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Document:class"
             },
             {
               "kind": "Content",
@@ -12511,13 +12537,14 @@
             {
               "kind": "Reference",
               "text": "Element",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Element:class"
             },
             {
               "kind": "Content",
               "text": ";"
             }
           ],
+          "fileUrlPath": "lib/unsafe.d.ts",
           "returnTypeTokenRange": {
             "startIndex": 9,
             "endIndex": 10
@@ -12572,15 +12599,17 @@
             {
               "kind": "Reference",
               "text": "Document",
-              "canonicalReference": "slimdom!default:class"
+              "canonicalReference": "slimdom!Document:class"
             },
             {
               "kind": "Content",
               "text": " "
             }
           ],
+          "fileUrlPath": "lib/XMLDocument.d.ts",
           "releaseTag": "Public",
           "name": "XMLDocument",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Method",
@@ -12594,7 +12623,7 @@
                 {
                   "kind": "Reference",
                   "text": "Document",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Document:class"
                 },
                 {
                   "kind": "Content",
@@ -12603,7 +12632,7 @@
                 {
                   "kind": "Reference",
                   "text": "XMLDocument",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!XMLDocument:class"
                 },
                 {
                   "kind": "Content",
@@ -12648,8 +12677,10 @@
               "text": "export default class XMLSerializer "
             }
           ],
+          "fileUrlPath": "lib/dom-parsing/XMLSerializer.d.ts",
           "releaseTag": "Public",
           "name": "XMLSerializer",
+          "preserveMemberOrder": false,
           "members": [
             {
               "kind": "Constructor",
@@ -12678,7 +12709,7 @@
                 {
                   "kind": "Reference",
                   "text": "Node",
-                  "canonicalReference": "slimdom!default:class"
+                  "canonicalReference": "slimdom!Node:class"
                 },
                 {
                   "kind": "Content",

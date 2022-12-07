@@ -1,10 +1,12 @@
 import Document from '../Document';
+import DocumentFragment from '../DocumentFragment';
 import Node from '../Node';
 import { unsafeCreateAttribute, unsafeCreateElement } from '../unsafe';
 import { appendAttribute } from '../util/attrMutations';
 import { insertNode } from '../util/mutationAlgorithms';
 import { XMLNS_NAMESPACE, XML_NAMESPACE } from '../util/namespaceHelpers';
 import { isElement } from '../util/NodeType';
+import { getNodeDocument } from '../util/treeHelpers';
 import {
 	CompleteChars,
 	CompleteName,
@@ -13,6 +15,7 @@ import {
 	EntityReplacementTextInLiteral,
 	parseContent,
 	parseDocument,
+	parseFragment,
 } from './grammar';
 import {
 	AttDefEvent,
@@ -443,11 +446,16 @@ function splitQualifiedName(
 }
 
 class Namespaces {
-	private _parent: Namespaces | null;
-	private _byPrefix: Map<string | null, string | null> = new Map();
+	private readonly _parent: Namespaces | null;
+	private readonly _byPrefix: Map<string | null, string | null> = new Map();
+	private readonly _resolve: ((prefix: string) => string | undefined) | null = null;
 
-	private constructor(parent: Namespaces | null) {
+	private constructor(
+		parent: Namespaces | null,
+		resolve: ((prefix: string) => string | undefined) | null = null
+	) {
 		this._parent = parent;
+		this._resolve = resolve ?? parent?._resolve ?? null;
 	}
 
 	public getForElement(prefix: string | null, event: WithPosition<unknown>): string | null {
@@ -456,6 +464,12 @@ class Namespaces {
 		}
 		for (let ns: Namespaces | null = this; ns !== null; ns = ns._parent) {
 			const namespace = ns._byPrefix.get(prefix);
+			if (namespace !== undefined) {
+				return namespace;
+			}
+		}
+		if (prefix !== null && this._resolve) {
+			const namespace = this._resolve(prefix);
 			if (namespace !== undefined) {
 				return namespace;
 			}
@@ -474,6 +488,12 @@ class Namespaces {
 		}
 		for (let ns: Namespaces | null = this; ns !== null; ns = ns._parent) {
 			const namespace = ns._byPrefix.get(prefix);
+			if (namespace !== undefined) {
+				return namespace;
+			}
+		}
+		if (this._resolve) {
+			const namespace = this._resolve(prefix);
 			if (namespace !== undefined) {
 				return namespace;
 			}
@@ -568,8 +588,8 @@ class Namespaces {
 		return ns;
 	}
 
-	public static default(): Namespaces {
-		const ns = new Namespaces(null);
+	public static default(resolve: ((prefix: string) => string | undefined) | null): Namespaces {
+		const ns = new Namespaces(null, resolve);
 		ns._byPrefix.set(null, null);
 		ns._byPrefix.set('xml', XML_NAMESPACE);
 		ns._byPrefix.set('xmlns', XMLNS_NAMESPACE);
@@ -577,7 +597,7 @@ class Namespaces {
 	}
 }
 
-const ROOT_NAMESPACES = Namespaces.default();
+const ROOT_NAMESPACES = Namespaces.default(null);
 
 function normalizeLineEndings(input: string): string {
 	return input.replace(/\r\n?/g, '\n');
@@ -603,27 +623,20 @@ type DomContext = {
 type EntityContext = {
 	parent: EntityContext | null;
 	entity: string | null;
-	generator: Iterator<DocumentParseEvent>;
+	iterator: Iterator<DocumentParseEvent>;
 };
 
-/**
- * Parse an XML document
- *
- * This parser is non-validating, and therefore does not support an external DTD or external parsed
- * entities. During parsing, any referenced entities are included, default attribute values are
- * materialized and the DTD internal subset is discarded. References to external entities are
- * replaced with nothing. References to parameter entities are also ignored.
- *
- * @public
- *
- * @param input - the string to parse
- */
-export function parseXmlDocument(input: string): Document {
-	const doc = new Document();
+export function parseXml(
+	input: string,
+	generator: (input: string) => Iterator<DocumentParseEvent>,
+	namespaces: Namespaces,
+	into: Node
+): void {
+	const doc = getNodeDocument(into);
 	let domContext: DomContext = {
 		parent: null,
-		root: doc,
-		namespaces: ROOT_NAMESPACES,
+		root: into,
+		namespaces,
 		entityRoot: true,
 	};
 	let dtd: Dtd | null = null;
@@ -652,11 +665,11 @@ export function parseXmlDocument(input: string): Document {
 	let entityContext: EntityContext | null = {
 		parent: null,
 		entity: null,
-		generator: parseDocument(input),
+		iterator: generator(input),
 	};
 	while (entityContext) {
-		let it: IteratorResult<DocumentParseEvent> = entityContext.generator.next();
-		for (; !it.done; it = entityContext.generator.next()) {
+		let it: IteratorResult<DocumentParseEvent> = entityContext.iterator.next();
+		for (; !it.done; it = entityContext.iterator.next()) {
 			const event: DocumentParseEvent = it.value;
 			if (typeof event === 'string') {
 				collectedText.push(event);
@@ -708,7 +721,7 @@ export function parseXmlDocument(input: string): Document {
 					entityContext = {
 						parent: entityContext,
 						entity: event.name,
-						generator: parseContent(replacementText),
+						iterator: parseContent(replacementText),
 					};
 					continue;
 				}
@@ -860,7 +873,9 @@ export function parseXmlDocument(input: string): Document {
 			throwParseError(
 				entityContext.entity
 					? `replacement text for entity ${entityContext.entity}`
-					: 'document',
+					: into === doc
+					? 'document'
+					: 'fragment',
 				input,
 				it.value.expected,
 				it.value.offset
@@ -872,7 +887,9 @@ export function parseXmlDocument(input: string): Document {
 				`${
 					entityContext.entity
 						? `replacement text for entity "${entityContext.entity}"`
-						: 'document'
+						: into === doc
+						? 'document'
+						: 'fragment'
 				} is not well-formed - element "${
 					domContext.root.nodeName
 				}" is missing a closing tag`
@@ -886,6 +903,68 @@ export function parseXmlDocument(input: string): Document {
 	}
 
 	flushCollectedText();
+}
 
+/**
+ * Parse an XML fragment
+ *
+ * This accepts the same format as specified for external parsed entities, except that it does not
+ * support parameter entities. That means it accepts an optional text declaration (similar to the
+ * XML version declaration) followed by any content that may be found between an element's start and
+ * end tags. That does not include doctype nodes.
+ *
+ * This parser is non-validating, and therefore does not support an external DTD or external parsed
+ * entities. During parsing, any referenced entities are included, default attribute values are
+ * materialized and the DTD internal subset is discarded. References to external entities are
+ * replaced with nothing. References to parameter entities are also ignored.
+ *
+ * @public
+ *
+ * @param input   - the string to parse
+ * @param options - allows specifying context missing from the fragment text
+ */
+export function parseXmlFragment(
+	input: string,
+	options: Partial<{
+		/**
+		 * Called to resolve the namespace for any prefix that is not defined in the context of the
+		 * content currently being parsed. Should return the namespace URI, or undefined if a
+		 * namespace could not be resolved for the given prefix.
+		 *
+		 * @public
+		 *
+		 * @param prefix - the prefix that could not be resolved
+		 */
+		resolveNamespacePrefix(prefix: string): string | undefined;
+	}> = {}
+): DocumentFragment {
+	const doc = new Document();
+	const fragment = doc.createDocumentFragment();
+	parseXml(
+		input,
+		parseFragment,
+		options.resolveNamespacePrefix
+			? Namespaces.default(options.resolveNamespacePrefix)
+			: ROOT_NAMESPACES,
+		fragment
+	);
+	return fragment;
+}
+
+/**
+ * Parse an XML document
+ *
+ * This parser is non-validating, and therefore does not support an external DTD or external parsed
+ * entities. During parsing, any referenced entities are included, default attribute values are
+ * materialized and the DTD internal subset is discarded. References to external entities are
+ * replaced with nothing. References to parameter entities are also ignored.
+ *
+ * @public
+ *
+ * @param input - the string to parse
+ */
+export function parseXmlDocument(input: string): Document {
+	const doc = new Document();
+	parseXml(input, parseDocument, ROOT_NAMESPACES, doc);
 	return doc;
 }
