@@ -1,6 +1,6 @@
 {
 	"name": "slimdom",
-	"version": "4.0.2",
+	"version": "4.1.0",
 	"description": "Fast, tiny, standards-compliant XML DOM implementation for node and the browser",
 	"author": "Stef Busking",
 	"license": "MIT",
