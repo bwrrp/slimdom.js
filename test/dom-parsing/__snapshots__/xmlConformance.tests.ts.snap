@@ -929,11 +929,11 @@ At line 1, character 16:
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P24-ibm24n02.xml - Tests VersionInfo with a required field missing. The white space is missing between the key word "xml" and the VersionInfo in the XMLDecl.: ibm-not-wf-P24-ibm24n02.xml 1`] = `
-"Parsing document failed, expected \\"whitespace\\"
-At line 1, character 6:
+"Parsing document failed, expected \\"?>\\"
+At line 1, character 13:
 
 <?xmlversion='1.0' ?>
-     ^"
+            ^"
 `;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P24-ibm24n03.xml - Tests VersionInfo with a required field missing. The "=" (equal sign) is missing between the key word "version" and the VersionNum.: ibm-not-wf-P24-ibm24n03.xml 1`] = `

@@ -627,7 +627,9 @@ const SDDecl = preceded(
 
 // [23] XMLDecl ::= '<?xml' VersionInfo EncodingDecl? SDDecl? S? '?>'
 const XMLDecl: Parser<XMLDeclEvent> = delimited(
-	XML_DECL_START,
+	// PIs may also start with <?xml, but may never have their target be just 'xml'
+	// We can therefore consider it a fatal error if parsing fails after the space
+	followed(XML_DECL_START, peek(S)),
 	followed(
 		then(
 			VersionInfo,
@@ -642,7 +644,7 @@ const XMLDecl: Parser<XMLDeclEvent> = delimited(
 		optional(S)
 	),
 	PI_END,
-	false
+	true
 );
 
 const NameWithPosition = withPosition(map(Name, (name) => ({ name })));
@@ -964,16 +966,12 @@ const EntityDecl = preceded(peek(ENTITY_DECL_START), cut(or([GEDecl, PEDecl])));
 const TextDecl: Parser<XMLDeclEvent> = delimited(
 	XML_DECL_START,
 	followed(
-		then(
-			optional(VersionInfo),
-			EncodingDecl,
-			(version, encoding) => ({
-				type: ParserEventType.XMLDecl,
-				version,
-				encoding,
-				standalone: null,
-			})
-		),
+		then(optional(VersionInfo), EncodingDecl, (version, encoding) => ({
+			type: ParserEventType.XMLDecl,
+			version,
+			encoding,
+			standalone: null,
+		})),
 		optional(S)
 	),
 	PI_END,
