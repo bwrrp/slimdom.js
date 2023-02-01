@@ -642,7 +642,7 @@ const XMLDecl: Parser<XMLDeclEvent> = delimited(
 		optional(S)
 	),
 	PI_END,
-	true
+	false
 );
 
 const NameWithPosition = withPosition(map(Name, (name) => ({ name })));
