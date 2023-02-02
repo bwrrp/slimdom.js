@@ -777,4 +777,15 @@ describe('parseXmlDocument', () => {
 		const doc = slimdom.parseXmlDocument(xml);
 		expect(slimdom.serializeToWellFormedString(doc)).toBe(xml);
 	});
+
+	it('does not accept a PI with a colon in the name as the first thing in the document', () => {
+		const xml = '<?xml:stylesheet type="text/css" href="styles.css"?><xml/>';
+		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(`
+		"Parsing document failed, expected \\"name must not contain colon\\"
+		At line 1, character 3:
+
+		<?xml:stylesheet type=\\"text/css\\" href=\\"styles.css\\"?><xml/>
+		  ^"
+	`);
+	});
 });
