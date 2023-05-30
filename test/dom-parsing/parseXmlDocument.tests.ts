@@ -788,4 +788,46 @@ describe('parseXmlDocument', () => {
 		  ^"
 	`);
 	});
+
+	it('protects against entity expansion attacks by default (billion laughs / exponential blowup)', () => {
+		// Each level expands to 10 times the next, leading to 10^10 expansions
+		const xml = `<!DOCTYPE root [
+			<!ENTITY one "&two;&two;&two;&two;&two;&two;&two;&two;&two;&two;&two;">
+			<!ENTITY two "&three;&three;&three;&three;&three;&three;&three;&three;&three;&three;&three;">
+			<!ENTITY three "&four;&four;&four;&four;&four;&four;&four;&four;&four;&four;&four;">
+			<!ENTITY four "&five;&five;&five;&five;&five;&five;&five;&five;&five;&five;&five;">
+			<!ENTITY five "&six;&six;&six;&six;&six;&six;&six;&six;&six;&six;&six;">
+			<!ENTITY six "&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;">
+			<!ENTITY seven "&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;">
+			<!ENTITY eight "&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;">
+			<!ENTITY nine "&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;">
+			<!ENTITY ten "a">
+		]><root>&one;</root>`;
+		expect(() => {
+			console.log(slimdom.parseXmlDocument(xml));
+		}).toThrowErrorMatchingInlineSnapshot(`
+		"too much entity expansion
+		At line 12, character 11:
+
+				]><root>&one;</root>
+				        ^^^^^"
+	`);
+	});
+
+	it('protects against entity expansion attacks by default (quadratic blowup)', () => {
+		// Entity "many" is smaller than the expansion threshold, but a hundred
+		// instances exceed both the threshold and the amplification limit.
+		const xml = `<!DOCTYPE root [
+			<!ENTITY many "${Array.from({ length: 1000000 }, () => 'a').join('')}">
+		]><root>${Array.from({ length: 100 }, () => '&many;').join('')}</root>`;
+		expect(() => {
+			console.log(slimdom.parseXmlDocument(xml));
+		}).toThrowErrorMatchingInlineSnapshot(`
+		"too much entity expansion
+		At line 3, character 605:
+
+		…;&many;&many;&many;&many;&many;&many;&many;&many;&many;</root>
+		                                                  ^^^^^^"
+	`);
+	});
 });
