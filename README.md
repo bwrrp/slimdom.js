@@ -101,6 +101,8 @@ const xml3 = slimdom.serializeToWellFormedString(fragment);
 
 This library does not implement HTML parsing, which means no `insertAdjacentHTML` on `Element`, nor `createContextualFragment` on `Range`. The `innerHTML` and `outerHTML` properties are read-only. If you need to parse HTML, see [this example][parse5-example] which shows how to connect the [parse5][parse5] HTML parser with the help of the [dom-treeadapter][dom-treeadapter] library.
 
+To guard against [entity expansion attacks][billion-laughs], the parser by default limits both the number of entities involved in expanding a single top-level entity reference as well as the number of characters such expansion may produce. You can adjust these limits by setting the `maxNestedEntities` (default 64000) and `maxCharsPerEntity` (default 8000000) options when calling `parseXmlDocument`. Please file an issue if you ever need to increase these values for a non-attack input.
+
 ### CSS Selectors and XPath
 
 This library does not implement CSS selectors, which means no `querySelector` / `querySelectorAll` on `ParentNode` and no `closest` / `matches` / `webkitMatchesSelector` on `Element`. This library also does not implement XPath, which means no `XPathResult` / `XPathExpression` / `XPathEvaluator` interfaces and no `createExpression` / `createNSResolver` / `evaluate` on `Document`.
@@ -131,14 +133,15 @@ The following features are missing simply because I have not yet had, or heard o
 -   `attributeFilter` for mutation observers.
 -   `isConnected` / `getRootNode` / `isEqualNode` / `isSameNode` on `Node`
 
+[billion-laughs]: https://en.wikipedia.org/wiki/Billion_laughs_attack
 [dom-adopt-pr]: https://github.com/whatwg/dom/pull/819
+[dom-treeadapter]: https://github.com/RReverser/dom-treeadapter
 [fontoxpath]: https://github.com/FontoXML/fontoxpath/
+[jsdom]: https://github.com/jsdom/jsdom
 [parse5-example]: https://github.com/bwrrp/slimdom.js/tree/main/test/examples/parse5
 [parse5]: https://github.com/inikulin/parse5
-[dom-treeadapter]: https://github.com/RReverser/dom-treeadapter
 [sizzle-example]: https://github.com/bwrrp/slimdom.js/tree/master/test/examples/sizzle
 [sizzle]: https://github.com/jquery/sizzle
-[jsdom]: https://github.com/jsdom/jsdom
 
 ## Contributing
 

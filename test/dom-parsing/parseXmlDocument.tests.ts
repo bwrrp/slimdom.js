@@ -788,4 +788,47 @@ describe('parseXmlDocument', () => {
 		  ^"
 	`);
 	});
+
+	it('protects against entity expansion attacks by default (entity limit)', () => {
+		// Each level expands to 10 times the next, leading to 10^10 expansions
+		const xml = `<!DOCTYPE root [
+			<!ENTITY one "&two;&two;&two;&two;&two;&two;&two;&two;&two;&two;&two;">
+			<!ENTITY two "&three;&three;&three;&three;&three;&three;&three;&three;&three;&three;&three;">
+			<!ENTITY three "&four;&four;&four;&four;&four;&four;&four;&four;&four;&four;&four;">
+			<!ENTITY four "&five;&five;&five;&five;&five;&five;&five;&five;&five;&five;&five;">
+			<!ENTITY five "&six;&six;&six;&six;&six;&six;&six;&six;&six;&six;&six;">
+			<!ENTITY six "&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;">
+			<!ENTITY seven "&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;">
+			<!ENTITY eight "&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;">
+			<!ENTITY nine "&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;">
+			<!ENTITY ten "a">
+		]><root>&one;</root>`;
+		expect(() => {
+			console.log(slimdom.parseXmlDocument(xml));
+		}).toThrowErrorMatchingInlineSnapshot(`
+		"entity expansion exceeded maximum allowed number of entities
+		At line 12, character 11:
+
+				]><root>&one;</root>
+				        ^^^^^"
+	`);
+	});
+
+	it('protects against entity expansion attacks by default (character limit)', () => {
+		// Entity "two" is smaller than the default character limit, but with
+		// ten instances per "one", expanding that one does exceed the limit.
+		const xml = `<!DOCTYPE root [
+			<!ENTITY one "&two;&two;&two;&two;&two;&two;&two;&two;&two;&two;&two;">
+			<!ENTITY two "${Array.from({ length: 1000000 }, () => 'a').join('')}">
+		]><root>&one;</root>`;
+		expect(() => {
+			console.log(slimdom.parseXmlDocument(xml));
+		}).toThrowErrorMatchingInlineSnapshot(`
+		"entity expansion exceeded maximum allowed number of characters
+		At line 4, character 11:
+
+				]><root>&one;</root>
+				        ^^^^^"
+	`);
+	});
 });

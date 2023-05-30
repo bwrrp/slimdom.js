@@ -626,12 +626,53 @@ type EntityContext = {
 	iterator: Iterator<DocumentParseEvent>;
 };
 
+/**
+ * Options to control parsing.
+ *
+ * @public
+ */
+export type ParseOptions = Partial<{
+	/**
+	 * The maximum total number of named entities that may be expanded under one
+	 * top-level entity reference.
+	 *
+	 * Defaults to 64000. Set to a negative number to disable this limit, but be aware that this may
+	 * open up the application to entity expansion attacks.
+	 *
+	 * @public
+	 */
+	maxNestedEntities: number;
+
+	/**
+	 * The maximum number of characters (code units) an entity (or set of nested
+	 * entities) may expand to.
+	 *
+	 * Defaults to 8000000. Set to a negative number to disable this limit, but
+	 * be aware that this may open up the application to entity expansion
+	 * attacks.
+	 *
+	 * @public
+	 */
+	maxCharsPerEntity: number;
+}>;
+
+const DEFAULT_MAX_NESTED_ENTITIES = 64_000;
+const DEFAULT_MAX_CHARS_PER_ENTITY = 8_000_000;
+
 export function parseXml(
 	input: string,
 	generator: (input: string) => Iterator<DocumentParseEvent>,
 	namespaces: Namespaces,
-	into: Node
+	into: Node,
+	{
+		maxNestedEntities = DEFAULT_MAX_NESTED_ENTITIES,
+		maxCharsPerEntity = DEFAULT_MAX_CHARS_PER_ENTITY,
+	}: ParseOptions
 ): void {
+	// Remove BOM if there is one and normalize line endings to lf
+	input = input.replace(/^\ufeff/, '');
+	input = normalizeLineEndings(input);
+
 	const doc = getNodeDocument(into);
 	let domContext: DomContext = {
 		parent: null,
@@ -643,7 +684,25 @@ export function parseXml(
 	const qualifiedNameCache: QualifiedNameCache = new Map();
 	let collectedText: string[] = [];
 
-	function flushCollectedText() {
+	// Counters to guard against entity expansion attacks
+	let topLevelEntity: EntityRefEvent | null = null;
+	let entityChars = 0;
+	let entityCount = 0;
+
+	function pushText(text: string): void {
+		collectedText.push(text);
+		if (topLevelEntity !== null) {
+			entityChars += text.length;
+			if (entityChars > maxCharsPerEntity) {
+				throwErrorWithContext(
+					'entity expansion exceeded maximum allowed number of characters',
+					topLevelEntity
+				);
+			}
+		}
+	}
+
+	function flushCollectedText(): void {
 		if (collectedText.length > 0) {
 			const text = collectedText.join('');
 			if (domContext.root === doc) {
@@ -658,10 +717,6 @@ export function parseXml(
 		}
 	}
 
-	// Remove BOM if there is one and normalize line endings to lf
-	input = input.replace(/^\ufeff/, '');
-	input = normalizeLineEndings(input);
-
 	let entityContext: EntityContext | null = {
 		parent: null,
 		entity: null,
@@ -672,7 +727,7 @@ export function parseXml(
 		for (; !it.done; it = entityContext.iterator.next()) {
 			const event: DocumentParseEvent = it.value;
 			if (typeof event === 'string') {
-				collectedText.push(event);
+				pushText(event);
 				continue;
 			}
 
@@ -684,7 +739,7 @@ export function parseXml(
 							event
 						);
 					}
-					collectedText.push(String.fromCodePoint(event.cp));
+					pushText(String.fromCodePoint(event.cp));
 					continue;
 
 				case ParserEventType.EntityRef: {
@@ -723,6 +778,16 @@ export function parseXml(
 						entity: event.name,
 						iterator: parseContent(replacementText),
 					};
+					if (topLevelEntity === null) {
+						topLevelEntity = event;
+					}
+					entityCount += 1;
+					if (entityCount > maxNestedEntities) {
+						throwErrorWithContext(
+							'entity expansion exceeded maximum allowed number of entities',
+							topLevelEntity
+						);
+					}
 					continue;
 				}
 			}
@@ -899,6 +964,12 @@ export function parseXml(
 		entityContext = entityContext.parent;
 		if (entityContext) {
 			domContext = domContext.parent!;
+			if (entityContext.entity === null) {
+				// Back to top-level parsing, reset counters
+				topLevelEntity = null;
+				entityChars = 0;
+				entityCount = 0;
+			}
 		}
 	}
 
@@ -946,7 +1017,9 @@ export function parseXmlFragment(
 		options.resolveNamespacePrefix
 			? Namespaces.default(options.resolveNamespacePrefix)
 			: ROOT_NAMESPACES,
-		fragment
+		fragment,
+		// parseFragment doesn't support entity definitions yet, so the options don't apply
+		{}
 	);
 	return fragment;
 }
@@ -963,8 +1036,8 @@ export function parseXmlFragment(
  *
  * @param input - the string to parse
  */
-export function parseXmlDocument(input: string): Document {
+export function parseXmlDocument(input: string, options: ParseOptions = {}): Document {
 	const doc = new Document();
-	parseXml(input, parseDocument, ROOT_NAMESPACES, doc);
+	parseXml(input, parseDocument, ROOT_NAMESPACES, doc, options);
 	return doc;
 }
