@@ -34,7 +34,7 @@ describe('parseXmlFragment', () => {
 				<blah=>Hello</blah>
 			</root>`;
 		expect(() => slimdom.parseXmlFragment(xml)).toThrowErrorMatchingInlineSnapshot(`
-		"Parsing fragment failed, expected \\">\\"
+		"Parsing fragment failed, expected ">"
 		At line 3, character 10:
 
 						<blah=>Hello</blah>
@@ -56,7 +56,7 @@ describe('parseXmlFragment', () => {
 	it('can not yet resolve entity references to entities defined elsewhere', () => {
 		const xml = `&entity;`;
 		expect(() => slimdom.parseXmlFragment(xml)).toThrowErrorMatchingInlineSnapshot(`
-		"reference to unknown entity \\"entity\\" in content
+		"reference to unknown entity "entity" in content
 		At line 1, character 1:
 
 		&entity;
@@ -67,7 +67,7 @@ describe('parseXmlFragment', () => {
 	it('requires the content to be well-formed', () => {
 		const xml = `<missing-end-tag>content`;
 		expect(() => slimdom.parseXmlFragment(xml)).toThrowErrorMatchingInlineSnapshot(
-			`"fragment is not well-formed - element \\"missing-end-tag\\" is missing a closing tag"`
+			`"fragment is not well-formed - element "missing-end-tag" is missing a closing tag"`
 		);
 	});
 
@@ -80,10 +80,10 @@ describe('parseXmlFragment', () => {
 	it('does not accept a PI with a colon in the name as the first thing in the fragment', () => {
 		const xml = '<?xml:stylesheet type="text/css" href="styles.css"?>';
 		expect(() => slimdom.parseXmlFragment(xml)).toThrowErrorMatchingInlineSnapshot(`
-		"Parsing fragment failed, expected \\"name must not contain colon\\"
+		"Parsing fragment failed, expected "name must not contain colon"
 		At line 1, character 3:
 
-		<?xml:stylesheet type=\\"text/css\\" href=\\"styles.css\\"?>
+		<?xml:stylesheet type="text/css" href="styles.css"?>
 		  ^"
 	`);
 	});

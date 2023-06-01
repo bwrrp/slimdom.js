@@ -54,7 +54,7 @@ describe('DOMParser', () => {
 		const xml = `\u{0019}`;
 		const doc = parser.parseFromString(xml, 'text/xml');
 		expect(slimdom.serializeToWellFormedString(doc)).toMatchInlineSnapshot(`
-		"<parsererror xmlns=\\"http://www.mozilla.org/newlayout/xml/parsererror.xml\\">Error: Parsing document failed, expected \\"&lt;\\"
+		"<parsererror xmlns="http://www.mozilla.org/newlayout/xml/parsererror.xml">Error: Parsing document failed, expected "&lt;"
 		At line 1, character 1:
 
 		[invalid character]

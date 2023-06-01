@@ -107,7 +107,7 @@ export class DefaultContext implements Context {
 			const r = weakref.deref();
 			// Safari / webkit has a bug where deref can return null instead of undefined
 			const isLost = r === undefined || r === null;
-			const isManuallyRemoved = !isLost && !this._weakRangeSet.has(r)
+			const isManuallyRemoved = !isLost && !this._weakRangeSet.has(r);
 			if (isLost || isManuallyRemoved) {
 				// Weak ref lost, remove
 				this._ranges[i] = this._ranges[numRanges - 1];

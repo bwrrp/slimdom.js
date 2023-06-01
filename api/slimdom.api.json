@@ -1,8 +1,8 @@
 {
   "metadata": {
     "toolPackage": "@microsoft/api-extractor",
-    "toolVersion": "7.33.6",
-    "schemaVersion": 1010,
+    "toolVersion": "7.35.1",
+    "schemaVersion": 1011,
     "oldestForwardsCompatibleVersion": 1001,
     "tsdocConfig": {
       "$schema": "https://developer.microsoft.com/json-schemas/tsdoc/v0/tsdoc.schema.json",
@@ -193,6 +193,7 @@
           ],
           "fileUrlPath": "lib/Attr.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "Attr",
           "preserveMemberOrder": false,
           "members": [
@@ -243,6 +244,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "_copy"
             },
             {
@@ -373,7 +375,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -420,6 +423,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "lookupNamespaceURI"
             },
             {
@@ -467,6 +471,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "lookupPrefix"
             },
             {
@@ -496,7 +501,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -525,7 +531,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -554,7 +561,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -583,7 +591,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -612,7 +621,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -646,7 +656,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -675,7 +686,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -704,7 +716,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -733,7 +746,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             }
           ],
           "extendsTokenRange": {
@@ -763,6 +777,7 @@
           ],
           "fileUrlPath": "lib/CDATASection.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "CDATASection",
           "preserveMemberOrder": false,
           "members": [
@@ -813,6 +828,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "_copy"
             },
             {
@@ -874,7 +890,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -903,7 +920,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             }
           ],
           "extendsTokenRange": {
@@ -951,6 +969,7 @@
           ],
           "fileUrlPath": "lib/CharacterData.d.ts",
           "releaseTag": "Public",
+          "isAbstract": true,
           "name": "CharacterData",
           "preserveMemberOrder": false,
           "members": [
@@ -981,7 +1000,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": true
+              "isProtected": true,
+              "isAbstract": false
             },
             {
               "kind": "Constructor",
@@ -1069,6 +1089,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "after"
             },
             {
@@ -1116,6 +1137,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "appendData"
             },
             {
@@ -1172,6 +1194,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "before"
             },
             {
@@ -1201,7 +1224,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -1264,6 +1288,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "deleteData"
             },
             {
@@ -1327,6 +1352,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "insertData"
             },
             {
@@ -1356,7 +1382,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -1403,6 +1430,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "lookupNamespaceURI"
             },
             {
@@ -1450,6 +1478,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "lookupPrefix"
             },
             {
@@ -1484,7 +1513,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -1513,7 +1543,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -1547,7 +1578,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -1577,6 +1609,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "remove"
             },
             {
@@ -1656,6 +1689,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "replaceData"
             },
             {
@@ -1712,6 +1746,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "replaceWith"
             },
             {
@@ -1775,6 +1810,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "substringData"
             },
             {
@@ -1804,7 +1840,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             }
           ],
           "extendsTokenRange": {
@@ -1843,6 +1880,7 @@
           ],
           "fileUrlPath": "lib/Comment.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "Comment",
           "preserveMemberOrder": false,
           "members": [
@@ -1893,6 +1931,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "_copy"
             },
             {
@@ -1954,7 +1993,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -1983,7 +2023,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             }
           ],
           "extendsTokenRange": {
@@ -2031,6 +2072,7 @@
           ],
           "fileUrlPath": "lib/Document.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "Document",
           "preserveMemberOrder": false,
           "members": [
@@ -2081,6 +2123,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "_copy"
             },
             {
@@ -2165,6 +2208,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "adoptNode"
             },
             {
@@ -2221,6 +2265,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "append"
             },
             {
@@ -2250,7 +2295,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -2284,7 +2330,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -2332,6 +2379,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "createAttribute"
             },
             {
@@ -2396,6 +2444,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "createAttributeNS"
             },
             {
@@ -2444,6 +2493,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "createCDATASection"
             },
             {
@@ -2492,6 +2542,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "createComment"
             },
             {
@@ -2523,6 +2574,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "createDocumentFragment"
             },
             {
@@ -2571,6 +2623,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "createElement"
             },
             {
@@ -2635,6 +2688,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "createElementNS"
             },
             {
@@ -2699,6 +2753,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "createProcessingInstruction"
             },
             {
@@ -2730,6 +2785,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "createRange"
             },
             {
@@ -2778,6 +2834,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "createTextNode"
             },
             {
@@ -2812,7 +2869,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -2846,7 +2904,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -2880,7 +2939,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -2932,6 +2992,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "getElementsByTagName"
             },
             {
@@ -3000,6 +3061,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "getElementsByTagNameNS"
             },
             {
@@ -3030,7 +3092,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -3115,6 +3178,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "importNode"
             },
             {
@@ -3149,7 +3213,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -3196,6 +3261,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "lookupNamespaceURI"
             },
             {
@@ -3243,6 +3309,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "lookupPrefix"
             },
             {
@@ -3272,7 +3339,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -3301,7 +3369,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -3330,7 +3399,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -3386,6 +3456,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "prepend"
             },
             {
@@ -3442,6 +3513,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "replaceChildren"
             },
             {
@@ -3471,7 +3543,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             }
           ],
           "extendsTokenRange": {
@@ -3552,6 +3625,7 @@
           ],
           "fileUrlPath": "lib/DocumentFragment.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "DocumentFragment",
           "preserveMemberOrder": false,
           "members": [
@@ -3602,6 +3676,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "_copy"
             },
             {
@@ -3673,6 +3748,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "append"
             },
             {
@@ -3702,7 +3778,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -3736,7 +3813,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -3770,7 +3848,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -3804,7 +3883,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -3851,6 +3931,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "lookupNamespaceURI"
             },
             {
@@ -3898,6 +3979,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "lookupPrefix"
             },
             {
@@ -3927,7 +4009,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -3956,7 +4039,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -3985,7 +4069,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -4041,6 +4126,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "prepend"
             },
             {
@@ -4097,6 +4183,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "replaceChildren"
             },
             {
@@ -4126,7 +4213,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             }
           ],
           "extendsTokenRange": {
@@ -4174,6 +4262,7 @@
           ],
           "fileUrlPath": "lib/DocumentType.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "DocumentType",
           "preserveMemberOrder": false,
           "members": [
@@ -4224,6 +4313,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "_copy"
             },
             {
@@ -4344,6 +4434,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "after"
             },
             {
@@ -4400,6 +4491,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "before"
             },
             {
@@ -4447,6 +4539,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "lookupNamespaceURI"
             },
             {
@@ -4494,6 +4587,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "lookupPrefix"
             },
             {
@@ -4523,7 +4617,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -4552,7 +4647,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -4581,7 +4677,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -4610,7 +4707,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -4639,7 +4737,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -4669,6 +4768,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "remove"
             },
             {
@@ -4725,6 +4825,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "replaceWith"
             },
             {
@@ -4754,7 +4855,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -4783,7 +4885,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             }
           ],
           "extendsTokenRange": {
@@ -4818,6 +4921,7 @@
           ],
           "fileUrlPath": "lib/util/errorHelpers.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "DOMException",
           "preserveMemberOrder": false,
           "members": [
@@ -4896,7 +5000,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -4925,7 +5030,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -4954,7 +5060,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -4983,7 +5090,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             }
           ],
           "extendsTokenRange": {
@@ -5004,6 +5112,7 @@
           ],
           "fileUrlPath": "lib/DOMImplementation.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "DOMImplementation",
           "preserveMemberOrder": false,
           "members": [
@@ -5123,6 +5232,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "createDocument"
             },
             {
@@ -5203,6 +5313,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "createDocumentType"
             },
             {
@@ -5251,6 +5362,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "createHTMLDocument"
             }
           ],
@@ -5268,6 +5380,7 @@
           ],
           "fileUrlPath": "lib/dom-parsing/DOMParser.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "DOMParser",
           "preserveMemberOrder": false,
           "members": [
@@ -5348,6 +5461,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "parseFromString"
             }
           ],
@@ -5401,6 +5515,7 @@
           ],
           "fileUrlPath": "lib/Element.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "Element",
           "preserveMemberOrder": false,
           "members": [
@@ -5451,6 +5566,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "_copy"
             },
             {
@@ -5571,6 +5687,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "after"
             },
             {
@@ -5627,6 +5744,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "append"
             },
             {
@@ -5661,7 +5779,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -5717,6 +5836,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "before"
             },
             {
@@ -5746,7 +5866,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -5780,7 +5901,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -5814,7 +5936,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -5861,6 +5984,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "getAttribute"
             },
             {
@@ -5913,6 +6037,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "getAttributeNode"
             },
             {
@@ -5981,6 +6106,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "getAttributeNodeNS"
             },
             {
@@ -6044,6 +6170,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "getAttributeNS"
             },
             {
@@ -6096,6 +6223,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "getElementsByTagName"
             },
             {
@@ -6164,6 +6292,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "getElementsByTagNameNS"
             },
             {
@@ -6211,6 +6340,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "hasAttribute"
             },
             {
@@ -6274,6 +6404,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "hasAttributeNS"
             },
             {
@@ -6304,6 +6435,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "hasAttributes"
             },
             {
@@ -6333,7 +6465,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -6367,7 +6500,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -6396,7 +6530,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -6443,6 +6578,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "lookupNamespaceURI"
             },
             {
@@ -6490,6 +6626,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "lookupPrefix"
             },
             {
@@ -6519,7 +6656,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -6553,7 +6691,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -6582,7 +6721,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -6611,7 +6751,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -6640,7 +6781,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -6669,7 +6811,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -6698,7 +6841,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -6754,6 +6898,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "prepend"
             },
             {
@@ -6788,7 +6933,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -6818,6 +6964,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "remove"
             },
             {
@@ -6865,6 +7012,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "removeAttribute"
             },
             {
@@ -6914,6 +7062,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "removeAttributeNode"
             },
             {
@@ -6977,6 +7126,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "removeAttributeNS"
             },
             {
@@ -7033,6 +7183,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "replaceChildren"
             },
             {
@@ -7089,6 +7240,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "replaceWith"
             },
             {
@@ -7152,6 +7304,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "setAttribute"
             },
             {
@@ -7205,6 +7358,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "setAttributeNode"
             },
             {
@@ -7258,6 +7412,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "setAttributeNodeNS"
             },
             {
@@ -7337,6 +7492,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "setAttributeNS"
             },
             {
@@ -7366,7 +7522,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -7395,7 +7552,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -7458,6 +7616,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "toggleAttribute"
             }
           ],
@@ -7492,6 +7651,7 @@
           ],
           "fileUrlPath": "lib/mutation-observer/MutationObserver.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "MutationObserver",
           "preserveMemberOrder": false,
           "members": [
@@ -7523,7 +7683,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -7557,7 +7718,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -7591,7 +7753,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -7625,7 +7788,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Constructor",
@@ -7688,6 +7852,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "disconnect"
             },
             {
@@ -7753,6 +7918,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "observe"
             },
             {
@@ -7788,6 +7954,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "takeRecords"
             }
           ],
@@ -7805,6 +7972,7 @@
           ],
           "fileUrlPath": "lib/mutation-observer/MutationRecord.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "MutationRecord",
           "preserveMemberOrder": false,
           "members": [
@@ -7889,7 +8057,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -7918,7 +8087,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -7947,7 +8117,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -7981,7 +8152,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8010,7 +8182,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8044,7 +8217,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8078,7 +8252,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8108,7 +8283,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8137,7 +8313,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             }
           ],
           "implementsTokenRanges": []
@@ -8154,6 +8331,7 @@
           ],
           "fileUrlPath": "lib/Node.d.ts",
           "releaseTag": "Public",
+          "isAbstract": true,
           "name": "Node",
           "preserveMemberOrder": false,
           "members": [
@@ -8204,6 +8382,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": true,
               "name": "_copy"
             },
             {
@@ -8234,7 +8413,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -8303,6 +8483,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "appendChild"
             },
             {
@@ -8332,7 +8513,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8361,7 +8543,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8390,7 +8573,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8419,7 +8603,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8453,7 +8638,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -8500,6 +8686,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "cloneNode"
             },
             {
@@ -8529,7 +8716,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8558,7 +8746,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -8606,6 +8795,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "compareDocumentPosition"
             },
             {
@@ -8658,6 +8848,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "contains"
             },
             {
@@ -8687,7 +8878,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8716,7 +8908,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8745,7 +8938,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8774,7 +8968,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8803,7 +8998,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8832,7 +9028,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8861,7 +9058,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8890,7 +9088,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8919,7 +9118,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8948,7 +9148,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -8977,7 +9178,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9006,7 +9208,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9035,7 +9238,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9064,7 +9268,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9093,7 +9298,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9122,7 +9328,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9151,7 +9358,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9180,7 +9388,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9214,7 +9423,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -9244,6 +9454,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "hasChildNodes"
             },
             {
@@ -9334,6 +9545,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "insertBefore"
             },
             {
@@ -9381,6 +9593,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "isDefaultNamespace"
             },
             {
@@ -9415,7 +9628,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -9462,6 +9676,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": true,
               "name": "lookupNamespaceURI"
             },
             {
@@ -9509,6 +9724,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": true,
               "name": "lookupPrefix"
             },
             {
@@ -9543,7 +9759,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9572,7 +9789,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": true
             },
             {
               "kind": "Property",
@@ -9601,7 +9819,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": true
             },
             {
               "kind": "Property",
@@ -9630,7 +9849,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": true
             },
             {
               "kind": "Method",
@@ -9660,6 +9880,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "normalize"
             },
             {
@@ -9689,7 +9910,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9718,7 +9940,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9752,7 +9975,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9786,7 +10010,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9820,7 +10045,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9854,7 +10080,8 @@
                 "endIndex": 3
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9883,7 +10110,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -9912,7 +10140,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -9981,6 +10210,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "removeChild"
             },
             {
@@ -10067,6 +10297,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "replaceChild"
             },
             {
@@ -10096,7 +10327,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -10125,7 +10357,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -10154,7 +10387,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": true
             }
           ],
           "implementsTokenRanges": []
@@ -10341,6 +10575,7 @@
           ],
           "fileUrlPath": "lib/ProcessingInstruction.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "ProcessingInstruction",
           "preserveMemberOrder": false,
           "members": [
@@ -10391,6 +10626,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "_copy"
             },
             {
@@ -10468,7 +10704,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -10497,7 +10734,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -10526,7 +10764,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             }
           ],
           "extendsTokenRange": {
@@ -10556,6 +10795,7 @@
           ],
           "fileUrlPath": "lib/Range.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "Range",
           "preserveMemberOrder": false,
           "members": [
@@ -10603,6 +10843,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "cloneContents"
             },
             {
@@ -10634,6 +10875,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "cloneRange"
             },
             {
@@ -10681,6 +10923,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "collapse"
             },
             {
@@ -10710,7 +10953,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -10740,7 +10984,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -10804,6 +11049,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "compareBoundaryPoints"
             },
             {
@@ -10868,6 +11114,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "comparePoint"
             },
             {
@@ -10898,6 +11145,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "deleteContents"
             },
             {
@@ -10928,6 +11176,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "detach"
             },
             {
@@ -10957,7 +11206,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -10986,7 +11236,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -11016,7 +11267,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -11045,7 +11297,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -11076,6 +11329,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "extractContents"
             },
             {
@@ -11124,6 +11378,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "insertNode"
             },
             {
@@ -11172,6 +11427,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "intersectsNode"
             },
             {
@@ -11236,6 +11492,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "isPointInRange"
             },
             {
@@ -11284,6 +11541,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "selectNode"
             },
             {
@@ -11332,6 +11590,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "selectNodeContents"
             },
             {
@@ -11396,6 +11655,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "setEnd"
             },
             {
@@ -11444,6 +11704,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "setEndAfter"
             },
             {
@@ -11492,6 +11753,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "setEndBefore"
             },
             {
@@ -11556,6 +11818,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "setStart"
             },
             {
@@ -11604,6 +11867,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "setStartAfter"
             },
             {
@@ -11652,6 +11916,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "setStartBefore"
             },
             {
@@ -11681,7 +11946,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -11710,7 +11976,8 @@
                 "endIndex": 2
               },
               "isStatic": true,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -11740,7 +12007,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -11769,7 +12037,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -11817,6 +12086,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "surroundContents"
             },
             {
@@ -11847,6 +12117,7 @@
               "overloadIndex": 1,
               "parameters": [],
               "isOptional": false,
+              "isAbstract": false,
               "name": "toString"
             }
           ],
@@ -11924,6 +12195,7 @@
           ],
           "fileUrlPath": "lib/Range.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "StaticRange",
           "preserveMemberOrder": false,
           "members": [
@@ -11987,7 +12259,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -12017,7 +12290,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -12046,7 +12320,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -12076,7 +12351,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -12105,7 +12381,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             }
           ],
           "implementsTokenRanges": [
@@ -12136,6 +12413,7 @@
           ],
           "fileUrlPath": "lib/Text.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "Text",
           "preserveMemberOrder": false,
           "members": [
@@ -12186,6 +12464,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "_copy"
             },
             {
@@ -12247,7 +12526,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Property",
@@ -12276,7 +12556,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             },
             {
               "kind": "Method",
@@ -12324,6 +12605,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "splitText"
             },
             {
@@ -12353,7 +12635,8 @@
                 "endIndex": 2
               },
               "isStatic": false,
-              "isProtected": false
+              "isProtected": false,
+              "isAbstract": false
             }
           ],
           "extendsTokenRange": {
@@ -12656,6 +12939,7 @@
           ],
           "fileUrlPath": "lib/XMLDocument.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "XMLDocument",
           "preserveMemberOrder": false,
           "members": [
@@ -12706,6 +12990,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "_copy"
             }
           ],
@@ -12727,6 +13012,7 @@
           ],
           "fileUrlPath": "lib/dom-parsing/XMLSerializer.d.ts",
           "releaseTag": "Public",
+          "isAbstract": false,
           "name": "XMLSerializer",
           "preserveMemberOrder": false,
           "members": [
@@ -12791,6 +13077,7 @@
                 }
               ],
               "isOptional": false,
+              "isAbstract": false,
               "name": "serializeToString"
             }
           ],
