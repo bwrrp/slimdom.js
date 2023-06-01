@@ -626,11 +626,58 @@ type EntityContext = {
 	iterator: Iterator<DocumentParseEvent>;
 };
 
+/**
+ * Options that control parsing.
+ *
+ * @public
+ */
+export type ParseOptions = Partial<{
+	/**
+	 * To guard against entity expansion attacks, this controls the maximum amplification factor
+	 * allowed when expanding entities. This is calculated as the ratio between the length of the
+	 * initial input and that of the processed input, which is the initial input plus the length of
+	 * the replacement text corresponding to each processed named entity reference.
+	 *
+	 * As high amplification factors may occur for normal documents, this is only enforced after the
+	 * length of the processed input exceeds the `entityExpansionThreshold`.
+	 *
+	 * Defaults to 100.
+	 *
+	 * Please file an issue if you ever need to adjust this value for a non-attack input.
+	 *
+	 * @public
+	 */
+	entityExpansionMaxAmplification: number;
+
+	/**
+	 * To guard against entity expansion attacks, this controls the threshold after which the
+	 * `entityExpansionMaxAmplification` limit is enforced. The threshold is applied against the
+	 * length of the processed input, which is the initial input plus the length of the replacement
+	 * text corresponding to each processed named entity reference.
+	 *
+	 * Defaults to 2^22 characters, which equates (assuming UCS-2 encoding) to 8MiB of input data.
+	 *
+	 * Please file an issue if you ever need to adjust this value for a non-attack input.
+	 *
+	 * @public
+	 */
+	entityExpansionThreshold: number;
+}>;
+
+const DEFAULT_ENTITY_EXPANSION_MAX_AMPLIFICATION = 100.0;
+
+// 8MiB / 2 bytes per char (UCS-2) = 4MiB (2^22)
+const DEFAULT_ENTITY_EXPANSION_THRESHOLD = 4_194_304;
+
 export function parseXml(
 	input: string,
 	generator: (input: string) => Iterator<DocumentParseEvent>,
 	namespaces: Namespaces,
-	into: Node
+	into: Node,
+	{
+		entityExpansionMaxAmplification = DEFAULT_ENTITY_EXPANSION_MAX_AMPLIFICATION,
+		entityExpansionThreshold = DEFAULT_ENTITY_EXPANSION_THRESHOLD,
+	}: ParseOptions
 ): void {
 	const doc = getNodeDocument(into);
 	let domContext: DomContext = {
@@ -661,6 +708,15 @@ export function parseXml(
 	// Remove BOM if there is one and normalize line endings to lf
 	input = input.replace(/^\ufeff/, '');
 	input = normalizeLineEndings(input);
+
+	// Guard against entity expansion attacks by keeping track of the initial input length vs. the
+	// expanded input length. The latter includes the length of the replacement text for each
+	// processed entity reference. An attack is likely if the ratio between the two exceeds the
+	// maximum amplification factor AND the expanded input length exceeds a threshold. This approach
+	// and defaults are taken from libexpat's billion laughs attack protection.
+	const initialInputLength = input.length;
+	let expandedInputLength = initialInputLength;
+	let topLevelEntityRef: EntityRefEvent | null = null;
 
 	let entityContext: EntityContext | null = {
 		parent: null,
@@ -711,6 +767,16 @@ export function parseXml(
 							`reference to unknown entity "${event.name}" in content`,
 							event
 						);
+					}
+					if (topLevelEntityRef === null) {
+						topLevelEntityRef = event;
+					}
+					expandedInputLength += replacementText.length;
+					if (expandedInputLength > entityExpansionThreshold) {
+						const amplification = expandedInputLength / initialInputLength;
+						if (amplification > entityExpansionMaxAmplification) {
+							throwErrorWithContext('too much entity expansion', topLevelEntityRef);
+						}
 					}
 					domContext = {
 						parent: domContext,
@@ -899,6 +965,9 @@ export function parseXml(
 		entityContext = entityContext.parent;
 		if (entityContext) {
 			domContext = domContext.parent!;
+			if (entityContext.entity === null) {
+				topLevelEntityRef = null;
+			}
 		}
 	}
 
@@ -946,7 +1015,8 @@ export function parseXmlFragment(
 		options.resolveNamespacePrefix
 			? Namespaces.default(options.resolveNamespacePrefix)
 			: ROOT_NAMESPACES,
-		fragment
+		fragment,
+		{}
 	);
 	return fragment;
 }
@@ -961,10 +1031,11 @@ export function parseXmlFragment(
  *
  * @public
  *
- * @param input - the string to parse
+ * @param input   - the string to parse
+ * @param options - optionally adjust protection against entity expansion attacks
  */
-export function parseXmlDocument(input: string): Document {
+export function parseXmlDocument(input: string, options: ParseOptions = {}): Document {
 	const doc = new Document();
-	parseXml(input, parseDocument, ROOT_NAMESPACES, doc);
+	parseXml(input, parseDocument, ROOT_NAMESPACES, doc, options);
 	return doc;
 }

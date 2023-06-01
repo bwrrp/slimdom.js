@@ -101,6 +101,8 @@ const xml3 = slimdom.serializeToWellFormedString(fragment);
 
 This library does not implement HTML parsing, which means no `insertAdjacentHTML` on `Element`, nor `createContextualFragment` on `Range`. The `innerHTML` and `outerHTML` properties are read-only. If you need to parse HTML, see [this example][parse5-example] which shows how to connect the [parse5][parse5] HTML parser with the help of the [dom-treeadapter][dom-treeadapter] library.
 
+To guard against [entity expansion attacks][billion-laughs], the parser by default limits how much entity expansion is allowed to increase the document size. To avoid blocking legitimate uses of entity expansion, this limit is only enforced after a certain output size threshold is reached. You can adjust these values by setting the `entityExpansionMaxAmplification` and `entityExpansionThreshold` options when calling `parseXmlDocument`. Please [open an issue][new-issue] if you ever need to increase these values for a non-attack input.
+
 ### CSS Selectors and XPath
 
 This library does not implement CSS selectors, which means no `querySelector` / `querySelectorAll` on `ParentNode` and no `closest` / `matches` / `webkitMatchesSelector` on `Element`. This library also does not implement XPath, which means no `XPathResult` / `XPathExpression` / `XPathEvaluator` interfaces and no `createExpression` / `createNSResolver` / `evaluate` on `Document`.
@@ -131,18 +133,20 @@ The following features are missing simply because I have not yet had, or heard o
 -   `attributeFilter` for mutation observers.
 -   `isConnected` / `getRootNode` / `isEqualNode` / `isSameNode` on `Node`
 
+[billion-laughs]: https://en.wikipedia.org/wiki/Billion_laughs_attack
 [dom-adopt-pr]: https://github.com/whatwg/dom/pull/819
+[dom-treeadapter]: https://github.com/RReverser/dom-treeadapter
 [fontoxpath]: https://github.com/FontoXML/fontoxpath/
+[jsdom]: https://github.com/jsdom/jsdom
+[new-issue]: https://github.com/bwrrp/slimdom.js/issues/new
 [parse5-example]: https://github.com/bwrrp/slimdom.js/tree/main/test/examples/parse5
 [parse5]: https://github.com/inikulin/parse5
-[dom-treeadapter]: https://github.com/RReverser/dom-treeadapter
 [sizzle-example]: https://github.com/bwrrp/slimdom.js/tree/master/test/examples/sizzle
 [sizzle]: https://github.com/jquery/sizzle
-[jsdom]: https://github.com/jsdom/jsdom
 
 ## Contributing
 
-Pull requests for missing features or tests, bug reports, questions and other feedback are always welcome! Just [open an issue](https://github.com/bwrrp/slimdom.js/issues/new) on the github repo, and provide as much detail as you can.
+Pull requests for missing features or tests, bug reports, questions and other feedback are always welcome! Just [open an issue][new-issue] on the github repo, and provide as much detail as you can.
 
 To work on the slimdom library itself, clone [the repository](https://github.com/bwrrp/slimdom.js) and run `npm install` to install its dependencies.
 

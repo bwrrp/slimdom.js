@@ -445,7 +445,13 @@ export abstract class Node {
 }
 
 // @public
-export function parseXmlDocument(input: string): Document;
+export type ParseOptions = Partial<{
+    entityExpansionMaxAmplification: number;
+    entityExpansionThreshold: number;
+}>;
+
+// @public
+export function parseXmlDocument(input: string, options?: ParseOptions): Document;
 
 // @public
 export function parseXmlFragment(input: string, options?: Partial<{
