@@ -662,6 +662,15 @@ export type ParseOptions = Partial<{
 	 * @public
 	 */
 	entityExpansionThreshold: number;
+
+	/**
+	 * If set to true, any CDATA sections in the parsed document are converted to normal text.
+	 * Defaults to false, which means CDATA sections are represented in the DOM by CDataSection
+	 * nodes.
+	 *
+	 * @public
+	 */
+	treatCDataAsText: boolean;
 }>;
 
 const DEFAULT_ENTITY_EXPANSION_MAX_AMPLIFICATION = 100.0;
@@ -677,6 +686,7 @@ export function parseXml(
 	{
 		entityExpansionMaxAmplification = DEFAULT_ENTITY_EXPANSION_MAX_AMPLIFICATION,
 		entityExpansionThreshold = DEFAULT_ENTITY_EXPANSION_THRESHOLD,
+		treatCDataAsText = false,
 	}: ParseOptions
 ): void {
 	const doc = getNodeDocument(into);
@@ -791,6 +801,13 @@ export function parseXml(
 					};
 					continue;
 				}
+
+				case ParserEventType.CDSect:
+					if (treatCDataAsText) {
+						collectedText.push(event.data);
+						continue;
+					}
+					break;
 			}
 
 			flushCollectedText();
@@ -1005,6 +1022,15 @@ export function parseXmlFragment(
 		 * @param prefix - the prefix that could not be resolved
 		 */
 		resolveNamespacePrefix(prefix: string): string | undefined;
+
+		/**
+		 * If set to true, any CDATA sections in the parsed document are converted to normal text.
+		 * Defaults to false, which means CDATA sections are represented in the DOM by CDataSection
+		 * nodes.
+		 *
+		 * @public
+		 */
+		treatCDataAsText: boolean;
 	}> = {}
 ): DocumentFragment {
 	const doc = new Document();
@@ -1016,7 +1042,7 @@ export function parseXmlFragment(
 			? Namespaces.default(options.resolveNamespacePrefix)
 			: ROOT_NAMESPACES,
 		fragment,
-		{}
+		options
 	);
 	return fragment;
 }

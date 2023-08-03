@@ -830,4 +830,15 @@ describe('parseXmlDocument', () => {
 		                                                  ^^^^^^"
 	`);
 	});
+
+	it('can optionally treat CDATA sections as text', () => {
+		const xml = '<xml>before<![CDATA[inside]]>after</xml>';
+		const doc1 = slimdom.parseXmlDocument(xml);
+		expect(slimdom.serializeToWellFormedString(doc1)).toBe(xml);
+
+		const doc2 = slimdom.parseXmlDocument(xml, { treatCDataAsText: true });
+		expect(slimdom.serializeToWellFormedString(doc2)).toBe('<xml>beforeinsideafter</xml>');
+		// Resulting DOM is normalized
+		expect(doc2.documentElement?.childNodes.length).toBe(1);
+	});
 });

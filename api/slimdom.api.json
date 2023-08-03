@@ -10409,7 +10409,7 @@
             },
             {
               "kind": "Content",
-              "text": "<{\n    entityExpansionMaxAmplification: number;\n    entityExpansionThreshold: number;\n}>"
+              "text": "<{\n    entityExpansionMaxAmplification: number;\n    entityExpansionThreshold: number;\n    treatCDataAsText: boolean;\n}>"
             },
             {
               "kind": "Content",
@@ -10511,7 +10511,7 @@
             },
             {
               "kind": "Content",
-              "text": "<{\n    resolveNamespacePrefix(prefix: string): string | undefined;\n}>"
+              "text": "<{\n    resolveNamespacePrefix(prefix: string): string | undefined;\n    treatCDataAsText: boolean;\n}>"
             },
             {
               "kind": "Content",

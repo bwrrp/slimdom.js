@@ -448,6 +448,7 @@ export abstract class Node {
 export type ParseOptions = Partial<{
     entityExpansionMaxAmplification: number;
     entityExpansionThreshold: number;
+    treatCDataAsText: boolean;
 }>;
 
 // @public
@@ -456,6 +457,7 @@ export function parseXmlDocument(input: string, options?: ParseOptions): Documen
 // @public
 export function parseXmlFragment(input: string, options?: Partial<{
     resolveNamespacePrefix(prefix: string): string | undefined;
+    treatCDataAsText: boolean;
 }>): DocumentFragment;
 
 // @public
