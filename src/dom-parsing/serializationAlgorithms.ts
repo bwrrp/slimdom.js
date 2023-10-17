@@ -15,9 +15,8 @@ import { throwInvalidStateError } from '../util/errorHelpers';
 import { HTML_NAMESPACE, XML_NAMESPACE, XMLNS_NAMESPACE } from '../util/namespaceHelpers';
 import { NodeType } from '../util/NodeType';
 import {
-	recordNamespaceInformation,
-	LocalPrefixesMap,
 	NamespacePrefixMap,
+	PrefixIndex,
 } from './NamespacePrefixMap';
 
 const HTML_VOID_ELEMENTS = [
@@ -81,8 +80,6 @@ export function serializeFragment(
 
 // 3.2.1. XML Serialization
 
-type PrefixIndex = { value: number };
-
 /**
  * To produce an XML serialization of a Node node given a flag require well-formed, run the
  * following steps:
@@ -96,18 +93,11 @@ export function produceXmlSerialization(
 	requireWellFormed: boolean,
 	result: string[]
 ): void {
-	// 1. Let namespace be a context namespace with value null. The context namespace tracks the XML
-	// serialization algorithm's current default namespace. The context namespace is changed when
-	// either an Element Node has a default namespace declaration, or the algorithm generates a
-	// default namespace declaration for the Element Node to match its own namespace. The algorithm
-	// assumes no namespace (null) to start.
-	const namespace: string | null = null;
-
 	// 2. Let prefix map be a new namespace prefix map.
-	const prefixMap = new NamespacePrefixMap();
+	const prefixMap = NamespacePrefixMap.new();
 
 	// 3. Add the XML namespace with prefix value "xml" to prefix map.
-	prefixMap.add('xml', XML_NAMESPACE);
+	// (handled above)
 
 	// 4. Let prefix index be a generated namespace prefix index with value 1. The generated
 	// namespace prefix index is used to generate a new unique prefix value when no suitable
@@ -123,7 +113,6 @@ export function produceXmlSerialization(
 	try {
 		runXmlSerializationAlgorithm(
 			node,
-			namespace,
 			prefixMap,
 			prefixIndex,
 			requireWellFormed,
@@ -140,7 +129,6 @@ export function produceXmlSerialization(
  * were recieved by the caller and return their result to the caller. Re-throw any exceptions.
  *
  * @param node              - The node to serialize
- * @param namespace         - The context namespace
  * @param prefixMap         - The namespace prefix map
  * @param prefixIndex       - A reference to the generated namespace prefix index
  * @param requireWellFormed - Determines whether the result needs to be well-formed
@@ -150,7 +138,6 @@ export function produceXmlSerialization(
  */
 function runXmlSerializationAlgorithm(
 	node: Node,
-	namespace: null | string,
 	prefixMap: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
 	requireWellFormed: boolean,
@@ -162,7 +149,6 @@ function runXmlSerializationAlgorithm(
 		case NodeType.ELEMENT_NODE:
 			serializeElementNode(
 				node,
-				namespace,
 				prefixMap,
 				prefixIndex,
 				requireWellFormed,
@@ -174,7 +160,6 @@ function runXmlSerializationAlgorithm(
 		case NodeType.DOCUMENT_NODE:
 			serializeDocumentNode(
 				node,
-				namespace,
 				prefixMap,
 				prefixIndex,
 				requireWellFormed,
@@ -186,9 +171,6 @@ function runXmlSerializationAlgorithm(
 		case NodeType.COMMENT_NODE:
 			serializeCommentNode(
 				node,
-				namespace,
-				prefixMap,
-				prefixIndex,
 				requireWellFormed,
 				result
 			);
@@ -201,9 +183,6 @@ function runXmlSerializationAlgorithm(
 		case NodeType.CDATA_SECTION_NODE:
 			serializeCDATASectionNode(
 				node,
-				namespace,
-				prefixMap,
-				prefixIndex,
 				requireWellFormed,
 				result
 			);
@@ -211,14 +190,13 @@ function runXmlSerializationAlgorithm(
 
 		// Text: Run the algorithm for XML serializing a Text node node.
 		case NodeType.TEXT_NODE:
-			serializeTextNode(node, namespace, prefixMap, prefixIndex, requireWellFormed, result);
+			serializeTextNode(node, requireWellFormed, result);
 			return;
 
 		// DocumentFragment: Run the algorithm for XML serializing a DocumentFragment node node.
 		case NodeType.DOCUMENT_FRAGMENT_NODE:
 			serializeDocumentFragmentNode(
 				node,
-				namespace,
 				prefixMap,
 				prefixIndex,
 				requireWellFormed,
@@ -230,9 +208,6 @@ function runXmlSerializationAlgorithm(
 		case NodeType.DOCUMENT_TYPE_NODE:
 			serializeDocumentTypeNode(
 				node,
-				namespace,
-				prefixMap,
-				prefixIndex,
 				requireWellFormed,
 				result
 			);
@@ -243,9 +218,6 @@ function runXmlSerializationAlgorithm(
 		case NodeType.PROCESSING_INSTRUCTION_NODE:
 			serializeProcessingInstructionNode(
 				node,
-				namespace,
-				prefixMap,
-				prefixIndex,
 				requireWellFormed,
 				result
 			);
@@ -268,7 +240,6 @@ function runXmlSerializationAlgorithm(
  * 3.2.1.1 XML serializing an Element node
  *
  * @param node              - The node to serialize
- * @param namespace         - The context namespace
  * @param prefixMap         - The namespace prefix map
  * @param prefixIndex       - A reference to the generated namespace prefix index
  * @param requireWellFormed - Determines whether the result needs to be well-formed
@@ -276,7 +247,6 @@ function runXmlSerializationAlgorithm(
  */
 function serializeElementNode(
 	node: Node,
-	namespace: string | null,
 	prefixMap: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
 	requireWellFormed: boolean,
@@ -306,10 +276,10 @@ function serializeElementNode(
 	let skipEndTag = false;
 
 	// 5. Let ignore namespace definition attribute be a boolean flag with value false.
-	let ignoreNamespaceDefinitionAttribute = false;
+	// (alternate approach used to determine if declarations should be omitted)
 
 	// 6. Given prefix map, copy a namespace prefix map and let map be the result.
-	const map = prefixMap.copy();
+	const map = prefixMap.recordNamespaceInformation(element);
 
 	// 7. Let local prefixes map be an empty map. The map has unique Node prefix strings as its
 	// keys, with corresponding namespaceURI Node values as the map's key values (in this map, the
@@ -319,186 +289,51 @@ function serializeElementNode(
 	// enable skipping of duplicate prefix definitions when writing an element's attributes: the map
 	// allows the algorithm to distinguish between a prefix in the namespace prefix map that might
 	// be locally-defined (to the current Element) and one that is not.
-	const localPrefixesMap: LocalPrefixesMap = {};
+	// (local prefixes tracked in prefixMap)
 
 	// 8. Let local default namespace be the result of recording the namespace information for node
 	// given map and local prefixes map.
 	// NOTE: The above step will update map with any found namespace prefix definitions, add the
 	// found prefix definitions to the local prefixes map and return a local default namespace value
 	// defined by a default namespace attribute if one exists. Otherwise it returns null.
-	const localDefaultNamespace = recordNamespaceInformation(element, map, localPrefixesMap);
+	// (default namespace tracked in prefixMap)
 
 	// 9. Let inherited ns be a copy of namespace.
-	let inheritedNs = namespace;
+	// (inherited namespace tracked in prefixMap)
 
 	// 10. Let ns be the value of node's namespaceURI attribute.
-	const ns = element.namespaceURI;
+	// (unnecessary alias)
 
-	// 11. If inherited ns is equal to ns, then:
-	if (inheritedNs === ns) {
-		// 11.1. If local default namespace is non-null, then set ignore namespace definition
-		// attribute to true.
-		if (localDefaultNamespace !== null) {
-			ignoreNamespaceDefinitionAttribute = true;
-		}
+	// (various branches omitted as the specification contains bugs)
 
-		// 11.2. If ns is the XML namespace, then append to qualified name the concatenation of the
-		// string "xml:" and the value of node's localName.
-		if (ns === XML_NAMESPACE) {
-			qualifiedName += 'xml:' + element.localName;
+	// 12.3. If the value of prefix matches "xmlns", then run the following steps:
+	// 12.3.1. If the require well-formed flag is set, then throw an error. An Element with
+	// prefix "xmlns" will not legally round-trip in a conforming XML parser.
+	if (element.prefix === 'xmlns' && requireWellFormed) {
+		throw new Error(
+			'Can not serialize an element with prefix "xmlns" because it will ' +
+				'not legally round-trip in a conforming XML parser.'
+		);
+	}
+
+	const prefix = map.getPreferredPrefix(element, prefixIndex);
+
+	if (prefix !== null) {
+		qualifiedName += `${prefix}:`
+	}
+	qualifiedName += element.localName;
+	result.push(qualifiedName);
+
+	if (map.prefixToNamespace(prefix) !== element.namespaceURI) {
+		// We may have redeclared this prefix or default namespace
+		map.add(prefix, element.namespaceURI);
+
+		if (prefix === null) {
+			result.push(' xmlns="');
 		} else {
-			// 11.3. Otherwise, append to qualified name the value of node's localName. The node's
-			// prefix if it exists, is dropped.
-			qualifiedName += element.localName;
+			result.push(' xmlns:', prefix, '="');
 		}
-		// 11.4. Append the value of qualified name to markup.
-		result.push(qualifiedName);
-	} else {
-		// 12. Otherwise, inherited ns is not equal to ns (the node's own namespace is different
-		// from the context namespace of its parent). Run these sub-steps:
-		// 12.1. Let prefix be the value of node's prefix attribute.
-		let prefix = element.prefix;
-
-		// 12.2. Let candidate prefix be the result of retrieving a preferred prefix string prefix
-		// from map given namespace ns.
-		// NOTE: The above may return null if no namespace key ns exists in map.
-		let candidatePrefix = map.retrievePreferredPrefixString(prefix, ns);
-
-		// 12.3. If the value of prefix matches "xmlns", then run the following steps:
-		if (prefix === 'xmlns') {
-			// 12.3.1. If the require well-formed flag is set, then throw an error. An Element with
-			// prefix "xmlns" will not legally round-trip in a conforming XML parser.
-			if (requireWellFormed) {
-				throw new Error(
-					'Can not serialize an element with prefix "xmlns" because it will ' +
-						'not legally round-trip in a conforming XML parser.'
-				);
-			}
-
-			// 12.3.2. Let candidate prefix be the value of prefix.
-			candidatePrefix = prefix;
-		}
-
-		// 12.4. Found a suitable namespace prefix: if candidate prefix is non-null (a namespace
-		// prefix is defined which maps to ns), then:
-		if (candidatePrefix !== null) {
-			// NOTE: The following may serialize a different prefix than the Element's existing
-			// prefix if it already had one. However, the retrieving a preferred prefix string
-			// algorithm already tried to match the existing prefix if possible.
-
-			// 12.4.1. Append to qualified name the concatenation of candidate prefix, ":" (U+003A
-			// COLON), and node's localName. There exists on this node or the node's ancestry a
-			// namespace prefix definition that defines the node's namespace.
-			qualifiedName += candidatePrefix + ':' + element.localName;
-
-			// 12.4.2. If the local default namespace is non-null (there exists a locally-defined
-			// default namespace declaration attribute) and its value is not the XML namespace, then
-			// let inherited ns get the value of local default namespace unless the local default
-			// namespace is the empty string in which case let it get null (the context namespace is
-			// changed to the declared default, rather than this node's own namespace).
-			// NOTE: Any default namespace definitions or namespace prefixes that define the XML
-			// namespace are omitted when serializing this node's attributes.
-			if (localDefaultNamespace !== null && localDefaultNamespace !== XML_NAMESPACE) {
-				inheritedNs = localDefaultNamespace === '' ? null : localDefaultNamespace;
-			}
-
-			// 12.4.3. Append the value of qualified name to markup.
-			result.push(qualifiedName);
-		} else if (prefix !== null) {
-			// 12.5. Otherwise, if prefix is non-null, then:
-			// NOTE: By this step, there is no namespace or prefix mapping declaration in this node
-			// (or any parent node visited by this algorithm) that defines prefix otherwise the step
-			// labelled Found a suitable namespace prefix would have been followed. The sub-steps
-			// that follow will create a new namespace prefix declaration for prefix and ensure that
-			// prefix does not conflict with an existing namespace prefix declaration of the same
-			// localName in node's attribute list.
-
-			// 12.5.1. If the local prefixes map contains a key matching prefix, then let prefix be
-			// the result of generating a prefix providing as input map, ns, and prefix index.
-			if (prefix in localPrefixesMap) {
-				prefix = generatePrefix(map, ns, prefixIndex);
-			}
-
-			// 12.5.2. Add prefix to map given namespace ns.
-			map.add(prefix, ns);
-
-			// 12.5.3. Append to qualified name the concatenation of prefix, ":" (U+003A COLON), and
-			// node's localName.
-			qualifiedName += prefix + ':' + element.localName;
-
-			// 12.5.4. Append the value of qualified name to markup.
-			result.push(qualifiedName);
-
-			// 12.5.5. Append the following to markup, in the order listed:
-			// NOTE: The following serializes a namespace prefix declaration for prefix which was
-			// just added to the map.
-			// 12.5.5.1. " " (U+0020 SPACE);
-			// 12.5.5.2. The string "xmlns:";
-			// 12.5.5.3. The value of prefix;
-			// 12.5.5.4. "="" (U+003D EQUALS SIGN, U+0022 QUOTATION MARK);
-			// 12.5.5.5. The result of serializing an attribute value given ns and the require
-			// well-formed flag as input;
-			// 12.5.5.6. """ (U+0022 QUOTATION MARK).
-			result.push(
-				' xmlns:',
-				prefix,
-				'="',
-				serializeAttributeValue(ns, requireWellFormed),
-				'"'
-			);
-
-			// 12.5.5.7. If local default namespace is non-null (there exists a locally-defined
-			// default namespace declaration attribute), then let inherited ns get the value of
-			// local default namespace unless the local default namespace is the empty string in
-			// which case let it get null.
-			if (localDefaultNamespace !== null) {
-				inheritedNs = localDefaultNamespace === '' ? null : localDefaultNamespace;
-			}
-		} else if (
-			localDefaultNamespace === null ||
-			(localDefaultNamespace !== null && localDefaultNamespace !== ns)
-		) {
-			// 12.6. Otherwise, if local default namespace is null, or local default namespace is
-			// non-null and its value is not equal to ns, then:
-			// NOTE: At this point, the namespace for this node still needs to be serialized, but
-			// there's no prefix (or candidate prefix) availble; the following uses the default
-			// namespace declaration to define the namespace --optionally replacing an existing
-			// default declaration if present.
-
-			// 12.6.1. Set the ignore namespace definition attribute flag to true.
-			ignoreNamespaceDefinitionAttribute = true;
-
-			// 12.6.2. Append to qualified name the value of node's localName.
-			qualifiedName += element.localName;
-
-			// 12.6.3. Let the value of inherited ns be ns.
-			// NOTE: The new default namespace will be used in the serialization to define this
-			// node's namespace and act as the context namespace for its children.
-			inheritedNs = ns;
-
-			// 12.6.4. Append the value of qualified name to markup.
-			result.push(qualifiedName);
-
-			// 12.6.5. Append the following to markup, in the order listed:
-			// NOTE: The following serializes the new (or replacement) default namespace definition.
-			// 12.6.5.1. " " (U+0020 SPACE);
-			// 12.6.5.2. The string "xmlns";
-			// 12.6.5.3. "="" (U+003D EQUALS SIGN, U+0022 QUOTATION MARK);
-			// 12.6.5.4. The result of serializing an attribute value given ns and the require
-			// well-formed flag as input;
-			// 12.6.5.5. """ (U+0022 QUOTATION MARK).
-			result.push(' xmlns="', serializeAttributeValue(ns, requireWellFormed), '"');
-		} else {
-			// 12.7. Otherwise, the node has a local default namespace that matches ns. Append to
-			// qualified name the value of node's localName, let the value of inherited ns be ns,
-			// and append the value of qualified name to markup.
-			qualifiedName += element.localName;
-			inheritedNs = ns;
-			result.push(qualifiedName);
-		}
-
-		// NOTE: All of the combinations where ns is not equal to inherited ns are handled above
-		// such that node will be serialized preserving its original namespaceURI.
+		result.push(serializeAttributeValue(element.namespaceURI, requireWellFormed), '"');
 	}
 
 	// 13. Append to markup the result of the XML serialization of node's attributes given map,
@@ -508,8 +343,6 @@ function serializeElementNode(
 		element,
 		map,
 		prefixIndex,
-		localPrefixesMap,
-		ignoreNamespaceDefinitionAttribute,
 		requireWellFormed,
 		result
 	);
@@ -520,7 +353,7 @@ function serializeElementNode(
 	// "meta", "param", "source", "track", "wbr"; then append the following to markup, in the order
 	// listed:
 	if (
-		ns === HTML_NAMESPACE &&
+		element.namespaceURI === HTML_NAMESPACE &&
 		!element.hasChildNodes() &&
 		HTML_VOID_ELEMENTS.indexOf(element.localName) >= 0
 	) {
@@ -534,7 +367,7 @@ function serializeElementNode(
 
 	// 15. If ns is not the HTML namespace, and the node's list of children is empty, then append
 	// "/" (U+002F SOLIDUS) to markup and set the skip end tag flag to true.
-	if (ns !== HTML_NAMESPACE && !element.hasChildNodes()) {
+	if (element.namespaceURI !== HTML_NAMESPACE && !element.hasChildNodes()) {
 		result.push('/');
 		skipEndTag = true;
 	}
@@ -562,7 +395,6 @@ function serializeElementNode(
 	for (const child of node.childNodes) {
 		runXmlSerializationAlgorithm(
 			child,
-			inheritedNs,
 			map,
 			prefixIndex,
 			requireWellFormed,
@@ -599,8 +431,6 @@ function serializeAttributes(
 	element: Element,
 	map: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
-	localPrefixesMap: LocalPrefixesMap,
-	ignoreNamespaceDefinitionAttribute: boolean,
 	requireWellFormed: boolean,
 	result: string[]
 ): void {
@@ -618,6 +448,59 @@ function serializeAttributes(
 	// 3. Loop: For each attribute attr in element's attributes, in the order they are specified in
 	// the element's attribute list:
 	for (const attr of element.attributes) {
+		// (various branches omitted as the specification contains bugs)
+		let prefix = map.getPreferredPrefix(attr, prefixIndex);
+
+		if (attr.namespaceURI === XMLNS_NAMESPACE) {
+			// Namespace declaration attribute
+			const declaredNamespaceUri = attr.value === "" ? null : attr.value;
+
+			// 3.5.2.2. If the require well-formed flag is set (its value is
+			// true), and the value of attr's value attribute matches the XMLNS
+			// namespace, then throw an exception; the serialization of this
+			// attribute would produce invalid XML because the XMLNS namespace
+			// is reserved and cannot be applied as an element's namespace via
+			// XML parsing.
+			// NOTE: DOM APIs do allow creation of elements in the XMLNS
+			// namespace but with strict qualifications.
+			if (requireWellFormed && attr.value === XMLNS_NAMESPACE) {
+				throw new Error(
+					'The serialization of this attribute would produce invalid XML because ' +
+						'the XMLNS namespace is reserved and cannot be applied as an ' +
+						"element's namespace via XML parsing."
+				);
+			}
+
+			// Don't declare the XML or XMLNS namespaces
+			if (declaredNamespaceUri === XML_NAMESPACE || declaredNamespaceUri === XMLNS_NAMESPACE) {
+				continue;
+			}
+
+			const declaredPrefix = attr.prefix === null ? null : attr.localName;
+			// 3.5.2.3. If the require well-formed flag is set (its value is
+			// true), and the value of attr's value attribute is the empty
+			// string, then throw an exception; namespace prefix declarations
+			// cannot be used to undeclare a namespace (use a default namespace
+			// declaration instead).
+			// (we deviate from the spec here by only throwing for prefix
+			// declarations, the implementations of this in browsers and the
+			// spec text suggest that default namespace declarations should be
+			// allowed to reset the default namespace to null)
+			if (requireWellFormed && attr.prefix !== null && attr.value === '') {
+				throw new Error(
+					'Namespace prefix declarations cannot be used to undeclare a namespace. ' +
+						'Use a default namespace declaration instead.'
+				);
+			}
+
+			// The following does not cause an ordering issue as prefixes
+			// determined for attributes on the current element will not cause
+			// this to change.
+			if (!map.shouldSerializeDeclaration(declaredPrefix, declaredNamespaceUri)) {
+				continue;
+			}
+		}
+
 		// 3.1. If the require well-formed flag is set (its value is true), and the localname set
 		// contains a tuple whose values match those of a new tuple consisting of attr's
 		// namespaceURI attribute and localName attribute, then throw an exception; the
@@ -638,147 +521,6 @@ function serializeAttributes(
 		// attribute, and add it to the localname set.
 		localNameSet.push({ namespaceURI: attr.namespaceURI, localName: attr.localName });
 
-		// 3.3. Let attribute namespace be the value of attr's namespaceURI value.
-		const attributeNamespace = attr.namespaceURI;
-
-		// 3.4. Let candidate prefix be null.
-		let candidatePrefix: string | null = null;
-
-		// 3.5. If attribute namespace is non-null, then run these sub-steps:
-		if (attributeNamespace !== null) {
-			// 3.5.1. Let candidate prefix be the result of retrieving a preferred prefix string
-			// from map given namespace attribute namespace with preferred prefix being attr's
-			// prefix value.
-			candidatePrefix = map.retrievePreferredPrefixString(attr.prefix, attributeNamespace);
-
-			// 3.5.2. If the value of attribute namespace is the XMLNS namespace, then run these
-			// steps:
-			if (attributeNamespace === XMLNS_NAMESPACE) {
-				// 3.5.2.1. If any of the following are true, then stop running these steps and goto
-				// Loop to visit the next attribute:
-				// - the attr's value is the XML namespace;
-				// NOTE: The XML namespace cannot be redeclared and survive round-tripping (unless
-				// it defines the prefix "xml"). To avoid this problem, this algorithm always
-				// prefixes elements in the XML namespace with "xml" and drops any related
-				// definitions as seen in the above condition.
-				if (attr.value === XML_NAMESPACE) {
-					continue;
-				}
-
-				// - the attr's prefix is null and the ignore namespace definition attribute flag is
-				// true (the Element's default namespace attribute should be skipped);
-				if (attr.prefix === null && ignoreNamespaceDefinitionAttribute) {
-					continue;
-				}
-
-				// - the attr's prefix is non-null and either
-				//   - the attr's localName is not a key contained in the local prefixes map, or
-				//   - the attr's localName is present in the local prefixes map but the value of
-				//     the key does not match attr's value
-				if (
-					attr.prefix !== null &&
-					(!(attr.localName in localPrefixesMap) ||
-						localPrefixesMap[attr.localName] !== attr.value)
-				) {
-					// and furthermore that the attr's localName (as the prefix to find) is found in
-					// the namespace prefix map given the namespace consisting of the attr's value
-					// (the current namespace prefix definition was exactly defined previously--on
-					// an ancestor element not the current element whose attributes are being
-					// processed).
-					// (the only ways that this xmlns:* attribute can be omitted from the
-					// localPrefixesMap is if it is either the XML namespace (control flow would not
-					// reach this point), or if it was defined on an ancestor (and is therefore
-					// certainly in the map). This last condition seems to be a duplicate attempt to
-					// prevent repeated declarations in the spec, which is already prevented by the
-					// check in recordNamespaceInformation.)
-					continue;
-				}
-
-				// 3.5.2.2. If the require well-formed flag is set (its value is true), and the
-				// value of attr's value attribute matches the XMLNS namespace, then throw an
-				// exception; the serialization of this attribute would produce invalid XML because
-				// the XMLNS namespace is reserved and cannot be applied as an element's namespace
-				// via XML parsing.
-				// NOTE: DOM APIs do allow creation of elements in the XMLNS namespace but with
-				// strict qualifications.
-				if (requireWellFormed && attr.value === XMLNS_NAMESPACE) {
-					throw new Error(
-						'The serialization of this attribute would produce invalid XML because ' +
-							'the XMLNS namespace is reserved and cannot be applied as an ' +
-							"element's namespace via XML parsing."
-					);
-				}
-
-				// 3.5.2.3. If the require well-formed flag is set (its value is true), and the
-				// value of attr's value attribute is the empty string, then throw an exception;
-				// namespace prefix declarations cannot be used to undeclare a namespace (use a
-				// default namespace declaration instead).
-				// (we deviate from the spec here by only throwing for prefix declarations, the
-				// implementations of this in browsers and the spec text suggest that default
-				// namespace declarations should be allowed to reset the default namespace to null)
-				if (requireWellFormed && attr.prefix !== null && attr.value === '') {
-					throw new Error(
-						'Namespace prefix declarations cannot be used to undeclare a namespace. ' +
-							'Use a default namespace declaration instead.'
-					);
-				}
-
-				// 3.5.2.4. the attr's prefix matches the string "xmlns", then let candidate prefix
-				// be the string "xmlns".
-				if (attr.prefix === 'xmlns') {
-					candidatePrefix = 'xmlns';
-				}
-			} else {
-				// 3.5.3. Otherwise, the attribute namespace in not the XMLNS namespace. Run these
-				// steps:
-				// (interpreting this as a typo in the spec: "in" should probably have been "is")
-
-				// (We need to deviate from the spec here, as implementing as specified would always
-				// generate prefixes for all namespaced attributes. Instead, first check if no valid
-				// candidate prefix was found in the steps above.)
-				if (candidatePrefix === null) {
-					// (Again, we need to deviate from the spec to make sure we prefer the attr's
-					// own prefix over a generated prefix where that would not conflict with
-					// existing definitions.)
-					if (attr.prefix === null || attr.prefix in localPrefixesMap) {
-						// 3.5.3.1. Let candidate prefix be the result of generating a prefix
-						// providing map, attribute namespace, and prefix index as input.
-						candidatePrefix = generatePrefix(map, attributeNamespace, prefixIndex);
-					} else {
-						candidatePrefix = attr.prefix;
-					}
-
-					// Update the local and aggregate prefixes to account for the new declaration.
-					map.add(candidatePrefix, attr.namespaceURI);
-					localPrefixesMap[candidatePrefix] = attr.namespaceURI;
-
-					// 3.5.3.2. Append the following to result, in the order listed:
-					// 3.5.3.2.1. " " (U+0020 SPACE);
-					// 3.5.3.2.2. The string "xmlns:";
-					// 3.5.3.2.3. The value of candidate prefix;
-					// 3.5.3.2.4. "="" (U+003D EQUALS SIGN, U+0022 QUOTATION MARK);
-					// 3.5.3.2.5. The result of serializing an attribute value given attribute
-					// namespace and the require well-formed flag as input;
-					// 3.5.3.2.7. """ (U+0022 QUOTATION MARK).
-					result.push(
-						' xmlns:',
-						candidatePrefix,
-						'="',
-						serializeAttributeValue(attributeNamespace, requireWellFormed),
-						'"'
-					);
-				}
-			}
-		}
-		// 3.6. Append a " " (U+0020 SPACE) to result.
-		result.push(' ');
-
-		// 3.7. If candidate prefix is non-null, then append to result the concatenation of
-		// candidate prefix with ":" (U+003A COLON).
-		if (candidatePrefix !== null) {
-			result.push(candidatePrefix, ':');
-		}
-
 		// 3.8. If the require well-formed flag is set (its value is true), and this attr's
 		// localName attribute contains the character ":" (U+003A COLON) or does not match the XML
 		// Name production or equals "xmlns" and attribute namespace is null, then throw an
@@ -787,19 +529,23 @@ function serializeAttributes(
 			requireWellFormed &&
 			(attr.localName.indexOf(':') >= 0 ||
 				!matchesNameProduction(attr.localName) ||
-				(attr.localName === 'xmlns' && attributeNamespace === null))
+				(attr.localName === 'xmlns' && attr.namespaceURI === null))
 		) {
 			throw new Error(
 				`Can not serialize an attribute because the localName "${attr.localName}" is not allowed.`
 			);
 		}
 
-		// 3.9. Append the following strings to result, in the order listed:
-		// 3.9.1. The value of attr's localName;
-		// 3.9.2. "="" (U+003D EQUALS SIGN, U+0022 QUOTATION MARK);
-		// 3.9.3. The result of serializing an attribute value given attr's value attribute and the
-		// require well-formed flag as input;
-		// 3.9.4. """ (U+0022 QUOTATION MARK).
+		// Do we need a declaration?
+		if (prefix !== null && map.prefixToNamespace(prefix) !== attr.namespaceURI) {
+			result.push(' xmlns:', prefix, '="', serializeAttributeValue(attr.namespaceURI, requireWellFormed), '"');
+			map.add(prefix, attr.namespaceURI);
+		}
+
+		result.push(' ');
+		if (prefix !== null) {
+			result.push(prefix, ':');
+		}
 		result.push(
 			attr.localName,
 			'="',
@@ -863,42 +609,10 @@ function serializeAttributeValue(
 	// requirement in the XML specification's AttValue production by also replacing ">" characters.
 }
 
-// 3.2.1.1.4 Generating namespace prefixes
-
-/**
- * To generate a prefix given a namespace prefix map map, a string new namespace, and a reference to
- * a generated namespace prefix index prefix index, the user agent must run the following steps:
- *
- * @param map          - The namespace prefix map
- * @param newNamespace - The new namespace to generate a prefix for
- * @param prefixIndex  - The reference to the generated namespace prefix index
- *
- * @returns The generated prefix for the new namespace
- */
-function generatePrefix(
-	map: NamespacePrefixMap,
-	newNamespace: string | null,
-	prefixIndex: PrefixIndex
-): string {
-	// 1. Let generated prefix be the concatenation of the string "ns" and the current numerical
-	// value of prefix index.
-	const generatedPrefix = 'ns' + prefixIndex.value;
-
-	// 2. Let the value of prefix index be incremented by one.
-	prefixIndex.value += 1;
-
-	// 3. Add to map the generated prefix given the new namespace namespace.
-	map.add(generatedPrefix, newNamespace);
-
-	// 4. Return the value of generated prefix.
-	return generatedPrefix;
-}
-
 /**
  * 3.2.1.2 XML serializing a Document node
  *
  * @param node              - The node to serialize
- * @param namespace         - The context namespace
  * @param prefixMap         - The namespace prefix map
  * @param prefixIndex       - A reference to the generated namespace prefix index
  * @param requireWellFormed - Determines whether the result needs to be well-formed
@@ -906,7 +620,6 @@ function generatePrefix(
  */
 function serializeDocumentNode(
 	node: Node,
-	namespace: string | null,
 	prefixMap: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
 	requireWellFormed: boolean,
@@ -933,7 +646,6 @@ function serializeDocumentNode(
 	for (const child of document.childNodes) {
 		runXmlSerializationAlgorithm(
 			child,
-			namespace,
 			prefixMap,
 			prefixIndex,
 			requireWellFormed,
@@ -948,17 +660,11 @@ function serializeDocumentNode(
  * 3.2.1.3 XML serializing a Comment node
  *
  * @param node              - The node to serialize
- * @param namespace         - The context namespace
- * @param prefixMap         - The namespace prefix map
- * @param prefixIndex       - A reference to the generated namespace prefix index
  * @param requireWellFormed - Determines whether the result needs to be well-formed
  * @param result            - Array of strings in which to construct the result
  */
 function serializeCommentNode(
 	node: Node,
-	namespace: string | null,
-	prefixMap: NamespacePrefixMap,
-	prefixIndex: PrefixIndex,
 	requireWellFormed: boolean,
 	result: string[]
 ): void {
@@ -984,17 +690,11 @@ function serializeCommentNode(
  * (not currently in spec) XML serializing a CDATASection node
  *
  * @param node              - The node to serialize
- * @param namespace         - The context namespace
- * @param prefixMap         - The namespace prefix map
- * @param prefixIndex       - A reference to the generated namespace prefix index
  * @param requireWellFormed - Determines whether the result needs to be well-formed
  * @param result            - Array of strings in which to construct the result
  */
 function serializeCDATASectionNode(
 	node: Node,
-	namespace: string | null,
-	prefixMap: NamespacePrefixMap,
-	prefixIndex: PrefixIndex,
 	requireWellFormed: boolean,
 	result: string[]
 ): void {
@@ -1010,17 +710,11 @@ function serializeCDATASectionNode(
  * 3.2.1.4 XML serializing a Text node
  *
  * @param node              - The node to serialize
- * @param namespace         - The context namespace
- * @param prefixMap         - The namespace prefix map
- * @param prefixIndex       - A reference to the generated namespace prefix index
  * @param requireWellFormed - Determines whether the result needs to be well-formed
  * @param result            - Array of strings in which to construct the result
  */
 function serializeTextNode(
 	node: Node,
-	namespace: string | null,
-	prefixMap: NamespacePrefixMap,
-	prefixIndex: PrefixIndex,
 	requireWellFormed: boolean,
 	result: string[]
 ): void {
@@ -1052,7 +746,6 @@ function serializeTextNode(
  * 3.2.1.5 XML serializing a DocumentFragment node
  *
  * @param node              - The node to serialize
- * @param namespace         - The context namespace
  * @param prefixMap         - The namespace prefix map
  * @param prefixIndex       - A reference to the generated namespace prefix index
  * @param requireWellFormed - Determines whether the result needs to be well-formed
@@ -1060,7 +753,6 @@ function serializeTextNode(
  */
 function serializeDocumentFragmentNode(
 	node: Node,
-	namespace: string | null,
 	prefixMap: NamespacePrefixMap,
 	prefixIndex: PrefixIndex,
 	requireWellFormed: boolean,
@@ -1075,7 +767,6 @@ function serializeDocumentFragmentNode(
 	for (const child of node.childNodes) {
 		runXmlSerializationAlgorithm(
 			child,
-			namespace,
 			prefixMap,
 			prefixIndex,
 			requireWellFormed,
@@ -1090,17 +781,11 @@ function serializeDocumentFragmentNode(
  * 3.2.1.6 XML serializing a DocumentType node
  *
  * @param node              - The node to serialize
- * @param namespace         - The context namespace
- * @param prefixMap         - The namespace prefix map
- * @param prefixIndex       - A reference to the generated namespace prefix index
  * @param requireWellFormed - Determines whether the result needs to be well-formed
  * @param result            - Array of strings in which to construct the result
  */
 function serializeDocumentTypeNode(
 	node: Node,
-	namespace: string | null,
-	prefixMap: NamespacePrefixMap,
-	prefixIndex: PrefixIndex,
 	requireWellFormed: boolean,
 	result: string[]
 ): void {
@@ -1182,17 +867,11 @@ function serializeDocumentTypeNode(
  * 3.2.1.7 XML serializing a ProcessingInstruction node
  *
  * @param node              - The node to serialize
- * @param namespace         - The context namespace
- * @param prefixMap         - The namespace prefix map
- * @param prefixIndex       - A reference to the generated namespace prefix index
  * @param requireWellFormed - Determines whether the result needs to be well-formed
  * @param result            - Array of strings in which to construct the result
  */
 function serializeProcessingInstructionNode(
 	node: Node,
-	namespace: string | null,
-	prefixMap: NamespacePrefixMap,
-	prefixIndex: PrefixIndex,
 	requireWellFormed: boolean,
 	result: string[]
 ): void {

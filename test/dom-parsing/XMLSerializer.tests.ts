@@ -107,18 +107,20 @@ describe('XMLSerializer', () => {
 		);
 	});
 
-	it('retains null default namespace definitions on prefixed elements', () => {
+	it('retains declarations that reset the default namespace to null on prefixed elements', () => {
+		const root = document.createElementNS('http://www.example.com/root-ns', 'root');
 		const el = document.createElementNS('http://www.example.com/ns', 'prf:test');
+		root.appendChild(el);
 		el.setAttributeNS(XMLNS_NAMESPACE, 'xmlns', '');
 		const child = document.createElementNS('http://www.example.com/ns', 'prf:child');
 		child.setAttributeNS(XMLNS_NAMESPACE, 'xmlns', '');
 		el.appendChild(child);
-		expect(serializer.serializeToString(el)).toBe(
-			'<prf:test xmlns:prf="http://www.example.com/ns" xmlns=""><prf:child xmlns=""/></prf:test>'
+		expect(serializer.serializeToString(root)).toBe(
+			'<root xmlns="http://www.example.com/root-ns"><prf:test xmlns:prf="http://www.example.com/ns" xmlns=""><prf:child/></prf:test></root>'
 		);
 	});
 
-	it('ignores useless prefix but not default definitions if elements are prefixed', () => {
+	it('ignores useless repeated declarations', () => {
 		const el = document.createElementNS('http://www.example.com/ns', 'prf:test');
 		el.setAttributeNS(XMLNS_NAMESPACE, 'xmlns:prf', 'http://www.example.com/ns');
 		el.setAttributeNS(XMLNS_NAMESPACE, 'xmlns', 'http://www.example.com/ns2');
@@ -127,7 +129,7 @@ describe('XMLSerializer', () => {
 		child.setAttributeNS(XMLNS_NAMESPACE, 'xmlns', 'http://www.example.com/ns2');
 		el.appendChild(child);
 		expect(serializer.serializeToString(el)).toBe(
-			'<prf:test xmlns:prf="http://www.example.com/ns" xmlns="http://www.example.com/ns2"><prf:child xmlns="http://www.example.com/ns2"/></prf:test>'
+			'<prf:test xmlns:prf="http://www.example.com/ns" xmlns="http://www.example.com/ns2"><prf:child/></prf:test>'
 		);
 	});
 
@@ -164,7 +166,7 @@ describe('XMLSerializer', () => {
 		const el = document.createElementNS('http://www.example.com/ns', 'prf:test');
 		el.setAttributeNS(XMLNS_NAMESPACE, 'xmlns:prf', 'http://www.example.com/ns2');
 		expect(serializer.serializeToString(el)).toBe(
-			'<ns1:test xmlns:ns1="http://www.example.com/ns" xmlns:prf="http://www.example.com/ns2"/>'
+			'<prf:test xmlns:prf="http://www.example.com/ns"/>'
 		);
 	});
 
@@ -478,9 +480,28 @@ describe('serializeToWellFormedString', () => {
 		const root = document.appendChild(document.createElementNS('ns_root', 'root'));
 		const child = root.appendChild(document.createElementNS('ns_child', 'p:child'));
 		child.setAttributeNS(XMLNS_NAMESPACE, 'xmlns', '');
-		const grandChild = child.appendChild(document.createElementNS(null, 'grandchild'));
+		child.appendChild(document.createElementNS(null, 'grandchild'));
 		expect(slimdom.serializeToWellFormedString(document)).toBe(
 			'<root xmlns="ns_root"><p:child xmlns:p="ns_child" xmlns=""><grandchild/></p:child></root>'
+		);
+	});
+
+	it('is not affected by spec bug: redefined prefix confusion', () => {
+		// see https://github.com/w3c/DOM-Parsing/issues/75
+		const root = document.appendChild(document.createElementNS('ns1', 'pre:root'));
+		const child = root.appendChild(document.createElementNS('ns2', 'pre:child'));
+		child.appendChild(document.createElementNS('ns1', 'pre:grandChild'));
+		expect(slimdom.serializeToWellFormedString(document)).toBe(
+			'<pre:root xmlns:pre="ns1"><pre:child xmlns:pre="ns2"><pre:grandChild xmlns:pre="ns1"/></pre:child></pre:root>'
+		);
+	});
+
+	it('is not affected by spec bug: generated prefix collisions', () => {
+		// see https://github.com/w3c/DOM-Parsing/issues/75
+		const root = document.appendChild(document.createElementNS('ns1', 'ns1:root'));
+		root.setAttributeNS('ns2', 'attr', 'value');
+		expect(slimdom.serializeToWellFormedString(document)).toMatchInlineSnapshot(
+			`"<ns1:root xmlns:ns1="ns1" xmlns:ns2="ns2" ns2:attr="value"/>"`
 		);
 	});
 });

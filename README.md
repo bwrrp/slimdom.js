@@ -8,7 +8,7 @@ Fast, tiny, standards-compliant XML DOM implementation for node and the browser.
 This is a (partial) implementation of the following specifications:
 
 -   [DOM living standard][domstandard], as last updated 19 December 2021
--   [DOM Parsing and Serialization W3C Editor's Draft][domparsing], as last updated 20 April 2020
+-   [DOM Parsing and Serialization W3C Editor's Draft][domparsing], as last updated 2 May 2021
 -   [Extensible Markup Language (XML) 1.0 (Fifth Edition)][xmlstandard]
 -   [Namespaces in XML 1.0 (Third Edition)][xml-names]
 
@@ -37,24 +37,24 @@ The package includes both a commonJS-compatible UMD bundle (`dist/slimdom.umd.js
 
 ## Usage
 
-Create documents using the slimdom.Document constructor, and manipulate them using the [standard DOM API][domstandard].
+Create documents by parsing XML or start from scratch using the slimdom.Document constructor, and manipulate them using the [standard DOM API][domstandard].
 
 ```javascript
 import * as slimdom from 'slimdom';
 // alternatively, in node and other commonJS environments:
 // const slimdom = require('slimdom');
 
-// Start with an empty document:
-const document = new slimdom.Document();
-document.appendChild(document.createElementNS('http://www.example.com', 'root'));
-const xml = slimdom.serializeToWellFormedString(document);
-// -> '<root xmlns="http://www.example.com"/>'
-
-// Or parse from a string:
+// Parse from a string:
 const document2 = slimdom.parseXmlDocument('<root attr="value">Hello!</root>');
 document2.documentElement.setAttribute('attr', 'new value');
 const xml2 = slimdom.serializeToWellFormedString(document2);
 // -> '<root attr="new value">Hello!</root>'
+
+// Or start with an empty document:
+const document = new slimdom.Document();
+document.appendChild(document.createElementNS('http://www.example.com', 'root'));
+const xml = slimdom.serializeToWellFormedString(document);
+// -> '<root xmlns="http://www.example.com"/>'
 ```
 
 Some DOM API's, such as the `DocumentFragment` constructor, require the presence of a global document, for instance to set their initial `ownerDocument` property. In these cases, slimdom will use the instance exposed through `slimdom.document`. Although you could mutate this document, it is recommended to always create your own documents (using the `Document` constructor) to avoid conflicts with other code using slimdom in your application.
@@ -71,11 +71,11 @@ This library implements:
 -   `XMLSerializer`, and read-only versions of `innerHTML` / `outerHTML` on `Element`.
 -   `DOMParser`, for XML parsing only.
 
-This library is currently aimed at providing a lightweight and consistent experience for dealing with XML and XML-like data. For simplicity and efficiency, this implementation deviates from the spec in a few minor ways. Most notably, normal JavaScript arrays are used instead of `HTMLCollection` / `NodeList` and `NamedNodeMap`, HTML documents are treated no different from other documents and a number of features from in the DOM spec are missing. In most cases, this is because alternatives are available that can be used together with slimdom with minimal effort.
+This library is aimed at providing a lightweight and consistent experience for dealing with XML and XML-like data. For simplicity and efficiency, this implementation deviates from the spec in a few minor ways. Most notably, normal JavaScript arrays are used instead of `HTMLCollection` / `NodeList` and `NamedNodeMap`, HTML documents are treated no different from other documents and a number of features from in the DOM spec are missing. In most cases, this is because alternatives are available that can be used together with slimdom with minimal effort.
 
 Do not rely on the behavior or presence of any methods and properties not specified in the DOM standard. For example, do not use JavaScript array methods exposed on properties that should expose a NodeList and do not use Element as a constructor. This behavior is _not_ considered public API and may change without warning in a future release.
 
-This library implements the changes from [whatwg/dom#819][dom-adopt-pr], as the specification as currently described has known bugs around adoption.
+This library implements the changes from [whatwg/dom#819][dom-adopt-pr], as the DOM specification as currently described has known bugs around adoption. It also deviates from the [DOM serialization algorithms][domparsing] that deal with assigning and resolving conflicts in namespace prefixes, as the specification has a number of bugs that currently remain unaddressed.
 
 As serializing XML using the `XMLSerializer` does not enforce well-formedness, you may instead want to use the `serializeToWellFormedString` function which does perform such checks.
 
