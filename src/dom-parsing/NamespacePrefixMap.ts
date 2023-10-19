@@ -107,18 +107,31 @@ export class NamespacePrefixMap {
 		// An existing declaration attribute should be skipped if it doesn't
 		// match the local scope. It can be skipped if it doesn't change the
 		// inherited value.
-		return this.prefixToNamespace(prefix) === ns && this._inheritedPrefixToNamespace(prefix) !== ns;
+		return (
+			this.prefixToNamespace(prefix) === ns && this._inheritedPrefixToNamespace(prefix) !== ns
+		);
 	}
 
-	private _getCandidatePrefix(namespaceUri: string | null): string | null | undefined {
-		const candidates = this._prefixCandidatesByNs.get(namespaceUri);
-		if (candidates !== undefined) {
-			for (let i = candidates.length - 1; i >= 0; --i) {
-				const candidate = candidates[i];
-				if (this.prefixToNamespace(candidate) === namespaceUri) {
-					return candidate;
+	private _getCandidatePrefix(
+		namespaceUri: string | null,
+		allowDefault: boolean
+	): string | null | undefined {
+		let ancestor: NamespacePrefixMap | null = this;
+		while (ancestor) {
+			const candidates = ancestor._prefixCandidatesByNs.get(namespaceUri);
+			if (candidates !== undefined) {
+				for (let i = candidates.length - 1; i >= 0; --i) {
+					const candidate = candidates[i];
+					if (!allowDefault && candidate === null) {
+						continue;
+					}
+					// Check if this candidate prefix is valid in the current scope
+					if (this.prefixToNamespace(candidate) === namespaceUri) {
+						return candidate;
+					}
 				}
 			}
+			ancestor = ancestor._parent;
 		}
 		return undefined;
 	}
@@ -158,23 +171,29 @@ export class NamespacePrefixMap {
 		// If the authored prefix resolves to the requested namespace in scope,
 		// we can use it, except that attributes in a namespace can't use an
 		// empty prefix.
-		if ((!isAttr || node.prefix !== null) && this.prefixToNamespace(node.prefix) === node.namespaceURI) {
+		if (
+			(!isAttr || node.prefix !== null) &&
+			this.prefixToNamespace(node.prefix) === node.namespaceURI
+		) {
 			return node.prefix;
 		}
 
 		// If any prefixes in scope resolve to the requested namespace, use the
 		// most recent one.
-		const candidatePrefix = this._getCandidatePrefix(node.namespaceURI);
+		const candidatePrefix = this._getCandidatePrefix(node.namespaceURI, !isAttr);
 		if (candidatePrefix !== undefined) {
 			return candidatePrefix;
 		}
 
 		// No suitable existing declaration, try to use the authored prefix
 
-		// Attributes can't use the authored prefix if it conflicts with an existing local declaration
+		// Attributes can't use the authored prefix if it is null or conflicts
+		// with an existing local declaration
 		if (isAttr) {
 			const namespaceForPrefix = this._localPrefixToNamespace(node.prefix);
-			const isValidPrefix = node.prefix !== null && (namespaceForPrefix === undefined || namespaceForPrefix === node.namespaceURI);
+			const isValidPrefix =
+				node.prefix !== null &&
+				(namespaceForPrefix === undefined || namespaceForPrefix === node.namespaceURI);
 
 			if (!isValidPrefix) {
 				// Collision - generate a new prefix

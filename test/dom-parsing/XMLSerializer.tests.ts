@@ -504,4 +504,32 @@ describe('serializeToWellFormedString', () => {
 			`"<ns1:root xmlns:ns1="ns1" xmlns:ns2="ns2" ns2:attr="value"/>"`
 		);
 	});
+
+	it('uses an existing prefix declared on an ancestor element', () => {
+		const root = document.appendChild(document.createElementNS('ns1', 'root'));
+		root.setAttributeNS(XMLNS_NAMESPACE, 'xmlns:pre', 'ns2');
+		const child = root.appendChild(document.createElementNS('ns1', 'child'));
+		child.appendChild(document.createElementNS('ns2', 'grandChild'));
+		expect(slimdom.serializeToWellFormedString(document)).toBe(
+			'<root xmlns="ns1" xmlns:pre="ns2"><child><pre:grandChild/></child></root>'
+		);
+	});
+
+	it('does not use an ancestor-defined prefix that is no longer in scope', () => {
+		// see https://github.com/w3c/DOM-Parsing/issues/75
+		const root = document.appendChild(document.createElementNS('ns1', 'pre:root'));
+		const child = root.appendChild(document.createElementNS('ns2', 'pre:child'));
+		child.appendChild(document.createElementNS('ns1', 'other:grandChild'));
+		expect(slimdom.serializeToWellFormedString(document)).toBe(
+			'<pre:root xmlns:pre="ns1"><pre:child xmlns:pre="ns2"><other:grandChild xmlns:other="ns1"/></pre:child></pre:root>'
+		);
+	});
+
+	it('does not use the empty prefix for a namespaced attribute', () => {
+		const root = document.appendChild(document.createElementNS('ns1', 'root'));
+		root.setAttributeNS('ns1', 'attr', 'value');
+		expect(slimdom.serializeToWellFormedString(document)).toMatchInlineSnapshot(
+			`"<root xmlns="ns1" xmlns:ns1="ns1" ns1:attr="value"/>"`
+		);
+	});
 });
