@@ -974,9 +974,9 @@ export function parseXml(
 			);
 		}
 
-		expansionGuard.exit();
 		entityContext = entityContext.parent;
 		if (entityContext) {
+			expansionGuard.exit();
 			domContext = domContext.parent!;
 		}
 	}
