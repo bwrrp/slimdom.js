@@ -41,25 +41,25 @@
 		"url": "git://github.com/bwrrp/slimdom.js.git"
 	},
 	"devDependencies": {
-		"@microsoft/api-documenter": "^7.22.7",
-		"@microsoft/api-extractor": "^7.35.1",
-		"@rollup/plugin-node-resolve": "^15.1.0",
-		"@types/jest": "^29.5.2",
-		"@types/node": "^20.2.5",
+		"@microsoft/api-documenter": "^7.23.15",
+		"@microsoft/api-extractor": "^7.39.0",
+		"@rollup/plugin-node-resolve": "^15.2.3",
+		"@types/jest": "^29.5.11",
+		"@types/node": "^20.10.5",
 		"copyfiles": "^2.4.1",
 		"dom-treeadapter": "^0.2.2",
-		"jest": "^29.5.0",
+		"jest": "^29.7.0",
 		"npm-run-all": "^4.1.5",
 		"parse5": "^7.1.2",
-		"prettier": "^2.8.8",
+		"prettier": "^3.1.1",
 		"prsc": "^4.0.0",
-		"rimraf": "^5.0.1",
+		"rimraf": "^5.0.5",
 		"rollup": "^2.75.7",
 		"rollup-plugin-sourcemaps": "^0.6.3",
 		"rollup-plugin-terser": "^7.0.2",
 		"sizzle": "^2.3.10",
-		"ts-jest": "~29.1.0",
-		"typescript": "^5.0.4"
+		"ts-jest": "~29.1.1",
+		"typescript": "^5.3.3"
 	},
 	"jest": {
 		"transform": {
