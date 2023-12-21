@@ -7,6 +7,7 @@ import { insertNode } from '../util/mutationAlgorithms';
 import { XMLNS_NAMESPACE, XML_NAMESPACE } from '../util/namespaceHelpers';
 import { isElement } from '../util/NodeType';
 import { getNodeDocument } from '../util/treeHelpers';
+import EntityExpansionGuard from './EntityExpansionGuard';
 import {
 	CompleteChars,
 	CompleteName,
@@ -343,7 +344,8 @@ function normalizeAndIncludeEntities(
 	normalized: string[],
 	value: AttValueEvent[],
 	dtd: Dtd | null,
-	ancestorEntities: string[] | null
+	ancestorEntities: string[] | null,
+	expansionGuard: EntityExpansionGuard
 ) {
 	for (const event of value) {
 		if (typeof event === 'string') {
@@ -372,6 +374,7 @@ function normalizeAndIncludeEntities(
 				event
 			);
 		}
+		expansionGuard.enter(event, replacementText.length);
 		const result = EntityReplacementTextInLiteral(replacementText, 0);
 		if (!result.success) {
 			throwParseError(
@@ -386,18 +389,21 @@ function normalizeAndIncludeEntities(
 			normalized,
 			result.value,
 			dtd,
-			ancestorEntities ? [event.name, ...ancestorEntities] : [event.name]
+			ancestorEntities ? [event.name, ...ancestorEntities] : [event.name],
+			expansionGuard
 		);
+		expansionGuard.exit();
 	}
 }
 
 function normalizeAttributeValue(
 	value: AttValueEvent[],
 	attDef: AttDefEvent | undefined,
-	dtd: Dtd | null
+	dtd: Dtd | null,
+	expansionGuard: EntityExpansionGuard
 ): string {
 	const normalized: string[] = [];
-	normalizeAndIncludeEntities(normalized, value, dtd, null);
+	normalizeAndIncludeEntities(normalized, value, dtd, null, expansionGuard);
 	if (attDef && !attDef.isCData) {
 		return normalized
 			.join('')
@@ -506,7 +512,8 @@ class Namespaces {
 		event: STagEvent | EmptyElemTagEvent,
 		attlist: Map<string, AttDefEvent> | undefined,
 		dtd: Dtd | null,
-		qualifiedNameCache: QualifiedNameCache
+		qualifiedNameCache: QualifiedNameCache,
+		expansionGuard: EntityExpansionGuard
 	): Namespaces {
 		let ns = parent;
 		let hasDeclarations = false;
@@ -558,7 +565,7 @@ class Namespaces {
 				localName === 'xmlns' &&
 				(!hasDeclarations || !ns._byPrefix.has(null))
 			) {
-				const namespace = normalizeAttributeValue(value, def, dtd) || null;
+				const namespace = normalizeAttributeValue(value, def, dtd, expansionGuard) || null;
 				add(null, namespace, nameEvent);
 			} else if (prefix === 'xmlns' && (!hasDeclarations || !ns._byPrefix.has(localName))) {
 				if (localName === 'xmlns') {
@@ -567,7 +574,7 @@ class Namespaces {
 						nameEvent
 					);
 				}
-				const namespace = normalizeAttributeValue(value, def, dtd) || null;
+				const namespace = normalizeAttributeValue(value, def, dtd, expansionGuard) || null;
 				add(localName, namespace, nameEvent);
 			}
 		};
@@ -719,15 +726,11 @@ export function parseXml(
 	input = input.replace(/^\ufeff/, '');
 	input = normalizeLineEndings(input);
 
-	// Guard against entity expansion attacks by keeping track of the initial input length vs. the
-	// expanded input length. The latter includes the length of the replacement text for each
-	// processed entity reference. An attack is likely if the ratio between the two exceeds the
-	// maximum amplification factor AND the expanded input length exceeds a threshold. This approach
-	// and defaults are taken from libexpat's billion laughs attack protection.
-	const initialInputLength = input.length;
-	let expandedInputLength = initialInputLength;
-	let topLevelEntityRef: EntityRefEvent | null = null;
-
+	const expansionGuard = new EntityExpansionGuard(
+		input.length,
+		entityExpansionThreshold,
+		entityExpansionMaxAmplification
+	);
 	let entityContext: EntityContext | null = {
 		parent: null,
 		entity: null,
@@ -778,16 +781,7 @@ export function parseXml(
 							event
 						);
 					}
-					if (topLevelEntityRef === null) {
-						topLevelEntityRef = event;
-					}
-					expandedInputLength += replacementText.length;
-					if (expandedInputLength > entityExpansionThreshold) {
-						const amplification = expandedInputLength / initialInputLength;
-						if (amplification > entityExpansionMaxAmplification) {
-							throwErrorWithContext('too much entity expansion', topLevelEntityRef);
-						}
-					}
+					expansionGuard.enter(event, replacementText.length);
 					domContext = {
 						parent: domContext,
 						root: domContext.root,
@@ -861,7 +855,8 @@ export function parseXml(
 						event,
 						attlist,
 						dtd,
-						qualifiedNameCache
+						qualifiedNameCache,
+						expansionGuard
 					);
 					const { prefix, localName } = splitQualifiedName(
 						event.name,
@@ -888,7 +883,7 @@ export function parseXml(
 							namespace,
 							prefix,
 							localName,
-							normalizeAttributeValue(attr.value, def, dtd),
+							normalizeAttributeValue(attr.value, def, dtd, expansionGuard),
 							element
 						);
 						appendAttribute(attrNode, element, true);
@@ -917,7 +912,7 @@ export function parseXml(
 								namespace,
 								prefix,
 								localName,
-								normalizeAttributeValue(def.value, attr, dtd),
+								normalizeAttributeValue(def.value, attr, dtd, expansionGuard),
 								element
 							);
 							appendAttribute(attrNode, element, true);
@@ -981,10 +976,8 @@ export function parseXml(
 
 		entityContext = entityContext.parent;
 		if (entityContext) {
+			expansionGuard.exit();
 			domContext = domContext.parent!;
-			if (entityContext.entity === null) {
-				topLevelEntityRef = null;
-			}
 		}
 	}
 

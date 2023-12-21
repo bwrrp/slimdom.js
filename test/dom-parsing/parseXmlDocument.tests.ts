@@ -831,6 +831,84 @@ describe('parseXmlDocument', () => {
 	`);
 	});
 
+	it('protects against entity expansion attacks in attribute values', () => {
+		// Each level expands to 10 times the next, leading to 10^10 expansions
+		const xml = `<!DOCTYPE root [
+			<!ENTITY one "&two;&two;&two;&two;&two;&two;&two;&two;&two;&two;&two;">
+			<!ENTITY two "&three;&three;&three;&three;&three;&three;&three;&three;&three;&three;&three;">
+			<!ENTITY three "&four;&four;&four;&four;&four;&four;&four;&four;&four;&four;&four;">
+			<!ENTITY four "&five;&five;&five;&five;&five;&five;&five;&five;&five;&five;&five;">
+			<!ENTITY five "&six;&six;&six;&six;&six;&six;&six;&six;&six;&six;&six;">
+			<!ENTITY six "&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;">
+			<!ENTITY seven "&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;">
+			<!ENTITY eight "&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;">
+			<!ENTITY nine "&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;">
+			<!ENTITY ten "a">
+		]><root attr="&one;"/>`;
+		expect(() => {
+			console.log(slimdom.parseXmlDocument(xml));
+		}).toThrowErrorMatchingInlineSnapshot(`
+		"too much entity expansion
+		At line 12, character 17:
+
+				]><root attr="&one;"/>
+				              ^^^^^"
+	`);
+	});
+
+	it('protects against entity expansion attacks in default attribute values', () => {
+		// Each level expands to 10 times the next, leading to 10^10 expansions
+		const xml = `<!DOCTYPE root [
+			<!ENTITY one "&two;&two;&two;&two;&two;&two;&two;&two;&two;&two;&two;">
+			<!ENTITY two "&three;&three;&three;&three;&three;&three;&three;&three;&three;&three;&three;">
+			<!ENTITY three "&four;&four;&four;&four;&four;&four;&four;&four;&four;&four;&four;">
+			<!ENTITY four "&five;&five;&five;&five;&five;&five;&five;&five;&five;&five;&five;">
+			<!ENTITY five "&six;&six;&six;&six;&six;&six;&six;&six;&six;&six;&six;">
+			<!ENTITY six "&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;">
+			<!ENTITY seven "&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;">
+			<!ENTITY eight "&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;">
+			<!ENTITY nine "&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;">
+			<!ENTITY ten "a">
+			<!ATTLIST root attr CDATA "&one;">
+		]><root/>`;
+		expect(() => {
+			console.log(slimdom.parseXmlDocument(xml));
+		}).toThrowErrorMatchingInlineSnapshot(`
+		"too much entity expansion
+		At line 12, character 31:
+
+					<!ATTLIST root attr CDATA "&one;">
+					                           ^^^^^"
+	`);
+	});
+
+	it('protects against entity expansion attacks in default attributes on elements generated from an entity', () => {
+		// Each level expands to 10 times the next, leading to 10^10 expansions
+		const xml = `<!DOCTYPE root [
+			<!ENTITY one "&two;&two;&two;&two;&two;&two;&two;&two;&two;&two;&two;">
+			<!ENTITY two "&three;&three;&three;&three;&three;&three;&three;&three;&three;&three;&three;">
+			<!ENTITY three "&four;&four;&four;&four;&four;&four;&four;&four;&four;&four;&four;">
+			<!ENTITY four "&five;&five;&five;&five;&five;&five;&five;&five;&five;&five;&five;">
+			<!ENTITY five "&six;&six;&six;&six;&six;&six;&six;&six;&six;&six;&six;">
+			<!ENTITY six "&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;&seven;">
+			<!ENTITY seven "&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;&eight;">
+			<!ENTITY eight "&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;&nine;">
+			<!ENTITY nine "&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;&ten;">
+			<!ENTITY ten "a">
+			<!ENTITY ele "&#60;element/>">
+			<!ATTLIST element attr CDATA "&one;">
+		]><root>&ele;</root>`;
+		expect(() => {
+			console.log(slimdom.parseXmlDocument(xml));
+		}).toThrowErrorMatchingInlineSnapshot(`
+		"too much entity expansion
+		At line 14, character 11:
+
+				]><root>&ele;</root>
+				        ^^^^^"
+	`);
+	});
+
 	it('can optionally treat CDATA sections as text', () => {
 		const xml = '<xml>before<![CDATA[inside]]>after</xml>';
 		const doc1 = slimdom.parseXmlDocument(xml);
