@@ -15,6 +15,7 @@
 	"type": "module",
 	"exports": {
 		".": {
+			"types": "./dist/slimdom.d.ts",
 			"import": "./dist/slimdom.esm.js",
 			"require": "./dist/slimdom.umd.cjs",
 			"default": "./dist/slimdom.esm.js"
