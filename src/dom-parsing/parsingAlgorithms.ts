@@ -624,8 +624,7 @@ type DomContext = {
 	parent: DomContext | null;
 	root: Node;
 	namespaces: Namespaces;
-	entityRoot: boolean;
-};
+} & ({ entityRoot: true } | { entityRoot: false; event: STagEvent });
 
 type EntityContext = {
 	parent: EntityContext | null;
@@ -925,6 +924,7 @@ export function parseXml(
 							root: element,
 							namespaces,
 							entityRoot: false,
+							event,
 						};
 					}
 					continue;
@@ -961,7 +961,7 @@ export function parseXml(
 		}
 
 		if (!domContext.entityRoot) {
-			throw new Error(
+			throwErrorWithContext(
 				`${
 					entityContext.entity
 						? `replacement text for entity "${entityContext.entity}"`
@@ -970,7 +970,8 @@ export function parseXml(
 						: 'fragment'
 				} is not well-formed - element "${
 					domContext.root.nodeName
-				}" is missing a closing tag`
+				}" is missing a closing tag`,
+				domContext.event.name
 			);
 		}
 
