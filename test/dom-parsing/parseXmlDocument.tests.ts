@@ -77,7 +77,7 @@ describe('parseXmlDocument', () => {
 		const doc = slimdom.parseXmlDocument(xml);
 		expect(doc.documentElement?.namespaceURI).toBe('ns1');
 		expect(
-			doc.documentElement?.firstElementChild?.getAttributeNode('pre:attr')?.namespaceURI
+			doc.documentElement?.firstElementChild?.getAttributeNode('pre:attr')?.namespaceURI,
 		).toBe('ns2');
 		expect(doc.documentElement?.firstElementChild?.firstElementChild?.namespaceURI).toBe('ns3');
 		expect(doc.getElementsByTagName('reset')[0]?.namespaceURI).toBe(null);
@@ -336,7 +336,7 @@ describe('parseXmlDocument', () => {
 	it('returns an error if non-whitespace character data follows the document element', () => {
 		const xml = `<root/>text`;
 		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(
-			`"document must not contain text outside of elements"`
+			`"document must not contain text outside of elements"`,
 		);
 	});
 
@@ -422,9 +422,13 @@ describe('parseXmlDocument', () => {
 
 	it('returns an error for entities that expand to content that is not well-formed', () => {
 		const xml = `<!DOCTYPE root [<!ENTITY wrong "<p>text">]><root>&wrong;</root>`;
-		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(
-			`"replacement text for entity "wrong" is not well-formed - element "p" is missing a closing tag"`
-		);
+		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(`
+		"replacement text for entity "wrong" is not well-formed - element "p" is missing a closing tag
+		At line 1, character 2:
+
+		<p>text
+		 ^"
+		`);
 	});
 
 	it('returns an error for entity references in element tags', () => {
@@ -672,9 +676,13 @@ describe('parseXmlDocument', () => {
 
 	it('returns an error if there are not enough end tags', () => {
 		const xml = '<root>';
-		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(
-			`"document is not well-formed - element "root" is missing a closing tag"`
-		);
+		expect(() => slimdom.parseXmlDocument(xml)).toThrowErrorMatchingInlineSnapshot(`
+		"document is not well-formed - element "root" is missing a closing tag
+		At line 1, character 2:
+
+		<root>
+		 ^^^^"
+		`);
 	});
 
 	it('returns an error if there are too many end tags', () => {

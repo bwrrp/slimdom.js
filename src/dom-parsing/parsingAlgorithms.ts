@@ -53,7 +53,7 @@ function offsetToCoords(input: string, offset: number): { line: number; char: nu
 
 function replaceInvalidCharacters(input: string): string {
 	return Array.from(input, (char) =>
-		matchesCharProduction(char) ? char : '[invalid character]'
+		matchesCharProduction(char) ? char : '[invalid character]',
 	).join('');
 }
 
@@ -83,21 +83,21 @@ function highlightError(input: string, start: number, end: number): string {
 	const inside = truncate(
 		replaceInvalidCharacters(input.substring(start, end)),
 		TruncateSide.Inside,
-		30
+		30,
 	);
 	const newlineIndexBefore = input.lastIndexOf('\n', start);
 	const lineBefore = truncate(
 		replaceInvalidCharacters(input.substring(newlineIndexBefore + 1, start)),
 		TruncateSide.Start,
-		55 - inside.length
+		55 - inside.length,
 	);
 	const newlineIndexAfter = input.indexOf('\n', end);
 	const lineAfter = truncate(
 		replaceInvalidCharacters(
-			newlineIndexAfter > 0 ? input.substring(end, newlineIndexAfter) : input.substring(end)
+			newlineIndexAfter > 0 ? input.substring(end, newlineIndexAfter) : input.substring(end),
 		),
 		TruncateSide.End,
-		80 - inside.length - lineBefore.length
+		80 - inside.length - lineBefore.length,
 	);
 	const indent = Array.from(lineBefore, (c) => (isWhitespace(c) ? c : ' ')).join('');
 	const squiggle = '^'.repeat(Math.max(Array.from(inside).length, 1));
@@ -108,13 +108,13 @@ export function throwErrorWithContext(message: string, event: WithPosition<unkno
 	const { line, char } = offsetToCoords(event.input, event.start);
 	const location = `At line ${line}, character ${char}:`;
 	throw new Error(
-		`${message}\n${location}\n\n${highlightError(event.input, event.start, event.end)}`
+		`${message}\n${location}\n\n${highlightError(event.input, event.start, event.end)}`,
 	);
 }
 
 function throwParseError(what: string, input: string, expected: string[], offset: number): never {
 	const quoted = Array.from(new Set(expected), (str) =>
-		str.includes('"') ? `'${str}'` : `"${str}"`
+		str.includes('"') ? `'${str}'` : `"${str}"`,
 	);
 	const cp = input.codePointAt(offset);
 	const actual = cp ? String.fromCodePoint(cp) : '';
@@ -122,7 +122,7 @@ function throwParseError(what: string, input: string, expected: string[], offset
 		`Parsing ${what} failed, expected ${
 			quoted.length > 1 ? 'one of ' + quoted.join(', ') : quoted[0]
 		}`,
-		{ input, start: offset, end: offset + Math.max(actual.length, 1) }
+		{ input, start: offset, end: offset + Math.max(actual.length, 1) },
 	);
 }
 
@@ -190,7 +190,7 @@ function constructReplacementText(value: EntityValueEvent[]): string {
 			case ParserEventType.PEReference:
 				throwErrorWithContext(
 					`reference to parameter entity "${event.name}" must not occur in an entity declaration in the internal subset`,
-					event
+					event,
 				);
 		}
 	}
@@ -230,13 +230,13 @@ class Dtd {
 									) {
 										throwErrorWithContext(
 											`default value of attribute "${attr.name.name}" contains reference to undefined entity "${event.name}"`,
-											event
+											event,
 										);
 									}
 									if (this._externalEntityNames.has(event.name)) {
 										throwErrorWithContext(
 											`default value of attribute "${attr.name.name}" must not contain reference to external entity "${event.name}"`,
-											event
+											event,
 										);
 									}
 								}
@@ -269,7 +269,7 @@ class Dtd {
 							) {
 								throwErrorWithContext(
 									`reference to parameter entity "${event.name}" must not occur in an entity declaration in the internal subset`,
-									event
+									event,
 								);
 							}
 						}
@@ -288,7 +288,7 @@ class Dtd {
 					if (Array.isArray(decl.value)) {
 						this._entityReplacementTextByName.set(
 							decl.name,
-							constructReplacementText(decl.value)
+							constructReplacementText(decl.value),
 						);
 					} else if (decl.value.ndata === null) {
 						// External parsed entity may be skipped
@@ -308,14 +308,14 @@ class Dtd {
 
 	public getEntityReplacementText(
 		event: EntityRefEvent,
-		allowExternal: boolean
+		allowExternal: boolean,
 	): string | undefined {
 		const value = this._entityReplacementTextByName.get(event.name);
 		if (value === undefined) {
 			if (this._unparsedEntityNames.has(event.name)) {
 				throwErrorWithContext(
 					`reference to binary entity "${event.name}" is not allowed`,
-					event
+					event,
 				);
 			}
 			if (this._externalEntityNames.has(event.name)) {
@@ -324,7 +324,7 @@ class Dtd {
 				}
 				throwErrorWithContext(
 					`reference to external entity "${event.name}" is not allowed in attribute value`,
-					event
+					event,
 				);
 			}
 		}
@@ -345,7 +345,7 @@ function normalizeAndIncludeEntities(
 	value: AttValueEvent[],
 	dtd: Dtd | null,
 	ancestorEntities: string[] | null,
-	expansionGuard: EntityExpansionGuard
+	expansionGuard: EntityExpansionGuard,
 ) {
 	for (const event of value) {
 		if (typeof event === 'string') {
@@ -361,7 +361,7 @@ function normalizeAndIncludeEntities(
 		if (ancestorEntities !== null && ancestorEntities.includes(event.name)) {
 			throwErrorWithContext(
 				`reference to entity "${event.name}" must not be recursive`,
-				event
+				event,
 			);
 		}
 		let replacementText = predefinedEntitiesReplacementText.get(event.name);
@@ -371,7 +371,7 @@ function normalizeAndIncludeEntities(
 		if (replacementText === undefined) {
 			throwErrorWithContext(
 				`reference to unknown entity "${event.name}" in attribute value`,
-				event
+				event,
 			);
 		}
 		expansionGuard.enter(event, replacementText.length);
@@ -381,7 +381,7 @@ function normalizeAndIncludeEntities(
 				`replacement text for entity "${event.name}"`,
 				replacementText,
 				result.expected,
-				result.offset
+				result.offset,
 			);
 		}
 		// Recursively normalize replacement text
@@ -390,7 +390,7 @@ function normalizeAndIncludeEntities(
 			result.value,
 			dtd,
 			ancestorEntities ? [event.name, ...ancestorEntities] : [event.name],
-			expansionGuard
+			expansionGuard,
 		);
 		expansionGuard.exit();
 	}
@@ -400,7 +400,7 @@ function normalizeAttributeValue(
 	value: AttValueEvent[],
 	attDef: AttDefEvent | undefined,
 	dtd: Dtd | null,
-	expansionGuard: EntityExpansionGuard
+	expansionGuard: EntityExpansionGuard,
 ): string {
 	const normalized: string[] = [];
 	normalizeAndIncludeEntities(normalized, value, dtd, null, expansionGuard);
@@ -418,7 +418,7 @@ type QualifiedNameCache = Map<string, QualifiedNameParts>;
 
 function splitQualifiedName(
 	event: WithPosition<{ name: string }>,
-	cache: QualifiedNameCache
+	cache: QualifiedNameCache,
 ): QualifiedNameParts {
 	const qualifiedName = event.name;
 	const fromCache = cache.get(qualifiedName);
@@ -458,7 +458,7 @@ class Namespaces {
 
 	private constructor(
 		parent: Namespaces | null,
-		resolve: ((prefix: string) => string | undefined) | null = null
+		resolve: ((prefix: string) => string | undefined) | null = null,
 	) {
 		this._parent = parent;
 		this._resolve = resolve ?? parent?._resolve ?? null;
@@ -486,7 +486,7 @@ class Namespaces {
 	public getForAttribute(
 		prefix: string | null,
 		localName: string,
-		event: WithPosition<unknown>
+		event: WithPosition<unknown>,
 	): string | null {
 		if (prefix === null) {
 			// Default namespace doesn't apply to attributes
@@ -513,7 +513,7 @@ class Namespaces {
 		attlist: Map<string, AttDefEvent> | undefined,
 		dtd: Dtd | null,
 		qualifiedNameCache: QualifiedNameCache,
-		expansionGuard: EntityExpansionGuard
+		expansionGuard: EntityExpansionGuard,
 	): Namespaces {
 		let ns = parent;
 		let hasDeclarations = false;
@@ -521,30 +521,30 @@ class Namespaces {
 		const add = (
 			prefix: string | null,
 			namespace: string | null,
-			event: WithPosition<unknown>
+			event: WithPosition<unknown>,
 		) => {
 			if (prefix === null && (namespace === XML_NAMESPACE || namespace === XMLNS_NAMESPACE)) {
 				throwErrorWithContext(
 					`the namespace "${namespace}" must not be used as the default namespace`,
-					event
+					event,
 				);
 			}
 			if (namespace === XMLNS_NAMESPACE) {
 				throwErrorWithContext(
 					`the namespace "${XMLNS_NAMESPACE}" must not be bound to a prefix`,
-					event
+					event,
 				);
 			}
 			if (namespace === XML_NAMESPACE && prefix !== 'xml') {
 				throwErrorWithContext(
 					`the namespace "${XML_NAMESPACE}" must be bound only to the prefix "xml"`,
-					event
+					event,
 				);
 			}
 			if (namespace !== XML_NAMESPACE && prefix === 'xml') {
 				throwErrorWithContext(
 					`the xml namespace prefix must not be bound to any namespace other than "${XML_NAMESPACE}"`,
-					event
+					event,
 				);
 			}
 			if (prefix !== null && namespace === null) {
@@ -571,7 +571,7 @@ class Namespaces {
 				if (localName === 'xmlns') {
 					throwErrorWithContext(
 						'the "xmlns" namespace prefix must not be declared',
-						nameEvent
+						nameEvent,
 					);
 				}
 				const namespace = normalizeAttributeValue(value, def, dtd, expansionGuard) || null;
@@ -624,8 +624,7 @@ type DomContext = {
 	parent: DomContext | null;
 	root: Node;
 	namespaces: Namespaces;
-	entityRoot: boolean;
-};
+} & ({ entityRoot: true } | { entityRoot: false; event: STagEvent });
 
 type EntityContext = {
 	parent: EntityContext | null;
@@ -694,7 +693,7 @@ export function parseXml(
 		entityExpansionMaxAmplification = DEFAULT_ENTITY_EXPANSION_MAX_AMPLIFICATION,
 		entityExpansionThreshold = DEFAULT_ENTITY_EXPANSION_THRESHOLD,
 		treatCDataAsText = false,
-	}: ParseOptions
+	}: ParseOptions,
 ): void {
 	const doc = getNodeDocument(into);
 	let domContext: DomContext = {
@@ -729,7 +728,7 @@ export function parseXml(
 	const expansionGuard = new EntityExpansionGuard(
 		input.length,
 		entityExpansionThreshold,
-		entityExpansionMaxAmplification
+		entityExpansionMaxAmplification,
 	);
 	let entityContext: EntityContext | null = {
 		parent: null,
@@ -750,7 +749,7 @@ export function parseXml(
 					if (domContext.root === doc && doc.documentElement !== null) {
 						throwErrorWithContext(
 							'character reference must not appear after the document element',
-							event
+							event,
 						);
 					}
 					collectedText.push(String.fromCodePoint(event.cp));
@@ -760,14 +759,14 @@ export function parseXml(
 					if (domContext.root === doc && doc.documentElement !== null) {
 						throwErrorWithContext(
 							`reference to entity "${event.name}" must not appear after the document element`,
-							event
+							event,
 						);
 					}
 					for (let ctx: EntityContext | null = entityContext; ctx; ctx = ctx.parent) {
 						if (ctx.entity === event.name) {
 							throwErrorWithContext(
 								`reference to entity "${event.name}" must not be recursive`,
-								event
+								event,
 							);
 						}
 					}
@@ -778,7 +777,7 @@ export function parseXml(
 					if (replacementText === undefined) {
 						throwErrorWithContext(
 							`reference to unknown entity "${event.name}" in content`,
-							event
+							event,
 						);
 					}
 					expansionGuard.enter(event, replacementText.length);
@@ -811,7 +810,7 @@ export function parseXml(
 					if (domContext.root === doc && doc.documentElement !== null) {
 						throwErrorWithContext(
 							'CData section must not appear after the document element',
-							event
+							event,
 						);
 					}
 					appendParsedNode(domContext.root, doc.createCDATASection(event.data));
@@ -829,15 +828,15 @@ export function parseXml(
 						doc.implementation.createDocumentType(
 							event.name,
 							event.ids?.publicId || '',
-							event.ids?.systemId || ''
-						)
+							event.ids?.systemId || '',
+						),
 					);
 					continue;
 
 				case ParserEventType.PI:
 					appendParsedNode(
 						domContext.root,
-						doc.createProcessingInstruction(event.target, event.data || '')
+						doc.createProcessingInstruction(event.target, event.data || ''),
 					);
 					continue;
 
@@ -846,7 +845,7 @@ export function parseXml(
 					if (domContext.root === doc && doc.documentElement !== null) {
 						throwErrorWithContext(
 							`document must contain a single root element, but found "${doc.documentElement.nodeName}" and "${event.name.name}"`,
-							event.name
+							event.name,
 						);
 					}
 					const attlist = dtd ? dtd.getAttlist(event.name) : undefined;
@@ -856,11 +855,11 @@ export function parseXml(
 						attlist,
 						dtd,
 						qualifiedNameCache,
-						expansionGuard
+						expansionGuard,
 					);
 					const { prefix, localName } = splitQualifiedName(
 						event.name,
-						qualifiedNameCache
+						qualifiedNameCache,
 					);
 					const namespace = namespaces.getForElement(prefix, event.name);
 					// We can skip the usual name validity checks
@@ -868,14 +867,14 @@ export function parseXml(
 					for (const attr of event.attributes) {
 						const { prefix, localName } = splitQualifiedName(
 							attr.name,
-							qualifiedNameCache
+							qualifiedNameCache,
 						);
 						const namespace = namespaces.getForAttribute(prefix, localName, attr.name);
 						const def = attlist?.get(attr.name.name);
 						if (element.hasAttributeNS(namespace, localName)) {
 							throwErrorWithContext(
 								`attribute "${attr.name.name}" must not appear multiple times on element "${event.name.name}"`,
-								attr.name
+								attr.name,
 							);
 						}
 						// We can skip validation of names and duplicates
@@ -884,7 +883,7 @@ export function parseXml(
 							prefix,
 							localName,
 							normalizeAttributeValue(attr.value, def, dtd, expansionGuard),
-							element
+							element,
 						);
 						appendAttribute(attrNode, element, true);
 					}
@@ -897,12 +896,12 @@ export function parseXml(
 							}
 							const { prefix, localName } = splitQualifiedName(
 								attr.name,
-								qualifiedNameCache
+								qualifiedNameCache,
 							);
 							const namespace = namespaces.getForAttribute(
 								prefix,
 								localName,
-								attr.name
+								attr.name,
 							);
 							if (element.hasAttributeNS(namespace, localName)) {
 								continue;
@@ -913,7 +912,7 @@ export function parseXml(
 								prefix,
 								localName,
 								normalizeAttributeValue(def.value, attr, dtd, expansionGuard),
-								element
+								element,
 							);
 							appendAttribute(attrNode, element, true);
 						}
@@ -925,6 +924,7 @@ export function parseXml(
 							root: element,
 							namespaces,
 							entityRoot: false,
+							event,
 						};
 					}
 					continue;
@@ -938,7 +938,7 @@ export function parseXml(
 									? `"${domContext.root.nodeName}"`
 									: 'no such tag'
 							}`,
-							event
+							event,
 						);
 					}
 					// The check above means we never leave the document DomContext
@@ -952,25 +952,26 @@ export function parseXml(
 				entityContext.entity
 					? `replacement text for entity ${entityContext.entity}`
 					: into === doc
-					? 'document'
-					: 'fragment',
+						? 'document'
+						: 'fragment',
 				input,
 				it.value.expected,
-				it.value.offset
+				it.value.offset,
 			);
 		}
 
 		if (!domContext.entityRoot) {
-			throw new Error(
+			throwErrorWithContext(
 				`${
 					entityContext.entity
 						? `replacement text for entity "${entityContext.entity}"`
 						: into === doc
-						? 'document'
-						: 'fragment'
+							? 'document'
+							: 'fragment'
 				} is not well-formed - element "${
 					domContext.root.nodeName
-				}" is missing a closing tag`
+				}" is missing a closing tag`,
+				domContext.event.name,
 			);
 		}
 
@@ -1024,7 +1025,7 @@ export function parseXmlFragment(
 		 * @public
 		 */
 		treatCDataAsText: boolean;
-	}> = {}
+	}> = {},
 ): DocumentFragment {
 	const doc = new Document();
 	const fragment = doc.createDocumentFragment();
@@ -1035,7 +1036,7 @@ export function parseXmlFragment(
 			? Namespaces.default(options.resolveNamespacePrefix)
 			: ROOT_NAMESPACES,
 		fragment,
-		options
+		options,
 	);
 	return fragment;
 }

@@ -1208,7 +1208,13 @@ At line 1, character 31:
                               ^"
 `;
 
-exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P39-ibm39n01.xml - Tests element with a required field missing. The ETag is missing for the element "root".: ibm-not-wf-P39-ibm39n01.xml 1`] = `"document is not well-formed - element "root" is missing a closing tag"`;
+exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P39-ibm39n01.xml - Tests element with a required field missing. The ETag is missing for the element "root".: ibm-not-wf-P39-ibm39n01.xml 1`] = `
+"document is not well-formed - element "root" is missing a closing tag
+At line 5, character 2:
+
+<root>missing end tag
+ ^^^^"
+`;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P39-ibm39n02.xml - Tests element with a required field missing. The STag is missing for the element "root".: ibm-not-wf-P39-ibm39n02.xml 1`] = `
 "Parsing document failed, expected "<"
@@ -1218,7 +1224,13 @@ missing start tag</root>
 ^"
 `;
 
-exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P39-ibm39n03.xml - Tests element with required fields missing. Both the content and the ETag are missing in the element "root".: ibm-not-wf-P39-ibm39n03.xml 1`] = `"document is not well-formed - element "root" is missing a closing tag"`;
+exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P39-ibm39n03.xml - Tests element with required fields missing. Both the content and the ETag are missing in the element "root".: ibm-not-wf-P39-ibm39n03.xml 1`] = `
+"document is not well-formed - element "root" is missing a closing tag
+At line 5, character 2:
+
+<root>
+ ^^^^"
+`;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P39-ibm39n04.xml - Tests element with required fields missing. Both the content and the STag are missing in the element "root".: ibm-not-wf-P39-ibm39n04.xml 1`] = `
 "Parsing document failed, expected "valid name start character"
@@ -1406,7 +1418,13 @@ At line 6, character 51:
                                                   ^"
 `;
 
-exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P42-ibm42n03.xml - Tests ETag with a wrong beginning sequence. The string "less than" is used as a beginning sequence of the ETag of the element "root".: ibm-not-wf-P42-ibm42n03.xml 1`] = `"document is not well-formed - element "root" is missing a closing tag"`;
+exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P42-ibm42n03.xml - Tests ETag with a wrong beginning sequence. The string "less than" is used as a beginning sequence of the ETag of the element "root".: ibm-not-wf-P42-ibm42n03.xml 1`] = `
+"document is not well-formed - element "root" is missing a closing tag
+At line 6, character 52:
+
+…<root attr1="any">Wrong begining sequence in ETag <root>
+                                                    ^^^^"
+`;
 
 exports[`XML Conformance Test Suite IBM XML 1.0 Tests not-wf ibm-not-wf-P42-ibm42n04.xml - Tests ETag with a wrong structure. An white space occurs between The beginning sequence and the Name of the ETag of the element "root".: ibm-not-wf-P42-ibm42n04.xml 1`] = `
 "Parsing document failed, expected "valid name start character"
@@ -3676,7 +3694,13 @@ At line 4, character 6:
      ^^^"
 `;
 
-exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-074 - Internal general parsed entities are only well formed if they match the "content" production.: not-wf-sa-074 1`] = `"replacement text for entity "e" is not well-formed - element "foo" is missing a closing tag"`;
+exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-074 - Internal general parsed entities are only well formed if they match the "content" production.: not-wf-sa-074 1`] = `
+"replacement text for entity "e" is not well-formed - element "foo" is missing a closing tag
+At line 1, character 8:
+
+</foo><foo>
+       ^^^"
+`;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-075 - ENTITY can't reference itself directly or indirectly.: not-wf-sa-075 1`] = `
 "reference to entity "e1" must not be recursive
@@ -3886,9 +3910,21 @@ At line 1, character 19:
                   ^"
 `;
 
-exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-103 - End-tag required for element foo.: not-wf-sa-103 1`] = `"replacement text for entity "e" is not well-formed - element "foo" is missing a closing tag"`;
+exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-103 - End-tag required for element foo.: not-wf-sa-103 1`] = `
+"replacement text for entity "e" is not well-formed - element "foo" is missing a closing tag
+At line 1, character 2:
 
-exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-104 - Internal general parsed entities are only well formed if they match the "content" production.: not-wf-sa-104 1`] = `"replacement text for entity "e" is not well-formed - element "foo" is missing a closing tag"`;
+<foo>
+ ^^^"
+`;
+
+exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-104 - Internal general parsed entities are only well formed if they match the "content" production.: not-wf-sa-104 1`] = `
+"replacement text for entity "e" is not well-formed - element "foo" is missing a closing tag
+At line 1, character 2:
+
+<foo>
+ ^^^"
+`;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-105 - Invalid placement of CDATA section.: not-wf-sa-105 1`] = `
 "Parsing document failed, expected "valid name start character"
@@ -4418,7 +4454,13 @@ At line 3, character 15:
               ^^^^^^^^^^^^^^^^^^^"
 `;
 
-exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-176 - Start tags must have matching end tags.: not-wf-sa-176 1`] = `"document is not well-formed - element "doc" is missing a closing tag"`;
+exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-176 - Start tags must have matching end tags.: not-wf-sa-176 1`] = `
+"document is not well-formed - element "doc" is missing a closing tag
+At line 4, character 2:
+
+<doc>
+ ^^^"
+`;
 
 exports[`XML Conformance Test Suite James Clark XML 1.0 tests not-wf-sa-177 - Character FFFF is not legal anywhere in an XML document.: not-wf-sa-177 1`] = `
 "Parsing document failed, expected "end of input"
@@ -4516,7 +4558,13 @@ At line 1, character 8:
        ^^^"
 `;
 
-exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p01fail4 - document element must be complete.: o-p01fail4 1`] = `"document is not well-formed - element "doc" is missing a closing tag"`;
+exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p01fail4 - document element must be complete.: o-p01fail4 1`] = `
+"document is not well-formed - element "doc" is missing a closing tag
+At line 1, character 2:
+
+<doc>
+ ^^^"
+`;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p02fail1 - Use of illegal character within XML document.: o-p02fail1 1`] = `
 "Parsing document failed, expected "end of input"
@@ -5438,7 +5486,13 @@ At line 1, character 33:
                                 ^"
 `;
 
-exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p39fail1 - start-tag requires end-tag: o-p39fail1 1`] = `"document is not well-formed - element "doc" is missing a closing tag"`;
+exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p39fail1 - start-tag requires end-tag: o-p39fail1 1`] = `
+"document is not well-formed - element "doc" is missing a closing tag
+At line 1, character 2:
+
+<doc>content
+ ^^^"
+`;
 
 exports[`XML Conformance Test Suite OASIS/NIST XML 1.0 Tests o-p39fail2 - end-tag requires start-tag: o-p39fail2 1`] = `
 "non-well-formed element: found end tag "a" but expected "doc"
@@ -6891,7 +6945,13 @@ At line 5, character 44:
                                            ^"
 `;
 
-exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf sgml01 - SGML-ism: omitted end tag for EMPTY content: sgml01 1`] = `"document is not well-formed - element "root" is missing a closing tag"`;
+exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf sgml01 - SGML-ism: omitted end tag for EMPTY content: sgml01 1`] = `
+"document is not well-formed - element "root" is missing a closing tag
+At line 7, character 2:
+
+<root>
+ ^^^^"
+`;
 
 exports[`XML Conformance Test Suite Sun Microsystems XML Tests not-wf sgml02 - XML declaration must be at the very beginning of a document; it"s not a processing instruction: sgml02 1`] = `
 "Parsing document failed, expected 'processing instruction target must not be "xml"'
