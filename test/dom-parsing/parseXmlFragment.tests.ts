@@ -66,9 +66,13 @@ describe('parseXmlFragment', () => {
 
 	it('requires the content to be well-formed', () => {
 		const xml = `<missing-end-tag>content`;
-		expect(() => slimdom.parseXmlFragment(xml)).toThrowErrorMatchingInlineSnapshot(
-			`"fragment is not well-formed - element "missing-end-tag" is missing a closing tag"`
-		);
+		expect(() => slimdom.parseXmlFragment(xml)).toThrowErrorMatchingInlineSnapshot(`
+		"fragment is not well-formed - element "missing-end-tag" is missing a closing tag
+		At line 1, character 2:
+
+		<missing-end-tag>content
+		 ^^^^^^^^^^^^^^^"
+		`);
 	});
 
 	it('works with fragments starting with a PI that looks like the XML declaration', () => {
