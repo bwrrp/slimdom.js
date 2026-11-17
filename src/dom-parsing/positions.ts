@@ -84,7 +84,7 @@ export type NodePosition =
  * replacement text contains nothing but text.
  */
 export default class PositionRecorder {
-	private _positions: WeakMap<Node, NodePosition>;
+	private _positions: Map<Node, NodePosition> | WeakMap<Node, NodePosition>;
 
 	// Length of the removed byte order mark (0 or 1)
 	private _bomLength: number;
@@ -92,6 +92,13 @@ export default class PositionRecorder {
 	// Offsets in the normalized input of each line feed that was a CR LF in the original input,
 	// in ascending order. Each of them had one character removed before it.
 	private _removedBefore: number[] = [];
+
+	// Number of entries in _removedBefore that are lower than the offset translated last. Offsets
+	// are mostly translated in ascending order, so searching from here is fast.
+	private _removedCursor = 0;
+
+	// Positions of the elements outside entities whose end tag has not been parsed yet
+	private _openElements: ElementPosition[] = [];
 
 	// Number of replacement texts of entities currently being parsed
 	private _depth = 0;
@@ -107,7 +114,10 @@ export default class PositionRecorder {
 	private _textHasPosition = false;
 	private _textFromEntity = false;
 
-	constructor(positions: WeakMap<Node, NodePosition>, originalInput: string) {
+	constructor(
+		positions: Map<Node, NodePosition> | WeakMap<Node, NodePosition>,
+		originalInput: string
+	) {
 		this._positions = positions;
 		this._bomLength = originalInput.charCodeAt(0) === 0xfeff ? 1 : 0;
 		const crlf = /\r\n/g;
@@ -128,19 +138,17 @@ export default class PositionRecorder {
 	 * Translates an offset in the normalized input to the original input.
 	 */
 	private _toOriginal(offset: number): number {
-		// Count removed characters before offset (binary search for the first entry >= offset)
+		// Count the removed characters before offset, starting from the previous count
 		const removed = this._removedBefore;
-		let low = 0;
-		let high = removed.length;
-		while (low < high) {
-			const middle = (low + high) >>> 1;
-			if (removed[middle] < offset) {
-				low = middle + 1;
-			} else {
-				high = middle;
-			}
+		let count = this._removedCursor;
+		while (count < removed.length && removed[count] < offset) {
+			count += 1;
 		}
-		return offset + this._bomLength + low;
+		while (count > 0 && removed[count - 1] >= offset) {
+			count -= 1;
+		}
+		this._removedCursor = count;
+		return offset + this._bomLength + count;
 	}
 
 	private _span(start: number, end: number): Span {
@@ -243,26 +251,31 @@ export default class PositionRecorder {
 
 	/**
 	 * Records the start tag or empty-element tag of an element.
+	 *
+	 * @param isEmpty - whether the tag is an empty-element tag
 	 */
-	public startTag(element: Element, start: number, end: number): void {
+	public startTag(element: Element, start: number, end: number, isEmpty: boolean): void {
 		if (this._depth === 0) {
-			this._positions.set(element, {
+			const position: ElementPosition = {
 				type: 'element',
 				startTag: this._span(start, end),
 				endTag: null,
-			});
+			};
+			this._positions.set(element, position);
+			if (!isEmpty) {
+				this._openElements.push(position);
+			}
 		}
 	}
 
 	/**
-	 * Records the end tag of an element.
+	 * Records the end tag of the element that was opened last.
 	 */
-	public endTag(element: Element, start: number, end: number): void {
+	public endTag(start: number, end: number): void {
 		if (this._depth === 0) {
-			// Entities contain balanced elements, so an end tag outside entities belongs to a start
-			// tag outside entities, which has been recorded
-			const position = this._positions.get(element) as ElementPosition;
-			position.endTag = this._span(start, end);
+			// Entities contain balanced elements, so an end tag outside entities belongs to the last
+			// start tag outside entities
+			this._openElements.pop()!.endTag = this._span(start, end);
 		}
 	}
 

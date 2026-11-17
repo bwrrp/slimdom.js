@@ -10564,6 +10564,33 @@
             },
             {
               "kind": "Reference",
+              "text": "Map",
+              "canonicalReference": "!Map:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "Node",
+              "canonicalReference": "slimdom!Node:class"
+            },
+            {
+              "kind": "Content",
+              "text": ", "
+            },
+            {
+              "kind": "Reference",
+              "text": "NodePosition",
+              "canonicalReference": "slimdom!NodePosition:type"
+            },
+            {
+              "kind": "Content",
+              "text": "> | "
+            },
+            {
+              "kind": "Reference",
               "text": "WeakMap",
               "canonicalReference": "!WeakMap:interface"
             },
@@ -10599,7 +10626,7 @@
           "name": "ParseOptions",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 9
+            "endIndex": 15
           }
         },
         {
@@ -10693,6 +10720,33 @@
             },
             {
               "kind": "Reference",
+              "text": "Map",
+              "canonicalReference": "!Map:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "Node",
+              "canonicalReference": "slimdom!Node:class"
+            },
+            {
+              "kind": "Content",
+              "text": ", "
+            },
+            {
+              "kind": "Reference",
+              "text": "NodePosition",
+              "canonicalReference": "slimdom!NodePosition:type"
+            },
+            {
+              "kind": "Content",
+              "text": "> | "
+            },
+            {
+              "kind": "Reference",
               "text": "WeakMap",
               "canonicalReference": "!WeakMap:interface"
             },
@@ -10734,8 +10788,8 @@
           ],
           "fileUrlPath": "lib/dom-parsing/parsingAlgorithms.d.ts",
           "returnTypeTokenRange": {
-            "startIndex": 12,
-            "endIndex": 13
+            "startIndex": 18,
+            "endIndex": 19
           },
           "releaseTag": "Public",
           "overloadIndex": 1,
@@ -10752,7 +10806,7 @@
               "parameterName": "options",
               "parameterTypeTokenRange": {
                 "startIndex": 3,
-                "endIndex": 11
+                "endIndex": 17
               },
               "isOptional": true
             }

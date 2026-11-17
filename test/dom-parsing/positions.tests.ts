@@ -6,26 +6,29 @@ type Sliced =
 	| { type: 'attribute'; span: string; value: string }
 	| { type: 'node' | 'xmlDeclaration' | 'textDeclaration'; span: string };
 
+type Positions =
+	| Map<slimdom.Node, slimdom.NodePosition>
+	| WeakMap<slimdom.Node, slimdom.NodePosition>;
+
+// Creates the map that the tests pass to the parser, set for each run of the tests below
+let createPositions: () => Positions;
+
 function parseDocument(input: string, options: slimdom.ParseOptions = {}) {
-	const positions = new WeakMap<slimdom.Node, slimdom.NodePosition>();
+	const positions = createPositions();
 	const document = slimdom.parseXmlDocument(input, { ...options, positions });
 	checkPositions(input, document, positions);
 	return { document, positions, at: (node: slimdom.Node) => sliced(input, positions, node) };
 }
 
 function parseFragment(input: string, options: { treatCDataAsText?: boolean } = {}) {
-	const positions = new WeakMap<slimdom.Node, slimdom.NodePosition>();
+	const positions = createPositions();
 	const fragment = slimdom.parseXmlFragment(input, { ...options, positions });
 	checkPositions(input, fragment, positions);
 	return { fragment, positions, at: (node: slimdom.Node) => sliced(input, positions, node) };
 }
 
 // Replaces each span of the position of node with the text it covers, to make tests readable
-function sliced(
-	input: string,
-	positions: WeakMap<slimdom.Node, slimdom.NodePosition>,
-	node: slimdom.Node
-): Sliced | undefined {
+function sliced(input: string, positions: Positions, node: slimdom.Node): Sliced | undefined {
 	const position = positions.get(node);
 	if (position === undefined) {
 		return undefined;
@@ -45,7 +48,14 @@ function sliced(
 	}
 }
 
-describe('positions', () => {
+describe.each([
+	['WeakMap', () => new WeakMap<slimdom.Node, slimdom.NodePosition>()],
+	['Map', () => new Map<slimdom.Node, slimdom.NodePosition>()],
+])('positions in a %s', (_name, create) => {
+	beforeEach(() => {
+		createPositions = create;
+	});
+
 	describe('elements', () => {
 		it('records the start and end tags', () => {
 			const { document, at } = parseDocument('<root><child >text</child\n></root>');
@@ -331,6 +341,34 @@ describe('positions', () => {
 				type: 'attribute',
 				span: 'b="1"',
 				value: '"1"',
+			});
+		});
+
+		it('translates offsets that come before offsets translated earlier', () => {
+			// The start tag is recorded before its attributes, so translating the offsets of
+			// attribute a has to go back over the CR LF after it
+			const input = '<root\r\na="1"\r\nb="2"\r\n>\r\n<x/>\r\n</root>';
+			const { document, positions, at } = parseDocument(input);
+			const root = document.documentElement!;
+			expect(at(root)).toEqual({
+				type: 'element',
+				startTag: '<root\r\na="1"\r\nb="2"\r\n>',
+				endTag: '</root>',
+			});
+			expect(positions.get(root.getAttributeNode('a')!)).toEqual({
+				type: 'attribute',
+				span: { start: 7, end: 12 },
+				value: { start: 9, end: 12 },
+			});
+			expect(at(root.getAttributeNode('b')!)).toEqual({
+				type: 'attribute',
+				span: 'b="2"',
+				value: '"2"',
+			});
+			expect(at(root.firstElementChild!)).toEqual({
+				type: 'element',
+				startTag: '<x/>',
+				endTag: null,
 			});
 		});
 

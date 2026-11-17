@@ -685,9 +685,12 @@ export type ParseOptions = Partial<{
 	 * {@link NodePosition} for what is recorded. Nodes from the replacement text of an entity and
 	 * attributes defaulted from the DTD get no position.
 	 *
+	 * Recording positions makes parsing slower. A Map is faster than a WeakMap, but it keeps the
+	 * nodes alive for as long as the Map is used.
+	 *
 	 * @public
 	 */
-	positions: WeakMap<Node, NodePosition>;
+	positions: Map<Node, NodePosition> | WeakMap<Node, NodePosition>;
 }>;
 
 const DEFAULT_ENTITY_EXPANSION_MAX_AMPLIFICATION = 100.0;
@@ -902,7 +905,12 @@ export function parseXml(
 					const namespace = namespaces.getForElement(prefix, event.name);
 					// We can skip the usual name validity checks
 					const element = unsafeCreateElement(doc, localName, namespace, prefix);
-					recorder?.startTag(element, eventStart, eventEnd);
+					recorder?.startTag(
+						element,
+						eventStart,
+						eventEnd,
+						event.type === ParserEventType.EmptyElemTag
+					);
 					for (const attr of event.attributes) {
 						const { prefix, localName } = splitQualifiedName(
 							attr.name,
@@ -986,7 +994,7 @@ export function parseXml(
 							event
 						);
 					}
-					recorder?.endTag(domContext.root, eventStart, eventEnd);
+					recorder?.endTag(eventStart, eventEnd);
 					// The check above means we never leave the document DomContext
 					domContext = domContext.parent!;
 					continue;
@@ -1078,9 +1086,12 @@ export function parseXmlFragment(
 		 * {@link NodePosition} for what is recorded. Nodes from the replacement text of an entity
 		 * get no position.
 		 *
+		 * Recording positions makes parsing slower. A Map is faster than a WeakMap, but it keeps
+		 * the nodes alive for as long as the Map is used.
+		 *
 		 * @public
 		 */
-		positions: WeakMap<Node, NodePosition>;
+		positions: Map<Node, NodePosition> | WeakMap<Node, NodePosition>;
 	}> = {}
 ): DocumentFragment {
 	const doc = new Document();

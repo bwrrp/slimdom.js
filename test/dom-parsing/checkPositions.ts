@@ -59,7 +59,7 @@ function resolveReferences(text: string): string | null {
 export default function checkPositions(
 	input: string,
 	root: Document | DocumentFragment,
-	positions: WeakMap<Node, NodePosition>
+	positions: Map<Node, NodePosition> | WeakMap<Node, NodePosition>
 ): void {
 	const hasDtd = root.nodeType === Node.DOCUMENT_NODE && (root as Document).doctype !== null;
 	let cursor = input.charCodeAt(0) === 0xfeff ? 1 : 0;

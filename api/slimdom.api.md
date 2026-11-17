@@ -466,7 +466,7 @@ export type ParseOptions = Partial<{
     entityExpansionMaxAmplification: number;
     entityExpansionThreshold: number;
     treatCDataAsText: boolean;
-    positions: WeakMap<Node, NodePosition>;
+    positions: Map<Node, NodePosition> | WeakMap<Node, NodePosition>;
 }>;
 
 // @public
@@ -476,7 +476,7 @@ export function parseXmlDocument(input: string, options?: ParseOptions): Documen
 export function parseXmlFragment(input: string, options?: Partial<{
     resolveNamespacePrefix(prefix: string): string | undefined;
     treatCDataAsText: boolean;
-    positions: WeakMap<Node, NodePosition>;
+    positions: Map<Node, NodePosition> | WeakMap<Node, NodePosition>;
 }>): DocumentFragment;
 
 // @public
