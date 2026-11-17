@@ -259,10 +259,10 @@ export default class PositionRecorder {
 	 */
 	public endTag(element: Element, start: number, end: number): void {
 		if (this._depth === 0) {
-			const position = this._positions.get(element);
-			if (position?.type === 'element') {
-				position.endTag = this._span(start, end);
-			}
+			// Entities contain balanced elements, so an end tag outside entities belongs to a start
+			// tag outside entities, which has been recorded
+			const position = this._positions.get(element) as ElementPosition;
+			position.endTag = this._span(start, end);
 		}
 	}
 

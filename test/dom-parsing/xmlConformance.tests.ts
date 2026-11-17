@@ -10,6 +10,7 @@ import {
 } from '../../src/index';
 import { existsSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import checkPositions from './checkPositions';
 
 const IGNORED_TESTS = [
 	// invalid characters in utf8 not preserved when loading as string
@@ -185,7 +186,9 @@ describe('XML Conformance Test Suite', () => {
 				case 'invalid':
 					it(`${id} - ${desc}`, () => {
 						const xml = loadXml(path);
-						const doc = parseXmlDocument(xml);
+						const positions = new WeakMap();
+						const doc = parseXmlDocument(xml, { positions });
+						checkPositions(xml, doc, positions);
 						if (outputPath) {
 							const out = parseXmlDocument(loadXml(outputPath));
 							// Although these should be in canonical format, it appears some have a doctype
