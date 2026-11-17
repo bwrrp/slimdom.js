@@ -757,6 +757,50 @@
           "implementsTokenRanges": []
         },
         {
+          "kind": "TypeAlias",
+          "canonicalReference": "slimdom!AttributePosition:type",
+          "docComment": "/**\n * The position of an attribute.\n *\n * The span covers the whole attribute. The value span covers its value including the quotes.\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type AttributePosition = "
+            },
+            {
+              "kind": "Content",
+              "text": "{\n    type: 'attribute';\n    span: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Span",
+              "canonicalReference": "slimdom!Span:type"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n    value: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Span",
+              "canonicalReference": "slimdom!Span:type"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n}"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "lib/dom-parsing/positions.d.ts",
+          "releaseTag": "Public",
+          "name": "AttributePosition",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 6
+          }
+        },
+        {
           "kind": "Class",
           "canonicalReference": "slimdom!CDATASection:class",
           "docComment": "/**\n * @public\n */\n",
@@ -7640,6 +7684,50 @@
           ]
         },
         {
+          "kind": "TypeAlias",
+          "canonicalReference": "slimdom!ElementPosition:type",
+          "docComment": "/**\n * The position of an element.\n *\n * The start tag span covers the start tag or the empty-element tag. The end tag span is null for an empty-element tag.\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type ElementPosition = "
+            },
+            {
+              "kind": "Content",
+              "text": "{\n    type: 'element';\n    startTag: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Span",
+              "canonicalReference": "slimdom!Span:type"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n    endTag: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Span",
+              "canonicalReference": "slimdom!Span:type"
+            },
+            {
+              "kind": "Content",
+              "text": " | null;\n}"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "lib/dom-parsing/positions.d.ts",
+          "releaseTag": "Public",
+          "name": "ElementPosition",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 6
+          }
+        },
+        {
           "kind": "Class",
           "canonicalReference": "slimdom!MutationObserver:class",
           "docComment": "/**\n * 3.3.1. Interface MutationObserver\n *\n * A MutationObserver object can be used to observe mutations to the tree of nodes.\n *\n * @public\n */\n",
@@ -10395,6 +10483,69 @@
         },
         {
           "kind": "TypeAlias",
+          "canonicalReference": "slimdom!NodePosition:type",
+          "docComment": "/**\n * Where a node was found in the string that was parsed.\n *\n * The `type` property tells which of the variants it is.\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type NodePosition = "
+            },
+            {
+              "kind": "Reference",
+              "text": "SimpleNodePosition",
+              "canonicalReference": "slimdom!SimpleNodePosition:type"
+            },
+            {
+              "kind": "Content",
+              "text": " | "
+            },
+            {
+              "kind": "Reference",
+              "text": "ElementPosition",
+              "canonicalReference": "slimdom!ElementPosition:type"
+            },
+            {
+              "kind": "Content",
+              "text": " | "
+            },
+            {
+              "kind": "Reference",
+              "text": "AttributePosition",
+              "canonicalReference": "slimdom!AttributePosition:type"
+            },
+            {
+              "kind": "Content",
+              "text": " | "
+            },
+            {
+              "kind": "Reference",
+              "text": "XmlDeclarationPosition",
+              "canonicalReference": "slimdom!XmlDeclarationPosition:type"
+            },
+            {
+              "kind": "Content",
+              "text": " | "
+            },
+            {
+              "kind": "Reference",
+              "text": "TextDeclarationPosition",
+              "canonicalReference": "slimdom!TextDeclarationPosition:type"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "lib/dom-parsing/positions.d.ts",
+          "releaseTag": "Public",
+          "name": "NodePosition",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 10
+          }
+        },
+        {
+          "kind": "TypeAlias",
           "canonicalReference": "slimdom!ParseOptions:type",
           "docComment": "/**\n * Options that control parsing.\n *\n * @public\n */\n",
           "excerptTokens": [
@@ -10409,7 +10560,61 @@
             },
             {
               "kind": "Content",
-              "text": "<{\n    entityExpansionMaxAmplification: number;\n    entityExpansionThreshold: number;\n    treatCDataAsText: boolean;\n}>"
+              "text": "<{\n    entityExpansionMaxAmplification: number;\n    entityExpansionThreshold: number;\n    treatCDataAsText: boolean;\n    positions: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Map",
+              "canonicalReference": "!Map:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "Node",
+              "canonicalReference": "slimdom!Node:class"
+            },
+            {
+              "kind": "Content",
+              "text": ", "
+            },
+            {
+              "kind": "Reference",
+              "text": "NodePosition",
+              "canonicalReference": "slimdom!NodePosition:type"
+            },
+            {
+              "kind": "Content",
+              "text": "> | "
+            },
+            {
+              "kind": "Reference",
+              "text": "WeakMap",
+              "canonicalReference": "!WeakMap:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "Node",
+              "canonicalReference": "slimdom!Node:class"
+            },
+            {
+              "kind": "Content",
+              "text": ", "
+            },
+            {
+              "kind": "Reference",
+              "text": "NodePosition",
+              "canonicalReference": "slimdom!NodePosition:type"
+            },
+            {
+              "kind": "Content",
+              "text": ">;\n}>"
             },
             {
               "kind": "Content",
@@ -10421,7 +10626,7 @@
           "name": "ParseOptions",
           "typeTokenRange": {
             "startIndex": 1,
-            "endIndex": 3
+            "endIndex": 15
           }
         },
         {
@@ -10511,7 +10716,61 @@
             },
             {
               "kind": "Content",
-              "text": "<{\n    resolveNamespacePrefix(prefix: string): string | undefined;\n    treatCDataAsText: boolean;\n}>"
+              "text": "<{\n    resolveNamespacePrefix(prefix: string): string | undefined;\n    treatCDataAsText: boolean;\n    positions: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Map",
+              "canonicalReference": "!Map:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "Node",
+              "canonicalReference": "slimdom!Node:class"
+            },
+            {
+              "kind": "Content",
+              "text": ", "
+            },
+            {
+              "kind": "Reference",
+              "text": "NodePosition",
+              "canonicalReference": "slimdom!NodePosition:type"
+            },
+            {
+              "kind": "Content",
+              "text": "> | "
+            },
+            {
+              "kind": "Reference",
+              "text": "WeakMap",
+              "canonicalReference": "!WeakMap:interface"
+            },
+            {
+              "kind": "Content",
+              "text": "<"
+            },
+            {
+              "kind": "Reference",
+              "text": "Node",
+              "canonicalReference": "slimdom!Node:class"
+            },
+            {
+              "kind": "Content",
+              "text": ", "
+            },
+            {
+              "kind": "Reference",
+              "text": "NodePosition",
+              "canonicalReference": "slimdom!NodePosition:type"
+            },
+            {
+              "kind": "Content",
+              "text": ">;\n}>"
             },
             {
               "kind": "Content",
@@ -10529,8 +10788,8 @@
           ],
           "fileUrlPath": "lib/dom-parsing/parsingAlgorithms.d.ts",
           "returnTypeTokenRange": {
-            "startIndex": 6,
-            "endIndex": 7
+            "startIndex": 18,
+            "endIndex": 19
           },
           "releaseTag": "Public",
           "overloadIndex": 1,
@@ -10547,7 +10806,7 @@
               "parameterName": "options",
               "parameterTypeTokenRange": {
                 "startIndex": 3,
-                "endIndex": 5
+                "endIndex": 17
               },
               "isOptional": true
             }
@@ -12175,6 +12434,67 @@
           "name": "serializeToWellFormedString"
         },
         {
+          "kind": "TypeAlias",
+          "canonicalReference": "slimdom!SimpleNodePosition:type",
+          "docComment": "/**\n * The position of a text node, CDATA section, comment, processing instruction or document type.\n *\n * The span covers the whole node. A text node spans from the start of its first piece to the end of its last piece.\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type SimpleNodePosition = "
+            },
+            {
+              "kind": "Content",
+              "text": "{\n    type: 'node';\n    span: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Span",
+              "canonicalReference": "slimdom!Span:type"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n}"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "lib/dom-parsing/positions.d.ts",
+          "releaseTag": "Public",
+          "name": "SimpleNodePosition",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 4
+          }
+        },
+        {
+          "kind": "TypeAlias",
+          "canonicalReference": "slimdom!Span:type",
+          "docComment": "/**\n * A part of the string that was parsed, from start (inclusive) to end (exclusive).\n *\n * The offsets count UTF-16 code units in the original string, before the byte order mark is removed and line endings are normalized.\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type Span = "
+            },
+            {
+              "kind": "Content",
+              "text": "{\n    start: number;\n    end: number;\n}"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "lib/dom-parsing/positions.d.ts",
+          "releaseTag": "Public",
+          "name": "Span",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 2
+          }
+        },
+        {
           "kind": "Class",
           "canonicalReference": "slimdom!StaticRange:class",
           "docComment": "/**\n * Interface StaticRange\n *\n * Updating live ranges in response to node tree mutations can be expensive. For every node tree change, all affected Range objects need to be updated. Even if the application is uninterested in some live ranges, it still has to pay the cost of keeping them up-to-date when a mutation occurs.\n *\n * A StaticRange object is a lightweight range that does not update when the node tree mutates. It is therefore not subject to the same maintenance cost as live ranges.\n *\n * @public\n */\n",
@@ -12646,6 +12966,41 @@
           "implementsTokenRanges": []
         },
         {
+          "kind": "TypeAlias",
+          "canonicalReference": "slimdom!TextDeclarationPosition:type",
+          "docComment": "/**\n * The position of the text declaration of a fragment.\n *\n * It is recorded for the document fragment because the declaration is not a node.\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type TextDeclarationPosition = "
+            },
+            {
+              "kind": "Content",
+              "text": "{\n    type: 'textDeclaration';\n    span: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Span",
+              "canonicalReference": "slimdom!Span:type"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n}"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "lib/dom-parsing/positions.d.ts",
+          "releaseTag": "Public",
+          "name": "TextDeclarationPosition",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 4
+          }
+        },
+        {
           "kind": "Function",
           "canonicalReference": "slimdom!unsafeAppendAttribute:function(1)",
           "docComment": "/**\n * Append an attribute attribute to an element without the usual checks.\n *\n * @param attribute - The attribute to append\n *\n * @param element - The element to append attribute to\n *\n * @public\n */\n",
@@ -12917,6 +13272,41 @@
             }
           ],
           "name": "unsafeCreateElement"
+        },
+        {
+          "kind": "TypeAlias",
+          "canonicalReference": "slimdom!XmlDeclarationPosition:type",
+          "docComment": "/**\n * The position of the XML declaration of a document.\n *\n * It is recorded for the document because the declaration is not a node.\n *\n * @public\n */\n",
+          "excerptTokens": [
+            {
+              "kind": "Content",
+              "text": "export type XmlDeclarationPosition = "
+            },
+            {
+              "kind": "Content",
+              "text": "{\n    type: 'xmlDeclaration';\n    span: "
+            },
+            {
+              "kind": "Reference",
+              "text": "Span",
+              "canonicalReference": "slimdom!Span:type"
+            },
+            {
+              "kind": "Content",
+              "text": ";\n}"
+            },
+            {
+              "kind": "Content",
+              "text": ";"
+            }
+          ],
+          "fileUrlPath": "lib/dom-parsing/positions.d.ts",
+          "releaseTag": "Public",
+          "name": "XmlDeclarationPosition",
+          "typeTokenRange": {
+            "startIndex": 1,
+            "endIndex": 4
+          }
         },
         {
           "kind": "Class",

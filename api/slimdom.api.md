@@ -37,6 +37,13 @@ export class Attr extends Node {
     set value(value: string);
 }
 
+// @public
+export type AttributePosition = {
+    type: 'attribute';
+    span: Span;
+    value: Span;
+};
+
 // @public (undocumented)
 export class CDATASection extends Text {
     constructor(data: string);
@@ -322,6 +329,13 @@ export class Element extends Node implements ParentNode, NonDocumentTypeChildNod
 }
 
 // @public
+export type ElementPosition = {
+    type: 'element';
+    startTag: Span;
+    endTag: Span | null;
+};
+
+// @public
 export class MutationObserver {
     constructor(callback: MutationCallback);
     // Warning: (ae-forgotten-export) The symbol "MutationCallback" needs to be exported by the entry point index.d.ts
@@ -445,10 +459,14 @@ export abstract class Node {
 }
 
 // @public
+export type NodePosition = SimpleNodePosition | ElementPosition | AttributePosition | XmlDeclarationPosition | TextDeclarationPosition;
+
+// @public
 export type ParseOptions = Partial<{
     entityExpansionMaxAmplification: number;
     entityExpansionThreshold: number;
     treatCDataAsText: boolean;
+    positions: Map<Node, NodePosition> | WeakMap<Node, NodePosition>;
 }>;
 
 // @public
@@ -458,6 +476,7 @@ export function parseXmlDocument(input: string, options?: ParseOptions): Documen
 export function parseXmlFragment(input: string, options?: Partial<{
     resolveNamespacePrefix(prefix: string): string | undefined;
     treatCDataAsText: boolean;
+    positions: Map<Node, NodePosition> | WeakMap<Node, NodePosition>;
 }>): DocumentFragment;
 
 // @public
@@ -526,6 +545,18 @@ export class Range implements AbstractRange {
 export function serializeToWellFormedString(root: Node): string;
 
 // @public
+export type SimpleNodePosition = {
+    type: 'node';
+    span: Span;
+};
+
+// @public
+export type Span = {
+    start: number;
+    end: number;
+};
+
+// @public
 export class StaticRange implements AbstractRange {
     // Warning: (ae-forgotten-export) The symbol "StaticRangeInit" needs to be exported by the entry point index.d.ts
     constructor(init: StaticRangeInit);
@@ -554,6 +585,12 @@ export class Text extends CharacterData {
 }
 
 // @public
+export type TextDeclarationPosition = {
+    type: 'textDeclaration';
+    span: Span;
+};
+
+// @public
 export function unsafeAppendAttribute(attribute: Attr, element: Element): void;
 
 // @public
@@ -561,6 +598,12 @@ export function unsafeCreateAttribute(namespace: string | null, prefix: string |
 
 // @public
 export function unsafeCreateElement(document: Document, localName: string, namespace: string | null, prefix?: string | null): Element;
+
+// @public
+export type XmlDeclarationPosition = {
+    type: 'xmlDeclaration';
+    span: Span;
+};
 
 // @public (undocumented)
 export class XMLDocument extends Document {
