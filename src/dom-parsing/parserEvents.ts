@@ -44,7 +44,13 @@ export type XMLDeclEvent = {
 	standalone: boolean | null;
 };
 
-export type AttributeEvent = { name: WithPosition<{ name: string }>; value: AttValueEvent[] };
+export type AttributeEvent = {
+	name: WithPosition<{ name: string }>;
+	value: AttValueEvent[];
+	// Offsets of the value, including its quotes
+	valueStart: number;
+	valueEnd: number;
+};
 
 export type STagEvent = {
 	type: ParserEventType.STag;

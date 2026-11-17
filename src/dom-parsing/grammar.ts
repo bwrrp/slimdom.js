@@ -650,14 +650,29 @@ const XMLDecl: Parser<XMLDeclEvent> = delimited(
 const NameWithPosition = withPosition(map(Name, (name) => ({ name })));
 
 // [41] Attribute ::= Name Eq AttValue
-const Attribute: Parser<AttributeEvent> = then(
-	NameWithPosition,
-	preceded(cut(Eq), cut(AttValue)),
-	(name, value) => ({
-		name,
-		value,
-	})
-);
+// Written out by hand to record where the value starts and ends without extra allocations
+const CutEq = cut(Eq);
+const CutAttValue = cut(AttValue);
+const Attribute: Parser<AttributeEvent> = (input, offset) => {
+	const name = NameWithPosition(input, offset);
+	if (!name.success) {
+		return name;
+	}
+	const eq = CutEq(input, name.offset);
+	if (!eq.success) {
+		return eq;
+	}
+	const value = CutAttValue(input, eq.offset);
+	if (!value.success) {
+		return value;
+	}
+	return okWithValue(value.offset, {
+		name: name.value,
+		value: value.value,
+		valueStart: eq.offset,
+		valueEnd: value.offset,
+	});
+};
 
 // [40] STag ::= '<' Name (S Attribute)* S? '>'
 // [44] EmptyElemTag ::= '<' Name (S Attribute)* S? '/>'
@@ -1078,7 +1093,7 @@ const content: ParserState<DocumentParseEvent> = {
 	type: ParserStateType.star,
 };
 
-export function parseContent(input: string): Iterator<DocumentParseEvent> {
+export function parseContent(input: string): ParserStateMachine<DocumentParseEvent> {
 	return new ParserStateMachine(input, [content]);
 }
 
@@ -1105,7 +1120,7 @@ const element: ParserState<DocumentParseEvent>[] = [
 // As element leads to content, which is a superset of Misc*, we can omit the last Misc*
 const document: ParserState<DocumentParseEvent>[] = [...prolog, ...element];
 
-export function parseDocument(input: string): Iterator<DocumentParseEvent> {
+export function parseDocument(input: string): ParserStateMachine<DocumentParseEvent> {
 	return new ParserStateMachine(input, document);
 }
 
@@ -1115,6 +1130,6 @@ const extParsedEnt: ParserState<DocumentParseEvent>[] = [
 	content,
 ];
 
-export function parseFragment(input: string): Iterator<DocumentParseEvent> {
+export function parseFragment(input: string): ParserStateMachine<DocumentParseEvent> {
 	return new ParserStateMachine(input, extParsedEnt);
 }

@@ -21,6 +21,15 @@ export { DOMException } from './util/errorHelpers';
 
 export { parseXmlDocument, parseXmlFragment } from './dom-parsing/parsingAlgorithms';
 export type { ParseOptions } from './dom-parsing/parsingAlgorithms';
+export type {
+	AttributePosition,
+	ElementPosition,
+	NodePosition,
+	SimpleNodePosition,
+	Span,
+	TextDeclarationPosition,
+	XmlDeclarationPosition,
+} from './dom-parsing/positions';
 
 // Standard DOM does not expose a way to serialize arbitrary nodes as well-formed XML
 export { serializeToWellFormedString } from './dom-parsing/XMLSerializer';

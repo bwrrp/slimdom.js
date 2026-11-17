@@ -8,6 +8,8 @@ import { XMLNS_NAMESPACE, XML_NAMESPACE } from '../util/namespaceHelpers';
 import { isElement } from '../util/NodeType';
 import { getNodeDocument } from '../util/treeHelpers';
 import EntityExpansionGuard from './EntityExpansionGuard';
+import ParserStateMachine from './ParserStateMachine';
+import PositionRecorder, { NodePosition } from './positions';
 import {
 	CompleteChars,
 	CompleteName,
@@ -629,7 +631,7 @@ type DomContext = {
 type EntityContext = {
 	parent: EntityContext | null;
 	entity: string | null;
-	iterator: Iterator<DocumentParseEvent>;
+	iterator: ParserStateMachine<DocumentParseEvent>;
 };
 
 /**
@@ -677,6 +679,15 @@ export type ParseOptions = Partial<{
 	 * @public
 	 */
 	treatCDataAsText: boolean;
+
+	/**
+	 * If set, the parser adds the position in the input of each parsed node to this map. See
+	 * {@link NodePosition} for what is recorded. Nodes from the replacement text of an entity and
+	 * attributes defaulted from the DTD get no position.
+	 *
+	 * @public
+	 */
+	positions: WeakMap<Node, NodePosition>;
 }>;
 
 const DEFAULT_ENTITY_EXPANSION_MAX_AMPLIFICATION = 100.0;
@@ -686,13 +697,14 @@ const DEFAULT_ENTITY_EXPANSION_THRESHOLD = 4_194_304;
 
 export function parseXml(
 	input: string,
-	generator: (input: string) => Iterator<DocumentParseEvent>,
+	generator: (input: string) => ParserStateMachine<DocumentParseEvent>,
 	namespaces: Namespaces,
 	into: Node,
 	{
 		entityExpansionMaxAmplification = DEFAULT_ENTITY_EXPANSION_MAX_AMPLIFICATION,
 		entityExpansionThreshold = DEFAULT_ENTITY_EXPANSION_THRESHOLD,
 		treatCDataAsText = false,
+		positions,
 	}: ParseOptions
 ): void {
 	const doc = getNodeDocument(into);
@@ -715,11 +727,15 @@ export function parseXml(
 					throw new Error('document must not contain text outside of elements');
 				}
 			} else {
-				appendParsedNode(domContext.root, doc.createTextNode(collectedText.join('')));
+				const text = doc.createTextNode(collectedText.join(''));
+				recorder?.text(text);
+				appendParsedNode(domContext.root, text);
 			}
 			collectedText.length = 0;
 		}
 	}
+
+	const recorder = positions ? new PositionRecorder(positions, input) : null;
 
 	// Remove BOM if there is one and normalize line endings to lf
 	input = input.replace(/^\ufeff/, '');
@@ -740,6 +756,11 @@ export function parseXml(
 		for (; !it.done; it = entityContext.iterator.next()) {
 			const event: DocumentParseEvent = it.value;
 			if (typeof event === 'string') {
+				recorder?.textPiece(
+					entityContext.iterator.eventStart,
+					entityContext.iterator.eventEnd,
+					collectedText.length === 0
+				);
 				collectedText.push(event);
 				continue;
 			}
@@ -752,6 +773,7 @@ export function parseXml(
 							event
 						);
 					}
+					recorder?.textPiece(event.start, event.end, collectedText.length === 0);
 					collectedText.push(String.fromCodePoint(event.cp));
 					continue;
 
@@ -781,6 +803,7 @@ export function parseXml(
 						);
 					}
 					expansionGuard.enter(event, replacementText.length);
+					recorder?.enterEntity(event.start, event.end);
 					domContext = {
 						parent: domContext,
 						root: domContext.root,
@@ -797,48 +820,63 @@ export function parseXml(
 
 				case ParserEventType.CDSect:
 					if (treatCDataAsText) {
+						recorder?.textPiece(event.start, event.end, collectedText.length === 0);
 						collectedText.push(event.data);
 						continue;
 					}
 					break;
 			}
 
+			recorder?.markup();
 			flushCollectedText();
 
+			const eventStart = entityContext.iterator.eventStart;
+			const eventEnd = entityContext.iterator.eventEnd;
 			switch (event.type) {
-				case ParserEventType.CDSect:
+				case ParserEventType.CDSect: {
 					if (domContext.root === doc && doc.documentElement !== null) {
 						throwErrorWithContext(
 							'CData section must not appear after the document element',
 							event
 						);
 					}
-					appendParsedNode(domContext.root, doc.createCDATASection(event.data));
+					const cdata = doc.createCDATASection(event.data);
+					recorder?.node(cdata, eventStart, eventEnd);
+					appendParsedNode(domContext.root, cdata);
+					continue;
+				}
+
+				case ParserEventType.Comment: {
+					const comment = doc.createComment(event.data);
+					recorder?.node(comment, eventStart, eventEnd);
+					appendParsedNode(domContext.root, comment);
+					continue;
+				}
+
+				case ParserEventType.XMLDecl:
+					// Grammar guarantees this is the first event of the document or fragment
+					recorder?.declaration(into, into === doc, eventStart, eventEnd);
 					continue;
 
-				case ParserEventType.Comment:
-					appendParsedNode(domContext.root, doc.createComment(event.data));
-					continue;
-
-				case ParserEventType.Doctypedecl:
+				case ParserEventType.Doctypedecl: {
 					// Grammar guarantees this happens before the document element
 					dtd = new Dtd(event);
-					appendParsedNode(
-						domContext.root,
-						doc.implementation.createDocumentType(
-							event.name,
-							event.ids?.publicId || '',
-							event.ids?.systemId || ''
-						)
+					const doctype = doc.implementation.createDocumentType(
+						event.name,
+						event.ids?.publicId || '',
+						event.ids?.systemId || ''
 					);
+					recorder?.node(doctype, eventStart, eventEnd);
+					appendParsedNode(domContext.root, doctype);
 					continue;
+				}
 
-				case ParserEventType.PI:
-					appendParsedNode(
-						domContext.root,
-						doc.createProcessingInstruction(event.target, event.data || '')
-					);
+				case ParserEventType.PI: {
+					const pi = doc.createProcessingInstruction(event.target, event.data || '');
+					recorder?.node(pi, eventStart, eventEnd);
+					appendParsedNode(domContext.root, pi);
 					continue;
+				}
 
 				case ParserEventType.STag:
 				case ParserEventType.EmptyElemTag: {
@@ -864,6 +902,7 @@ export function parseXml(
 					const namespace = namespaces.getForElement(prefix, event.name);
 					// We can skip the usual name validity checks
 					const element = unsafeCreateElement(doc, localName, namespace, prefix);
+					recorder?.startTag(element, eventStart, eventEnd);
 					for (const attr of event.attributes) {
 						const { prefix, localName } = splitQualifiedName(
 							attr.name,
@@ -884,6 +923,12 @@ export function parseXml(
 							localName,
 							normalizeAttributeValue(attr.value, def, dtd, expansionGuard),
 							element
+						);
+						recorder?.attribute(
+							attrNode,
+							attr.name.start,
+							attr.valueStart,
+							attr.valueEnd
 						);
 						appendAttribute(attrNode, element, true);
 					}
@@ -941,6 +986,7 @@ export function parseXml(
 							event
 						);
 					}
+					recorder?.endTag(domContext.root, eventStart, eventEnd);
 					// The check above means we never leave the document DomContext
 					domContext = domContext.parent!;
 					continue;
@@ -978,6 +1024,7 @@ export function parseXml(
 		entityContext = entityContext.parent;
 		if (entityContext) {
 			expansionGuard.exit();
+			recorder?.exitEntity(collectedText.length > 0);
 			domContext = domContext.parent!;
 		}
 	}
@@ -1025,6 +1072,15 @@ export function parseXmlFragment(
 		 * @public
 		 */
 		treatCDataAsText: boolean;
+
+		/**
+		 * If set, the parser adds the position in the input of each parsed node to this map. See
+		 * {@link NodePosition} for what is recorded. Nodes from the replacement text of an entity
+		 * get no position.
+		 *
+		 * @public
+		 */
+		positions: WeakMap<Node, NodePosition>;
 	}> = {}
 ): DocumentFragment {
 	const doc = new Document();

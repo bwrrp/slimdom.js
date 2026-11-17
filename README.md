@@ -99,6 +99,18 @@ const xml3 = slimdom.serializeToWellFormedString(fragment);
 // 	<a:root xmlns:a="ns-a"><b:child xmlns:b="resolved-b"/></a:root>`
 ```
 
+Both `parseXmlDocument` and `parseXmlFragment` can record where each node was found in the input. Pass a `WeakMap` as the `positions` option and the parser adds a `NodePosition` for each node. The offsets refer to the original input string, before the byte order mark is removed and line endings are normalized. Elements get spans for their start and end tags, attributes get spans for the whole attribute and for the value. The XML declaration is recorded for the document, and the text declaration of a fragment for the fragment. Nodes from the replacement text of an entity and attributes defaulted from the DTD get no position. A text node gets a position only if all of its text is written in the input, possibly using references to entities whose replacement text contains only text.
+
+```javascript
+const input = '<root attr="value">Hello!</root>';
+const positions = new WeakMap();
+const document3 = slimdom.parseXmlDocument(input, { positions });
+const position = positions.get(document3.documentElement);
+// -> { type: 'element', startTag: { start: 0, end: 19 }, endTag: { start: 25, end: 32 } }
+input.slice(position.startTag.start, position.startTag.end);
+// -> '<root attr="value">'
+```
+
 This library does not implement HTML parsing, which means no `insertAdjacentHTML` on `Element`, nor `createContextualFragment` on `Range`. The `innerHTML` and `outerHTML` properties are read-only. If you need to parse HTML, see [this example][parse5-example] which shows how to connect the [parse5][parse5] HTML parser with the help of the [dom-treeadapter][dom-treeadapter] library.
 
 To guard against [entity expansion attacks][billion-laughs], the parser by default limits how much entity expansion is allowed to increase the document size. To avoid blocking legitimate uses of entity expansion, this limit is only enforced after a certain output size threshold is reached. You can adjust these values by setting the `entityExpansionMaxAmplification` and `entityExpansionThreshold` options when calling `parseXmlDocument`. Please [open an issue][new-issue] if you ever need to increase these values for a non-attack input.

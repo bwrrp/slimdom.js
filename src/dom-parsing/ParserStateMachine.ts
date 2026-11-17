@@ -18,6 +18,16 @@ export default class ParserStateMachine<T> implements Iterator<T> {
 	private _input: string;
 	private _offset = 0;
 
+	/**
+	 * The offset in the input where the event last returned by next() starts.
+	 */
+	public eventStart = 0;
+
+	/**
+	 * The offset in the input right after the event last returned by next().
+	 */
+	public eventEnd = 0;
+
 	constructor(input: string, states: ParserState<T>[]) {
 		this._input = input;
 		this._states = states;
@@ -29,7 +39,8 @@ export default class ParserStateMachine<T> implements Iterator<T> {
 		}
 
 		const { parser, type } = this._states[this._state];
-		const res = parser(this._input, this._offset);
+		const start = this._offset;
+		const res = parser(this._input, start);
 		if (!res.success) {
 			if (type === ParserStateType.one || res.fatal) {
 				return { done: true, value: res };
@@ -44,6 +55,8 @@ export default class ParserStateMachine<T> implements Iterator<T> {
 		if (res.value === undefined) {
 			return this.next();
 		}
+		this.eventStart = start;
+		this.eventEnd = res.offset;
 		return { done: false, value: res.value };
 	}
 }
